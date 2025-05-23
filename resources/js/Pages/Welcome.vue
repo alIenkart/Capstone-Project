@@ -8,21 +8,13 @@ defineProps({
     canRegister: {
         type: Boolean,
     },
-    laravelVersion: {
-        type: String,
-        required: true,
-    },
-    phpVersion: {
-        type: String,
-        required: true,
-    },
 });
 
 
 </script>
 
 <template>
-    <Head title="Welcome" />
+    <Head title="GuestPage" />
     <p>Hello World</p>
 
     <Link :href="route('login')">
