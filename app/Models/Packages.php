@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Packages extends Model
 {
     protected $fillable = [
-        'destinations',
+        'destination',
         'description',
         'tour_duration',
         'image_path',
-        'itenerary',
-        'terms_conditions',
+        'itinerary',
+        'terms_condition',
         'exclusions',
         'package_name',
         'capacity',

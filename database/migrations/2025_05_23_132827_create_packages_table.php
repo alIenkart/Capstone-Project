@@ -9,12 +9,10 @@ return new class extends Migration {
     {
         Schema::create('packages', function (Blueprint $table) {
             $table->id();
-            $table->string('destinations');
             $table->string('description');
-            $table->integer('tour_duration');
+            $table->string('tour_duration');
             $table->string('image_path');
             $table->string('itinerary');
-            $table->string('terms_conditions');
             $table->string('exclusions');
             $table->string('package_name');
             $table->integer('capacity');
@@ -22,7 +20,8 @@ return new class extends Migration {
             $table->string('status');
             $table->double('pax_rate', 8, 2);
             $table->double('discounted_rate', 8, 2);
-            $table->date('time_stamp');
+            $table->string('destination');
+            $table->string('terms_condition');
             $table->timestamps();
         });
     }
