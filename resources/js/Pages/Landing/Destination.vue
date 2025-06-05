@@ -1,6 +1,8 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import LandingIndex from './LandingIndex.vue'
+import axios from 'axios'
+
 defineOptions({ layout: LandingIndex })
 
 const showFilter = ref(false)
@@ -12,6 +14,20 @@ function toggleFilter() {
 function closeFilter() {
   showFilter.value = false
 }
+
+const fetchPackages = async () => {
+    try {
+        const response = await axios.get('/api/packages')
+        packages.value = response.data.data
+    } catch (error) {
+        console.error('Error fetching packages:', error)
+    }
+}
+
+// Fetch packages when the component is mounted
+onMounted(() => {
+    fetchPackages()
+})
 </script>
 
 <template>

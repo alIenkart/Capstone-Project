@@ -1,0 +1,295 @@
+<script setup>
+import { ref, watch } from 'vue'
+import axios from 'axios'
+
+const props = defineProps({
+    show: {
+        type: Boolean,
+        required: true
+    }
+})
+
+const emit = defineEmits(['close', 'save'])
+
+const formData = ref({
+    image: null,
+    name: '',
+    duration: '',
+    destination: '',
+    description: '',
+    itinerary: '',
+    termsCondition: '',
+    exclusions: '',
+    basePrice: '',
+    maxOccupancy: '',
+    bookingType: 'Exclusive', // Default value based on screenshot
+    status: 'Active', // Default value based on screenshot
+    discountedRate: ''
+})
+
+// Reset form when modal is shown
+watch(() => props.show, (newValue) => {
+    if (newValue) {
+        formData.value = {
+            image: null,
+            name: '',
+            duration: '',
+            destination: '',
+            description: '',
+            itinerary: '',
+            termsCondition: '',
+            exclusions: '',
+            basePrice: '',
+            maxOccupancy: '',
+            bookingType: 'Exclusive',
+            status: 'Active',
+            discountedRate: ''
+        }
+    }
+})
+
+const closeModal = () => {
+    emit('close')
+}
+
+const savePackage = async () => {
+    // Basic validation (can be enhanced)
+    if (!formData.value.name || !formData.value.basePrice) {
+        alert('Please fill in Package Name and Base Price.')
+        return
+    }
+
+    // TODO: Handle image upload properly. For now, sending null or a default.
+    const payload = {
+        package_name: formData.value.name,
+        tour_duration: formData.value.duration ? formData.value.duration.toString() : '0', // Default to '0' if empty, API expects string
+        destination: formData.value.destination,
+        description: formData.value.description,
+        itinerary: formData.value.itinerary,
+        terms_condition: formData.value.termsCondition || '', // Send empty string if empty, API expects string
+        exclusions: formData.value.exclusions || '', // Send empty string if empty, API expects string
+        capacity: formData.value.maxOccupancy ? parseInt(formData.value.maxOccupancy) : 0, // Default to 0 if empty, API expects integer min 1 (will still fail if 0, but better than null)
+        joint_booking: formData.value.bookingType === 'Shared', // API expects boolean (true/false)
+        status: formData.value.status.toLowerCase(), // API expects lowercase
+        pax_rate: formData.value.basePrice ? parseFloat(formData.value.basePrice) : 0, // Default to 0 if empty, API expects numeric min 0
+        discounted_rate: formData.value.discountedRate ? parseFloat(formData.value.discountedRate) : 0, // Default to 0 if empty, API expects numeric min 0
+        image_path: 'default.jpg' // Temporary: send a default image path, API expects required string
+    }
+
+    try {
+        const response = await axios.post('/api/packages', payload)
+        console.log('Package created successfully:', response.data)
+        alert('Package created successfully!')
+        emit('save', response.data.data) // Emit saved package data
+        closeModal()
+    } catch (error) {
+        console.error('Error creating package:', error.response.data)
+        // Display specific validation errors if available
+        if (error.response && error.response.data && error.response.data.errors) {
+            let errorMessages = 'Validation Errors:\n'
+            for (const field in error.response.data.errors) {
+                errorMessages += `- ${field}: ${error.response.data.errors[field].join(', ')}\n`
+            }
+            alert('Error creating package:\n' + errorMessages)
+        } else {
+            alert('Error creating package. Please check the console for details.')
+        }
+    }
+}
+
+const handleImageUpload = (event) => {
+    // TODO: Implement image upload logic to send the image file with the form data
+    formData.value.image = event.target.files[0]
+    console.log('Image selected:', formData.value.image)
+}
+</script>
+
+<template>
+    <div v-if="show" class="fixed inset-0 z-50 overflow-y-auto">
+        <!-- Background overlay -->
+        <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity" @click="closeModal"></div>
+
+        <!-- Modal panel -->
+        <div class="flex min-h-full items-center justify-center p-4">
+            <div class="relative transform overflow-hidden rounded-lg bg-white px-6 py-6 text-left shadow-xl transition-all sm:my-8 w-full max-w-2xl">
+                <!-- Close button -->
+                <div class="absolute right-0 top-0 pr-4 pt-4">
+                    <button
+                        type="button"
+                        class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none"
+                        @click="closeModal"
+                    >
+                        <span class="sr-only">Close</span>
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Modal content -->
+                <div class="">
+                    <div class="text-center sm:text-left w-full">
+                        <h3 class="text-xl font-semibold leading-6 text-gray-900 mb-6">
+                            New Package
+                        </h3>
+                        
+                        <form @submit.prevent="savePackage" class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Image Upload Placeholder -->
+                                <div class="flex items-center justify-center border border-dashed border-gray-300 rounded-lg p-6 text-gray-500 cursor-pointer hover:text-gray-600 hover:border-gray-400">
+                                    <label for="imageUpload" class="flex flex-col items-center justify-center w-full h-full cursor-pointer">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16l5-5m0 0l5 5m-5-5v10m7-10l5-5m0 0l5 5m-5-5v10M3 19h18a2 2 0 002-2V7a2 2 0 00-2-2H3a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                        </svg>
+                                        <span class="text-sm">Add Image Here</span>
+                                        <input type="file" id="imageUpload" class="hidden" @change="handleImageUpload" />
+                                    </label>
+                                </div>
+
+                                <div class="space-y-4">
+                                    <div>
+                                        <label for="name" class="block text-sm font-medium text-gray-700">Package Name</label>
+                                        <input
+                                            type="text"
+                                            id="name"
+                                            v-model="formData.name"
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                            required
+                                        />
+                                    </div>
+
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label for="duration" class="block text-sm font-medium text-gray-700">Duration (Days)</label>
+                                            <input
+                                                type="number"
+                                                id="duration"
+                                                v-model="formData.duration"
+                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label for="destination" class="block text-sm font-medium text-gray-700">Destination</label>
+                                            <input
+                                                type="text"
+                                                id="destination"
+                                                v-model="formData.destination"
+                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label for="basePrice" class="block text-sm font-medium text-gray-700">Base Price per Pax</label>
+                                        <input
+                                            type="number"
+                                            id="basePrice"
+                                            v-model="formData.basePrice"
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                            required
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label for="maxOccupancy" class="block text-sm font-medium text-gray-700">Maximum Occupancy</label>
+                                        <input
+                                            type="number"
+                                            id="maxOccupancy"
+                                            v-model="formData.maxOccupancy"
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                        />
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label for="bookingType" class="block text-sm font-medium text-gray-700">Booking Type</label>
+                                            <select
+                                                id="bookingType"
+                                                v-model="formData.bookingType"
+                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                            >
+                                                <option value="Exclusive">Exclusive</option>
+                                                <option value="Shared">Shared</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                                            <select
+                                                id="status"
+                                                v-model="formData.status"
+                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                            >
+                                                <option value="Active">Active</option>
+                                                <option value="Inactive">Inactive</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label for="discountedRate" class="block text-sm font-medium text-gray-700">Discounted Rate</label>
+                                        <input
+                                            type="number"
+                                            id="discountedRate"
+                                            v-model="formData.discountedRate"
+                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                                <textarea
+                                    id="description"
+                                    v-model="formData.description"
+                                    rows="3"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                    required
+                                ></textarea>
+                            </div>
+
+                            <div>
+                                <label for="itinerary" class="block text-sm font-medium text-gray-700">Itinerary</label>
+                                <textarea
+                                    id="itinerary"
+                                    v-model="formData.itinerary"
+                                    rows="6"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                ></textarea>
+                            </div>
+
+                            <div>
+                                <label for="termsCondition" class="block text-sm font-medium text-gray-700">Terms & Condition</label>
+                                <textarea
+                                    id="termsCondition"
+                                    v-model="formData.termsCondition"
+                                    rows="3"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                ></textarea>
+                            </div>
+
+                            <div>
+                                <label for="exclusions" class="block text-sm font-medium text-gray-700">Exclusions</label>
+                                <textarea
+                                    id="exclusions"
+                                    v-model="formData.exclusions"
+                                    rows="3"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                ></textarea>
+                            </div>
+
+                            <div class="flex justify-end">
+                                <button
+                                    type="submit"
+                                    class="inline-flex justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                                >
+                                    Submit
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template> 
