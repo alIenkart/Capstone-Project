@@ -30,7 +30,7 @@
           <Link href="/profile" class="dropdown-item">Profile</Link>
           <Link href="/yourbookings" class="dropdown-item">Your Bookings</Link>
           <Link href="/notifications" class="dropdown-item">Notifications</Link>
-          <Link href="/logout" class="dropdown-item">Logout</Link>
+          <Link :href="route('logout')" method="post" as="button" class="dropdown-item" :data="{ redirect: route('login') }">Logout</Link>
         </div>
       </div>
     </nav>

@@ -42,7 +42,7 @@ const headerTitle = computed(() => {
         <Link href="/admin/settings" class="admin-link settings-link">
           <span class="icon">&#9881;</span> Settings
         </Link>
-        <Link href="/logout" class="admin-link logout-link">
+        <Link :href="route('logout')" method="post" as="button" class="admin-link logout-link">
           <span class="icon">&#x21B6;</span> Logout
         </Link>
       </div>
