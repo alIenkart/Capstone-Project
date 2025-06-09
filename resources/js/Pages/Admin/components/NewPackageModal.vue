@@ -111,12 +111,12 @@ const handleImageUpload = (event) => {
 
         <!-- Modal panel -->
         <div class="flex min-h-full items-center justify-center p-4">
-            <div class="relative transform overflow-hidden rounded-lg bg-white px-6 py-6 text-left shadow-xl transition-all sm:my-8 w-full max-w-2xl">
+            <div class="relative transform overflow-hidden rounded-2xl border-2 border-gray-300 bg-white px-6 py-6 text-left shadow-2xl transition-all sm:my-8 w-full max-w-4xl">
                 <!-- Close button -->
                 <div class="absolute right-0 top-0 pr-4 pt-4">
                     <button
                         type="button"
-                        class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none"
+                        class="rounded-full bg-white text-gray-400 hover:text-gray-500 focus:outline-none"
                         @click="closeModal"
                     >
                         <span class="sr-only">Close</span>
@@ -127,7 +127,7 @@ const handleImageUpload = (event) => {
                 </div>
 
                 <!-- Modal content -->
-                <div class="">
+                <div>
                     <div class="text-center sm:text-left w-full">
                         <h3 class="text-xl font-semibold leading-6 text-gray-900 mb-6">
                             New Package
@@ -136,7 +136,7 @@ const handleImageUpload = (event) => {
                         <form @submit.prevent="savePackage" class="space-y-6">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <!-- Image Upload Placeholder -->
-                                <div class="flex items-center justify-center border border-dashed border-gray-300 rounded-lg p-6 text-gray-500 cursor-pointer hover:text-gray-600 hover:border-gray-400">
+                                <div class="flex items-center justify-center border-2 border-dashed border-gray-400 rounded-xl bg-gray-50 p-6 text-gray-500 cursor-pointer hover:text-[#217093] hover:border-[#217093]">
                                     <label for="imageUpload" class="flex flex-col items-center justify-center w-full h-full cursor-pointer">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 16l5-5m0 0l5 5m-5-5v10m7-10l5-5m0 0l5 5m-5-5v10M3 19h18a2 2 0 002-2V7a2 2 0 00-2-2H3a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -153,7 +153,7 @@ const handleImageUpload = (event) => {
                                             type="text"
                                             id="name"
                                             v-model="formData.name"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                            class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
                                             required
                                         />
                                     </div>
@@ -165,7 +165,7 @@ const handleImageUpload = (event) => {
                                                 type="number"
                                                 id="duration"
                                                 v-model="formData.duration"
-                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                                class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
                                             />
                                         </div>
                                         <div>
@@ -174,7 +174,7 @@ const handleImageUpload = (event) => {
                                                 type="text"
                                                 id="destination"
                                                 v-model="formData.destination"
-                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                                class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
                                             />
                                         </div>
                                     </div>
@@ -185,7 +185,7 @@ const handleImageUpload = (event) => {
                                             type="number"
                                             id="basePrice"
                                             v-model="formData.basePrice"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                            class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
                                             required
                                         />
                                     </div>
@@ -196,7 +196,7 @@ const handleImageUpload = (event) => {
                                             type="number"
                                             id="maxOccupancy"
                                             v-model="formData.maxOccupancy"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                            class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
                                         />
                                     </div>
                                     
@@ -206,7 +206,7 @@ const handleImageUpload = (event) => {
                                             <select
                                                 id="bookingType"
                                                 v-model="formData.bookingType"
-                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                                class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
                                             >
                                                 <option value="Exclusive">Exclusive</option>
                                                 <option value="Shared">Shared</option>
@@ -217,7 +217,7 @@ const handleImageUpload = (event) => {
                                             <select
                                                 id="status"
                                                 v-model="formData.status"
-                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                                class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
                                             >
                                                 <option value="Active">Active</option>
                                                 <option value="Inactive">Inactive</option>
@@ -231,7 +231,7 @@ const handleImageUpload = (event) => {
                                             type="number"
                                             id="discountedRate"
                                             v-model="formData.discountedRate"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                            class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
                                         />
                                     </div>
                                 </div>
@@ -243,7 +243,7 @@ const handleImageUpload = (event) => {
                                     id="description"
                                     v-model="formData.description"
                                     rows="3"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                    class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
                                     required
                                 ></textarea>
                             </div>
@@ -254,7 +254,7 @@ const handleImageUpload = (event) => {
                                     id="itinerary"
                                     v-model="formData.itinerary"
                                     rows="6"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                    class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
                                 ></textarea>
                             </div>
 
@@ -264,7 +264,7 @@ const handleImageUpload = (event) => {
                                     id="termsCondition"
                                     v-model="formData.termsCondition"
                                     rows="3"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                    class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
                                 ></textarea>
                             </div>
 
@@ -274,14 +274,14 @@ const handleImageUpload = (event) => {
                                     id="exclusions"
                                     v-model="formData.exclusions"
                                     rows="3"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                    class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
                                 ></textarea>
                             </div>
 
                             <div class="flex justify-end">
                                 <button
                                     type="submit"
-                                    class="inline-flex justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                                    class="inline-flex justify-center rounded-xl bg-gray-600 px-8 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#217093] focus:outline-none focus:ring-2 focus:ring-[#217093] focus:ring-offset-2"
                                 >
                                     Submit
                                 </button>
@@ -292,4 +292,4 @@ const handleImageUpload = (event) => {
             </div>
         </div>
     </div>
-</template> 
+</template>
