@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
+    return Inertia::render('Landing/Home', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
@@ -25,9 +25,9 @@ Route::middleware('auth')->group(function () {
 });
 
 // Home
-Route::get('/home', function () {
-    return Inertia::render('Landing/Home');
-})->name('home');
+    // Route::get('/home', function () {
+    //     return Inertia::render('Landing/Home');
+    // })->name('home');
 
 // Destinations
 Route::get('/destination', function () {

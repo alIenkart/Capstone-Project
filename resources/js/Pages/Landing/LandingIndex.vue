@@ -6,7 +6,7 @@
         <img class="logo-img" src="build/assets/travelogo.jpg" alt="JE Travel & Tours" />
       </div>
       <div class="navbar-links">
-        <Link href="/home" class="link" :class="page.url === '/home' ? 'active-link' : ''">Home</Link>
+        <Link href="/" class="link" :class="page.url === '/' ? 'active-link' : ''">Home</Link>
         <Link href="/destination" class="link" :class="page.url === '/destination' ? 'active-link' : ''">Destinations</Link>
         <Link href="/blogs" class="link" :class="page.url === '/blogs' ? 'active-link' : ''">Travel Blogs</Link>
         <Link href="/aboutus" class="link" :class="page.url === '/aboutus' ? 'active-link' : ''">About Us</Link>
