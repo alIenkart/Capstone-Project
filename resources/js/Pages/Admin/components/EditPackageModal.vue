@@ -165,12 +165,12 @@ const confirmDelete = async () => {
 
         <!-- Main Edit Modal panel -->
         <div class="flex min-h-full items-center justify-center p-4">
-            <div class="relative transform overflow-hidden rounded-lg bg-white px-6 py-6 text-left shadow-xl transition-all sm:my-8 w-full max-w-2xl">
+            <div class="relative transform overflow-hidden rounded-2xl border-2 border-gray-300 bg-white px-6 py-6 text-left shadow-2xl transition-all sm:my-8 w-full max-w-4xl">
                 <!-- Close button -->
                 <div class="absolute right-0 top-0 pr-4 pt-4">
                     <button
                         type="button"
-                        class="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none"
+                        class="rounded-full bg-white text-gray-400 hover:text-gray-500 focus:outline-none"
                         @click="closeModal"
                     >
                         <span class="sr-only">Close</span>
@@ -181,7 +181,7 @@ const confirmDelete = async () => {
                 </div>
 
                 <!-- Modal content -->
-                <div class="">
+                <div>
                     <div class="text-center sm:text-left w-full">
                         <h3 class="text-xl font-semibold leading-6 text-gray-900 mb-6">
                             Edit Package
@@ -190,15 +190,14 @@ const confirmDelete = async () => {
                         <form @submit.prevent="updatePackage" class="space-y-6">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <!-- Image Upload/Display Placeholder -->
-                                <div class="flex items-center justify-center border border-dashed border-gray-300 rounded-lg p-6 text-gray-500 cursor-pointer hover:text-gray-600 hover:border-gray-400">
-                                     <label for="imageUpload" class="flex flex-col items-center justify-center w-full h-full cursor-pointer">
+                                <div class="flex items-center justify-center border-2 border-dashed border-gray-400 rounded-xl bg-gray-50 p-6 text-gray-500 cursor-pointer hover:text-[#217093] hover:border-[#217093]">
+                                    <label for="imageUpload" class="flex flex-col items-center justify-center w-full h-full cursor-pointer">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 16l5-5m0 0l5 5m-5-5v10m7-10l5-5m0 0l5 5m-5-5v10M3 19h18a2 2 0 002-2V7a2 2 0 00-2-2H3a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                         </svg>
                                         <span class="text-sm">{{ formData.image_path ? 'Change Image' : 'Add Image Here' }}</span>
                                         <input type="file" id="imageUpload" class="hidden" @change="handleImageUpload" />
                                     </label>
-                                    <!-- TODO: Display current image if available -->
                                 </div>
 
                                 <div class="space-y-4">
@@ -208,7 +207,7 @@ const confirmDelete = async () => {
                                             type="text"
                                             id="name"
                                             v-model="formData.package_name"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                            class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
                                             required
                                         />
                                     </div>
@@ -220,7 +219,7 @@ const confirmDelete = async () => {
                                                 type="number"
                                                 id="duration"
                                                 v-model="formData.tour_duration"
-                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                                class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
                                             />
                                         </div>
                                         <div>
@@ -229,7 +228,7 @@ const confirmDelete = async () => {
                                                 type="text"
                                                 id="destination"
                                                 v-model="formData.destination"
-                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                                class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
                                             />
                                         </div>
                                     </div>
@@ -240,7 +239,7 @@ const confirmDelete = async () => {
                                             type="number"
                                             id="basePrice"
                                             v-model="formData.pax_rate"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                            class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
                                             required
                                         />
                                     </div>
@@ -251,7 +250,7 @@ const confirmDelete = async () => {
                                             type="number"
                                             id="maxOccupancy"
                                             v-model="formData.capacity"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                            class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
                                         />
                                     </div>
                                     
@@ -261,7 +260,7 @@ const confirmDelete = async () => {
                                             <select
                                                 id="bookingType"
                                                 v-model="formData.joint_booking"
-                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                                class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
                                             >
                                                 <option :value="false">Exclusive</option>
                                                 <option :value="true">Shared</option>
@@ -272,7 +271,7 @@ const confirmDelete = async () => {
                                             <select
                                                 id="status"
                                                 v-model="formData.status"
-                                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                                class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
                                             >
                                                 <option value="active">Active</option>
                                                 <option value="inactive">Inactive</option>
@@ -286,7 +285,7 @@ const confirmDelete = async () => {
                                             type="number"
                                             id="discountedRate"
                                             v-model="formData.discounted_rate"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                            class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
                                         />
                                     </div>
                                 </div>
@@ -298,7 +297,7 @@ const confirmDelete = async () => {
                                     id="description"
                                     v-model="formData.description"
                                     rows="3"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                    class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
                                     required
                                 ></textarea>
                             </div>
@@ -309,37 +308,37 @@ const confirmDelete = async () => {
                                     id="itinerary"
                                     v-model="formData.itinerary"
                                     rows="3"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                    class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
                                     required
                                 ></textarea>
                             </div>
 
-                             <div>
+                            <div>
                                 <label for="termsCondition" class="block text-sm font-medium text-gray-700">Terms & Condition</label>
                                 <textarea
                                     id="termsCondition"
                                     v-model="formData.terms_condition"
                                     rows="3"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                    class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
                                     required
                                 ></textarea>
                             </div>
 
-                             <div>
+                            <div>
                                 <label for="exclusions" class="block text-sm font-medium text-gray-700">Exclusions</label>
                                 <textarea
                                     id="exclusions"
                                     v-model="formData.exclusions"
                                     rows="3"
-                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                    class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
                                     required
                                 ></textarea>
                             </div>
 
                             <div class="mt-6 flex justify-end gap-x-6">
-                                <button type="button" class="rounded-md px-3 py-2 text-sm font-semibold leading-6 text-gray-900" @click="closeModal">Cancel</button>
-                                <button type="button" class="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600" @click="showDeleteConfirmation">Delete</button>
-                                <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
+                                <button type="button" class="rounded-xl px-3 py-2 text-sm font-semibold leading-6 text-gray-900" @click="closeModal">Cancel</button>
+                                <button type="button" class="rounded-xl bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600" @click="showDeleteConfirmation">Delete</button>
+                                <button type="submit" class="rounded-xl bg-[#217093] px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#14516b] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#217093]">Save</button>
                             </div>
                         </form>
                     </div>
@@ -371,4 +370,4 @@ const confirmDelete = async () => {
             </div>
         </div>
     </div>
-</template> 
+</template>

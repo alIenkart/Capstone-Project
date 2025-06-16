@@ -17,9 +17,7 @@ const createNewPackage = () => {
 }
 
 const handleSavePackage = (packageData) => {
-    console.log('New package data:', packageData)
     fetchPackages();
-    // TODO: Implement API call to save the package if not done in modal
 }
 
 const openEditModal = (packageId) => {
@@ -28,12 +26,9 @@ const openEditModal = (packageId) => {
 }
 
 const handlePackageUpdated = (updatedPackage) => {
-    console.log('Package updated:', updatedPackage);
     fetchPackages();
-    // Optionally, find and update the specific package in the `packages` array to avoid full refetch
 }
 
-// Function to fetch packages
 const fetchPackages = async () => {
     try {
         const response = await axios.get('/api/packages')
@@ -43,74 +38,180 @@ const fetchPackages = async () => {
     }
 }
 
-// Fetch packages when the component is mounted
 onMounted(() => {
     fetchPackages()
 })
 </script>
 
 <template>
-    <div class="p-6">
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-semibold text-gray-800">
-                This is the packages page
-            </h1>
-            <button
-                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2"
-                @click="createNewPackage"
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-                </svg>
-                Add New Package
-            </button>
-        </div>
-
-        <div class="mt-8">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead>
-                    <tr>
-                        <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Package ID</th>
-                        <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Package Name</th>
-                        <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Destination</th>
-                        <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Max Occupancy</th>
-                        <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Booking Type</th>
-                        <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duration</th>
-                        <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                        <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Base Price per Pax</th>
-                        <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    <!-- Package rows will go here -->
-                    <tr v-for="packageItem in packages" :key="packageItem.id">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ packageItem.id }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ packageItem.package_name }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ packageItem.destination }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ packageItem.capacity }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ packageItem.joint_booking ? 'Joint' : 'Exclusive' }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ packageItem.tour_duration }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ packageItem.status }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ packageItem.pax_rate }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <button class="text-indigo-600 hover:text-indigo-900" @click="openEditModal(packageItem.id)">Edit</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <NewPackageModal
-            :show="showModal"
-            @close="showModal = false"
-            @save="handleSavePackage"
-        />
-
-        <EditPackageModal
-            :show="showEditModal"
-            :packageId="selectedPackageId"
-            @close="showEditModal = false; selectedPackageId = null"
-            @saved="handlePackageUpdated"
-        />
+  <div class="admin-packages-wrapper">
+    <h2 class="admin-packages-title">Package Management</h2>
+    <div class="admin-packages-controls">
+      <input
+        type="text"
+        placeholder="Search"
+        class="admin-packages-search"
+      />
+      <div class="admin-packages-filters">
+        <select class="admin-packages-select">
+          <option>All</option>
+          <option>Active</option>
+          <option>Inactive</option>
+        </select>
+        <button class="admin-packages-filter-btn" title="Filter">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M3 4a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v2a1 1 0 0 1-.293.707l-6.414 6.414A1 1 0 0 0 14 14.414V19a1 1 0 0 1-1.447.894l-4-2A1 1 0 0 1 8 17v-2.586a1 1 0 0 0-.293-.707L1.293 6.707A1 1 0 0 1 1 6V4z"/>
+          </svg>
+        </button>
+        <button class="admin-packages-add-btn" @click="createNewPackage">
+          Add new Package
+        </button>
+      </div>
     </div>
+    <div class="admin-packages-table-wrapper">
+      <table class="admin-packages-table">
+        <thead>
+          <tr>
+            <th>Package ID</th>
+            <th>Package Name</th>
+            <th>Destination</th>
+            <th>Max Occupancy</th>
+            <th>Booking Type</th>
+            <th>Duration</th>
+            <th>Status</th>
+            <th>Base Price per Pax</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="packageItem in packages" :key="packageItem.id">
+            <td>{{ packageItem.id }}</td>
+            <td>{{ packageItem.package_name }}</td>
+            <td>{{ packageItem.destination }}</td>
+            <td>{{ packageItem.capacity }}</td>
+            <td>{{ packageItem.joint_booking ? 'Joint' : 'Exclusive' }}</td>
+            <td>{{ packageItem.tour_duration }}</td>
+            <td>{{ packageItem.status }}</td>
+            <td>{{ packageItem.pax_rate }}</td>
+            <td>
+              <button class="admin-packages-edit-btn" @click="openEditModal(packageItem.id)" title="Edit">
+                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 1 1 2.828 2.828L11.828 15.828a2 2 0 0 1-1.414.586H7v-3a2 2 0 0 1 .586-1.414z"/>
+                </svg>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <NewPackageModal
+      :show="showModal"
+      @close="showModal = false"
+      @save="handleSavePackage"
+    />
+
+    <EditPackageModal
+      :show="showEditModal"
+      :packageId="selectedPackageId"
+      @close="showEditModal = false; selectedPackageId = null"
+      @saved="handlePackageUpdated"
+    />
+  </div>
 </template>
+
+<style scoped>
+.admin-packages-wrapper {
+  padding: 32px 0 0 0;
+}
+.admin-packages-title {
+  text-align: center;
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-bottom: 24px;
+}
+.admin-packages-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  gap: 18px;
+}
+.admin-packages-search {
+  width: 240px;
+  padding: 8px 16px;
+  border: 1.5px solid #888;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+.admin-packages-filters {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.admin-packages-select {
+  padding: 8px 16px;
+  border: 1.5px solid #888;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+.admin-packages-filter-btn {
+  background: #fff;
+  border: 1.5px solid #888;
+  border-radius: 8px;
+  padding: 7px 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+}
+.admin-packages-filter-btn:hover {
+  background: #f0f0f0;
+}
+.admin-packages-add-btn {
+  background: #fff;
+  border: 1.5px solid #888;
+  border-radius: 8px;
+  padding: 7px 18px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  margin-left: 10px;
+}
+.admin-packages-add-btn:hover {
+  background: #217093;
+  color: #fff;
+  border-color: #217093;
+}
+.admin-packages-table-wrapper {
+  margin-top: 18px;
+  overflow-x: auto;
+}
+.admin-packages-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+.admin-packages-table th,
+.admin-packages-table td {
+  border: 2px solid #888;
+  padding: 10px 8px;
+  text-align: left;
+  font-size: 1rem;
+}
+.admin-packages-table th {
+  background: #e5e5e5;
+  font-weight: 600;
+}
+.admin-packages-edit-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: #222;
+  transition: color 0.2s;
+}
+.admin-packages-edit-btn:hover {
+  color: #217093;
+}
+</style>
