@@ -6,13 +6,14 @@
         <img class="logo-img" src="build/assets/travelogo.jpg" alt="JE Travel & Tours" />
       </div>
       <div class="navbar-links">
-        <Link href="/home" class="link" :class="page.url === '/home' ? 'active-link' : ''">Home</Link>
+        <Link href="/" class="link" :class="page.url === '/' ? 'active-link' : ''">Home</Link>
         <Link href="/destination" class="link" :class="page.url === '/destination' ? 'active-link' : ''">Destinations</Link>
         <Link href="/blogs" class="link" :class="page.url === '/blogs' ? 'active-link' : ''">Travel Blogs</Link>
         <Link href="/aboutus" class="link" :class="page.url === '/aboutus' ? 'active-link' : ''">About Us</Link>
         <Link href="/contactus" class="link" :class="page.url === '/contactus' ? 'active-link' : ''">Contact Us</Link>
       </div>
-      <div class="profile-dropdown"
+      
+      <div v-if="user" class="profile-dropdown"
            @mouseenter="showDropdown = true"
            @mouseleave="showDropdown = false">
         <button class="profile-btn" @click="showDropdown = !showDropdown">
@@ -32,6 +33,10 @@
           <Link href="/notifications" class="dropdown-item">Notifications</Link>
           <Link :href="route('logout')" method="post" as="button" class="dropdown-item" :data="{ redirect: route('login') }">Logout</Link>
         </div>
+      </div>
+
+      <div v-else>
+        <Link href="/login" class="login-btn">Login</Link>
       </div>
     </nav>
 
@@ -55,11 +60,13 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed  } from 'vue'
 import { Link, usePage } from '@inertiajs/vue3'
 
 const showDropdown = ref(false)
-const page = usePage().url
+const page = usePage()
+const user = computed(() => page.props.auth?.user)
+
 </script>
 
 <style>
