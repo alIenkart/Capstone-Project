@@ -17,6 +17,20 @@ class Payment extends Model
 
     public function booking()
     {
-        return $this->belongsTo(Payment::class);
+        return $this->belongsTo(Booking::class);
+    }
+
+    public static function createFromBooking($booking)
+    {
+        return self::updateOrCreate(
+            ['booking_id' => $booking->id],
+            [
+                'total_price' => $booking->total_price,
+                'amount_paid' => 0,
+                'remaining_payment' => $booking->total_price,
+                'payment_status' => 'Pending',
+                'payment_date' => now(),
+            ]
+        );
     }
 }
