@@ -2,9 +2,12 @@
 import { ref, onMounted } from 'vue'
 import LandingIndex from './LandingIndex.vue'
 import axios from 'axios'
+import { api } from '../../api/api'
 
 defineOptions({ layout: LandingIndex })
 
+const service = new api();
+const packages = ref([])
 const showFilter = ref(false)
 
 function toggleFilter() {
@@ -17,7 +20,7 @@ function closeFilter() {
 
 const fetchPackages = async () => {
     try {
-        const response = await axios.get('/api/packages')
+        const response = await service.getPackages();
         packages.value = response.data.data
     } catch (error) {
         console.error('Error fetching packages:', error)
@@ -55,6 +58,25 @@ onMounted(() => {
         </ul>
         </div>
     </div>
+
+    <div class="destination-list">
+      <div
+        class="destination-card"
+        v-for="pkg in packages"
+        :key="pkg.id"
+      >
+        <img :src="pkg.image || '/assets/default.jpg'" :alt="pkg.title" />
+        <div class="destination-meta">₱ {{ pkg.pax_rate }}</div>
+        <div class="destination-title">{{ pkg.destinations }}</div>
+        <div class="destination-days">
+          <span>{{ pkg.tour_duration   }} Days</span>
+        </div>
+        <button class="view-btn">View Details</button>
+      </div>
+    </div>
+
+
+    <!-- Commented Out
     <div class="destination-list">
       <div class="destination-card">
         <img src="/assets/siargao.jpg" alt="Siargao Island" />
@@ -120,6 +142,7 @@ onMounted(() => {
         <button class="view-btn">View Details</button>
       </div>
     </div>
+    -->
   </section>
 </template>
 <style scoped>
