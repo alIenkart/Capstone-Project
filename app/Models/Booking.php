@@ -13,7 +13,6 @@ class Booking extends Model
         'voucher_id',
         'total_quantity',
         'total_price',
-        'booking_date',
     ];
 
     public function package()

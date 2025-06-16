@@ -10,8 +10,11 @@ return new class extends Migration {
         Schema::table('bookings', function (Blueprint $table) {
             $table->dropForeign(['customer_id']);
             $table->dropColumn('customer_id');
+            $table->dropColumn('booking_date');
 
             $table->string('customer_name')->after('package_id');
+            $table->string('status')->default('Pending')->after('customer_name');
+
         });
     }
 

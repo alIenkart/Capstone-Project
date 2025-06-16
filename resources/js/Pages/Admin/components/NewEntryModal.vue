@@ -14,27 +14,40 @@
           <div class="mb-4">
             <label class="block font-semibold mb-1">Customer Name</label>
             <input
+              v-model="customerName"
               type="text"
               class="w-full rounded-xl border-2 border-gray-300 px-4 py-2 focus:border-[#217093] focus:ring-[#217093]"
-              value="Kurt Allen Esmeria"
+              placeholder="Name"
             />
           </div>
           <div class="mb-4">
             <label class="block font-semibold mb-1">Package Name</label>
-            <select class="w-full rounded-xl border-2 border-gray-300 px-4 py-2 focus:border-[#217093] focus:ring-[#217093]">
-              <option>Puerto Travel Getaway</option>
-              <option>Baguio Tour</option>
-              <option>Boracay Escape</option>
-            </select>
+              <select
+                v-model="selectedPackage"
+                :class="[
+                  'w-full rounded-xl border-2 border-gray-300 px-4 py-2 focus:border-[#217093] focus:ring-[#217093]',
+                  selectedPackage === '' ? 'text-gray-400' : 'text-black'
+                ]"
+              >
+                <option disabled value="">Destination</option>
+                <option
+                  v-for="pkg in packages"
+                  :key="pkg.id"
+                  :value="pkg.id"
+                  class="text-black"
+                >
+                  {{ pkg.destinations }}
+                </option>
+              </select>
           </div>
           <div class="mb-2 font-semibold">Travellers</div>
           <div class="flex items-center mb-4">
             <div class="flex-1">Regular</div>
-            <div class="flex-1 text-center">P XXXX</div>
+            <div class="flex-1 text-center">₱{{ selectedPackageData.pax_rate ?? 'XXXX' }}</div>
             <div class="flex-1 flex items-center justify-end gap-2">
-              <button class="w-8 h-8 rounded-full bg-gray-200 text-lg font-bold flex items-center justify-center">-</button>
-              <input type="text" class="w-10 text-center rounded border border-gray-300" value="2" readonly />
-              <button class="w-8 h-8 rounded-full bg-gray-200 text-lg font-bold flex items-center justify-center">+</button>
+              <button class="w-8 h-8 rounded-full bg-gray-200 text-lg font-bold flex items-center justify-center" @click="pax > 1 && pax--">-</button>
+              <input type="text" class="w-10 text-center rounded border border-gray-300" :value="pax" readonly />
+              <button class="w-8 h-8 rounded-full bg-gray-200 text-lg font-bold flex items-center justify-center" @click="pax++">+</button>
             </div>
           </div>
           <div class="mb-4">
@@ -49,6 +62,7 @@
           <div class="mb-4">
             <label class="block font-semibold mb-1">Enter voucher code:</label>
             <input
+              v-model="voucherCode"
               type="text"
               class="w-full rounded-xl border-2 border-gray-300 px-4 py-2 focus:border-[#217093] focus:ring-[#217093]"
             />
@@ -61,24 +75,77 @@
             <div class="text-sm mb-2">Starting Date: MM/DD/YY</div>
             <div class="mb-2">
               <div class="flex justify-between">
-                <span>Adult P XXXX x (2)</span>
-                <span>P XXXX</span>
-              </div>
-              <div class="flex justify-between">
-                <span>Senior/Kid P XXXX x (2)</span>
-                <span>P XXXX</span>
+                <span>Regular ₱ {{ selectedPackageData.pax_rate ?? 'XXXX' }}x ({{ pax }})</span>
+                <span>₱ {{ selectedPackageData.pax_rate ? selectedPackageData.pax_rate * pax : 'XXXX' }}</span>
               </div>
             </div>
             <div class="flex justify-between font-bold border-t border-gray-600 pt-2 mt-2">
               <span>Total :</span>
-              <span>P XXXX</span>
+              <span>P {{ selectedPackageData.pax_rate ? selectedPackageData.pax_rate * pax : 'XXXX' }}</span>
             </div>
           </div>
           <div class="flex justify-center">
-            <button class="rounded-xl bg-gray-200 px-8 py-2 text-gray-900 font-semibold hover:bg-gray-300 transition">Confirm</button>
+            <button @click="submitBooking" class="rounded-xl bg-gray-200 px-8 py-2 text-gray-900 font-semibold hover:bg-gray-300 transition">
+              Confirm
+            </button>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<script setup>
+import { ref, onMounted, computed } from 'vue'
+import { api } from '../../../api/api'
+const emit = defineEmits(['close', 'booking-created']) // ← this line
+
+const service = new api();
+const packages = ref([])
+const selectedPackage = ref('')
+const pax = ref(1)
+const customerName = ref('')
+const discountId = ref(null)
+const voucherCode = ref('')
+const totalPrice = computed(() => {
+  const rate = selectedPackageData.value.pax_rate
+  return rate ? rate * pax.value : 0
+})
+
+const selectedPackageData = computed(() => {
+  return packages.value.find(pkg => pkg.id === selectedPackage.value) || {}
+})
+
+const fetchPackages = async () => {
+    try {
+        const response = await service.getPackages();
+        packages.value = response.data.data
+    } catch (error) {
+        console.error('Error fetching packages:', error)
+    }
+}
+
+const submitBooking = async () => {
+  try {
+    const payload = {
+      package_id: selectedPackage.value,
+      customer_name: customerName.value,
+      discount_id: discountId.value,
+      voucher_id: voucherCode.value,
+      total_quantity: pax.value,
+      total_price: totalPrice.value
+    }
+
+    const response = await service.createBooking(payload)
+    emit('booking-created')
+    alert('Booking successfully created!')
+  } catch (error) {
+    console.error('Error creating booking:', error)
+    alert('Failed to create booking.')
+  }
+}
+
+onMounted(() => {
+    fetchPackages()
+})
+</script>

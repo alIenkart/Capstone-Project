@@ -1,24 +1,24 @@
 <script setup>
 import AdminIndex from './AdminIndex.vue'
 import NewEntryModal from '@/Pages/Admin/components/NewEntryModal.vue'
-import { ref } from 'vue'
+import { api } from '../../api/api'
+import { ref, onMounted } from 'vue'
 
 defineOptions({ layout: AdminIndex })
 
+const service = new api();
+const bookings = ref([])
 const showNewEntryModal = ref(false)
 
-const bookingEntries = [
-  {
-    booking_id: 'B10425',
-    package_id: 'P10625',
-    customer_name: 'John Bert',
-    status: 'Approved',
-    total_pax: 10,
-    discount_id: 'Yes',
-    entry_date: '4/18/2025',
-    total_sum: '15,000'
-  }
-]
+const fetchBookings = async () => {
+    try {
+        const response = await service.getBookings();
+        bookings.value = response.data
+    } catch (error) {
+        console.error('Error fetching bookings:', error)
+    }
+}
+
 
 const openNewEntryModal = () => {
   showNewEntryModal.value = true
@@ -26,6 +26,15 @@ const openNewEntryModal = () => {
 const handleNewEntryClose = () => {
   showNewEntryModal.value = false
 }
+
+const handleNewBooking = () => {
+  fetchBookings()
+  showNewEntryModal.value = false
+}
+
+onMounted(() => {
+    fetchBookings()
+})
 </script>
 
 <template>
@@ -70,12 +79,12 @@ const handleNewEntryClose = () => {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="entry in bookingEntries" :key="entry.booking_id + entry.package_id">
-            <td>{{ entry.booking_id }}</td>
+          <tr v-for="entry in bookings" :key="entry.id">
+            <td>{{ entry.id }}</td>
             <td>{{ entry.package_id }}</td>
             <td>{{ entry.customer_name }}</td>
-            <td>{{ entry.status }}</td>
-            <td>{{ entry.total_pax }}</td>
+            <td>{{ entry.status }}</td> 
+            <td>{{ entry.total_quantity }}</td>
             <td>
               <span v-if="entry.discount_id === 'Yes'">
                 <svg class="inline" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -86,8 +95,10 @@ const handleNewEntryClose = () => {
               </span>
               <span v-else>No</span>
             </td>
-            <td>{{ entry.entry_date }}</td>
-            <td>{{ entry.total_sum }}</td>
+            <td>
+              {{ new Date(entry.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) }}
+            </td>
+            <td>{{ entry.total_price }}</td>
             <td>
               <button class="admin-bookings-edit-btn" title="Edit">
                 <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -100,7 +111,11 @@ const handleNewEntryClose = () => {
       </table>
     </div>
     <!-- New Entry Modal -->
-    <NewEntryModal v-if="showNewEntryModal" @close="handleNewEntryClose" />
+    <NewEntryModal
+      v-if="showNewEntryModal"
+      @close="handleNewEntryClose"
+      @booking-created="handleNewBooking"
+    />
   </div>
 </template>
 
