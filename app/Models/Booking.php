@@ -8,7 +8,7 @@ class Booking extends Model
 {
     protected $fillable = [
         'package_id',
-        'customer_id',
+        'customer_name',
         'discount_id',
         'voucher_id',
         'total_quantity',
@@ -19,11 +19,6 @@ class Booking extends Model
     public function package()
     {
         return $this->belongsTo(Packages::class);
-    }
-
-    public function customer()
-    {
-        return $this->belongsTo(User::class, 'customer_id');
     }
 
     public function discount()
