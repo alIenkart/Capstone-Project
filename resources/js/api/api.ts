@@ -14,4 +14,13 @@ export class api {
     createBooking(payload){
         return plainInstance.post("/api/bookings", payload);
     }
+
+    updateBooking(id, payload) {
+        return plainInstance.patch(`/api/bookings/${id}`, payload)
+    }
+
+    //Payment API
+    getPayments() {
+        return plainInstance.get("/api/payments");
+    }
 }

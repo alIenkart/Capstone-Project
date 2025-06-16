@@ -1,21 +1,27 @@
 <script setup>
 import AdminIndex from './AdminIndex.vue'
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { api } from '../../api/api'
 import ApprovalPaymentModal from '@/Pages/Admin/components/ApprovalPaymentModal.vue'
 
 defineOptions({ layout: AdminIndex })
 
-const payments = [
-  {
-    payment_id: 'PY10625',
-    booking_id: 'B10425',
-    customer_name: 'John Bert',
-    payment_entry: '4/18/2025',
-    status: 'Approved',
-    payment_method: 'GCash',
-    under_review: false
-  }
-]
+const service = new api();
+const payments = ref([])
+
+const fetchPayments = async () => {
+    try {
+        const response = await service.getPayments();
+        payments.value = response.data
+        console.log('Payments fetched:', payments.value)
+    } catch (error) {
+        console.error('Error fetching bookings:', error)
+    }
+}
+
+onMounted(() => {
+    fetchPayments()
+})
 
 const showApprovalPaymentModal = ref(false)
 const openApprovalPaymentModal = () => {
@@ -70,9 +76,9 @@ const handleApprovalPaymentClose = () => {
         </thead>
         <tbody>
           <tr v-for="p in payments" :key="p.payment_id">
-            <td>{{ p.payment_id }}</td>
+            <td>{{ p.id }}</td>
             <td>{{ p.booking_id }}</td>
-            <td>{{ p.customer_name }}</td>
+            <td>{{ p.booking?.customer_name || 'N/A' }}</td>
             <td>
               <svg class="inline mr-1" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <rect x="3" y="3" width="18" height="18" rx="3" stroke="#888"/>
@@ -80,7 +86,7 @@ const handleApprovalPaymentClose = () => {
               </svg>
               {{ p.payment_entry }}
             </td>
-            <td>{{ p.status }}</td>
+            <td>{{ p.payment_status }}</td>
             <td>{{ p.payment_method }}</td>
             <td>
               <button class="admin-payment-edit-btn" title="Edit" @click="openApprovalPaymentModal">

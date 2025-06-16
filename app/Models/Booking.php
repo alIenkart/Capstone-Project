@@ -13,6 +13,9 @@ class Booking extends Model
         'voucher_id',
         'total_quantity',
         'total_price',
+        'remarks',
+        'id_type',
+        'status'
     ];
 
     public function package()

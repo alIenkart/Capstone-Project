@@ -14,7 +14,8 @@ return new class extends Migration {
 
             $table->string('customer_name')->after('package_id');
             $table->string('status')->default('Pending')->after('customer_name');
-
+            $table->string('id_type')->nullable()->after('status');
+            $table->text('remarks')->nullable()->after('id_type');
         });
     }
 

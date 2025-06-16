@@ -1,6 +1,7 @@
 <script setup>
 import AdminIndex from './AdminIndex.vue'
 import NewEntryModal from '@/Pages/Admin/components/NewEntryModal.vue'
+import UpdateEntryModal from '@/Pages/Admin/components/UpdateEntryModal.vue'
 import { api } from '../../api/api'
 import { ref, onMounted } from 'vue'
 
@@ -9,6 +10,8 @@ defineOptions({ layout: AdminIndex })
 const service = new api();
 const bookings = ref([])
 const showNewEntryModal = ref(false)
+const updateEntryModal = ref(false)
+const selectedBooking = ref(null)
 
 const fetchBookings = async () => {
     try {
@@ -18,7 +21,6 @@ const fetchBookings = async () => {
         console.error('Error fetching bookings:', error)
     }
 }
-
 
 const openNewEntryModal = () => {
   showNewEntryModal.value = true
@@ -32,9 +34,19 @@ const handleNewBooking = () => {
   showNewEntryModal.value = false
 }
 
+const handleUpdatedBooking = () => {
+  fetchBookings()  
+  updateEntryModal.value = false
+}
+const openUpdateEntryModal = (entry) => {
+  selectedBooking.value = entry
+  updateEntryModal.value = true
+}
+
 onMounted(() => {
     fetchBookings()
 })
+
 </script>
 
 <template>
@@ -100,7 +112,7 @@ onMounted(() => {
             </td>
             <td>{{ entry.total_price }}</td>
             <td>
-              <button class="admin-bookings-edit-btn" title="Edit">
+              <button class="admin-bookings-edit-btn" title="Edit" @click="openUpdateEntryModal(entry)">
                 <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                   <path d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 1 1 2.828 2.828L11.828 15.828a2 2 0 0 1-1.414.586H7v-3a2 2 0 0 1 .586-1.414z"/>
                 </svg>
@@ -116,6 +128,14 @@ onMounted(() => {
       @close="handleNewEntryClose"
       @booking-created="handleNewBooking"
     />
+
+    <UpdateEntryModal 
+      v-if="updateEntryModal"
+      :booking="selectedBooking"
+      @close="updateEntryModal = false"
+      @booking-updated="handleUpdatedBooking"
+    />
+
   </div>
 </template>
 
