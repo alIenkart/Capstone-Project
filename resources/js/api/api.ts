@@ -1,6 +1,15 @@
 import { plainInstance } from './axios-api'
 
 export class api {
+    //User API
+    getUsers() {
+        return plainInstance.get("/api/users");
+    }
+
+    updateUser(id, data) {
+        return plainInstance.patch(`/api/users/${id}`, data);
+    }
+        
     //Packages API
     getPackages() {
         return plainInstance.get("/api/packages");
