@@ -7,6 +7,7 @@ const isActive = (path) => page.url.startsWith(path) ? 'active-admin-link' : ''
 
 const headerTitle = computed(() => {
   if (page.url.startsWith('/admin/admindashboard')) return 'Dashboard'
+  if (page.url.startsWith('/admin/users')) return 'Users'
   if (page.url.startsWith('/admin/packages')) return 'Packages'
   if (page.url.startsWith('/admin/booking-entries')) return 'Booking Entries'
   if (page.url.startsWith('/admin/payment-confirmation')) return 'Payment Confirmation'
@@ -32,6 +33,7 @@ const headerTitle = computed(() => {
       </div>
       <nav class="admin-nav">
         <Link href="/admin/admindashboard" class="admin-link" :class="isActive('/admin/admindashboard')">Dashboard</Link>
+        <Link href="/admin/users" class="admin-link" :class="isActive('/admin/users')">Users</Link>
         <Link href="/admin/packages" class="admin-link" :class="isActive('/admin/packages')">Packages</Link>
         <Link href="/admin/booking-entries" class="admin-link" :class="isActive('/admin/booking-entries')">Booking Entries</Link>
         <Link href="/admin/payment-confirmation" class="admin-link" :class="isActive('/admin/payment-confirmation')">Payment Confirmation</Link>

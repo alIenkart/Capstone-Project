@@ -26,7 +26,8 @@ const submit = () => {
     form.post(route('login'), {
         onFinish: () => form.reset('password'),
         onSuccess: () => {
-            window.location.href = route('home');
+            // Toast Messge here 
+            console.log('Login successful');
         },
     });
 };

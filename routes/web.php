@@ -12,11 +12,9 @@ Route::get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
-});
+})->name('dashboard');
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -24,10 +22,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+// Route::get('/dashboard', function () {
+//     return Inertia::render('Dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
+
 // Home
-    // Route::get('/home', function () {
-    //     return Inertia::render('Landing/Home');
-    // })->name('home');
+    Route::get('/home', function () {
+        return Inertia::render('Landing/Home');
+    })->name('home');
 
 // Destinations
 Route::get('/destination', function () {
@@ -64,9 +66,16 @@ Route::get('/notifications', function () {
     return Inertia::render('Landing/Notifications');
 })->name('notifications');
 
+
 // Admin Dashboard
+Route::middleware(['auth', 'is.admin'])->group(function () {
 Route::get('/admin/admindashboard', function () {
     return Inertia::render('Admin/AdminDashboard');
+})->name('admin.admindashboard');
+
+// Admin Users
+Route::get('/admin/users', function () {
+    return Inertia::render('Admin/UserList');
 })->name('admin.admindashboard');
 
 // Packages
@@ -98,4 +107,6 @@ Route::get('/admin/review-feedback', function () {
 Route::get('/admin/settings', function () {
     return Inertia::render('Admin/Settings');
 })->name('admin.settings');
+});
+
 require __DIR__.'/auth.php';
