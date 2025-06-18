@@ -8,4 +8,5 @@ public/hot
 public_html/storage
 public_html/hot
 .qodo
+storage/logs/laravel.log
 
