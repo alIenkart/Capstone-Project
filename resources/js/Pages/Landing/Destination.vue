@@ -76,14 +76,19 @@ onMounted(() => {
     </div>
 
 
-    <!-- Commented Out
+  
     <div class="destination-list">
       <div class="destination-card">
         <img src="/assets/siargao.jpg" alt="Siargao Island" />
         <div class="destination-meta">₱ XXXX</div>
         <div class="destination-title">Siargao Island, Siargao del Norte</div>
         <div class="destination-days"><span>5 Days</span></div>
-        <button class="view-btn">View Details</button>
+<Link
+  href="/tourdetails"
+  class="mt-2 px-4 py-2 border border-[#ff7f2a] text-[#ff7f2a] rounded-full font-semibold hover:bg-[#ff7f2a] hover:text-white transition text-center block"
+>
+  View Details
+</Link>
       </div>
       <div class="destination-card">
         <img src="/assets/batangas.jpg" alt="Beach Tour, Batangas" />
@@ -142,7 +147,7 @@ onMounted(() => {
         <button class="view-btn">View Details</button>
       </div>
     </div>
-    -->
+
   </section>
 </template>
 <style scoped>

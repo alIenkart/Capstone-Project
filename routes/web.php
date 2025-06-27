@@ -65,7 +65,22 @@ Route::get('/yourbookings', function () {
 Route::get('/notifications', function () {
     return Inertia::render('Landing/Notifications');
 })->name('notifications');
-
+// Tour Details
+Route::get('/tourdetails', function () {
+    return Inertia::render('Landing/Tourdetails');
+})->name('tourdetails');
+// Calendar
+Route::get('/calendar', function () {
+    return Inertia::render('Landing/Calendar');
+})->name('calendar');
+//Select Package
+Route::get('/selectpackage', function () {
+    return Inertia::render('Landing/SelectPackage');
+})->name('selectpackage');
+// Booking Confirmation
+Route::get('/bookingconfirmation', function () {
+    return Inertia::render('Landing/BookingConfirmation');
+})->name('bookingconfirmation');
 
 // Admin Dashboard
 Route::middleware(['auth', 'is.admin'])->group(function () {

@@ -57,7 +57,7 @@ const submit = () => {
                                 v-model="form.email"
                                 required
                                 autocomplete="username"
-                                placeholder="e.g. kurt@gmail.com"
+                                placeholder="e.g. john12@gmail.com"
                             />
                         </div>
                         <InputError class="mt-2" :message="form.errors.email" />
@@ -74,7 +74,7 @@ const submit = () => {
                                 required
                                 autofocus
                                 autocomplete="first_name"
-                                placeholder="e.g. Kurt"
+                                placeholder="e.g. John"
                             />
                             <InputError class="mt-2" :message="form.errors.first_name" />
                         </div>
@@ -87,7 +87,7 @@ const submit = () => {
                                 v-model="form.last_name"
                                 required
                                 autocomplete="last_name"
-                                placeholder="e.g. Manoot"
+                                placeholder="e.g. Cordova"
                             />
                             <InputError class="mt-2" :message="form.errors.last_name" />
                         </div>
