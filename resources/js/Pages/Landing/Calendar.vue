@@ -36,7 +36,7 @@ defineOptions({ layout: LandingIndex })
           <span class="text-sm text-black">Available</span>
         </div>
       </div>
-      <!-- Wider Calendar Placeholder (center, no header) -->
+      <!-- Calendar -->
       <div class="flex-1 flex flex-col items-center">
         <div class="w-full max-w-[1600px]">
           <div
