@@ -58,7 +58,13 @@ function toggleMore() {
       <div class="destination-days">
         <span>5 Days</span>
       </div>
-      <button class="view-btn">View Details</button>
+      <!-- Replace the View Details button with a Link for tourdetails -->
+      <Link
+        href="/tourdetails"
+        class="mt-2 px-4 py-2 border border-[#ff7f2a] text-[#ff7f2a] rounded-full font-semibold hover:bg-[#ff7f2a] hover:text-white transition text-center block"
+      >
+        View Details
+      </Link>
     </div>
     <div class="destination-card">
       <img src="/assets/baguio.jpg" alt="Baguio City" />
@@ -67,7 +73,13 @@ function toggleMore() {
       <div class="destination-days">
         <span>4 Days</span>
       </div>
-      <button class="view-btn">View Details</button>
+      <!-- Replace the View Details button with a Link for tourdetails -->
+      <Link
+        href="/tourdetails"
+        class="mt-2 px-4 py-2 border border-[#ff7f2a] text-[#ff7f2a] rounded-full font-semibold hover:bg-[#ff7f2a] hover:text-white transition text-center block"
+      >
+        View Details
+      </Link>
     </div>
     <div class="destination-card">
       <img src="/assets/panay.jpg" alt="Panay, Capiz" />
@@ -76,7 +88,13 @@ function toggleMore() {
       <div class="destination-days">
         <span>4 Days</span>
       </div>
-      <button class="view-btn">View Details</button>
+      <!-- Replace the View Details button with a Link for tourdetails -->
+      <Link
+        href="/tourdetails"
+        class="mt-2 px-4 py-2 border border-[#ff7f2a] text-[#ff7f2a] rounded-full font-semibold hover:bg-[#ff7f2a] hover:text-white transition text-center block"
+      >
+        View Details
+      </Link>
     </div>
   </div>
 </section>
