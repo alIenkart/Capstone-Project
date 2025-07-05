@@ -1,5 +1,6 @@
 /vendor/
 /storage/
+/bootstrap/
 node_modules/
 .env
 app/storage/
@@ -8,5 +9,4 @@ public/hot
 public_html/storage
 public_html/hot
 .qodo
-storage/logs/laravel.log
-
+/storage/logs/laravel.log
