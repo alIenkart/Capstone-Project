@@ -81,7 +81,7 @@
             </div>
             <div class="flex justify-between font-bold border-t border-gray-600 pt-2 mt-2">
               <span>Total :</span>
-              <span>P {{ selectedPackageData.pax_rate ? selectedPackageData.pax_rate * pax : 'XXXX' }}</span>
+              <span>₱ {{ selectedPackageData.pax_rate ? selectedPackageData.pax_rate * pax : 'XXXX' }}</span>
             </div>
           </div>
           <div class="flex justify-center">

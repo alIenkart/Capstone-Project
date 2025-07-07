@@ -71,6 +71,12 @@ Route::get('/tourdetails/{id}', function ($id) {
         'id' => $id
     ]);
 })->name('tourdetails');
+// Process Booking
+Route::get('/process-booking/{id}', function ($id) {
+    return Inertia::render('Landing/ProcessBooking', [
+        'id' => $id,
+    ]);
+})->name('process-booking');
 // Calendar
 Route::get('/calendar', function () {
     return Inertia::render('Landing/Calendar');

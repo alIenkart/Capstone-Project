@@ -1,6 +1,26 @@
 <script setup>
+import { storeBooking } from '../../state/storeBooking'
+import { ref, onMounted} from 'vue'
 import LandingIndex from './LandingIndex.vue'
 defineOptions({ layout: LandingIndex })
+
+const emit = defineEmits(['next'])
+const booking = storeBooking()
+const startDate = ref('')
+const endDate = ref('')
+
+function postDate() {
+  booking.setCalendar({
+    startDate: startDate.value,
+    endDate: endDate.value,
+  })
+  emit('next')
+}
+
+onMounted(() => {
+  console.log(booking.$state) 
+
+});
 </script>
 <template>
   <div class="w-full min-h-screen flex flex-col items-center bg-[#fcfcfc] py-8">
@@ -43,14 +63,36 @@ defineOptions({ layout: LandingIndex })
             class="w-full bg-white rounded-xl flex items-center justify-center"
             style="height:650px; border-radius: 16px; border: 1px solid #eee;"
           >
-            <span class="text-gray-400 text-2xl"></span>
+            <span class="text-gray-400 text-2xl">
+              // insert calendar
+
+              <div class="flex flex-col md:flex-row gap-4 items-center">
+                <div class="flex flex-col">
+                  <label for="startDate" class="text-[#f28c3a] mb-1 font-semibold">Start Date</label>
+                  <input 
+                    type="date" 
+                    id="startDate"
+                    v-model="startDate"
+                    class="border border-[#f28c3a] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#ff7f2a]"
+                  />
+                </div>
+
+                <div class="flex flex-col">
+                  <label for="endDate" class="text-[#f28c3a] mb-1 font-semibold">End Date</label>
+                  <input 
+                    type="date" 
+                    id="endDate"
+                    v-model="endDate"
+                    class="border border-[#f28c3a] rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#ff7f2a]"
+                  />
+                </div>
+              </div>
+
+            </span>
           </div>
         </div>
-        <!-- Next Button -->
-        <button
-          class="mt-8 mb-0 px-16 py-4 bg-[#f28c3a] text-white font-semibold rounded-xl shadow hover:bg-[#d95f00] transition text-lg"
-          style="min-width:200px;"
-        >
+
+        <button @click="postDate" class="mt-8 mb-0 px-16 py-4 bg-[#f28c3a] text-white font-semibold rounded-xl shadow hover:bg-[#d95f00] transition text-lg" style="min-width:200px;">
           Next
         </button>
       </div>

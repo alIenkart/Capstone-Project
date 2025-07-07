@@ -1,6 +1,63 @@
 <script setup>
 import LandingIndex from './LandingIndex.vue'
+import { api } from '../../api/api'
+import { usePage } from '@inertiajs/vue3';
+import { ref, computed, onMounted } from 'vue'
+import { storeBooking } from '../../state/storeBooking'
+
+
 defineOptions({ layout: LandingIndex })
+
+const emit = defineEmits(['back'])
+const service = new api();
+const page = usePage();
+const user = computed(() => page.props.auth?.user);
+const booking = storeBooking()
+
+const first_name = ref('')
+const last_name = ref('')
+const email = ref('')
+const phone_number = ref('')
+const address  = ref('')
+
+async function postBooking() {
+  booking.setUser({
+    first_name: first_name.value,
+    last_name: last_name.value,
+    email: email.value,
+    phone_number: phone_number.value,
+    address: address.value
+  })
+
+  const payload = {
+    package_id: booking.$state.packageId,
+    customer_name: `${booking.$state.user.first_name} ${booking.$state.user.last_name}`,
+    discount_id: booking.$state.discountId,
+    voucher_id: booking.$state.voucherCode || null,
+    total_quantity: booking.$state.quantity,
+    total_price: booking.$state.amountWithDiscount,
+  }
+
+  try {
+    const response = await service.createBooking(payload)
+    alert('Booking created successfully!');
+    window.location.href = route('destination');
+  } catch (error) {
+    console.error('Error saving booking:', error)
+  }
+}
+
+onMounted(() => {
+  console.log(user.value) 
+  if (user.value) {
+    first_name.value = user.value.first_name
+    last_name.value = user.value.last_name
+    email.value = user.value.email
+    phone_number.value = user.value.phone_number
+    address.value = user.value.address
+  }
+});
+
 </script>
 <template>
   <div class="w-full min-h-screen flex flex-col items-center bg-[#fcfcfc] py-8">
@@ -31,34 +88,41 @@ defineOptions({ layout: LandingIndex })
     <div class="flex flex-row w-full max-w-6xl justify-center gap-8">
       <!-- Left Side: Details Form -->
       <div class="flex-1">
+        <div class="flex justify-start mb-4">
+          <button @click="emit('back')" class="w-24 rounded-full py-2 font-bold text-lg transition bg-[#d95f00] text-white hover:bg-[#b94c00]">
+            Back
+          </button>
+        </div>
         <div class="font-bold text-xl mb-4 text-[#f28c3a]">Details</div>
         <form class="flex flex-col gap-4">
           <div>
             <label class="block text-[#f28c3a] font-semibold mb-1">First Name</label>
-            <input type="text" value="John" class="w-full border-2 border-[#f28c3a] rounded-xl px-4 py-3 bg-white text-[#f28c3a] focus:outline-none focus:ring-2 focus:ring-[#ff7f2a]" />
+            <input type="text" v-model ="first_name" class="w-full border-2 border-[#f28c3a] rounded-xl px-4 py-3 bg-white text-[#f28c3a] focus:outline-none focus:ring-2 focus:ring-[#ff7f2a]" />
           </div>
           <div>
             <label class="block text-[#f28c3a] font-semibold mb-1">Last Name</label>
-            <input type="text" value="Doe" class="w-full border-2 border-[#f28c3a] rounded-xl px-4 py-3 bg-white text-[#f28c3a] focus:outline-none focus:ring-2 focus:ring-[#ff7f2a]" />
+            <input type="text" v-model ="last_name" class="w-full border-2 border-[#f28c3a] rounded-xl px-4 py-3 bg-white text-[#f28c3a] focus:outline-none focus:ring-2 focus:ring-[#ff7f2a]" />
           </div>
           <div>
             <label class="block text-[#f28c3a] font-semibold mb-1">Email</label>
-            <input type="email" value="abcd@gmail.com" class="w-full border-2 border-[#f28c3a] rounded-xl px-4 py-3 bg-white text-[#f28c3a] focus:outline-none focus:ring-2 focus:ring-[#ff7f2a]" />
+            <input type="email" v-model ="email" class="w-full border-2 border-[#f28c3a] rounded-xl px-4 py-3 bg-white text-[#f28c3a] focus:outline-none focus:ring-2 focus:ring-[#ff7f2a]" />
           </div>
           <div>
             <label class="block text-[#f28c3a] font-semibold mb-1">Contact No.</label>
-            <input type="text" value="+63XXXXXXXXXX" class="w-full border-2 border-[#f28c3a] rounded-xl px-4 py-3 bg-white text-[#f28c3a] focus:outline-none focus:ring-2 focus:ring-[#ff7f2a]" />
+            <input type="text" v-model ="phone_number" class="w-full border-2 border-[#f28c3a] rounded-xl px-4 py-3 bg-white text-[#f28c3a] focus:outline-none focus:ring-2 focus:ring-[#ff7f2a]" />
           </div>
           <div>
             <label class="block text-[#f28c3a] font-semibold mb-1">Address</label>
             <input type="text" class="w-full border-2 border-[#f28c3a] rounded-xl px-4 py-3 bg-white text-[#f28c3a] focus:outline-none focus:ring-2 focus:ring-[#ff7f2a]" />
           </div>
+          <!--
           <div>
             <label class="block text-[#f28c3a] font-semibold mb-1">City &amp; Province</label>
             <select class="w-full border-2 border-[#f28c3a] rounded-xl px-4 py-3 bg-white text-[#f28c3a] focus:outline-none focus:ring-2 focus:ring-[#ff7f2a]">
               <option>City &amp; Province</option>
             </select>
-          </div>
+          </div>  
+          -->
           <div class="flex items-center mt-2">
             <input type="checkbox" id="agree" class="accent-[#ff7f2a] mr-2" />
             <label for="agree" class="text-[#f28c3a] text-sm">
@@ -68,6 +132,7 @@ defineOptions({ layout: LandingIndex })
             </label>
           </div>
           <button
+            @click="postBooking"
             type="button"
             class="mt-4 w-48 py-4 bg-[#f28c3a] text-white font-semibold rounded-xl shadow text-lg hover:bg-[#d95f00] transition"
           >
@@ -87,22 +152,22 @@ defineOptions({ layout: LandingIndex })
           <div class="text-white mb-4">
             <div class="mb-1">Travellers</div>
             <div class="flex justify-between">
-              <span>Rate P XXXX x (10)</span>
-              <span>P XXXX</span>
+              <span>Rate P {{ booking.$state.amount }} x ({{ booking.$state.quantity }})</span>
+              <span>P {{ booking.$state.amount }}</span>
             </div>
             <div class="flex justify-between">
               <span>Discount ID</span>
               <span>- 20%</span>
             </div>
-            <div class="flex justify-between font-bold mt-2">
+            <!-- <div class="flex justify-between font-bold mt-2">
               <span>Subtotal:</span>
               <span>P XXXX</span>
-            </div>
+            </div> -->
           </div>
           <hr class="border-[#ffb97a] my-4" />
           <div class="flex justify-between items-center font-bold text-white text-xl mt-4">
             <span>Total :</span>
-            <span>P XXXX</span>
+            <span>P {{ booking.$state.amountWithDiscount }}</span>
           </div>
         </div>
       </div>

@@ -1,6 +1,57 @@
 <script setup>
 import LandingIndex from './LandingIndex.vue'
+import { storeBooking } from '../../state/storeBooking'
+import { computed, ref, onMounted } from 'vue';
+import { usePage } from '@inertiajs/vue3';
+import { api } from '../../api/api';
 defineOptions({ layout: LandingIndex })
+
+const service = new api();
+const emit = defineEmits(['next', 'back'])
+const page = usePage();
+const booking = storeBooking()
+const id = computed(() => page.props.id);
+const selectedPackage = ref({});
+const pax = ref(1);
+const voucher = ref('')
+
+const totalAmount = computed(() => {
+  const amount = selectedPackage.value.pax_rate || 0
+  return amount * pax.value
+})
+
+const totalAmountWithDiscount = computed(() => {
+  const amount = totalAmount.value
+  return amount
+})
+
+function postPackage() {
+  //booking.setPackageType
+  //booking.setDiscountId
+  booking.setPackageId(id.value)
+  booking.setQuantity(pax.value)
+  booking.setAmount(totalAmount.value)
+  booking.setTotalAmountWithDiscount(totalAmountWithDiscount.value)
+  booking.setVoucher(voucher.value)
+  console.log(booking.$state) 
+  emit('next')
+}
+
+const fetchSelectedPackage = async () => {
+  try {
+    const response = await service.getPackage(id.value);
+    selectedPackage.value = response.data.data;
+  } catch (error) {
+    console.error('Error fetching selectedPackage:', error);
+  }
+};
+
+onMounted(() => {
+  fetchSelectedPackage();
+  console.log(booking.$state) 
+});
+
+
 </script>
 <template>
   <div class="w-full min-h-screen flex flex-col items-center bg-[#fcfcfc] py-8">
@@ -25,10 +76,16 @@ defineOptions({ layout: LandingIndex })
         <span class="ml-1 text-[#ff7f2a] font-semibold text-base">Confirmation</span>
       </div>
     </div>
+
     <!-- Main Content -->
     <div class="flex flex-row w-full max-w-6xl justify-center gap-8">
       <!-- Left Side: Package Selection -->
       <div class="flex-1">
+        <div class="flex justify-start mb-4">
+          <button @click="emit('back')" class="w-24 rounded-full py-2 font-bold text-lg transition bg-[#d95f00] text-white hover:bg-[#b94c00]">
+            Back
+          </button>
+        </div>
         <div class="font-bold text-xl mb-4 text-[#f28c3a]">Package Type</div>
         <select class="w-full border-2 border-[#f28c3a] rounded-xl px-4 py-3 mb-6 text-[#f28c3a] bg-white focus:outline-none focus:ring-2 focus:ring-[#ff7f2a]">
           <option>La Union Travel Getaway - 3 Days & 2 Nights</option>
@@ -40,11 +97,11 @@ defineOptions({ layout: LandingIndex })
         </div>
         <div class="w-full flex items-center bg-[#f28c3a] rounded-xl px-6 py-5 mb-6">
           <div class="flex-1 text-white font-medium text-lg">Regular</div>
-          <div class="flex-1 text-white font-medium text-lg text-center">P XXXX</div>
+          <div class="flex-1 text-white font-medium text-lg text-center">₱ {{ selectedPackage.pax_rate }}</div>
           <div class="flex-1 flex items-center justify-end gap-2">
-            <button class="w-8 h-8 rounded-full bg-white text-[#f28c3a] font-bold text-lg flex items-center justify-center border border-[#f28c3a] hover:bg-[#ffe5d0]">-</button>
-            <input type="text" value="10" class="w-14 h-8 rounded-lg text-center border border-[#f28c3a] bg-white text-[#f28c3a] font-semibold" readonly>
-            <button class="w-8 h-8 rounded-full bg-white text-[#f28c3a] font-bold text-lg flex items-center justify-center border border-[#f28c3a] hover:bg-[#ffe5d0]">+</button>
+            <button @click="pax > 1 && pax--" class="w-8 h-8 rounded-full bg-white text-[#f28c3a] font-bold text-lg flex items-center justify-center border border-[#f28c3a] hover:bg-[#ffe5d0]">-</button>
+            <input type="text" :value="pax" class="w-14 h-8 rounded-lg text-center border border-[#f28c3a] bg-white text-[#f28c3a] font-semibold" readonly>
+            <button @click="pax++" class="w-8 h-8 rounded-full bg-white text-[#f28c3a] font-bold text-lg flex items-center justify-center border border-[#f28c3a] hover:bg-[#ffe5d0]">+</button>
           </div>
         </div>
         <div class="mb-4">
@@ -64,7 +121,7 @@ defineOptions({ layout: LandingIndex })
         </div>
         <div class="mb-4">
           <div class="font-medium text-[#f28c3a] mb-2">Enter voucher code:</div>
-          <input type="text" class="w-64 border-2 border-[#f28c3a] rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#ff7f2a] bg-white text-[#f28c3a]" />
+          <input type="text" v-model="voucher" class="w-64 border-2 border-[#f28c3a] rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#ff7f2a] bg-white text-[#f28c3a]" />
         </div>
       </div>
       <!-- Right Side: Summary Card -->
@@ -77,8 +134,8 @@ defineOptions({ layout: LandingIndex })
           <div class="text-white mb-4">
             <div class="mb-1">Travellers</div>
             <div class="flex justify-between">
-              <span>Rate P XXXX x (10)</span>
-              <span>P XXXX</span>
+              <span>Rate ₱ {{ selectedPackage.pax_rate }} x ({{ pax }})</span>
+              <span>₱ {{ totalAmount }}</span>
             </div>
             <div class="flex justify-between">
               <span>Discount ID</span>
@@ -87,11 +144,11 @@ defineOptions({ layout: LandingIndex })
           </div>
           <div class="flex justify-between items-center font-bold text-white text-lg mt-4">
             <span>Total :</span>
-            <span>P XXXX</span>
+              <span>₱ {{ totalAmountWithDiscount }}</span>
           </div>
           <hr class="border-[#ffb97a] my-4" />
         </div>
-        <button class="w-full rounded-full py-3 font-bold text-lg transition bg-[#d95f00] text-white hover:bg-[#b94c00] mt-2">
+        <button @click=postPackage class="w-full rounded-full py-3 font-bold text-lg transition bg-[#d95f00] text-white hover:bg-[#b94c00] mt-2">
           Proceed
         </button>
       </div>
