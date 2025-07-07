@@ -15,6 +15,10 @@ export class api {
         return plainInstance.get("/api/packages");
     }
 
+    getPackage(id) {
+        return plainInstance.get(`/api/packages/${id}`);
+    }
+    
     //Booking API
     getBookings(){
         return plainInstance.get("/api/bookings");

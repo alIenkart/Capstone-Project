@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import LandingIndex from './LandingIndex.vue'
 import axios from 'axios'
 import { api } from '../../api/api'
+import { Link } from '@inertiajs/vue3'
 
 defineOptions({ layout: LandingIndex })
 
@@ -27,7 +28,6 @@ const fetchPackages = async () => {
     }
 }
 
-// Fetch packages when the component is mounted
 onMounted(() => {
     fetchPackages()
 })
@@ -71,83 +71,12 @@ onMounted(() => {
         <div class="destination-days">
           <span>{{ pkg.tour_duration   }} Days</span>
         </div>
-        <button class="view-btn">View Details</button>
+          <Link :href="route('tourdetails', { id: pkg.id })"
+            class="mt-2 px-4 py-2 border border-[#ff7f2a] text-[#ff7f2a] rounded-full font-semibold hover:bg-[#ff7f2a] hover:text-white transition text-center block">
+            View Details
+          </Link>
       </div>
     </div>
-
-
-  
-    <div class="destination-list">
-      <div class="destination-card">
-        <img src="/assets/siargao.jpg" alt="Siargao Island" />
-        <div class="destination-meta">₱ XXXX</div>
-        <div class="destination-title">Siargao Island, Siargao del Norte</div>
-        <div class="destination-days"><span>5 Days</span></div>
-<Link
-  href="/tourdetails"
-  class="mt-2 px-4 py-2 border border-[#ff7f2a] text-[#ff7f2a] rounded-full font-semibold hover:bg-[#ff7f2a] hover:text-white transition text-center block"
->
-  View Details
-</Link>
-      </div>
-      <div class="destination-card">
-        <img src="/assets/batangas.jpg" alt="Beach Tour, Batangas" />
-        <div class="destination-meta">₱ XXXX</div>
-        <div class="destination-title">Beach Tour, Batangas</div>
-        <div class="destination-days"><span>5 Days</span></div>
-        <button class="view-btn">View Details</button>
-      </div>
-      <div class="destination-card">
-        <img src="/assets/mariveles.jpg" alt="Mariveles, Bataan" />
-        <div class="destination-meta">₱ XXXX</div>
-        <div class="destination-title">Mariveles, Bataan</div>
-        <div class="destination-days"><span>5 Days</span></div>
-        <button class="view-btn">View Details</button>
-      </div>
-            <div class="destination-card">
-        <img src="/assets/siargao.jpg" alt="Siargao Island" />
-        <div class="destination-meta">₱ XXXX</div>
-        <div class="destination-title">Siargao Island, Siargao del Norte</div>
-        <div class="destination-days"><span>5 Days</span></div>
-        <button class="view-btn">View Details</button>
-      </div>
-      <div class="destination-card">
-        <img src="/assets/batangas.jpg" alt="Beach Tour, Batangas" />
-        <div class="destination-meta">₱ XXXX</div>
-        <div class="destination-title">Beach Tour, Batangas</div>
-        <div class="destination-days"><span>5 Days</span></div>
-        <button class="view-btn">View Details</button>
-      </div>
-      <div class="destination-card">
-        <img src="/assets/mariveles.jpg" alt="Mariveles, Bataan" />
-        <div class="destination-meta">₱ XXXX</div>
-        <div class="destination-title">Mariveles, Bataan</div>
-        <div class="destination-days"><span>5 Days</span></div>
-        <button class="view-btn">View Details</button>
-      </div>
-            <div class="destination-card">
-        <img src="/assets/siargao.jpg" alt="Siargao Island" />
-        <div class="destination-meta">₱ XXXX</div>
-        <div class="destination-title">Siargao Island, Siargao del Norte</div>
-        <div class="destination-days"><span>5 Days</span></div>
-        <button class="view-btn">View Details</button>
-      </div>
-      <div class="destination-card">
-        <img src="/assets/batangas.jpg" alt="Beach Tour, Batangas" />
-        <div class="destination-meta">₱ XXXX</div>
-        <div class="destination-title">Beach Tour, Batangas</div>
-        <div class="destination-days"><span>5 Days</span></div>
-        <button class="view-btn">View Details</button>
-      </div>
-      <div class="destination-card">
-        <img src="/assets/mariveles.jpg" alt="Mariveles, Bataan" />
-        <div class="destination-meta">₱ XXXX</div>
-        <div class="destination-title">Mariveles, Bataan</div>
-        <div class="destination-days"><span>5 Days</span></div>
-        <button class="view-btn">View Details</button>
-      </div>
-    </div>
-
   </section>
 </template>
 <style scoped>

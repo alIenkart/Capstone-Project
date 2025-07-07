@@ -66,8 +66,10 @@ Route::get('/notifications', function () {
     return Inertia::render('Landing/Notifications');
 })->name('notifications');
 // Tour Details
-Route::get('/tourdetails', function () {
-    return Inertia::render('Landing/Tourdetails');
+Route::get('/tourdetails/{id}', function ($id) {
+    return Inertia::render('Landing/Tourdetails', [
+        'id' => $id
+    ]);
 })->name('tourdetails');
 // Calendar
 Route::get('/calendar', function () {

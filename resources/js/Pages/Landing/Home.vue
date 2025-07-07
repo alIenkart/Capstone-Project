@@ -1,14 +1,31 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted} from 'vue'
 import { Link } from '@inertiajs/vue3'
+import { api } from '../../api/api';
 import LandingIndex from './LandingIndex.vue'
+
 defineOptions({ layout: LandingIndex })
 
+const service = new api();
 const showMore = ref(false)
+const packages = ref([])
+
+const fetchPackages = async () => {
+    try {
+        const response = await service.getPackages();
+        packages.value = response.data.data
+    } catch (error) {
+        console.error('Error fetching packages:', error)
+    }
+}
 
 function toggleMore() {
   showMore.value = !showMore.value
 }
+
+onMounted(() => {
+  fetchPackages();
+});
 </script>
 
 <template>
@@ -32,73 +49,41 @@ function toggleMore() {
     </section>
 
     <!-- Welcome Section -->
-<section class="home-section">
-  <div class="home-section-title">WELCOME TO JE TRAVEL & TOURS!</div>
-  <div class="home-section-desc">
-    <span>
-      Planning a trips? JE Travel & Tours is here to provide you a wide range of tour and guidance towards a meaningful and memorable travel. The agency is specialized in creating seamless travel experiences and is
-      <span v-if="showMore">
-         dedicated to providing clear and reliable service to make your journey enjoyable and stress free. Let the team help you to plan your next journey! Book now!
+  <section class="home-section">
+    <div class="home-section-title">WELCOME TO JE TRAVEL & TOURS!</div>
+    <div class="home-section-desc">
+      <span>
+        Planning a trips? JE Travel & Tours is here to provide you a wide range of tour and guidance towards a meaningful and memorable travel. The agency is specialized in creating seamless travel experiences and is
+        <span v-if="showMore">
+          dedicated to providing clear and reliable service to make your journey enjoyable and stress free. Let the team help you to plan your next journey! Book now!
+        </span>
       </span>
-    </span>
-  </div>
-  <button class="view-btn" @click="toggleMore">
-    {{ showMore ? 'See less' : 'See more' }}
-  </button>
-</section>
+    </div>
+    <button class="view-btn" @click="toggleMore">
+      {{ showMore ? 'See less' : 'See more' }}
+    </button>
+  </section>
 
     <!-- Destinations Section -->
-<section class="home-section">
-  <div class="home-section-title">Exclusive Destination</div>
-  <div class="destinations-row">
-    <div class="destination-card">
-      <img src="/assets/launion.jpg" alt="La Union" />
-      <div class="destination-meta">₱ XXXX</div>
-      <div class="destination-title">La Union</div>
-      <div class="destination-days">
-        <span>5 Days</span>
+  <section class="home-section">
+    <div class="home-section-title">Exclusive Destination</div>
+    <div class="destinations-row">
+        <div class="destination-card"
+          v-for="pkg in packages" :key="pkg.id">
+        <img src="/assets/launion.jpg" :alt="pkg.destination" />
+        <div class="destination-meta">₱ {{ pkg.pax_rate }}</div>
+        <div class="destination-title">{{ pkg.destination }}</div>
+        <div class="destination-days">
+          <span>{{ pkg.tour_duration }} Days</span>
+        </div>
+        <Link :href="route('tourdetails', { id: pkg.id })"
+          class="mt-2 px-4 py-2 border border-[#ff7f2a] text-[#ff7f2a] rounded-full font-semibold hover:bg-[#ff7f2a] hover:text-white transition text-center block">
+          View Details
+        </Link>
       </div>
-      <!-- Replace the View Details button with a Link for tourdetails -->
-      <Link
-        href="/tourdetails"
-        class="mt-2 px-4 py-2 border border-[#ff7f2a] text-[#ff7f2a] rounded-full font-semibold hover:bg-[#ff7f2a] hover:text-white transition text-center block"
-      >
-        View Details
-      </Link>
     </div>
-    <div class="destination-card">
-      <img src="/assets/baguio.jpg" alt="Baguio City" />
-      <div class="destination-meta">₱ XXXX</div>
-      <div class="destination-title">Baguio City</div>
-      <div class="destination-days">
-        <span>4 Days</span>
-      </div>
-      <!-- Replace the View Details button with a Link for tourdetails -->
-      <Link
-        href="/tourdetails"
-        class="mt-2 px-4 py-2 border border-[#ff7f2a] text-[#ff7f2a] rounded-full font-semibold hover:bg-[#ff7f2a] hover:text-white transition text-center block"
-      >
-        View Details
-      </Link>
-    </div>
-    <div class="destination-card">
-      <img src="/assets/panay.jpg" alt="Panay, Capiz" />
-      <div class="destination-meta">₱ XXXX</div>
-      <div class="destination-title">Panay, Capiz</div>
-      <div class="destination-days">
-        <span>4 Days</span>
-      </div>
-      <!-- Replace the View Details button with a Link for tourdetails -->
-      <Link
-        href="/tourdetails"
-        class="mt-2 px-4 py-2 border border-[#ff7f2a] text-[#ff7f2a] rounded-full font-semibold hover:bg-[#ff7f2a] hover:text-white transition text-center block"
-      >
-        View Details
-      </Link>
-    </div>
-  </div>
-</section>
-  </div>
+  </section>
+</div>
 </template>
 
 <style scoped>
