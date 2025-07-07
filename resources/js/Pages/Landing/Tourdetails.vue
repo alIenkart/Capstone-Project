@@ -111,9 +111,8 @@ onMounted(() => {
           <div v-if="activeTab === 'terms'" class="mb-8">
             <h3 class="font-bold text-[#ff7f2a] mb-2">Terms & Conditions</h3>
             <div class="text-base text-gray-800">
-              {{ selectedPackage.terms_condition }}
-
-              <!-- <p>
+              <!-- {{ selectedPackage.terms_condition }} -->
+              <p>
                 These Terms and Conditions govern the use of services provided by Traveller Laguna. By confirming booking with our agency, customers must consider the terms outlined below.
               </p>
               <ol class="list-decimal ml-6 mt-2">
@@ -131,7 +130,7 @@ onMounted(() => {
                   <b>Changes and Amendments:</b>
                   Traveller Laguna reserves the right to modify itineraries due to unforeseen circumstances. Clients will be notified of any changes, and reasonable alternatives will be provided. Additionally, any request for changes by the client after booking may incur additional charges.
                 </li>
-              </ol> -->
+              </ol>
             </div>
           </div>
 
@@ -167,12 +166,14 @@ onMounted(() => {
                 </span>
               </div>
               <hr class="border-[#e6a86c] my-4" />
-              <button
-                class="w-full rounded-xl py-3 font-bold text-lg transition"
+              <Link
+                  v-if="selectedPackage.id"
+  :href="route('process-booking', selectedPackage.id)"
+                class="w-full rounded-xl py-3 font-bold text-lg transition text-center"
                 style="background:#d95f00; color:white;"
               >
                 BOOK NOW!
-              </button>
+              </Link>
             </div>
           </div>
 
