@@ -98,8 +98,10 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { api } from '../../../api/api'
-const emit = defineEmits(['close', 'booking-created']) // ← this line
+import { useToast } from 'vue-toastification'
 
+const emit = defineEmits(['close', 'booking-created']) // ← this line
+const toast = useToast();
 const service = new api();
 const packages = ref([])
 const selectedPackage = ref('')
@@ -138,7 +140,7 @@ const submitBooking = async () => {
 
     const response = await service.createBooking(payload)
     emit('booking-created')
-    alert('Booking successfully created!')
+    toast.success('Booking successfully created!')
   } catch (error) {
     console.error('Error creating booking:', error)
     alert('Failed to create booking.')

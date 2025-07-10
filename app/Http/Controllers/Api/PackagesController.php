@@ -24,12 +24,16 @@ class PackagesController extends Controller
      */
     public function store(Request $request)
     {
+        // Convert joint_booking to boolean if sent as string
+        $request->merge([
+            'joint_booking' => filter_var($request->input('joint_booking'), FILTER_VALIDATE_BOOLEAN)
+        ]);
+
         $validator = Validator::make($request->all(), [
             'package_name' => 'required|string|max:255',
             'destination' => 'required|string|max:255',
             'description' => 'required|string',
             'tour_duration' => 'required|string|max:255',
-            'image_path' => 'required|string|max:2048',
             'itinerary' => 'required|string',
             'terms_condition' => 'required|string',
             'exclusions' => 'required|string',
@@ -38,6 +42,7 @@ class PackagesController extends Controller
             'status' => 'required|in:active,inactive',
             'pax_rate' => 'required|numeric|min:0',
             'discounted_rate' => 'required|numeric|min:0',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -46,9 +51,12 @@ class PackagesController extends Controller
 
         $data = $request->all();
 
-        // Set a default image path if none is provided
-        if (!isset($data['image_path'])) {
-            $data['image_path'] = 'default.jpg';  // or any default image path you want
+        // Handle image upload
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('packages', 'public');
+            $data['image_path'] = $imagePath;
+        } else {
+            $data['image_path'] = 'default.jpg'; // or your default image path
         }
 
         $package = Packages::create($data);
@@ -72,12 +80,16 @@ class PackagesController extends Controller
     {
         $package = Packages::findOrFail($id);
 
+        // Convert joint_booking to boolean if sent as string
+        $request->merge([
+            'joint_booking' => filter_var($request->input('joint_booking'), FILTER_VALIDATE_BOOLEAN)
+        ]);
+
         $validator = Validator::make($request->all(), [
             'package_name' => 'sometimes|required|string|max:255',
             'destination' => 'sometimes|required|string|max:255',
             'description' => 'sometimes|required|string',
             'tour_duration' => 'sometimes|required|string|max:255',
-            'image_path' => 'sometimes|required|string|max:2048',
             'itinerary' => 'sometimes|required|string',
             'terms_condition' => 'sometimes|required|string',
             'exclusions' => 'sometimes|required|string',
@@ -86,6 +98,7 @@ class PackagesController extends Controller
             'status' => 'sometimes|required|in:active,inactive',
             'pax_rate' => 'sometimes|required|numeric|min:0',
             'discounted_rate' => 'sometimes|required|numeric|min:0',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -94,13 +107,12 @@ class PackagesController extends Controller
 
         $data = $request->all();
 
-        if ($request->hasFile('image_path')) {
-            // Delete old image if exists
-            if ($package->image_path) {
+        if ($request->hasFile('image')) {
+            // Delete old image if exists and not default
+            if ($package->image_path && $package->image_path !== 'default.jpg') {
                 Storage::disk('public')->delete($package->image_path);
             }
-            
-            $image = $request->file('image_path');
+            $image = $request->file('image');
             $imagePath = $image->store('packages', 'public');
             $data['image_path'] = $imagePath;
         }

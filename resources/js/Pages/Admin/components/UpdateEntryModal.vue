@@ -89,7 +89,9 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { api } from '@/api/api'
+import { useToast } from 'vue-toastification'
 
+const toast = useToast();
 const props = defineProps({ booking: Object })
 const emit = defineEmits(['close', 'booking-updated'])
 const service = new api()
@@ -130,7 +132,7 @@ const submitStatus = async (statusValue) => {
       id_type: form.value.id_type,
       remarks: form.value.remarks
     })
-    alert(`Booking ${statusValue}!`)
+    toast.success(`Booking ${statusValue}!`)
     emit('booking-updated')
     emit('close')
   } catch (error) {

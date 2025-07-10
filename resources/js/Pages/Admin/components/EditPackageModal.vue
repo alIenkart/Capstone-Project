@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue';
 import axios from 'axios';
+import { useToast } from 'vue-toastification'
 
 const props = defineProps({
     show: {
@@ -12,7 +13,7 @@ const props = defineProps({
         default: null,
     },
 });
-
+const toast = useToast();
 const emit = defineEmits(['close', 'saved']);
 
 const formData = ref({
@@ -33,6 +34,7 @@ const formData = ref({
 });
 
 const showDeleteConfirmationModal = ref(false); // Reactive variable for delete confirmation modal
+const imagePreview = ref(null);
 
 // Watch for changes in show and packageId props to fetch package data when modal opens with an ID
 watch([() => props.show, () => props.packageId], ([newShow, newPackageId]) => {
@@ -65,7 +67,12 @@ const fetchPackage = async (id) => {
             pax_rate: packageData.pax_rate || 0,
             discounted_rate: packageData.discounted_rate || 0,
         };
-         console.log("Fetched package data:", formData.value);
+        // Set image preview to current image
+        if (formData.value.image_path) {
+            imagePreview.value = `/storage/${formData.value.image_path}`;
+        } else {
+            imagePreview.value = null;
+        }
     } catch (error) {
         console.error('Error fetching package:', error);
         // Optionally show an error message to the user
@@ -79,20 +86,50 @@ const closeModal = () => {
 };
 
 const updatePackage = async () => {
-    console.log('Attempting to update package with data:', formData.value);
     try {
-        const payload = {
-            ...formData.value,
-            joint_booking: Boolean(formData.value.joint_booking), // Ensure boolean
-             capacity: parseInt(formData.value.capacity) || 0, // Ensure integer
-             pax_rate: parseFloat(formData.value.pax_rate) || 0, // Ensure float
-             discounted_rate: parseFloat(formData.value.discounted_rate) || 0, // Ensure float
-        };
+        let response;
+        if (formData.value.image) {
+            // If a new image is selected, use FormData
+            const data = new FormData();
+            data.append('package_name', formData.value.package_name);
+            data.append('destination', formData.value.destination);
+            data.append('description', formData.value.description);
+            data.append('tour_duration', formData.value.tour_duration);
+            data.append('itinerary', formData.value.itinerary);
+            data.append('terms_condition', formData.value.terms_condition);
+            data.append('exclusions', formData.value.exclusions);
+            data.append('capacity', parseInt(formData.value.capacity) || 0);
+            data.append('joint_booking', formData.value.joint_booking ? 'true' : 'false');
+            data.append('status', formData.value.status.toLowerCase());
+            data.append('pax_rate', parseFloat(formData.value.pax_rate) || 0);
+            data.append('discounted_rate', parseFloat(formData.value.discounted_rate) || 0);
+            data.append('image', formData.value.image);
 
-        const response = await axios.put(`/api/packages/${formData.value.id}`, payload);
-        console.log('Package updated successfully:', response.data);
-        alert('Package updated successfully!');
-        emit('saved', response.data.data); // Emit updated package data
+            response = await axios.post(`/api/packages/${formData.value.id}?_method=PUT`, data, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+        } else {
+            // No new image, send JSON
+            const payload = {
+                package_name: formData.value.package_name,
+                destination: formData.value.destination,
+                description: formData.value.description,
+                tour_duration: formData.value.tour_duration,
+                itinerary: formData.value.itinerary,
+                terms_condition: formData.value.terms_condition,
+                exclusions: formData.value.exclusions,
+                capacity: parseInt(formData.value.capacity) || 0,
+                joint_booking: !!formData.value.joint_booking,
+                status: formData.value.status.toLowerCase(),
+                pax_rate: parseFloat(formData.value.pax_rate) || 0,
+                discounted_rate: parseFloat(formData.value.discounted_rate) || 0,
+            };
+            response = await axios.put(`/api/packages/${formData.value.id}`, payload);
+        }
+        toast.success('Package updated successfully!');
+        emit('saved', response.data.data);
         closeModal();
     } catch (error) {
         console.error('Error updating package:', error.response ? error.response.data : error);
@@ -129,9 +166,15 @@ const resetForm = () => {
 
 // TODO: Implement image upload handling if necessary
 const handleImageUpload = (event) => {
-    // This will likely require FormData for sending file + other data
-    console.log('Image selected:', event.target.files[0]);
-    // formData.value.image = event.target.files[0]; // Store the file object
+    const file = event.target.files[0];
+    formData.value.image = file;
+    if (file) {
+        imagePreview.value = URL.createObjectURL(file);
+    } else if (formData.value.image_path) {
+        imagePreview.value = `/storage/${formData.value.image_path}`;
+    } else {
+        imagePreview.value = null;
+    }
 };
 
 const showDeleteConfirmation = () => {
@@ -192,10 +235,16 @@ const confirmDelete = async () => {
                                 <!-- Image Upload/Display Placeholder -->
                                 <div class="flex items-center justify-center border-2 border-dashed border-gray-400 rounded-xl bg-gray-50 p-6 text-gray-500 cursor-pointer hover:text-[#217093] hover:border-[#217093]">
                                     <label for="imageUpload" class="flex flex-col items-center justify-center w-full h-full cursor-pointer">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16l5-5m0 0l5 5m-5-5v10m7-10l5-5m0 0l5 5m-5-5v10M3 19h18a2 2 0 002-2V7a2 2 0 00-2-2H3a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                        </svg>
-                                        <span class="text-sm">{{ formData.image_path ? 'Change Image' : 'Add Image Here' }}</span>
+                                        <template v-if="imagePreview">
+                                            <img :src="imagePreview" alt="Preview" class="w-32 h-32 object-cover rounded-xl mb-2" />
+                                            <span class="text-xs text-gray-400">Click to change</span>
+                                        </template>
+                                        <template v-else>
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16l5-5m0 0l5 5m-5-5v10m7-10l5-5m0 0l5 5m-5-5v10M3 19h18a2 2 0 002-2V7a2 2 0 00-2-2H3a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                            </svg>
+                                            <span class="text-sm">Add Image Here</span>
+                                        </template>
                                         <input type="file" id="imageUpload" class="hidden" @change="handleImageUpload" />
                                     </label>
                                 </div>

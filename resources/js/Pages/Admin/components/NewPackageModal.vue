@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch } from 'vue'
 import axios from 'axios'
+import { useToast } from 'vue-toastification'
 
 const props = defineProps({
     show: {
@@ -8,7 +9,7 @@ const props = defineProps({
         required: true
     }
 })
-
+const toast = useToast();
 const emit = defineEmits(['close', 'save'])
 
 const formData = ref({
@@ -26,6 +27,8 @@ const formData = ref({
     status: 'Active', // Default value based on screenshot
     discountedRate: ''
 })
+
+const imagePreview = ref(null)
 
 // Reset form when modal is shown
 watch(() => props.show, (newValue) => {
@@ -45,6 +48,7 @@ watch(() => props.show, (newValue) => {
             status: 'Active',
             discountedRate: ''
         }
+        imagePreview.value = null // Reset image preview when modal is shown
     }
 })
 
@@ -59,48 +63,54 @@ const savePackage = async () => {
         return
     }
 
-    // TODO: Handle image upload properly. For now, sending null or a default.
-    const payload = {
-        package_name: formData.value.name,
-        tour_duration: formData.value.duration ? formData.value.duration.toString() : '0', // Default to '0' if empty, API expects string
-        destination: formData.value.destination,
-        description: formData.value.description,
-        itinerary: formData.value.itinerary,
-        terms_condition: formData.value.termsCondition || '', // Send empty string if empty, API expects string
-        exclusions: formData.value.exclusions || '', // Send empty string if empty, API expects string
-        capacity: formData.value.maxOccupancy ? parseInt(formData.value.maxOccupancy) : 0, // Default to 0 if empty, API expects integer min 1 (will still fail if 0, but better than null)
-        joint_booking: formData.value.bookingType === 'Shared', // API expects boolean (true/false)
-        status: formData.value.status.toLowerCase(), // API expects lowercase
-        pax_rate: formData.value.basePrice ? parseFloat(formData.value.basePrice) : 0, // Default to 0 if empty, API expects numeric min 0
-        discounted_rate: formData.value.discountedRate ? parseFloat(formData.value.discountedRate) : 0, // Default to 0 if empty, API expects numeric min 0
-        image_path: 'default.jpg' // Temporary: send a default image path, API expects required string
+    const data = new FormData();
+    if (formData.value.image) {
+        data.append('image', formData.value.image);
     }
+    data.append('package_name', formData.value.name);
+    data.append('tour_duration', formData.value.duration ? formData.value.duration.toString() : '0');
+    data.append('destination', formData.value.destination);
+    data.append('description', formData.value.description || '');
+    data.append('itinerary', formData.value.itinerary || '');
+    data.append('terms_condition', formData.value.termsCondition || '');
+    data.append('exclusions', formData.value.exclusions || '');
+    data.append('capacity', formData.value.maxOccupancy ? parseInt(formData.value.maxOccupancy) : 0);
+    data.append('joint_booking', formData.value.bookingType === 'Shared' ? 'true' : 'false'); // send as string
+    data.append('status', formData.value.status.toLowerCase());
+    data.append('pax_rate', formData.value.basePrice ? parseFloat(formData.value.basePrice) : 0);
+    data.append('discounted_rate', formData.value.discountedRate ? parseFloat(formData.value.discountedRate) : 0);
 
     try {
-        const response = await axios.post('/api/packages', payload)
-        console.log('Package created successfully:', response.data)
-        alert('Package created successfully!')
-        emit('save', response.data.data) // Emit saved package data
-        closeModal()
-    } catch (error) {
-        console.error('Error creating package:', error.response.data)
-        // Display specific validation errors if available
-        if (error.response && error.response.data && error.response.data.errors) {
-            let errorMessages = 'Validation Errors:\n'
-            for (const field in error.response.data.errors) {
-                errorMessages += `- ${field}: ${error.response.data.errors[field].join(', ')}\n`
+        const response = await axios.post('/api/packages', data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
             }
-            alert('Error creating package:\n' + errorMessages)
+        });
+        toast.success('Package created successfully!');
+        emit('save', response.data.data);
+        closeModal();
+    } catch (error) {
+        console.error('Error creating package:', error.response?.data || error);
+        if (error.response && error.response.data && error.response.data.errors) {
+            let errorMessages = 'Validation Errors:\n';
+            for (const field in error.response.data.errors) {
+                errorMessages += `- ${field}: ${error.response.data.errors[field].join(', ')}\n`;
+            }
+            alert('Error creating package:\n' + errorMessages);
         } else {
-            alert('Error creating package. Please check the console for details.')
+            alert('Error creating package. Please check the console for details.');
         }
     }
 }
 
 const handleImageUpload = (event) => {
-    // TODO: Implement image upload logic to send the image file with the form data
-    formData.value.image = event.target.files[0]
-    console.log('Image selected:', formData.value.image)
+    const file = event.target.files[0]
+    formData.value.image = file
+    if (file) {
+        imagePreview.value = URL.createObjectURL(file)
+    } else {
+        imagePreview.value = null
+    }
 }
 </script>
 
@@ -138,10 +148,16 @@ const handleImageUpload = (event) => {
                                 <!-- Image Upload Placeholder -->
                                 <div class="flex items-center justify-center border-2 border-dashed border-gray-400 rounded-xl bg-gray-50 p-6 text-gray-500 cursor-pointer hover:text-[#217093] hover:border-[#217093]">
                                     <label for="imageUpload" class="flex flex-col items-center justify-center w-full h-full cursor-pointer">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16l5-5m0 0l5 5m-5-5v10m7-10l5-5m0 0l5 5m-5-5v10M3 19h18a2 2 0 002-2V7a2 2 0 00-2-2H3a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                        </svg>
-                                        <span class="text-sm">Add Image Here</span>
+                                        <template v-if="imagePreview">
+                                            <img :src="imagePreview" alt="Preview" class="w-32 h-32 object-cover rounded-xl mb-2" />
+                                            <span class="text-xs text-gray-400">Click to change</span>
+                                        </template>
+                                        <template v-else>
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16l5-5m0 0l5 5m-5-5v10m7-10l5-5m0 0l5 5m-5-5v10M3 19h18a2 2 0 002-2V7a2 2 0 00-2-2H3a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                            </svg>
+                                            <span class="text-sm">Add Image Here</span>
+                                        </template>
                                         <input type="file" id="imageUpload" class="hidden" @change="handleImageUpload" />
                                     </label>
                                 </div>
@@ -238,7 +254,7 @@ const handleImageUpload = (event) => {
                             </div>
 
                             <div>
-                                <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+                                <label for="description" class="block text-sm font-medium text-gray-700">Description*</label>
                                 <textarea
                                     id="description"
                                     v-model="formData.description"
@@ -249,7 +265,7 @@ const handleImageUpload = (event) => {
                             </div>
 
                             <div>
-                                <label for="itinerary" class="block text-sm font-medium text-gray-700">Itinerary</label>
+                                <label for="itinerary" class="block text-sm font-medium text-gray-700">Itinerary*</label>
                                 <textarea
                                     id="itinerary"
                                     v-model="formData.itinerary"
@@ -259,7 +275,7 @@ const handleImageUpload = (event) => {
                             </div>
 
                             <div>
-                                <label for="termsCondition" class="block text-sm font-medium text-gray-700">Terms & Condition</label>
+                                <label for="termsCondition" class="block text-sm font-medium text-gray-700">Terms & Condition*</label>
                                 <textarea
                                     id="termsCondition"
                                     v-model="formData.termsCondition"
@@ -269,7 +285,7 @@ const handleImageUpload = (event) => {
                             </div>
 
                             <div>
-                                <label for="exclusions" class="block text-sm font-medium text-gray-700">Exclusions</label>
+                                <label for="exclusions" class="block text-sm font-medium text-gray-700">Exclusions*</label>
                                 <textarea
                                     id="exclusions"
                                     v-model="formData.exclusions"

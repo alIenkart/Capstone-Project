@@ -43,12 +43,13 @@
 <script setup>
 import { ref } from 'vue'
 import { api } from '../../../api/api'
+import { useToast } from 'vue-toastification'
 
 const props = defineProps({
   user: Object,
   show: Boolean
 })
-
+const toast = useToast();
 const emit = defineEmits(['close', 'updated'])
 
 const service = new api()
@@ -62,7 +63,7 @@ const updateRole = async () => {
     await service.updateUser(props.user.id, {
     role: form.value.role
     })
-    alert('User role updated successfully.')
+    toast.success('User role updated successfully!')
     emit('updated')
     emit('close')
   } catch (error) {

@@ -1,0 +1,1 @@
+import t from"./LandingIndex-GyiU-V29.js";import{c as a,o as c}from"./app-CxYSaNW7.js";const _=Object.assign({layout:t},{__name:"Contactus",setup(e){return(o,s)=>(c(),a("h1",null,"This is contact us page"))}});export{_ as default};
