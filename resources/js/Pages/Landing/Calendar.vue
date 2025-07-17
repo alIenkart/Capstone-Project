@@ -2,14 +2,21 @@
 import { storeBooking } from '../../state/storeBooking'
 import { ref, onMounted} from 'vue'
 import LandingIndex from './LandingIndex.vue'
+import { useToast } from 'vue-toastification'
 defineOptions({ layout: LandingIndex })
 
 const emit = defineEmits(['next'])
 const booking = storeBooking()
 const startDate = ref('')
 const endDate = ref('')
+const toast = useToast();
 
 function postDate() {
+  if (!startDate.value || !endDate.value) {
+    toast.warning('Please select both start and end dates before continuing.')
+    return
+  }
+
   booking.setCalendar({
     startDate: startDate.value,
     endDate: endDate.value,
@@ -19,6 +26,8 @@ function postDate() {
 
 onMounted(() => {
   console.log(booking.$state) 
+  startDate.value = booking.startDate || ''
+  endDate.value = booking.endDate || ''
 
 });
 </script>

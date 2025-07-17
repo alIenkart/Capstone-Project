@@ -4,7 +4,7 @@ import { api } from '../../api/api'
 import { usePage } from '@inertiajs/vue3';
 import { ref, computed, onMounted } from 'vue'
 import { storeBooking } from '../../state/storeBooking'
-
+import { useToast } from 'vue-toastification'
 
 defineOptions({ layout: LandingIndex })
 
@@ -13,7 +13,7 @@ const service = new api();
 const page = usePage();
 const user = computed(() => page.props.auth?.user);
 const booking = storeBooking()
-
+const toast = useToast();
 const first_name = ref('')
 const last_name = ref('')
 const email = ref('')
@@ -40,8 +40,10 @@ async function postBooking() {
 
   try {
     const response = await service.createBooking(payload)
-    alert('Booking created successfully!');
-    window.location.href = route('destination');
+    toast.success('Booking successfully created!')
+    setTimeout(() => {
+      window.location.href = route('destination')
+    }, 1500)
   } catch (error) {
     console.error('Error saving booking:', error)
   }
