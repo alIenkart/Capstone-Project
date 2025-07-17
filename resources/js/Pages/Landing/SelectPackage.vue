@@ -13,7 +13,7 @@ const booking = storeBooking()
 const id = computed(() => page.props.id);
 const selectedPackage = ref({});
 const pax = ref(1);
-const voucher = ref('')
+const voucherCode = ref('')
 
 const totalAmount = computed(() => {
   const amount = selectedPackage.value.pax_rate || 0
@@ -32,7 +32,7 @@ function postPackage() {
   booking.setQuantity(pax.value)
   booking.setAmount(totalAmount.value)
   booking.setTotalAmountWithDiscount(totalAmountWithDiscount.value)
-  booking.setVoucher(voucher.value)
+  booking.setVoucher(voucherCode.value)
   console.log(booking.$state) 
   emit('next')
 }
@@ -49,6 +49,8 @@ const fetchSelectedPackage = async () => {
 onMounted(() => {
   fetchSelectedPackage();
   console.log(booking.$state) 
+
+  voucherCode.value = booking.voucherCode || ''
 });
 
 
@@ -121,7 +123,7 @@ onMounted(() => {
         </div>
         <div class="mb-4">
           <div class="font-medium text-[#f28c3a] mb-2">Enter voucher code:</div>
-          <input type="text" v-model="voucher" class="w-64 border-2 border-[#f28c3a] rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#ff7f2a] bg-white text-[#f28c3a]" />
+          <input type="text" v-model="voucherCode" class="w-64 border-2 border-[#f28c3a] rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#ff7f2a] bg-white text-[#f28c3a]" />
         </div>
       </div>
       <!-- Right Side: Summary Card -->
