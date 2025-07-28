@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->double('pax_rate', 8, 2);
             $table->double('discounted_rate', 8, 2);
             $table->string('destination');
-            $table->string('terms_condition');
+            $table->text('terms_condition');
             $table->timestamps();
         });
     }
