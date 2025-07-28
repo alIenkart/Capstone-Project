@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->string('customer_name')->after('package_id');
             $table->string('status')->default('Pending')->after('customer_name');
             $table->string('id_type')->nullable()->after('status');
+            $table->string('discount_id_image')->nullable()->after('id_type');
             $table->text('remarks')->nullable()->after('id_type');
         });
     }
@@ -23,6 +24,7 @@ return new class extends Migration {
     {
         Schema::table('bookings', function (Blueprint $table) {
             $table->dropColumn('customer_name');
+            $table->dropColumn('discount_id_image');
 
             $table->unsignedBigInteger('customer_id')->after('package_id');
             $table->foreign('customer_id')->references('id')->on('users')->onDelete('cascade');

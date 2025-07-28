@@ -46,8 +46,8 @@
 
           <div class="mt-4">
             <p class="font-semibold mb-1">ID Preview:</p>
-            <div v-if="booking.discount_image" class="w-full h-40 border rounded overflow-hidden">
-              <img :src="booking.discount_image" alt="ID Preview" class="w-full h-full object-cover" />
+            <div v-if="booking.discount_id_image" class="w-full h-40 border rounded overflow-hidden">
+              <img :src="`/storage/${booking.discount_id_image}`" alt="ID Preview" class="w-full h-full object-contain" />
             </div>
             <p v-else class="text-gray-500">No preview available.</p>
           </div>

@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('discounts', function (Blueprint $table) {
             $table->id();
-            $table->integer('image_id');
+            $table->string('image_path')->nullable();
             $table->string('status');
             $table->string('id_type');
             $table->timestamps();

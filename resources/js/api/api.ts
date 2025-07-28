@@ -25,7 +25,11 @@ export class api {
     }
 
     createBooking(payload){
-        return plainInstance.post("/api/bookings", payload);
+        return plainInstance.post("/api/bookings", payload, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
     }
 
     updateBooking(id, payload) {

@@ -11,7 +11,9 @@ export const storeBooking = defineStore('booking', {
     amountWithDiscount: 0,
     discountId: null,
     voucherCode: '',
-    user:null
+    user:null,
+    discountIdImage: null,
+    selectedIdType: '',
   }),
 
   actions: {
@@ -48,6 +50,12 @@ export const storeBooking = defineStore('booking', {
         phone_number,
         address
       }
+    },
+    setDiscountIdImage(image) {
+      this.discountIdImage = image;
+    },
+    setSelectedIdType(type) {
+      this.selectedIdType = type;
     },
 
     reset() {

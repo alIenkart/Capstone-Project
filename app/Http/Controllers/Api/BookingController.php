@@ -20,11 +20,22 @@ class BookingController extends Controller
         $validated = $request->validate([
             'package_id' => 'required|exists:packages,id',
             'customer_name' => 'required|string|max:255',
-            'discount_id' => 'nullable',
             'voucher_id' => 'nullable|',
             'total_quantity' => 'required|integer|min:1',
             'total_price' => 'required|numeric|min:0',
+            'selected_id_type' => 'nullable|string|max:255',
+            'discount_id_image' => 'nullable|file|mimes:jpeg,png,jpg,gif,pdf|max:2048',
         ]);
+
+        // Handle file upload
+        if ($request->hasFile('discount_id_image')) {
+            $path = $request->file('discount_id_image')->store('discount_ids', 'public');
+            $validated['discount_id_image'] = $path;
+        }
+        // Save selected id type
+        if ($request->has('selected_id_type')) {
+            $validated['id_type'] = $request->input('selected_id_type');
+        }
 
         $booking = Booking::create($validated);
 

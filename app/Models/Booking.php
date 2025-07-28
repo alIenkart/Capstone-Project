@@ -9,23 +9,18 @@ class Booking extends Model
     protected $fillable = [
         'package_id',
         'customer_name',
-        'discount_id',
         'voucher_id',
         'total_quantity',
         'total_price',
         'remarks',
         'id_type',
+        'discount_id_image',
         'status'
     ];
 
     public function package()
     {
         return $this->belongsTo(Packages::class);
-    }
-
-    public function discount()
-    {
-        return $this->belongsTo(Discount::class);
     }
 
     public function voucher()

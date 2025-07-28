@@ -20,6 +20,10 @@ const email = ref('')
 const phone_number = ref('')
 const address  = ref('')
 
+// Retrieve discountIdImage and selectedIdType from store
+const discountIdImage = computed(() => booking.$state.discountIdImage)
+const selectedIdType = computed(() => booking.$state.selectedIdType)
+
 async function postBooking() {
   booking.setUser({
     first_name: first_name.value,
@@ -29,17 +33,23 @@ async function postBooking() {
     address: address.value
   })
 
-  const payload = {
-    package_id: booking.$state.packageId,
-    customer_name: `${booking.$state.user.first_name} ${booking.$state.user.last_name}`,
-    discount_id: booking.$state.discountId,
-    voucher_id: booking.$state.voucherCode || null,
-    total_quantity: booking.$state.quantity,
-    total_price: booking.$state.amountWithDiscount,
+  // Use FormData to send file
+  const formData = new FormData();
+  formData.append('package_id', booking.$state.packageId);
+  formData.append('customer_name', `${booking.$state.user.first_name} ${booking.$state.user.last_name}`);
+  formData.append('discount_id', booking.$state.discountId);
+  formData.append('voucher_id', booking.$state.voucherCode || '');
+  formData.append('total_quantity', booking.$state.quantity);
+  formData.append('total_price', booking.$state.amountWithDiscount);
+  if (discountIdImage.value) {
+    formData.append('discount_id_image', discountIdImage.value);
+  }
+  if (selectedIdType.value) {
+    formData.append('selected_id_type', selectedIdType.value);
   }
 
   try {
-    const response = await service.createBooking(payload)
+    const response = await service.createBooking(formData)
     toast.success('Booking successfully created!')
     setTimeout(() => {
       window.location.href = route('destination')

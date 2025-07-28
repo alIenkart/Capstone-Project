@@ -1,7 +1,7 @@
 <script setup>
 import LandingIndex from './LandingIndex.vue'
 import { storeBooking } from '../../state/storeBooking'
-import { computed, ref, onMounted } from 'vue';
+import { computed, ref, onMounted, watch } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 import { api } from '../../api/api';
 defineOptions({ layout: LandingIndex })
@@ -15,6 +15,17 @@ const selectedPackage = ref({});
 const pax = ref(1);
 const voucherCode = ref('')
 
+const idTypes = [
+  'Passport',
+  "Driver's License",
+  'National ID',
+  'Student ID',
+  'Senior Citizen ID'
+];
+const selectedIdType = ref(''); // empty means "Select ID"
+const discountIdImage = ref(null);
+const discountIdImageUrl = ref('');
+
 const totalAmount = computed(() => {
   const amount = selectedPackage.value.pax_rate || 0
   return amount * pax.value
@@ -25,15 +36,38 @@ const totalAmountWithDiscount = computed(() => {
   return amount
 })
 
+function handleDiscountIdImageUpload(event) {
+  const file = event.target.files[0];
+  if (file) {
+    discountIdImage.value = file;
+    discountIdImageUrl.value = URL.createObjectURL(file);
+    booking.setDiscountIdImage(file); // Save to store
+  } else {
+    discountIdImage.value = null;
+    discountIdImageUrl.value = '';
+    booking.setDiscountIdImage(null); // Save to store
+  }
+}
+
+function removeDiscountIdImage() {
+  discountIdImage.value = null;
+  discountIdImageUrl.value = '';
+  booking.setDiscountIdImage(null); // Save to store
+}
+
+// Watch for changes in selectedIdType and update store
+watch(selectedIdType, (newType) => {
+  booking.setSelectedIdType(newType);
+});
+
 function postPackage() {
-  //booking.setPackageType
-  //booking.setDiscountId
   booking.setPackageId(id.value)
   booking.setQuantity(pax.value)
   booking.setAmount(totalAmount.value)
   booking.setTotalAmountWithDiscount(totalAmountWithDiscount.value)
   booking.setVoucher(voucherCode.value)
-  console.log(booking.$state) 
+  booking.setDiscountIdImage(discountIdImage.value) // Ensure latest image is saved
+  booking.setSelectedIdType(selectedIdType.value)   // Ensure latest ID type is saved
   emit('next')
 }
 
@@ -48,7 +82,6 @@ const fetchSelectedPackage = async () => {
 
 onMounted(() => {
   fetchSelectedPackage();
-  console.log(booking.$state) 
 
   voucherCode.value = booking.voucherCode || ''
 });
@@ -108,17 +141,40 @@ onMounted(() => {
         </div>
         <div class="mb-4">
           <div class="font-medium text-[#f28c3a] mb-2">Upload Discount ID:</div>
-          <div class="flex items-center gap-3">
-            <label class="flex items-center px-4 py-2 bg-[#b3d8f7] text-[#2471a3] rounded-lg cursor-pointer">
-              <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 16v-4m0 0V8m0 4h4m-4 0H8m12 4v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4"></path></svg>
-              Add Image
-              <input type="file" class="hidden" />
+          <div class="flex flex-col gap-3">
+            <!-- ID Type Dropdown -->
+            <select
+              v-model="selectedIdType"
+              class="w-64 border-2 border-[#f28c3a] rounded-xl px-4 py-2 mb-2 text-[#f28c3a] bg-white focus:outline-none focus:ring-2 focus:ring-[#ff7f2a]"
+            >
+              <option value="" disabled selected>Select ID</option>
+              <option v-for="type in idTypes" :key="type" :value="type">{{ type }}</option>
+            </select>
+
+            <!-- Image Upload -->
+            <label
+              :class="[
+                'flex items-center px-4 py-2 text-[#2471a3] rounded-lg cursor-pointer w-fit min-h-[44px] min-w-[44px] relative',
+                discountIdImageUrl ? 'bg-white' : 'bg-[#b3d8f7]'
+              ]"
+            >
+              <input type="file" class="hidden" accept="image/*" @change="handleDiscountIdImageUpload" />
+              <template v-if="discountIdImageUrl">
+                <img :src="discountIdImageUrl" alt="ID Preview" class="w-10 h-10 rounded object-cover" />
+                <button
+                  type="button"
+                  @click.stop.prevent="removeDiscountIdImage"
+                  class="absolute top-0 right-0 -mt-2 -mr-2 bg-white rounded-full text-gray-500 hover:text-red-500 font-bold text-lg w-6 h-6 flex items-center justify-center shadow"
+                  style="z-index:2"
+                >&times;</button>
+              </template>
+              <template v-else>
+                <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M12 16v-4m0 0V8m0 4h4m-4 0H8m12 4v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4"></path>
+                </svg>
+                <span>Add Image</span>
+              </template>
             </label>
-            <div class="flex items-center bg-gray-100 px-3 py-2 rounded">
-              <img src="https://via.placeholder.com/24" alt="sample" class="w-6 h-6 mr-2 rounded" />
-              <span class="text-gray-700 text-sm">sample.jpeg</span>
-              <button class="ml-2 text-gray-500 hover:text-red-500 font-bold text-lg">&times;</button>
-            </div>
           </div>
         </div>
         <div class="mb-4">
