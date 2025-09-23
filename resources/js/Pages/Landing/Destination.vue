@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import LandingIndex from './LandingIndex.vue'
 import axios from 'axios'
 import { api } from '../../api/api'
@@ -10,12 +10,56 @@ defineOptions({ layout: LandingIndex })
 const service = new api();
 const packages = ref([])
 const showFilter = ref(false)
+const searchQuery = ref('')
+const selectedRegion = ref(null)
 
 function toggleFilter() {
   showFilter.value = !showFilter.value
 }
 
 function closeFilter() {
+  showFilter.value = false
+}
+
+// Computed property for filtered packages
+const filteredPackages = computed(() => {
+  const hasQuery = Boolean(searchQuery.value.trim())
+  const query = searchQuery.value.toLowerCase().trim()
+
+  // If no search and no region filter, return all
+  if (!hasQuery && !selectedRegion.value) {
+    return packages.value
+  }
+
+  return packages.value.filter(pkg => {
+    // Region filter
+    const regionMatch = selectedRegion.value ? pkg.region === selectedRegion.value : true
+
+    if (!hasQuery) {
+      return regionMatch
+    }
+
+    // Text search filters
+    const packageNameMatch = pkg.package_name?.toLowerCase().includes(query)
+    const paxRateMatch = pkg.pax_rate?.toString().includes(query)
+    const destinationMatch = pkg.destination?.toLowerCase().includes(query)
+
+    return regionMatch && (packageNameMatch || paxRateMatch || destinationMatch)
+  })
+})
+
+// Unique regions derived from filteredPackages
+const regions = computed(() => {
+  const unique = new Set(
+    packages.value
+      .map(pkg => pkg.region)
+      .filter(region => Boolean(region))
+  )
+  return Array.from(unique).sort()
+})
+
+function selectRegion(region) {
+  selectedRegion.value = region
   showFilter.value = false
 }
 
@@ -40,21 +84,20 @@ onMounted(() => {
       <div class="destination-subtitle">ALL DESTINATIONS</div>
     </div>
     <div class="destination-controls">
-      <input type="text" class="destination-search" placeholder="Search" />
+      <input 
+        type="text" 
+        class="destination-search" 
+        placeholder="E.g. name, price, or destination" 
+        v-model="searchQuery"
+      />
         <div class="destination-filter">
-        <button class="filter-btn" @click="toggleFilter">Filter</button>
+        <button class="filter-btn" @click="toggleFilter">{{ selectedRegion || 'Filter' }}</button>
         <ul 
             class="filter-dropdown" 
             v-show="showFilter"
-            @mouseleave="closeFilter"
         >
-            <li>Metro Manila</li>
-            <li>North Luzon</li>
-            <li>South Luzon</li>
-            <li>Central Visayas</li>
-            <li>Western Visayas</li>
-            <li>Northern Mindanao</li>
-            <li>Davao Region</li>
+            <li @click="selectRegion(null)">All regions</li>
+            <li v-for="region in regions" :key="region" @click="selectRegion(region)">{{ region }}</li>
         </ul>
         </div>
     </div>
@@ -62,17 +105,17 @@ onMounted(() => {
     <div class="destination-list">
       <div
         class="destination-card"
-        v-for="pkg in packages"
+        v-for="pkg in filteredPackages"
         :key="pkg.id"
       >
-        <img :src="pkg.image || '/assets/default.jpg'" :alt="pkg.title" />
+        <img :src="'/storage/' + pkg.image_path" :alt="pkg.title" />
         <div class="destination-meta">₱ {{ pkg.pax_rate }}</div>
-        <div class="destination-title">{{ pkg.destinations }}</div>
+        <div class="destination-title">{{ pkg.destination }}</div>
         <div class="destination-days">
           <span>{{ pkg.tour_duration   }} Days</span>
         </div>
           <Link :href="route('tourdetails', { id: pkg.id })"
-            class="mt-2 px-4 py-2 border border-[#ff7f2a] text-[#ff7f2a] rounded-full font-semibold hover:bg-[#ff7f2a] hover:text-white transition text-center block">
+            class="mt-2 px-4 py-2 border border-[#008DDA] text-[#008DDA] rounded-full font-semibold hover:bg-[#008DDA] hover:text-white transition text-center block">
             View Details
           </Link>
       </div>
@@ -92,16 +135,17 @@ onMounted(() => {
 }
 
 .destination-title {
-  color: #f58220;
+  color: #008DDA;
   font-size: 1.5rem;
-  font-weight: bold;
-  letter-spacing: 1px;
+  font-weight: 800;
+  margin-bottom: 6px;
+  text-align: center;
 }
 
 .destination-subtitle {
-  color: #f58220;
-  font-size: 1rem;
-  border-bottom: 3px solid #f58220;
+  color: #008DDA;
+  font-size: 1.1rem;
+  border-bottom: 3px solid #008DDA;
   display: inline-block;
   margin-bottom: 18px;
 }
@@ -115,7 +159,7 @@ onMounted(() => {
 }
 
 .destination-search {
-  border: 1.5px solid #f58220;
+  border: 1.5px solid #008DDA;
   border-radius: 18px;
   padding: 6px 18px;
   font-size: 1rem;
@@ -128,8 +172,8 @@ onMounted(() => {
 
 .filter-btn {
   background: #fff;
-  color: #f58220;
-  border: 1.5px solid #f58220;
+  color: #008DDA;
+  border: 1.5px solid #008DDA;
   border-radius: 18px;
   padding: 6px 18px;
   cursor: pointer;
@@ -154,7 +198,7 @@ onMounted(() => {
 
 .filter-dropdown li {
   padding: 10px 18px;
-  color: #f58220;
+  color: #008DDA;
   cursor: pointer;
   transition: background 0.2s;
 }
@@ -177,40 +221,33 @@ onMounted(() => {
 .destination-card {
   background: #fff;
   border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  padding: 16px;
-  width: 300px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  padding: 24px 18px 18px 18px;
+  width: 270px;
   flex: 1 1 300px;
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-bottom: 24px;
+  transition: box-shadow 0.2s;
 }
 
 .destination-card img {
   width: 100%;
-  height: 160px;
-  object-fit: cover;
+  height: 250px;
+  object-fit: contain;
   border-radius: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .destination-meta {
-  color: #f58220;
+  color: #008DDA;
   font-weight: bold;
   margin-bottom: 6px;
 }
 
-.destination-title {
-  color: #f58220;
-  font-size: 1.1rem;
-  font-weight: 500;
-  margin-bottom: 6px;
-  text-align: center;
-}
-
 .destination-days {
-  color: #f58220;
+  color: #008DDA;
   font-size: 1rem;
   margin-bottom: 12px;
   display: flex;
@@ -219,8 +256,8 @@ onMounted(() => {
 }
 
 .view-btn {
-  border: 1.5px solid #f58220;
-  color: #f58220;
+  border: 1.5px solid #008DDA;
+  color: #008DDA;
   background: #fff;
   border-radius: 24px;
   padding: 8px 32px;
@@ -231,7 +268,7 @@ onMounted(() => {
 }
 
 .view-btn:hover {
-  background: #f58220;
+  background: #008DDA;
   color: #fff;
 }
 </style>

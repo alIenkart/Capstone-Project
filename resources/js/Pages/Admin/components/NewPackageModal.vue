@@ -17,11 +17,13 @@ const formData = ref({
     name: '',
     duration: '',
     destination: '',
+    region: '',
     description: '',
     itinerary: '',
     termsCondition: '',
     exclusions: '',
     basePrice: '',
+    kidsBasePrice: '',
     maxOccupancy: '',
     bookingType: 'Exclusive', // Default value based on screenshot
     status: 'Active', // Default value based on screenshot
@@ -38,11 +40,13 @@ watch(() => props.show, (newValue) => {
             name: '',
             duration: '',
             destination: '',
+            region: '',
             description: '',
             itinerary: '',
             termsCondition: '',
             exclusions: '',
             basePrice: '',
+            kidsBasePrice: '',
             maxOccupancy: '',
             bookingType: 'Exclusive',
             status: 'Active',
@@ -70,6 +74,7 @@ const savePackage = async () => {
     data.append('package_name', formData.value.name);
     data.append('tour_duration', formData.value.duration ? formData.value.duration.toString() : '0');
     data.append('destination', formData.value.destination);
+    data.append('region', formData.value.region || '');
     data.append('description', formData.value.description || '');
     data.append('itinerary', formData.value.itinerary || '');
     data.append('terms_condition', formData.value.termsCondition || '');
@@ -78,6 +83,7 @@ const savePackage = async () => {
     data.append('joint_booking', formData.value.bookingType === 'Shared' ? 'true' : 'false'); // send as string
     data.append('status', formData.value.status.toLowerCase());
     data.append('pax_rate', formData.value.basePrice ? parseFloat(formData.value.basePrice) : 0);
+    data.append('kids_pax_rate', formData.value.kidsBasePrice ? parseFloat(formData.value.kidsBasePrice) : '');
     data.append('discounted_rate', formData.value.discountedRate ? parseFloat(formData.value.discountedRate) : 0);
 
     try {
@@ -193,6 +199,32 @@ const handleImageUpload = (event) => {
                                                 class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
                                             />
                                         </div>
+                                        <div>
+                                        <label for="region" class="block text-sm font-medium text-gray-700">Region</label>
+                                        <select
+                                            id="region"
+                                            v-model="formData.region"
+                                            class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
+                                        >
+                                            <option value="National Capital Region (NCR)">National Capital Region (NCR)</option>
+                                            <option value="Cordillera Administrative Region (CAR)">Cordillera Administrative Region (CAR)</option>
+                                            <option value="Region I: Ilocos Region">Region I: Ilocos Region</option>
+                                            <option value="Region II: Cagayan Valley">Region II: Cagayan Valley</option>
+                                            <option value="Region III: Central Luzon">Region III: Central Luzon</option>
+                                            <option value="Region IV-A: Calabarzon (CALaBarzon)">Region IV-A: Calabarzon (CALABARZON)</option>
+                                            <option value="Region IV-B: Mimaropa (MIMAROPA)">Region IV-B: Mimaropa (MIMAROPA)</option>
+                                            <option value="Region V: Bicol Region">Region V: Bicol Region</option>
+                                            <option value="Region VI: Western Visayas">Region VI: Western Visayas</option>
+                                            <option value="Region VII: Central Visayas">Region VII: Central Visayas</option>
+                                            <option value="Region VIII: Eastern Visayas">Region VIII: Eastern Visayas</option>
+                                            <option value="Region IX: Zamboanga Peninsula">Region IX: Zamboanga Peninsula</option>
+                                            <option value="Region X: Northern Mindanao">Region X: Northern Mindanao</option>
+                                            <option value="Region XI: Davao Region">Region XI: Davao Region</option>
+                                            <option value="Region XII: SOCCSKSARGEN">Region XII: SOCCSKSARGEN</option>
+                                            <option value="Region XIII: Caraga">Region XIII: Caraga</option>
+                                            <option value="BARMM: Bangsamoro Autonomous Region in Muslim Mindanao">BARMM: Bangsamoro Autonomous Region in Muslim Mindanao</option>
+                                        </select>
+                                    </div>
                                     </div>
 
                                     <div>
@@ -203,6 +235,16 @@ const handleImageUpload = (event) => {
                                             v-model="formData.basePrice"
                                             class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
                                             required
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label for="kidsBasePrice" class="block text-sm font-medium text-gray-700">Kids Price per Pax</label>
+                                        <input
+                                            type="number"
+                                            id="kidsBasePrice"
+                                            v-model="formData.kidsBasePrice"
+                                            class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
                                         />
                                     </div>
 

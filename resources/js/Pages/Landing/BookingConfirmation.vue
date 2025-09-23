@@ -19,12 +19,84 @@ const last_name = ref('')
 const email = ref('')
 const phone_number = ref('')
 const address  = ref('')
+const agreeChecked = ref(false)
+
+const errors = ref({
+  first_name: '',
+  last_name: '',
+  email: '',
+  phone_number: '',
+  address: ''
+})
+
+function validateFields() {
+  let isValid = true
+  errors.value = { first_name: '', last_name: '', email: '', phone_number: '', address: '' }
+
+  if (!first_name.value.trim()) {
+    errors.value.first_name = 'First Name is required.'
+    isValid = false
+  }
+  if (!last_name.value.trim()) {
+    errors.value.last_name = 'Last Name is required.'
+    isValid = false
+  }
+  if (!email.value.trim()) {
+    errors.value.email = 'Email is required.'
+    isValid = false
+  } else {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email.value)) {
+      errors.value.email = 'Enter a valid email address.'
+      isValid = false
+    }
+  }
+  if (!phone_number.value.trim()) {
+    errors.value.phone_number = 'Contact No. is required.'
+    isValid = false
+  } else {
+    const digits = phone_number.value.replace(/\D/g, '')
+    if (digits.length < 7) {
+      errors.value.phone_number = 'Enter a valid contact number.'
+      isValid = false
+    }
+  }
+  if (!address.value.trim()) {
+    errors.value.address = 'Address is required.'
+    isValid = false
+  }
+
+  if (!agreeChecked.value) {
+    toast.error('You must agree to the Terms and Privacy Policy.')
+    isValid = false
+  }
+
+  return isValid
+}
 
 // Retrieve discountIdImage and selectedIdType from store
-const discountIdImage = computed(() => booking.$state.discountIdImage)
-const selectedIdType = computed(() => booking.$state.selectedIdType)
+const discountIdImage = computed(() => booking.discountIdImage)
+const selectedIdType = computed(() => booking.selectedIdType)
+
+// Duration in days based on booking dates (inclusive)
+const durationDays = computed(() => {
+  const start = booking.startDate
+  const end = booking.endDate
+  if (!start || !end) return 0
+  // Parse YYYY-MM-DD safely in UTC to avoid timezone shifts
+  const [sy, sm, sd] = String(start).split('-').map(Number)
+  const [ey, em, ed] = String(end).split('-').map(Number)
+  const startDateUtc = Date.UTC(sy, (sm || 1) - 1, sd || 1)
+  const endDateUtc = Date.UTC(ey, (em || 1) - 1, ed || 1)
+  const diffMs = endDateUtc - startDateUtc
+  const days = Math.floor(diffMs / (1000 * 60 * 60 * 24)) + 1 // inclusive
+  return days > 0 ? days : 0
+})
 
 async function postBooking() {
+  if (!validateFields()) {
+    return
+  }
   booking.setUser({
     first_name: first_name.value,
     last_name: last_name.value,
@@ -35,12 +107,13 @@ async function postBooking() {
 
   // Use FormData to send file
   const formData = new FormData();
-  formData.append('package_id', booking.$state.packageId);
-  formData.append('customer_name', `${booking.$state.user.first_name} ${booking.$state.user.last_name}`);
-  formData.append('discount_id', booking.$state.discountId);
-  formData.append('voucher_id', booking.$state.voucherCode || '');
-  formData.append('total_quantity', booking.$state.quantity);
-  formData.append('total_price', booking.$state.amountWithDiscount);
+  formData.append('package_id', booking.packageId);
+  formData.append('customer_name', `${booking.user.first_name} ${booking.user.last_name}`);
+  formData.append('discount_id', booking.discountId);
+  formData.append('voucher_id', booking.voucherCode || '');
+  formData.append('total_quantity', booking.adultsQuantity);
+  formData.append('total_quantity', booking.kidsQuantity);
+  formData.append('total_price', booking.amountWithDiscount);
   if (discountIdImage.value) {
     formData.append('discount_id_image', discountIdImage.value);
   }
@@ -76,24 +149,24 @@ onMounted(() => {
     <!-- Stepper at the top -->
     <div class="flex items-center gap-2 mb-16 mt-2 w-full max-w-5xl justify-center">
       <div class="flex items-center gap-1">
-        <span class="w-4 h-4 rounded-full border-2 border-[#ff7f2a] bg-[#ff7f2a] flex items-center justify-center">
+        <span class="w-4 h-4 rounded-full border-2 border-[#008DDA] bg-[#008DDA] flex items-center justify-center">
           <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 16 16"><circle cx="8" cy="8" r="8"/></svg>
         </span>
-        <span class="ml-1 text-[#ff7f2a] font-semibold text-base">Availability</span>
+        <span class="ml-1 text-[#008DDA] font-semibold text-base">Availability</span>
       </div>
-      <span class="w-16 h-0.5 bg-[#ff7f2a] mx-2"></span>
+      <span class="w-16 h-0.5 bg-[#008DDA] mx-2"></span>
       <div class="flex items-center gap-1">
-        <span class="w-4 h-4 rounded-full border-2 border-[#ff7f2a] bg-[#ff7f2a] flex items-center justify-center">
+        <span class="w-4 h-4 rounded-full border-2 border-[#008DDA] bg-[#008DDA] flex items-center justify-center">
           <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 16 16"><circle cx="8" cy="8" r="8"/></svg>
         </span>
-        <span class="ml-1 text-[#ff7f2a] font-semibold text-base">Select Package</span>
+        <span class="ml-1 text-[#008DDA] font-semibold text-base">Select Package</span>
       </div>
-      <span class="w-16 h-0.5 bg-[#ff7f2a] mx-2"></span>
+      <span class="w-16 h-0.5 bg-[#008DDA] mx-2"></span>
       <div class="flex items-center gap-1">
-        <span class="w-4 h-4 rounded-full border-2 border-[#ff7f2a] flex items-center justify-center">
-          <span class="w-2 h-2 rounded-full bg-[#ff7f2a]"></span>
+        <span class="w-4 h-4 rounded-full border-2 border-[#008DDA] flex items-center justify-center">
+          <span class="w-2 h-2 rounded-full bg-[#008DDA]"></span>
         </span>
-        <span class="ml-1 text-[#ff7f2a] font-semibold text-base border-b-2 border-[#ff7f2a] pb-0.5">Confirmation</span>
+        <span class="ml-1 text-[#008DDA] font-semibold text-base border-b-2 border-[#008DDA] pb-0.5">Confirmation</span>
       </div>
     </div>
     <!-- Main Content -->
@@ -101,43 +174,48 @@ onMounted(() => {
       <!-- Left Side: Details Form -->
       <div class="flex-1">
         <div class="flex justify-start mb-4">
-          <button @click="emit('back')" class="w-24 rounded-full py-2 font-bold text-lg transition bg-[#d95f00] text-white hover:bg-[#b94c00]">
+          <button @click="emit('back')" class="w-24 rounded-full py-2 font-bold text-lg transition bg-[#1E71B8] text-white hover:bg-[#73BE5D]">
             Back
           </button>
         </div>
-        <div class="font-bold text-xl mb-4 text-[#f28c3a]">Details</div>
+        <div class="font-bold text-xl mb-4 text-[#1E71B8]">Details</div>
         <form class="flex flex-col gap-4">
           <div>
-            <label class="block text-[#f28c3a] font-semibold mb-1">First Name</label>
-            <input type="text" v-model ="first_name" class="w-full border-2 border-[#f28c3a] rounded-xl px-4 py-3 bg-white text-[#f28c3a] focus:outline-none focus:ring-2 focus:ring-[#ff7f2a]" />
+            <label class="block text-[#1E71B8] font-semibold mb-1">First Name</label>
+          <input type="text" v-model ="first_name" :class="['w-full border-2 rounded-xl px-4 py-3 bg-white text-[#00000] focus:outline-none focus:ring-2 focus:ring-[#008DDA]', errors.first_name ? 'border-red-500' : 'border-[#1E71B8]']" />
+          <p v-if="errors.first_name" class="text-red-600 text-sm mt-1">{{ errors.first_name }}</p>
           </div>
           <div>
-            <label class="block text-[#f28c3a] font-semibold mb-1">Last Name</label>
-            <input type="text" v-model ="last_name" class="w-full border-2 border-[#f28c3a] rounded-xl px-4 py-3 bg-white text-[#f28c3a] focus:outline-none focus:ring-2 focus:ring-[#ff7f2a]" />
+            <label class="block text-[#1E71B8] font-semibold mb-1">Last Name</label>
+          <input type="text" v-model ="last_name" :class="['w-full border-2 rounded-xl px-4 py-3 bg-white text-[#00000] focus:outline-none focus:ring-2 focus:ring-[#008DDA]', errors.last_name ? 'border-red-500' : 'border-[#1E71B8]']" />
+          <p v-if="errors.last_name" class="text-red-600 text-sm mt-1">{{ errors.last_name }}</p>
           </div>
           <div>
-            <label class="block text-[#f28c3a] font-semibold mb-1">Email</label>
-            <input type="email" v-model ="email" class="w-full border-2 border-[#f28c3a] rounded-xl px-4 py-3 bg-white text-[#f28c3a] focus:outline-none focus:ring-2 focus:ring-[#ff7f2a]" />
+            <label class="block text-[#1E71B8] font-semibold mb-1">Email</label>
+          <input type="email" v-model ="email" :class="['w-full border-2 rounded-xl px-4 py-3 bg-white text-[#00000] focus:outline-none focus:ring-2 focus:ring-[#008DDA]', errors.email ? 'border-red-500' : 'border-[#1E71B8]']" />
+          <p v-if="errors.email" class="text-red-600 text-sm mt-1">{{ errors.email }}</p>
           </div>
           <div>
-            <label class="block text-[#f28c3a] font-semibold mb-1">Contact No.</label>
-            <input type="text" v-model ="phone_number" class="w-full border-2 border-[#f28c3a] rounded-xl px-4 py-3 bg-white text-[#f28c3a] focus:outline-none focus:ring-2 focus:ring-[#ff7f2a]" />
+            <label class="block text-[#1E71B8] font-semibold mb-1">Contact No.</label>
+          <input type="text" v-model ="phone_number" :class="['w-full border-2 rounded-xl px-4 py-3 bg-white text-[#00000] focus:outline-none focus:ring-2 focus:ring-[#008DDA]', errors.phone_number ? 'border-red-500' : 'border-[#1E71B8]']" />
+          <p v-if="errors.phone_number" class="text-red-600 text-sm mt-1">{{ errors.phone_number }}</p>
           </div>
           <div>
-            <label class="block text-[#f28c3a] font-semibold mb-1">Address</label>
-            <input type="text" class="w-full border-2 border-[#f28c3a] rounded-xl px-4 py-3 bg-white text-[#f28c3a] focus:outline-none focus:ring-2 focus:ring-[#ff7f2a]" />
+            <label class="block text-[#1E71B8] font-semibold mb-1">Address</label>
+          <input type="text" v-model="address" :class="['w-full border-2 rounded-xl px-4 py-3 bg-white text-[#00000] focus:outline-none focus:ring-2 focus:ring-[#008DDA]', errors.address ? 'border-red-500' : 'border-[#1E71B8]']" />
+          <p v-if="errors.address" class="text-red-600 text-sm mt-1">{{ errors.address }}</p>
           </div>
           <!--
           <div>
-            <label class="block text-[#f28c3a] font-semibold mb-1">City &amp; Province</label>
-            <select class="w-full border-2 border-[#f28c3a] rounded-xl px-4 py-3 bg-white text-[#f28c3a] focus:outline-none focus:ring-2 focus:ring-[#ff7f2a]">
+            <label class="block text-[#1E71B8] font-semibold mb-1">City &amp; Province</label>
+            <select class="w-full border-2 border-[#1E71B8] rounded-xl px-4 py-3 bg-white text-[#1E71B8] focus:outline-none focus:ring-2 focus:ring-[#008DDA]">
               <option>City &amp; Province</option>
             </select>
           </div>  
           -->
           <div class="flex items-center mt-2">
-            <input type="checkbox" id="agree" class="accent-[#ff7f2a] mr-2" />
-            <label for="agree" class="text-[#f28c3a] text-sm">
+            <input type="checkbox" id="agree" v-model="agreeChecked" class="accent-[#008DDA] mr-2" />
+            <label for="agree" class="text-[#1E71B8] text-sm">
               Check the box to confirm you've read and agree to our
               <a href="#" class="text-[#2471a3] underline">Terms and Conditions</a> and
               <a href="#" class="text-[#2471a3] underline">Privacy Policy</a>.
@@ -146,26 +224,37 @@ onMounted(() => {
           <button
             @click="postBooking"
             type="button"
-            class="mt-4 w-48 py-4 bg-[#f28c3a] text-white font-semibold rounded-xl shadow text-lg hover:bg-[#d95f00] transition"
+            :disabled="!agreeChecked"
+            :class="['mt-4 w-48 py-4 text-white font-semibold rounded-xl shadow text-lg transition', !agreeChecked ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#1E71B8] hover:bg-[#d95f00]']"
           >
             Book Now
           </button>
         </form>
       </div>
       <!-- Right Side: Summary Card -->
-      <div class="w-full max-w-sm bg-[#f28c3a] rounded-xl p-8 flex flex-col min-h-[350px] self-start">
+      <div class="w-full max-w-sm bg-[#1E71B8] rounded-xl p-8 flex flex-col min-h-[350px] self-start">
         <div>
           <div class="font-bold text-white text-2xl mb-4 text-center">Details</div>
-          <hr class="border-[#ffb97a] mb-4" />
-          <div class="font-bold text-white text-lg mb-2">La Union Travel Getaway - 3 Days</div>
+          <hr class="border-[#73BE5D] mb-4" />
+          <div class="font-bold text-white text-lg mb-2">{{ booking.packageDestination }}</div>
           <div class="text-white mb-4">
-            <div>Starting Date: <span class="text-white">MM/DD/YY</span></div>
+            <div>Tour Type: <span class="text-white">{{ booking.tourType }}</span></div>
+          </div>
+          <div class="text-white mb-4">
+            <div>Duration: <span class="text-white">{{ booking.duration }} Day<span v-if="durationDays !== 1">s</span></span></div>
+          </div>
+          <div class="text-white mb-4">
+            <div>Starting Date: <span class="text-white">{{ booking.startDate }}</span></div>
           </div>
           <div class="text-white mb-4">
             <div class="mb-1">Travellers</div>
             <div class="flex justify-between">
-              <span>Rate P {{ booking.$state.amount }} x ({{ booking.$state.quantity }})</span>
-              <span>P {{ booking.$state.amount }}</span>
+              <span>Adults Rate ₱ {{ booking.adultRate }} x ({{ booking.adultsQuantity }})</span>
+              <span>₱ {{ booking.adultTotalAmount }}</span>
+            </div>
+            <div class="flex justify-between">
+              <span>Kids Rate ₱ {{ booking.kidsRate }} x ({{ booking.kidsQuantity }})</span>
+              <span>₱ {{ booking.kidsTotalAmount }}</span>
             </div>
             <div class="flex justify-between">
               <span>Discount ID</span>
@@ -176,10 +265,10 @@ onMounted(() => {
               <span>P XXXX</span>
             </div> -->
           </div>
-          <hr class="border-[#ffb97a] my-4" />
+          <hr class="border-[#73BE5D] my-4" />
           <div class="flex justify-between items-center font-bold text-white text-xl mt-4">
             <span>Total :</span>
-            <span>P {{ booking.$state.amountWithDiscount }}</span>
+            <span>₱ {{ booking.amountWithDiscount }}</span>
           </div>
         </div>
       </div>

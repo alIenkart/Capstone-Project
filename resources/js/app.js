@@ -8,7 +8,8 @@ import { createPinia } from 'pinia'
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import Toast from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
-
+// Main Color #1E71B8
+// Secondary Color #73BE5D
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({

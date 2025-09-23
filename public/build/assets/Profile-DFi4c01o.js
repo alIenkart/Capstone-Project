@@ -1,0 +1,1 @@
+import e from"./LandingIndex-CiXmiEr3.js";import{c as o,o as r}from"./app-C0Uim_Fg.js";import"./Footer-CaRwHviR.js";import"./_plugin-vue_export-helper-DlAUqK2U.js";const n=Object.assign({layout:e},{__name:"Profile",setup(t){return(a,s)=>(r(),o("h1",null,"This is profile page"))}});export{n as default};

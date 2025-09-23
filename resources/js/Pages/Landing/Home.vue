@@ -29,11 +29,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
+  <div class="home-page">
     <!-- Hero Section -->
     <section
       class="home-hero"
-      style="background: url('build/assets/homepage-background.jpg') center/cover no-repeat;"
+      style="background: url('/storage/thumbnails/boracay.jpg') center/cover no-repeat;"
     >
       <div class="home-hero-content">
         <div class="home-hero-title">JE TRAVEL & TOURS</div>
@@ -70,14 +70,27 @@ onMounted(() => {
     <div class="destinations-row">
         <div class="destination-card"
           v-for="pkg in packages" :key="pkg.id">
-        <img src="/assets/launion.jpg" :alt="pkg.destination" />
-        <div class="destination-meta">₱ {{ pkg.pax_rate }}</div>
-        <div class="destination-title">{{ pkg.destination }}</div>
+        <img :src="'/storage/' + pkg.image_path" :alt="pkg.destination" />
+        <div class="destination-meta">
+          <span class="currency-badge" aria-hidden="true">₱</span>
+          <span>{{ pkg.pax_rate }}</span>
+        </div>
+        <div class="destination-title">
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 10c0 6-9 12-9 12S3 16 3 10a9 9 0 1 1 18 0Z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+          <span>{{ pkg.destination }}</span>
+        </div>
         <div class="destination-days">
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 6v6l4 2"/>
+          </svg>
           <span>{{ pkg.tour_duration }} Days</span>
         </div>
         <Link :href="route('tourdetails', { id: pkg.id })"
-          class="mt-2 px-4 py-2 border border-[#ff7f2a] text-[#ff7f2a] rounded-full font-semibold hover:bg-[#ff7f2a] hover:text-white transition text-center block">
+          class="mt-2 px-4 py-2 border border-[#008DDA] text-[#008DDA] rounded-full font-semibold hover:bg-[#008DDA] hover:text-white transition text-center block">
           View Details
         </Link>
       </div>
@@ -87,6 +100,9 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.home-page {
+  margin-bottom: 2%;
+}
 .home-hero {
   position: relative;
   width: 100%;
@@ -122,6 +138,7 @@ onMounted(() => {
   font-size: 2rem;
   font-weight: bold;
   margin-bottom: 12px;
+
 }
 
 .home-hero-desc {
@@ -130,9 +147,9 @@ onMounted(() => {
 }
 
 .home-hero-btn {
-  background: #f58220;
+  background: #008DDA;
   color: #fff;
-  border: 2px solid #f58220;
+  border: 2px solid #008DDA;
   border-radius: 12px;
   padding: 12px 48px;
   font-size: 1.1rem;
@@ -145,9 +162,9 @@ onMounted(() => {
 }
 
 .home-hero-btn:hover {
-  background: #d96c0a;
+  background: #73BE5D;
   color: #fff;
-  border-color: #d96c0a;
+  border-color: #73BE5D;
   text-decoration: none;
 }
 
@@ -163,13 +180,14 @@ onMounted(() => {
   font-weight: bold;
   margin-bottom: 8px;
   margin-top: 32px;
-  border-bottom: 3px solid #222;
+  border-bottom: 3px solid #1E71B8;
   display: inline-block;
   padding-bottom: 4px;
+  color:#1E71B8;
 }
 
 .home-section-desc {
-  color: #333;
+  color: #000000;
   margin-bottom: 32px;
   font-size: 1.1rem;
   line-height: 1.5;
@@ -180,8 +198,8 @@ onMounted(() => {
 }
 .home-section .view-btn {
   background: #fff;
-  color: #f58220;
-  border: 2px solid #f58220;
+  color: #008DDA;
+  border: 2px solid #008DDA;
   border-radius: 24px;
   padding: 8px 32px;
   font-size: 1rem;
@@ -193,9 +211,9 @@ onMounted(() => {
 }
 
 .home-section .view-btn:hover {
-  background: #f58220;
+  background: #008DDA;
   color: #fff;
-  border-color: #f58220;
+  border-color: #008DDA;
 }
 .destinations-row {
   display: flex;
@@ -229,30 +247,58 @@ onMounted(() => {
   font-weight: bold;
   font-size: 1.1rem;
   margin-bottom: 4px;
-  color: #f58220;
+  color: #008DDA;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  justify-content: flex-start;
+  text-align: left;
 }
 
 .destination-meta {
-  color: #f58220;
+  font-weight: bold;
+  color: #008DDA;
   font-size: 1rem;
   margin-bottom: 4px;
   display: flex;
   align-items: center;
   gap: 6px;
+  width: 100%;
+  justify-content: flex-start;
+  text-align: left;
+}
+.currency-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  color: #008DDA;
+  font-size: 1.1rem;
 }
 
 .destination-days {
-  color: #f58220;
+  font-weight: bold;
+  color: #008DDA;
   font-size: 1rem;
   margin-bottom: 12px;
   display: flex;
   align-items: center;
   gap: 6px;
+  width: 100%;
+  justify-content: flex-start;
+  text-align: left;
+}
+.icon {
+  width: 18px;
+  height: 18px;
 }
 
 .destination-card .view-btn {
-  border: 1.5px solid #f58220;
-  color: #f58220;
+  border: 1.5px solid #008DDA;
+  color: #008DDA;
   background: #fff;
   border-radius: 24px;
   padding: 8px 32px;
@@ -263,7 +309,7 @@ onMounted(() => {
 }
 
 .destination-card .view-btn:hover {
-  background: #f58220;
+  background: #008DDA;
   color: #fff;
 }
 

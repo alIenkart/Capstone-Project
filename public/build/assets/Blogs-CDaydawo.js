@@ -1,0 +1,1 @@
+import o from"./LandingIndex-CiXmiEr3.js";import{c as t,o as e}from"./app-C0Uim_Fg.js";import"./Footer-CaRwHviR.js";import"./_plugin-vue_export-helper-DlAUqK2U.js";const _=Object.assign({layout:o},{__name:"Blogs",setup(a){return(r,s)=>(e(),t("h1",null,"This is about blog page"))}});export{_ as default};

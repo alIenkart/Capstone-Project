@@ -60,10 +60,10 @@ onMounted(() => {
     <!-- Main Container -->
     <div class="w-full max-w-[1400px] px-2 md:px-8 py-8 flex flex-col">
       <!-- Tour Title -->
-      <h2 class="text-2xl font-bold text-[#ff7f2a] mb-2">
+      <h2 class="text-2xl font-bold text-[#1E71B8] mb-2">
         {{ selectedPackage.destination || 'Loading destination...' }}
       </h2>
-      <hr class="border-[#ff7f2a] border-t-2 w-40 md:w-80 mb-6" />
+      <hr class="border-[#1E71B8] border-t-2 w-40 md:w-80 mb-6" />
 
       <!-- Main Content Row -->
       <div class="flex flex-col lg:flex-row gap-8 w-full">
@@ -71,7 +71,7 @@ onMounted(() => {
         <div class="flex-1 min-w-0 max-w-full">
           <!-- Main Image -->
           <div class="rounded-2xl overflow-hidden mb-6 bg-gray-200 flex items-center justify-center w-full" style="height:340px;">
-            <span class="text-gray-500 text-lg"></span>
+            <img :src="'/storage/' + selectedPackage.image_path" :alt="selectedPackage.destination" />
           </div>
           <!-- Description -->
           <h3 class="font-bold text-xl mb-2 text-[#222]">Description</h3>
@@ -99,7 +99,7 @@ onMounted(() => {
 
           <!-- Itinerary Content -->
           <div v-if="activeTab === 'itinerary'" class="mb-8">
-            <h3 class="font-bold text-[#ff7f2a] mb-2">Itinerary</h3>
+            <h3 class="font-bold text-[#1E71B8] mb-2">Itinerary</h3>
             <div class="text-base text-gray-800">
               <p>
               {{ selectedPackage.itinerary }}
@@ -109,7 +109,7 @@ onMounted(() => {
 
           <!-- Terms & Conditions Content -->
           <div v-if="activeTab === 'terms'" class="mb-8">
-            <h3 class="font-bold text-[#ff7f2a] mb-2">Terms & Conditions</h3>
+            <h3 class="font-bold text-[#1E71B8] mb-2">Terms & Conditions</h3>
             <div class="text-base text-gray-800">
               <!-- {{ selectedPackage.terms_condition }} -->
               <p>
@@ -119,7 +119,7 @@ onMounted(() => {
                 <li class="mb-2">
                   <b>Booking and Reservations Confirmation:</b>
                   All bookings require a confirmed down payment to secure reservations.
-                  <span class="text-[#ff7f2a]"> The prices are subject to change until full payment is received and confirmed.</span>
+                  <span class="text-[#1E71B8]"> The prices are subject to change until full payment is received and confirmed.</span>
                   Full payment must be settled on or before the specified due date.
                 </li>
                 <li class="mb-2">
@@ -136,7 +136,7 @@ onMounted(() => {
 
           <!-- Exclusions Content -->
           <div v-if="activeTab === 'exclusions'" class="mb-8">
-            <h3 class="font-bold text-[#ff7f2a] mb-2">Exclusions</h3>
+            <h3 class="font-bold text-[#1E71B8] mb-2">Exclusions</h3>
             <div class="text-base text-gray-800">
               <p>
                 {{ selectedPackage.exclusions }}
@@ -149,28 +149,28 @@ onMounted(() => {
           <!-- Booking Card -->
           <div
             class="rounded-2xl p-6 text-white shadow"
-            style="background:#f28c3a;"
+            style="background:#1E71B8;"
           >
             <div class="flex flex-col gap-2">
               <div class="flex justify-between items-start">
                 <div>
-                  <span>From</span><br>
-                  <span class="font-semibold text-lg">₱ {{ selectedPackage.pax_rate }} / per pax</span>
+                  <span class="font-bold text-xl">From</span><br>
+                  <span class="currency-badge" aria-hidden="true">₱</span>
+                  <span class="font-semibold text-lg"> {{ selectedPackage.pax_rate }} / per pax</span>
                 </div>
                 <span
-                  class="bg-[#d95f00] px-4 py-2 rounded-lg text-white font-semibold text-right text-base leading-tight"
-                  style="display:inline-block;"
+                  class="bg-[#73BE5D] px-4 py-5 rounded-lg text-white font-bold text-right text-xl text-base leading-tight"
+                  style="display:inline-block; "
                 >
-                  Starting from<br>
-                  <span class="text-2xl font-bold">{{ selectedPackage.tour_duration }} Days</span>
+                  <span class="text-lg font-bold">{{ selectedPackage.tour_duration }} Days</span>
                 </span>
               </div>
-              <hr class="border-[#e6a86c] my-4" />
+              <hr class="border-[#73BE5D] my-4" />
               <Link
                   v-if="selectedPackage.id"
   :href="route('process-booking', selectedPackage.id)"
                 class="w-full rounded-xl py-3 font-bold text-lg transition text-center"
-                style="background:#d95f00; color:white;"
+                style="background:#73BE5D; color:white;"
               >
                 BOOK NOW!
               </Link>
@@ -182,20 +182,20 @@ onMounted(() => {
             <div class="font-bold text-lg mb-2 text-[#222] text-center">Related Trips</div>
             <div class="flex flex-col gap-6">
               <div class="flex flex-col items-center bg-white rounded-xl shadow p-4 w-full max-w-[200px] mx-auto">
-                <div class="w-[160px] h-[150px] bg-gray-200 rounded-xl mb-2 flex items-center justify-center overflow-hidden">
-                  <span class="text-gray-500"></span>
+                <div class="w-full h-full bg-gray-200 rounded-xl mb-2 flex items-center justify-center object-cover overflow-hidden">
+                  <img :src="'/storage/' + pkg.image_path" :alt="pkg.destination" />
                 </div>
-                <div class="font-semibold text-[#ff7f2a]">₱ {{ pkg.pax_rate }}</div>
-                <div class="text-[#ff7f2a] flex items-center gap-1">
-                  <svg width="16" height="16" fill="none" stroke="#ff7f2a" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+                <div class="font-semibold text-[#1E71B8] w-full text-left">₱ {{ pkg.pax_rate }}</div>
+                <div class="text-[#1E71B8] flex items-center gap-1 w-full justify-start text-left">
+                  <svg width="16" height="16" fill="none" stroke="#1E71B8" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
                   {{ pkg.destination }}
                 </div>
-                <div class="text-[#ff7f2a] flex items-center gap-1">
-                  <svg width="16" height="16" fill="none" stroke="#ff7f2a" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                <div class="text-[#1E71B8] flex items-center gap-1 w-full justify-start text-left">
+                  <svg width="16" height="16" fill="none" stroke="#1E71B8" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
                   {{ pkg.tour_duration }} Days
                 </div>
                 <Link :href="route('tourdetails', { id: pkg.id })"
-                  class="mt-2 px-4 py-2 border border-[#ff7f2a] text-[#ff7f2a] rounded-full font-semibold hover:bg-[#ff7f2a] hover:text-white transition text-center block">
+                  class="mt-2 px-4 py-2 border border-[#1E71B8] text-[#1E71B8] rounded-full font-semibold hover:bg-[#1E71B8] hover:text-white transition text-center block">
                   View Details
                 </Link>
               </div>
@@ -215,13 +215,23 @@ onMounted(() => {
 }
 .tab-btn {
   flex: 1;
-  background: #ff7f2a;
+  background: #1E71B8;
   color: #fff;
   font-weight: 600;
   padding: 0.5rem 0;
-  border: 2px solid #ff7f2a;
+  border: 2px solid #1E71B8;
   border-radius: 0;
   transition: background 0.2s, color 0.2s;
+}
+.currency-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 1.2rem;
 }
 .tab-btn:first-child {
   border-radius: 8px 0 0 8px;
@@ -231,7 +241,8 @@ onMounted(() => {
 }
 .tab-btn:hover,
 .tab-btn.tab-btn-active {
-  background: #d95f00;
+  background: #73BE5D;
+  border: 2px solid #73BE5D;
   color: #fff;
 }
 @media (max-width: 1024px) {

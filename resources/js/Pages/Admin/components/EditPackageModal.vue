@@ -20,6 +20,7 @@ const formData = ref({
     id: null,
     package_name: '',
     destination: '',
+    region: '',
     description: '',
     tour_duration: '',
     image_path: '', // Or handle image file
@@ -30,6 +31,7 @@ const formData = ref({
     joint_booking: false,
     status: 'active',
     pax_rate: 0,
+    kids_pax_rate: 0,
     discounted_rate: 0,
 });
 
@@ -55,6 +57,7 @@ const fetchPackage = async (id) => {
             id: packageData.id,
             package_name: packageData.package_name || '',
             destination: packageData.destination || '',
+            region: packageData.region || '',
             description: packageData.description || '',
             tour_duration: packageData.tour_duration || '',
             image_path: packageData.image_path || '',
@@ -65,6 +68,7 @@ const fetchPackage = async (id) => {
             joint_booking: packageData.joint_booking === 1, // Convert boolean from API (might be 0/1)
             status: packageData.status || 'active',
             pax_rate: packageData.pax_rate || 0,
+            kids_pax_rate: packageData.kids_pax_rate || 0,
             discounted_rate: packageData.discounted_rate || 0,
         };
         // Set image preview to current image
@@ -93,6 +97,7 @@ const updatePackage = async () => {
             const data = new FormData();
             data.append('package_name', formData.value.package_name);
             data.append('destination', formData.value.destination);
+            data.append('region', formData.value.region || '');
             data.append('description', formData.value.description);
             data.append('tour_duration', formData.value.tour_duration);
             data.append('itinerary', formData.value.itinerary);
@@ -102,6 +107,7 @@ const updatePackage = async () => {
             data.append('joint_booking', formData.value.joint_booking ? 'true' : 'false');
             data.append('status', formData.value.status.toLowerCase());
             data.append('pax_rate', parseFloat(formData.value.pax_rate) || 0);
+            data.append('kids_pax_rate', formData.value.kids_pax_rate !== undefined && formData.value.kids_pax_rate !== null && formData.value.kids_pax_rate !== '' ? parseFloat(formData.value.kids_pax_rate) : '');
             data.append('discounted_rate', parseFloat(formData.value.discounted_rate) || 0);
             data.append('image', formData.value.image);
 
@@ -115,6 +121,7 @@ const updatePackage = async () => {
             const payload = {
                 package_name: formData.value.package_name,
                 destination: formData.value.destination,
+                region: formData.value.region || '',
                 description: formData.value.description,
                 tour_duration: formData.value.tour_duration,
                 itinerary: formData.value.itinerary,
@@ -124,6 +131,7 @@ const updatePackage = async () => {
                 joint_booking: !!formData.value.joint_booking,
                 status: formData.value.status.toLowerCase(),
                 pax_rate: parseFloat(formData.value.pax_rate) || 0,
+                kids_pax_rate: formData.value.kids_pax_rate === '' || formData.value.kids_pax_rate === null || formData.value.kids_pax_rate === undefined ? null : parseFloat(formData.value.kids_pax_rate),
                 discounted_rate: parseFloat(formData.value.discounted_rate) || 0,
             };
             response = await axios.put(`/api/packages/${formData.value.id}`, payload);
@@ -150,6 +158,7 @@ const resetForm = () => {
         id: null,
         package_name: '',
         destination: '',
+        region: '',
         description: '',
         tour_duration: '',
         image_path: '',
@@ -283,6 +292,33 @@ const confirmDelete = async () => {
                                     </div>
 
                                     <div>
+                                        <label for="region" class="block text-sm font-medium text-gray-700">Region</label>
+                                        <select
+                                            id="region"
+                                            v-model="formData.region"
+                                            class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
+                                        >
+                                            <option value="National Capital Region (NCR)">National Capital Region (NCR)</option>
+                                            <option value="Cordillera Administrative Region (CAR)">Cordillera Administrative Region (CAR)</option>
+                                            <option value="Region I: Ilocos Region">Region I: Ilocos Region</option>
+                                            <option value="Region II: Cagayan Valley">Region II: Cagayan Valley</option>
+                                            <option value="Region III: Central Luzon">Region III: Central Luzon</option>
+                                            <option value="Region IV-A: Calabarzon (CALaBarzon)">Region IV-A: Calabarzon (CALABARZON)</option>
+                                            <option value="Region IV-B: Mimaropa (MIMAROPA)">Region IV-B: Mimaropa (MIMAROPA)</option>
+                                            <option value="Region V: Bicol Region">Region V: Bicol Region</option>
+                                            <option value="Region VI: Western Visayas">Region VI: Western Visayas</option>
+                                            <option value="Region VII: Central Visayas">Region VII: Central Visayas</option>
+                                            <option value="Region VIII: Eastern Visayas">Region VIII: Eastern Visayas</option>
+                                            <option value="Region IX: Zamboanga Peninsula">Region IX: Zamboanga Peninsula</option>
+                                            <option value="Region X: Northern Mindanao">Region X: Northern Mindanao</option>
+                                            <option value="Region XI: Davao Region">Region XI: Davao Region</option>
+                                            <option value="Region XII: SOCCSKSARGEN">Region XII: SOCCSKSARGEN</option>
+                                            <option value="Region XIII: Caraga">Region XIII: Caraga</option>
+                                            <option value="BARMM: Bangsamoro Autonomous Region in Muslim Mindanao">BARMM: Bangsamoro Autonomous Region in Muslim Mindanao</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
                                         <label for="basePrice" class="block text-sm font-medium text-gray-700">Base Price per Pax</label>
                                         <input
                                             type="number"
@@ -290,6 +326,16 @@ const confirmDelete = async () => {
                                             v-model="formData.pax_rate"
                                             class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
                                             required
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label for="kidsBasePrice" class="block text-sm font-medium text-gray-700">Kids Price per Pax</label>
+                                        <input
+                                            type="number"
+                                            id="kidsBasePrice"
+                                            v-model="formData.kids_pax_rate"
+                                            class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
                                         />
                                     </div>
 

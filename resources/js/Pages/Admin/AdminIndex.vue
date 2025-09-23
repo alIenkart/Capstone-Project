@@ -111,7 +111,7 @@ const headerTitle = computed(() => {
 .admin-link:hover, .admin-link.active-admin-link {
   background: #176080;
   color: #fff;
-  border-left: 4px solid #f58220;
+  border-left: 4px solid #008DDA;
 }
 .admin-sidebar-bottom {
   display: flex;

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="layout-root">
     <!-- Navbar -->
     <nav class="navbar">
       <div class="navbar-logo">
@@ -39,8 +39,8 @@
         <button class="profile-btn" @click="showDropdown = !showDropdown">
           <span class="profile-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="8" r="4" stroke="#e67e22" stroke-width="2" fill="none"/>
-              <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="#e67e22" stroke-width="2" fill="none"/>
+              <circle cx="12" cy="8" r="4" stroke="#008DDA" stroke-width="2" fill="none"/>
+              <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="#008DDA" stroke-width="2" fill="none"/>
             </svg>
           </span>
         </button>
@@ -112,6 +112,12 @@ body {
   flex-direction: column;
 }
 
+.layout-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 .main-content, main {
   flex: 1 0 auto;
   width: 100vw;
@@ -147,7 +153,7 @@ body {
   justify-content: center;
 }
 .link {
-  color: #e67e22;
+  color: #008DDA;
   text-decoration: none;
   font-weight: 500;
   padding: 8px 0;
@@ -158,12 +164,12 @@ body {
   transition: color 0.2s;
 }
 .link.active-link {
-  color: #e67e22;
+  color: #008DDA;
   font-weight: bold;
-  border-bottom: 2px solid #e67e22;
+  border-bottom: 2px solid #008DDA;
 }
 .link:hover {
-  color: #d35400;
+  color: #0766AD;
 }
 .profile-dropdown {
   position: relative;
@@ -174,7 +180,7 @@ body {
 .profile-btn {
   background: none;
   border: none;
-  color: #e67e22;
+  color: #008DDA;
   font-weight: 500;
   cursor: pointer;
   display: flex;
@@ -194,7 +200,7 @@ body {
   height: 32px;
   border-radius: 50%;
   background: #fff;
-  border: 2px solid #e67e22;
+  border: 2px solid #008DDA;
 }
 .dropdown-menu {
   position: absolute;
@@ -214,7 +220,7 @@ body {
 .dropdown-item {
   display: block;
   padding: 12px 24px;
-  color: #e67e22;
+  color: #008DDA;
   text-align: left;
   text-decoration: none;
   font-size: 15px;
@@ -223,10 +229,10 @@ body {
 }
 .dropdown-item:hover {
   background: #fbeee0;
-  color: #d35400;
+  color: #0766AD;
 }
 .home-footer {
-  background: #e67e22;
+  background: #008DDA;
   padding: 24px 0 12px 0;
   text-align: center;
   border-top: 1px solid #eee;

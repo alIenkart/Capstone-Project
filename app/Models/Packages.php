@@ -8,6 +8,7 @@ class Packages extends Model
 {
     protected $fillable = [
         'destination',
+        'region',
         'description',
         'tour_duration',
         'image_path',
@@ -19,6 +20,7 @@ class Packages extends Model
         'joint_booking',
         'status',
         'pax_rate',
+        'kids_pax_rate',
         'discounted_rate',
         'time_stamp',
     ];

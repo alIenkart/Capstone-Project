@@ -1,0 +1,1 @@
+import e from"./AdminIndex-BggJMDvg.js";import{c as t,o as n}from"./app-C0Uim_Fg.js";import"./_plugin-vue_export-helper-DlAUqK2U.js";const p=Object.assign({layout:e},{__name:"ContentManagement",setup(a){return(o,m)=>(n(),t("h1",null," This is the content management page "))}});export{p as default};

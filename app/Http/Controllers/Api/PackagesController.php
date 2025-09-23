@@ -32,6 +32,7 @@ class PackagesController extends Controller
         $validator = Validator::make($request->all(), [
             'package_name' => 'required|string|max:255',
             'destination' => 'required|string|max:255',
+            'region' => 'nullable|string|max:255',
             'description' => 'required|string',
             'tour_duration' => 'required|string|max:255',
             'itinerary' => 'required|string',
@@ -41,6 +42,7 @@ class PackagesController extends Controller
             'joint_booking' => 'required|boolean',
             'status' => 'required|in:active,inactive',
             'pax_rate' => 'required|numeric|min:0',
+            'kids_pax_rate' => 'nullable|numeric|min:0',
             'discounted_rate' => 'required|numeric|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
@@ -88,6 +90,7 @@ class PackagesController extends Controller
         $validator = Validator::make($request->all(), [
             'package_name' => 'sometimes|required|string|max:255',
             'destination' => 'sometimes|required|string|max:255',
+            'region' => 'sometimes|nullable|string|max:255',
             'description' => 'sometimes|required|string',
             'tour_duration' => 'sometimes|required|string|max:255',
             'itinerary' => 'sometimes|required|string',
@@ -97,6 +100,7 @@ class PackagesController extends Controller
             'joint_booking' => 'sometimes|required|boolean',
             'status' => 'sometimes|required|in:active,inactive',
             'pax_rate' => 'sometimes|required|numeric|min:0',
+            'kids_pax_rate' => 'sometimes|nullable|numeric|min:0',
             'discounted_rate' => 'sometimes|required|numeric|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);

@@ -6,14 +6,23 @@ export const storeBooking = defineStore('booking', {
     endDate: null,
     packageId: null,
     packageType: null,
-    quantity: 0,
+    packageDestination: '',
+    duration: 0,
+    adultsQuantity: 0,
+    kidsQuantity: 0,
     amount: 0,
     amountWithDiscount: 0,
+    adultTotalAmount: 0,
+    kidsTotalAmount: 0,
+    adultRate: 0,
+    kidsRate: 0,
     discountId: null,
     voucherCode: '',
     user:null,
     discountIdImage: null,
     selectedIdType: '',
+    tourType: '',
+    tourClassification: '',
   }),
 
   actions: {
@@ -27,11 +36,32 @@ export const storeBooking = defineStore('booking', {
     setPackageType(type) {
       this.packageType = type
     },
-    setQuantity(count) {
-      this.quantity = count
+    setPackageDestination(destination) {
+      this.packageDestination = destination
+    },
+    setDuration(days) {
+      this.duration = days
+    },
+    setAdultsQuantity(count) {
+      this.adultsQuantity = count
+    },
+    setKidsQuantity(count) {
+      this.kidsQuantity = count
     },
     setAmount(amount){
       this.amount = amount
+    },
+    setAdultTotalAmount(amount) {
+      this.adultTotalAmount = amount
+    },
+    setKidsTotalAmount(amount) {
+      this.kidsTotalAmount = amount
+    },
+    setAdultRate(rate) {
+      this.adultRate = rate
+    },
+    setKidsRate(rate) {
+      this.kidsRate = rate
     },
     setTotalAmountWithDiscount(amountWithDiscount){
       this.amountWithDiscount = amountWithDiscount
@@ -63,8 +93,11 @@ export const storeBooking = defineStore('booking', {
       this.endDate = null
       this.packageId = null
       this.packageType = null
-      this.quantity = 0
+      this.adultsQuantity = 0
+      this.kidsQuantity = 0
       this.amount = 0
+      this.adultTotalAmount = 0
+      this.kidsTotalAmount = 0
       this.discountId = null
       this.voucherCode = ''
     }

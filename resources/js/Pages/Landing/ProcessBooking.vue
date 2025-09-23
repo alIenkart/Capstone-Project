@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import LandingIndex from './LandingIndex.vue'
 import Calendar from './Calendar.vue'
-import SelectPackage from './SelectPackage.vue'
+import ReservationDetails from './ReservationDetails.vue'
 import BookingConfirmation from './BookingConfirmation.vue'
 
 defineOptions({ layout: LandingIndex })
@@ -27,7 +27,7 @@ function goBack() {
       v-if="currentStep === 'calendar'" 
       @next="goNext" 
     />
-    <SelectPackage 
+    <ReservationDetails
       v-else-if="currentStep === 'select'" 
       @next="goNext" 
       @back="goBack"

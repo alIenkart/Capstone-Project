@@ -75,11 +75,13 @@ onMounted(() => {
             <th>Package ID</th>
             <th>Package Name</th>
             <th>Destination</th>
+            <th>Region</th>
             <th>Max Occupancy</th>
             <th>Booking Type</th>
             <th>Duration</th>
             <th>Status</th>
             <th>Base Price per Pax</th>
+            <th>Kids Price per Pax</th>
             <th></th>
           </tr>
         </thead>
@@ -88,11 +90,13 @@ onMounted(() => {
             <td>{{ packageItem.id }}</td>
             <td>{{ packageItem.package_name }}</td>
             <td>{{ packageItem.destination }}</td>
+            <td>{{ packageItem.region }}</td>
             <td>{{ packageItem.capacity }}</td>
             <td>{{ packageItem.joint_booking ? 'Joint' : 'Exclusive' }}</td>
             <td>{{ packageItem.tour_duration }}</td>
             <td>{{ packageItem.status }}</td>
             <td>{{ packageItem.pax_rate }}</td>
+            <td>{{ packageItem.kids_pax_rate }}</td>
             <td>
               <button class="admin-packages-edit-btn" @click="openEditModal(packageItem.id)" title="Edit">
                 <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -213,5 +217,79 @@ onMounted(() => {
 }
 .admin-packages-edit-btn:hover {
   color: #217093;
+}
+
+/* Mobile/tablet responsiveness */
+.admin-packages-table-wrapper {
+  -webkit-overflow-scrolling: touch;
+}
+
+.admin-packages-table {
+  min-width: 900px; /* force horizontal scroll on small screens */
+}
+
+@media (max-width: 1024px) {
+  .admin-packages-table th,
+  .admin-packages-table td {
+    padding: 8px 6px;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-packages-title {
+    font-size: 1.1rem;
+  }
+
+  .admin-packages-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .admin-packages-search {
+    width: 100%;
+  }
+
+  .admin-packages-filters {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .admin-packages-select {
+    flex: 1 1 180px;
+  }
+
+  .admin-packages-filter-btn {
+    padding: 8px 12px;
+  }
+
+  .admin-packages-add-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .admin-packages-table th,
+  .admin-packages-table td {
+    padding: 8px 6px;
+    font-size: 0.9rem;
+  }
+
+  .admin-packages-table {
+    min-width: 720px; /* ensure columns remain readable; scroll handles overflow */
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-packages-filter-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .admin-packages-select {
+    flex: 1 1 100%;
+  }
 }
 </style>

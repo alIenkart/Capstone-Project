@@ -1,1 +1,0 @@
-import t from"./AdminIndex-RSKVJfVT.js";import{c as e,o as s}from"./app-CxYSaNW7.js";import"./_plugin-vue_export-helper-DlAUqK2U.js";const m=Object.assign({layout:t},{__name:"Settings",setup(n){return(o,r)=>(s(),e("h1",null," This is the settings page "))}});export{m as default};

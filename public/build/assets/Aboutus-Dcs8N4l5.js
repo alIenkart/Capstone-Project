@@ -1,1 +1,0 @@
-import t from"./LandingIndex-GyiU-V29.js";import{c as e,o}from"./app-CxYSaNW7.js";const u=Object.assign({layout:t},{__name:"Aboutus",setup(s){return(a,c)=>(o(),e("h1",null,"This is about us page"))}});export{u as default};

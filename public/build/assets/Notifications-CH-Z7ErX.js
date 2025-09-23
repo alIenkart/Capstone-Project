@@ -1,1 +1,0 @@
-import t from"./LandingIndex-GyiU-V29.js";import{c as o,o as a}from"./app-CxYSaNW7.js";const r=Object.assign({layout:t},{__name:"Notifications",setup(e){return(c,i)=>(a(),o("h1",null,"This is notification page"))}});export{r as default};

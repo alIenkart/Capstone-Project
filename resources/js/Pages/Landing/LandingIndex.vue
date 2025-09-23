@@ -1,16 +1,18 @@
 <template>
-  <div>
+  <div class="layout-root">
     <!-- Navbar -->
     <nav class="navbar">
       <div class="navbar-logo">
-        <img class="logo-img" src="build/assets/travelogo.jpg" alt="JE Travel & Tours" />
+        <Link href="/">
+          <img class="logo-img" src="/storage/logo/Logo.png" alt="JE Travel & Tours" />
+        </Link>
       </div>
       <div class="navbar-links">
-        <Link href="/" class="link" :class="page.url === '/' ? 'active-link' : ''">Home</Link>
-        <Link href="/destination" class="link" :class="page.url === '/destination' ? 'active-link' : ''">Destinations</Link>
-        <Link href="/blogs" class="link" :class="page.url === '/blogs' ? 'active-link' : ''">Travel Blogs</Link>
-        <Link href="/aboutus" class="link" :class="page.url === '/aboutus' ? 'active-link' : ''">About Us</Link>
-        <Link href="/contactus" class="link" :class="page.url === '/contactus' ? 'active-link' : ''">Contact Us</Link>
+        <Link href="/" class="link uppercase" :class="page.url === '/' ? 'active-link' : ''">Home</Link>
+        <Link href="/destination" class="link uppercase" :class="page.url === '/destination' ? 'active-link' : ''">Destinations</Link>
+        <Link href="/blogs" class="link uppercase" :class="page.url === '/blogs' ? 'active-link' : ''">Travel Blogs</Link>
+        <Link href="/aboutus" class="link uppercase" :class="page.url === '/aboutus' ? 'active-link' : ''">About Us</Link>
+        <Link href="/contactus" class="link uppercase" :class="page.url === '/contactus' ? 'active-link' : ''">Contact Us</Link>
       </div>
       
       <div v-if="user" class="profile-dropdown"
@@ -19,8 +21,8 @@
         <button class="profile-btn" @click="showDropdown = !showDropdown">
           <span class="profile-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="8" r="4" stroke="#e67e22" stroke-width="2" fill="none"/>
-              <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="#e67e22" stroke-width="2" fill="none"/>
+              <circle cx="12" cy="8" r="4" stroke="#008DDA" stroke-width="2" fill="none"/>
+              <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="#008DDA" stroke-width="2" fill="none"/>
             </svg>
           </span>
         </button>
@@ -46,22 +48,14 @@
     </main>
 
     <!-- Footer -->
-    <footer class="home-footer">
-      <div class="footer-main">
-        2025 Copyright. JE Travel & Tours | Unit 201 2nd floor M.B. Aguirre Brgy. San Jose City of Biñan, Laguna | +639395218437
-      </div>
-      <div class="footer-links">
-        <a href="#" class="footer-link">Piracy Policy</a>
-        <span class="footer-separator">|</span>
-        <a href="#" class="footer-link">Terms & Conditions</a>
-      </div>
-    </footer>
   </div>
+  <Footer />
 </template>
 
 <script setup>
 import { ref, computed  } from 'vue'
 import { Link, usePage } from '@inertiajs/vue3'
+import Footer from './Footer.vue'
 
 const showDropdown = ref(false)
 const page = usePage()
@@ -92,6 +86,12 @@ body {
   width: 100vw;
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.layout-root {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -130,7 +130,7 @@ body {
   justify-content: center;
 }
 .link {
-  color: #e67e22;
+  color: #008DDA;
   text-decoration: none;
   font-weight: 500;
   padding: 8px 0;
@@ -141,12 +141,12 @@ body {
   transition: color 0.2s;
 }
 .link.active-link {
-  color: #e67e22;
+  color: #008DDA;
   font-weight: bold;
-  border-bottom: 2px solid #e67e22;
+  border-bottom: 2px solid #008DDA;
 }
 .link:hover {
-  color: #d35400;
+  color: #73BE5D;
 }
 .profile-dropdown {
   position: relative;
@@ -157,7 +157,7 @@ body {
 .profile-btn {
   background: none;
   border: none;
-  color: #e67e22;
+  color: #008DDA;
   font-weight: 500;
   cursor: pointer;
   display: flex;
@@ -167,7 +167,7 @@ body {
   transition: background 0.2s;
 }
 .profile-btn:hover {
-  background: #fbeee0;
+  background: #eeece9;
 }
 .profile-icon {
   display: flex;
@@ -177,7 +177,7 @@ body {
   height: 32px;
   border-radius: 50%;
   background: #fff;
-  border: 2px solid #e67e22;
+  border: 2px solid #008DDA;
 }
 .dropdown-menu {
   position: absolute;
@@ -197,7 +197,7 @@ body {
 .dropdown-item {
   display: block;
   padding: 12px 24px;
-  color: #e67e22;
+  color: #008DDA;
   text-align: left;
   text-decoration: none;
   font-size: 15px;
@@ -205,38 +205,7 @@ body {
   border-radius: 0;
 }
 .dropdown-item:hover {
-  background: #fbeee0;
-  color: #d35400;
-}
-.home-footer {
-  background: #e67e22;
-  padding: 24px 0 12px 0;
-  text-align: center;
-  border-top: 1px solid #eee;
-  margin-top: 0px;
-}
-.footer-main {
-  color: #fff;
-  font-size: 15px;
-  margin-bottom: 8px;
-  line-height: 1.6;
-}
-.footer-links {
-  margin-top: 0;
-}
-.footer-link {
-  color: #fff;
-  text-decoration: none;
-  margin: 0 8px;
-  font-weight: 500;
-  transition: color 0.2s, text-decoration 0.2s;
-}
-.footer-link:hover {
-  color: #fbeee0;
-  text-decoration: underline;
-}
-.footer-separator {
-  color: #fff;
-  margin: 0 4px;
+  background: #eeece9;
+  color: #73BE5D;
 }
 </style>

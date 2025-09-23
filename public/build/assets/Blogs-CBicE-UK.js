@@ -1,1 +1,0 @@
-import o from"./LandingIndex-GyiU-V29.js";import{c as e,o as t}from"./app-CxYSaNW7.js";const _=Object.assign({layout:o},{__name:"Blogs",setup(a){return(s,c)=>(t(),e("h1",null,"This is about blog page"))}});export{_ as default};
