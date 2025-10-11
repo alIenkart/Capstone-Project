@@ -1,0 +1,1 @@
+import t from"./AdminIndex-DGrpEJv6.js";import{c as e,o as s}from"./app-D3EFPD5h.js";const _=Object.assign({layout:t},{__name:"Settings",setup(a){return(n,o)=>(s(),e("h1",null," This is the settings page "))}});export{_ as default};

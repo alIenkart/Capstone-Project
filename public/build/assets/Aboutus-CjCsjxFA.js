@@ -1,1 +1,0 @@
-import t from"./LandingIndex-CiXmiEr3.js";import{c as o,o as e}from"./app-C0Uim_Fg.js";import"./Footer-CaRwHviR.js";import"./_plugin-vue_export-helper-DlAUqK2U.js";const u=Object.assign({layout:t},{__name:"Aboutus",setup(s){return(a,r)=>(e(),o("h1",null,"This is about us page"))}});export{u as default};

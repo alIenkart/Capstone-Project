@@ -1,1 +1,0 @@
-import e from"./AdminIndex-BggJMDvg.js";import{c as t,o as a}from"./app-C0Uim_Fg.js";import"./_plugin-vue_export-helper-DlAUqK2U.js";const m=Object.assign({layout:e},{__name:"ReviewFeedback",setup(o){return(r,c)=>(a(),t("h1",null," This is the review/feedback page "))}});export{m as default};

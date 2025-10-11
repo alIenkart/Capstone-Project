@@ -1,0 +1,1 @@
+import e from"./AdminIndex-DGrpEJv6.js";import{c as a,o as t}from"./app-D3EFPD5h.js";const _=Object.assign({layout:e},{__name:"ReviewFeedback",setup(c){return(o,r)=>(t(),a("h1",null," This is the review/feedback page "))}});export{_ as default};

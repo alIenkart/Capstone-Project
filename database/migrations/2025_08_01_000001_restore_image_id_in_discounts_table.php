@@ -5,12 +5,11 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    public function up(): void
+    public function up()
     {
         Schema::table('discounts', function (Blueprint $table) {
-            $table->integer('image_id')->nullable()->after('booking_id');
-            if (Schema::hasColumn('discounts', 'image_path')) {
-                $table->dropColumn('image_path');
+            if (!Schema::hasColumn('discounts', 'image_id')) {
+                $table->integer('image_id')->nullable()->after('booking_id');
             }
         });
     }
