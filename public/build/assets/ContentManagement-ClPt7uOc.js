@@ -1,1 +1,0 @@
-import e from"./AdminIndex-DGrpEJv6.js";import{c as t,o as n}from"./app-D3EFPD5h.js";const r=Object.assign({layout:e},{__name:"ContentManagement",setup(a){return(o,c)=>(n(),t("h1",null," This is the content management page "))}});export{r as default};

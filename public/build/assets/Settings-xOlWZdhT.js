@@ -1,0 +1,1 @@
+import t from"./AdminIndex-Dk116fLf.js";import{c as e,o as s}from"./app-Dp--WtE_.js";const _=Object.assign({layout:t},{__name:"Settings",setup(a){return(n,o)=>(s(),e("h1",null," This is the settings page "))}});export{_ as default};

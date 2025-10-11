@@ -1,1 +1,0 @@
-import t from"./LandingIndex-BmZMlHav.js";import{c as o,o as i}from"./app-D3EFPD5h.js";import"./Footer-CILG9ZMZ.js";import"./_plugin-vue_export-helper-DlAUqK2U.js";const p=Object.assign({layout:t},{__name:"Notifications",setup(a){return(e,c)=>(i(),o("h1",null,"This is notification page"))}});export{p as default};

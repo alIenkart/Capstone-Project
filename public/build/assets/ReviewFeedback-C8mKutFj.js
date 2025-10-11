@@ -1,0 +1,1 @@
+import e from"./AdminIndex-Dk116fLf.js";import{c as a,o as t}from"./app-Dp--WtE_.js";const _=Object.assign({layout:e},{__name:"ReviewFeedback",setup(c){return(o,r)=>(t(),a("h1",null," This is the review/feedback page "))}});export{_ as default};
