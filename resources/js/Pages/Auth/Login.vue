@@ -38,7 +38,7 @@ const submit = () => {
         <Head title="Log in" />
 
         <div class="mb-6 flex flex-col items-center">
-            <img class="logo-img w-32 h-auto mb-4" src="/storage/app/public/logo/Logo.png" alt="JE Travel & Tours" />
+            <img class="logo-img w-32 h-auto mb-4" src="/storage/logo/Logo.png" alt="JE Travel & Tours" />
             <h2 class="text-2xl font-bold text-orange-600 mb-2">Login to your account.</h2>
             <p class="text-sm text-gray-600">Hello, welcome back to your account</p>
         </div>
