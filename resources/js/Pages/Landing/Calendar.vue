@@ -15,7 +15,7 @@ const currentYear = ref(currentDate.getFullYear())
 
 // dropdowns
 const tourType = ref('Joiners')
-const tourTypes = ['Joiners', 'Private', 'Exclusive']
+const tourTypes = ['Joiners', 'Exclusive']
 const tourClassification = ref('Land Travel')
 const tourClassifications = ['Land Travel', 'Water Adventure', 'Air Travel']
 const isTypeOpen = ref(false)

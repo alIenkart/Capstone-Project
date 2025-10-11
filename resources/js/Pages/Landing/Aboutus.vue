@@ -8,7 +8,7 @@ defineOptions({ layout: LandingIndex })
         <div class="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 items-start">
             <div class="rounded-xl overflow-hidden shadow ring-1 ring-gray-200/60 bg-gray-50">
                 <img
-                    src="/storage/about-us/about-us.jpg"
+                    src="/storage/about-us/about1.jpg"
                     class="w-full h-full object-cover aspect-[4/3] md:aspect-[4/5]"
                     loading="lazy"
                 />
@@ -70,34 +70,10 @@ defineOptions({ layout: LandingIndex })
 
             <div class="rounded-2xl overflow-hidden shadow ring-1 ring-gray-200/60 bg-gray-50 justify-self-center md:justify-self-end">
                 <img
-                    src="/storage/about-us/our-story.jpg"
+                    src="/storage/about-us/about2.jpg"
                     class="w-72 h-72 md:w-[380px] md:h-[380px] object-cover"
                     loading="lazy"
                 />
-            </div>
-        </div>
-    </section>
-
-    <section class="max-w-7xl mx-auto px-6 lg:px-8 pb-12 lg:pb-16">
-        <div class="space-y-8">
-            <div class="text-center">
-                <h2 class="text-2xl font-semibold tracking-wide text-[#1E71B8] uppercase">Partnerships</h2>
-                <div class="mx-auto mt-2 h-0.5 w-32 bg-sky-500"></div>
-            </div>
-
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 md:gap-8 justify-items-center">
-                <div class="flex items-center justify-center rounded-xl border border-gray-200 bg-white shadow-sm h-64 w-64 overflow-hidden">
-                    <img src="/storage/about-us/partners/partner1.png" alt="Partner 1" class="h-full w-full object-contain" loading="lazy" />
-                </div>
-                <div class="flex items-center justify-center rounded-xl border border-gray-200 bg-white shadow-sm h-64 w-64 overflow-hidden">
-                    <img src="/storage/about-us/partners/partner2.png" alt="Partner 2" class="h-full w-full object-contain" loading="lazy" />
-                </div>
-                <div class="flex items-center justify-center rounded-xl border border-gray-200 bg-white shadow-sm h-64 w-64 overflow-hidden">
-                    <img src="/storage/about-us/partners/partner3.png" alt="Partner 3" class="h-full w-full object-contain" loading="lazy" />
-                </div>
-                <div class="flex items-center justify-center rounded-xl border border-gray-200 bg-white shadow-sm h-64 w-64 overflow-hidden">
-                    <img src="/storage/about-us/partners/partner4.png" alt="Partner 4" class="h-full w-full object-contain" loading="lazy" />
-                </div>
             </div>
         </div>
     </section>
@@ -111,13 +87,13 @@ defineOptions({ layout: LandingIndex })
 
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 md:gap-8 justify-items-center">
                 <div class="flex items-center justify-center rounded-xl border border-gray-200 bg-white shadow-sm h-64 w-64 overflow-hidden">
-                    <img src="/storage/about-us/philtoa-accreditation.png" alt="Accreditation 1" class="h-full w-full object-contain" loading="lazy" />
+                    <img src="/storage/accreditation/philtoa-accreditation.png" alt="Accreditation 1" class="h-full w-full object-contain" loading="lazy" />
                 </div>
                 <div class="flex items-center justify-center rounded-xl border border-gray-200 bg-white shadow-sm h-64 w-64 overflow-hidden">
-                    <img src="/storage/about-us/PTAA-accreditation.png" alt="Accreditation 2" class="h-full w-full object-contain" loading="lazy" />
+                    <img src="/storage/accreditation/PTAA-accreditation.png" alt="Accreditation 2" class="h-full w-full object-contain" loading="lazy" />
                 </div>
                 <div class="flex items-center justify-center rounded-xl border border-gray-200 bg-white shadow-sm h-64 w-64 overflow-hidden">
-                    <img src="/storage/about-us/tcp-accreditation.png" alt="Accreditation 3" class="h-full w-full object-contain" loading="lazy" />
+                    <img src="/storage/accreditation/tcp-accreditation.png" alt="Accreditation 3" class="h-full w-full object-contain" loading="lazy" />
                 </div>
             </div>
         </div>
