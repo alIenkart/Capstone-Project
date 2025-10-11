@@ -33,7 +33,7 @@ onMounted(() => {
     <!-- Hero Section -->
     <section
       class="home-hero"
-      style="background: url('/storage/thumbnails/boracay.jpg') center/cover no-repeat;"
+      style="background: url('/storage/home-header/boracay.jpg') center/cover no-repeat;"
     >
       <div class="home-hero-content">
         <div class="home-hero-title">JE TRAVEL & TOURS</div>

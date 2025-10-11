@@ -143,7 +143,7 @@ body {
 .logo-img {
   height: 50px;
   display: block;
-  content: url('/resources/assets/travelogo.jpg'); 
+  content: url('/storage/app/public/logo/Logo.png'); 
 }
 .navbar-links {
   display: flex;

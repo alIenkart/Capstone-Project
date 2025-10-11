@@ -1,12 +1,12 @@
 /vendor/
-/storage/
+# /storage/
 /bootstrap/
 node_modules/
 .env
-app/storage/
-public/storage
-public/hot
-public_html/storage
-public_html/hot
+# app/storage/
+# public/storage
+# public/hot
+# public_html/storage
+# public_html/hot
 .qodo
 /storage/logs/laravel.log
