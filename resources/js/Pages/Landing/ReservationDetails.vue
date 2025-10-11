@@ -14,6 +14,8 @@ const id = computed(() => page.props.id);
 const selectedPackage = ref({});
 const pax = ref(1);
 const kidsPax = ref(1);
+const discountImages = ref([]);
+const remarks = ref('');
 
 // Duration in days based on booking dates (inclusive)
 const durationDays = computed(() => {
@@ -67,8 +69,99 @@ function postPackage() {
   booking.setKidsRate(selectedPackage.value.kids_pax_rate || 0)
   booking.setAdultTotalAmount(adultTotalAmount.value)
   booking.setKidsTotalAmount(kidsTotalAmount.value)
+  booking.setDiscountImages(discountImages.value)
+  booking.setRemarks(remarks.value)
   emit('next')
 }
+
+// Parse itinerary string into day panels
+const parseItineraryToDays = (itineraryString) => {
+  if (!itineraryString || itineraryString.trim() === '') {
+    return [{ id: 1, content: '' }];
+  }
+  
+  // Try to split by "Day X:" pattern first
+  const dayPattern = /Day\s+\d+:/gi;
+  const dayMatches = [...itineraryString.matchAll(dayPattern)];
+  
+  if (dayMatches.length > 0) {
+    const days = [];
+    
+    dayMatches.forEach((match, index) => {
+      const startIndex = match.index;
+      const endIndex = index < dayMatches.length - 1 ? dayMatches[index + 1].index : itineraryString.length;
+      
+      // Extract content between day markers
+      const section = itineraryString.substring(startIndex, endIndex).trim();
+      const lines = section.split('\n');
+      const content = lines.slice(1).join('\n').trim(); // Skip the "Day X:" line
+      
+      days.push({
+        id: index + 1,
+        content: content
+      });
+    });
+    
+    return days;
+  }
+  
+  // Fallback: try splitting by double newlines
+  const daySections = itineraryString.split('\n\n').filter(section => section.trim() !== '');
+  if (daySections.length > 1) {
+    const days = daySections.map((section, index) => {
+      // Remove "Day X:" prefix if it exists
+      const content = section.replace(/^Day\s+\d+:\s*/i, '').trim();
+      return {
+        id: index + 1,
+        content: content
+      };
+    });
+    
+    return days;
+  }
+  
+  // If no structured days found, treat as single day
+  return [{ id: 1, content: itineraryString.trim() }];
+};
+
+// Computed property to get parsed itinerary days
+const itineraryDays = computed(() => {
+  return parseItineraryToDays(selectedPackage.value.itinerary || '');
+});
+
+// Image upload functions
+const handleImageUpload = (event) => {
+  const files = Array.from(event.target.files);
+  
+  // Filter to only allow images and limit to 3 total
+  const imageFiles = files.filter(file => file.type.startsWith('image/'));
+  const remainingSlots = 3 - discountImages.value.length;
+  const filesToAdd = imageFiles.slice(0, remainingSlots);
+  
+  filesToAdd.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      discountImages.value.push({
+        id: Date.now() + Math.random(),
+        file: file,
+        preview: e.target.result,
+        name: file.name
+      });
+    };
+    reader.readAsDataURL(file);
+  });
+  
+  // Clear the input
+  event.target.value = '';
+};
+
+const removeImage = (imageId) => {
+  discountImages.value = discountImages.value.filter(img => img.id !== imageId);
+};
+
+const triggerFileInput = () => {
+  document.getElementById('discount-image-upload').click();
+};
 
 const fetchSelectedPackage = async () => {
   try {
@@ -148,14 +241,96 @@ onMounted(() => {
           <div class="flex w-full mb-2">
             <div class="flex-1 font-semibold text-[#1E71B8]">Itinerary</div>
           </div>
-          <pre
-            class="w-full rounded-xl border border-[#000000] bg-white text-[#000000] p-4 whitespace-pre-wrap"
-          >{{ selectedPackage.itinerary }}</pre>
+          
+          <!-- Day-based itinerary panels -->
+          <div v-if="itineraryDays.length > 0" class="space-y-4">
+            <div 
+              v-for="day in itineraryDays" 
+              :key="day.id"
+              class="w-full rounded-xl border border-[#1E71B8] bg-white p-4"
+            >
+              <div class="flex items-center mb-3">
+                <h3 class="text-[#1E71B8] font-semibold text-lg">DAY {{ day.id }}</h3>
+              </div>
+              <div class="text-[#000000] whitespace-pre-wrap pl-11">{{ day.content }}</div>
+            </div>
+          </div>
+          
+          <!-- Fallback for empty itinerary -->
+          <div v-else class="w-full rounded-xl border border-[#000000] bg-white text-[#000000] p-4">
+            <div class="text-gray-500 italic">No itinerary available</div>
+          </div>
         </div>
       </div>
-      <!-- Right Side: Summary Card -->
-      <div class="w-full max-w-sm bg-[#1E71B8] rounded-xl p-8 flex flex-col justify-between min-h-[350px]">
-        <div>
+      
+      <!-- Right Side: Additional Info and Summary Card -->
+      <div class="w-full max-w-sm flex flex-col gap-4">
+        <!-- Discount ID Image Uploader -->
+        <div class="bg-white rounded-xl p-6 border border-gray-200">
+          <div class="text-[#1E71B8] font-semibold text-sm mb-2">Discount ID Images</div>
+          <div class="space-y-2">
+            <!-- Image Preview Grid -->
+            <div v-if="discountImages.length > 0" class="grid grid-cols-3 gap-2 mb-2">
+              <div 
+                v-for="image in discountImages" 
+                :key="image.id"
+                class="relative group"
+              >
+                <img 
+                  :src="image.preview" 
+                  :alt="image.name"
+                  class="w-full h-16 object-cover rounded-lg border border-gray-300"
+                />
+                <button 
+                  @click="removeImage(image.id)"
+                  class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  ×
+                </button>
+              </div>
+            </div>
+            
+            <!-- Upload Button -->
+            <button 
+              @click="triggerFileInput"
+              :disabled="discountImages.length >= 3"
+              class="w-full py-2 px-3 bg-[#1E71B8] bg-opacity-10 text-[#1E71B8] text-sm rounded-lg border border-[#1E71B8] border-dashed hover:bg-opacity-20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <div class="flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                </svg>
+                <span>{{ discountImages.length >= 3 ? 'Max 3 images' : 'Add Image' }}</span>
+              </div>
+            </button>
+            
+            <!-- Hidden File Input -->
+            <input 
+              id="discount-image-upload"
+              type="file" 
+              multiple 
+              accept="image/*"
+              @change="handleImageUpload"
+              class="hidden"
+            />
+          </div>
+          <p class="text-gray-500 text-xs mt-2">* Maximum of 3 Discount ID Upload</p>
+        </div>
+
+        <!-- Remarks Section -->
+        <div class="bg-white rounded-xl p-6 border border-gray-200">
+          <div class="text-[#1E71B8] font-semibold text-sm mb-2">Remarks</div>
+          <textarea 
+            v-model="remarks"
+            placeholder="*Extra baggage, include infants etc."
+            class="w-full h-20 px-3 py-2 bg-gray-50 text-gray-800 placeholder-gray-500 rounded-lg border border-gray-300 resize-none focus:outline-none focus:ring-2 focus:ring-[#1E71B8] focus:border-[#1E71B8]"
+          ></textarea>
+        </div>
+
+        <!-- Summary Card -->
+        <div class="bg-[#1E71B8] rounded-xl p-8 flex flex-col justify-between min-h-[350px]">
+          <div>
+            <!-- Package Details -->
           <div class="font-bold text-white text-lg mb-2">{{selectedPackage.destination}}</div>
           <div class="text-white mb-4">
             <div>Tour Type: <span class="text-white">{{ booking.tourType }}</span></div>
@@ -178,7 +353,7 @@ onMounted(() => {
             </div>
             <div class="flex justify-between">
               <span>Discount ID</span>
-              <span>- 20%</span>
+              <span>{{selectedPackage.discounted_rate}}%</span>
             </div>
           </div>
           <hr class="border-[#73BE5D] my-4" />
@@ -187,9 +362,10 @@ onMounted(() => {
               <span>₱ {{ totalAmountWithDiscount }}</span>
           </div>
         </div>
-        <button @click=postPackage class="w-full rounded-full py-3 font-bold text-lg transition bg-[#73BE5D] text-white hover:bg-[#6aae56] mt-2">
-          Proceed
-        </button>
+          <button @click=postPackage class="w-full rounded-full py-3 font-bold text-lg transition bg-[#73BE5D] text-white hover:bg-[#6aae56] mt-2">
+            Proceed
+          </button>
+        </div>
       </div>
     </div>
   </div>

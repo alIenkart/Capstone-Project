@@ -116,6 +116,7 @@ const handleApprovalPaymentClose = () => {
   font-size: 1.3rem;
   font-weight: bold;
   margin-bottom: 24px;
+  color: #1E71B8;
 }
 .admin-payment-controls {
   display: flex;
@@ -127,9 +128,10 @@ const handleApprovalPaymentClose = () => {
 .admin-payment-search {
   width: 240px;
   padding: 8px 16px;
-  border: 1.5px solid #888;
+  border: 1.5px solid #1E71B8;
   border-radius: 8px;
   font-size: 1rem;
+  color: #1E71B8;
 }
 .admin-payment-filters {
   display: flex;
@@ -138,22 +140,25 @@ const handleApprovalPaymentClose = () => {
 }
 .admin-payment-select {
   padding: 8px 16px;
-  border: 1.5px solid #888;
+  border: 1.5px solid #1E71B8;
   border-radius: 8px;
   font-size: 1rem;
+  color: #1E71B8;
 }
 .admin-payment-filter-btn {
   background: #fff;
-  border: 1.5px solid #888;
+  border: 1.5px solid #1E71B8;
   border-radius: 8px;
   padding: 7px 10px;
   cursor: pointer;
   transition: background 0.2s;
   display: flex;
   align-items: center;
+  color: #1E71B8;
 }
 .admin-payment-filter-btn:hover {
-  background: #f0f0f0;
+  background: #73BE5D;
+  color: #fff;
 }
 .admin-payment-table-wrapper {
   margin-top: 18px;
@@ -166,13 +171,14 @@ const handleApprovalPaymentClose = () => {
 }
 .admin-payment-table th,
 .admin-payment-table td {
-  border: 2px solid #888;
+  border: 2px solid #1E71B8;
   padding: 10px 8px;
   text-align: left;
   font-size: 1rem;
 }
 .admin-payment-table th {
-  background: #e5e5e5;
+  background: #1E71B8;
+  color: #fff;
   font-weight: 600;
 }
 .admin-payment-edit-btn {
@@ -180,10 +186,10 @@ const handleApprovalPaymentClose = () => {
   border: none;
   cursor: pointer;
   padding: 4px;
-  color: #222;
+  color: #1E71B8;
   transition: color 0.2s;
 }
 .admin-payment-edit-btn:hover {
-  color: #217093;
+  color: #73BE5D;
 }
 </style>

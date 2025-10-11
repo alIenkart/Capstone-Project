@@ -15,10 +15,8 @@
         <Link href="/contactus" class="link uppercase" :class="page.url === '/contactus' ? 'active-link' : ''">Contact Us</Link>
       </div>
       
-      <div v-if="user" class="profile-dropdown"
-           @mouseenter="showDropdown = true"
-           @mouseleave="showDropdown = false">
-        <button class="profile-btn" @click="showDropdown = !showDropdown">
+      <div v-if="user" class="profile-dropdown" ref="dropdown">
+        <button class="profile-btn" @click="toggleDropdown">
           <span class="profile-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <circle cx="12" cy="8" r="4" stroke="#008DDA" stroke-width="2" fill="none"/>
@@ -53,14 +51,32 @@
 </template>
 
 <script setup>
-import { ref, computed  } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { Link, usePage } from '@inertiajs/vue3'
 import Footer from './Footer.vue'
 
 const showDropdown = ref(false)
 const page = usePage()
 const user = computed(() => page.props.auth?.user)
+const dropdown = ref(null)
 
+function toggleDropdown() {
+  showDropdown.value = !showDropdown.value
+}
+
+function handleClickOutside(event) {
+  if (dropdown.value && !dropdown.value.contains(event.target)) {
+    showDropdown.value = false
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('mousedown', handleClickOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('mousedown', handleClickOutside)
+})
 </script>
 
 <style>

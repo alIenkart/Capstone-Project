@@ -101,7 +101,7 @@ defineOptions({ layout: AdminIndex })
   justify-content: space-between;
 }
 .dashboard-card {
-  background: #2196c9;
+  background: #1E71B8;
   color: #fff;
   flex: 1 1 0;
   border-radius: 8px;
@@ -147,14 +147,14 @@ defineOptions({ layout: AdminIndex })
   font-size: 1.1rem;
   font-weight: 500;
   margin-bottom: 8px;
-  color: #217093;
+  color: #1E71B8;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 .chart-link {
   font-size: 0.95rem;
-  color: #217093;
+  color: #1E71B8;
   opacity: 0.8;
 }
 .chart-img {
@@ -213,10 +213,10 @@ defineOptions({ layout: AdminIndex })
 }
 .booking-tour {
   font-weight: 500;
-  color: #217093;
+  color: #1E71B8;
 }
 .verified {
-  color: #217093;
+  color: #1E71B8;
   font-weight: 500;
 }
 .bookings-footer {
@@ -225,7 +225,7 @@ defineOptions({ layout: AdminIndex })
   margin-top: 14px;
 }
 .see-more-btn {
-  background: #666;
+  background: #73BE5D;
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -235,7 +235,7 @@ defineOptions({ layout: AdminIndex })
   transition: background 0.2s;
 }
 .see-more-btn:hover {
-  background: #444;
+  background: #6aae56;
 }
 @media (max-width: 900px) {
   .dashboard-cards, .dashboard-charts {

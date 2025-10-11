@@ -30,6 +30,11 @@ const formData = ref({
     discountedRate: ''
 })
 
+// Dynamic itinerary days
+const itineraryDays = ref([
+    { id: 1, content: '' }
+])
+
 const imagePreview = ref(null)
 
 // Reset form when modal is shown
@@ -52,6 +57,7 @@ watch(() => props.show, (newValue) => {
             status: 'Active',
             discountedRate: ''
         }
+        itineraryDays.value = [{ id: 1, content: '' }] // Reset itinerary days
         imagePreview.value = null // Reset image preview when modal is shown
     }
 })
@@ -76,7 +82,11 @@ const savePackage = async () => {
     data.append('destination', formData.value.destination);
     data.append('region', formData.value.region || '');
     data.append('description', formData.value.description || '');
-    data.append('itinerary', formData.value.itinerary || '');
+    // Convert itinerary days to formatted string
+    const formattedItinerary = itineraryDays.value
+        .map(day => `Day ${day.id}:\n${day.content}`)
+        .join('\n\n');
+    data.append('itinerary', formattedItinerary);
     data.append('terms_condition', formData.value.termsCondition || '');
     data.append('exclusions', formData.value.exclusions || '');
     data.append('capacity', formData.value.maxOccupancy ? parseInt(formData.value.maxOccupancy) : 0);
@@ -117,6 +127,12 @@ const handleImageUpload = (event) => {
     } else {
         imagePreview.value = null
     }
+}
+
+// Add new day to itinerary
+const addItineraryDay = () => {
+    const newDayNumber = itineraryDays.value.length + 1
+    itineraryDays.value.push({ id: newDayNumber, content: '' })
 }
 </script>
 
@@ -307,13 +323,39 @@ const handleImageUpload = (event) => {
                             </div>
 
                             <div>
-                                <label for="itinerary" class="block text-sm font-medium text-gray-700">Itinerary*</label>
-                                <textarea
-                                    id="itinerary"
-                                    v-model="formData.itinerary"
-                                    rows="6"
-                                    class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
-                                ></textarea>
+                                <label class="block text-sm font-medium text-gray-700 mb-3">Itinerary*</label>
+                                
+                                <!-- Dynamic Day Panels -->
+                                <div class="space-y-4">
+                                    <div v-for="(day, index) in itineraryDays" :key="day.id" class="border-2 border-gray-200 rounded-xl p-4 bg-gray-50">
+                                        <!-- Day Label -->
+                                        <div class="flex items-center justify-between mb-3">
+                                            <h4 class="text-lg font-semibold text-gray-800">Day {{ day.id }}</h4>
+                                        </div>
+                                        
+                                        <!-- Day Content Textarea -->
+                                        <textarea
+                                            v-model="day.content"
+                                            :placeholder="`Enter itinerary details for Day ${day.id}...`"
+                                            rows="4"
+                                            class="w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm resize-none"
+                                        ></textarea>
+                                        
+                                        <!-- Add Day Button - Only show on the last day -->
+                                        <div v-if="index === itineraryDays.length - 1" class="mt-3 flex justify-end">
+                                            <button
+                                                type="button"
+                                                @click="addItineraryDay"
+                                                class="inline-flex items-center px-4 py-2 bg-[#217093] text-white text-sm font-medium rounded-xl hover:bg-[#1a5a7a] focus:outline-none focus:ring-2 focus:ring-[#217093] focus:ring-offset-2 transition-colors"
+                                            >
+                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                                </svg>
+                                                Add Day
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             <div>

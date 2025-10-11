@@ -1,84 +1,117 @@
 <template>
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-    <div class="relative bg-white rounded-2xl border-2 border-gray-300 shadow-2xl w-full max-w-4xl px-8 py-8">
-      <button
-        class="absolute top-4 right-4 text-2xl text-black hover:text-[#217093] font-bold"
-        @click="$emit('close')"
-        aria-label="Close"
-      >×</button>
+  <div v-if="booking" class="fixed inset-0 z-50 overflow-y-auto">
+    <!-- Background overlay -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity" @click="$emit('close')"></div>
 
-      <h2 class="text-center text-lg font-bold mb-6">Booking Details - ID #{{ booking.id }}</h2>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div>
-          <h3 class="font-bold text-base mb-2">Customer Information</h3>
-          <p><strong>Name:</strong> {{ booking.customer_name }}</p>
-          <p><strong>Email:</strong> {{ booking.email ?? '—' }}</p>
-          <p><strong>Phone:</strong> {{ booking.phone ?? '—' }}</p>
-
-          <h3 class="font-bold text-base mt-6 mb-2">Booking Details</h3>
-          <p><strong>Booking Date:</strong> {{ formattedDate }}</p>
-          <p><strong>Discount ID:</strong> {{ booking.discount_id ? 'Yes' : 'No' }}</p>
-          <p><strong>Package:</strong> {{ booking.package?.name ?? '—' }}</p>
-          <p><strong>Duration:</strong> {{ booking.package?.duration ?? '—' }}</p>
-          <p><strong>Number of Pax:</strong> {{ booking.total_quantity }}</p>
-          <p><strong>Booking Type:</strong> {{ booking.package?.type ?? '—' }}</p>
-          <p><strong>Destination:</strong> {{ booking.package?.destinations ?? '—' }}</p>
-          <p><strong>Travel Date:</strong> {{ travelDate }}</p>
-
-          <h3 class="font-bold text-base mt-6 mb-2">Price</h3>
-          <p><strong>Total Price:</strong> ₱ {{ booking.total_price?.toLocaleString() ?? 'XXXX' }}</p>
-          <p><strong>Discounted Price:</strong> ₱ {{ discountedPrice ?? '—' }}</p>
+    <!-- Modal panel -->
+    <div class="flex min-h-full items-center justify-center p-4">
+      <div class="relative transform overflow-hidden rounded-2xl border-2 border-gray-300 bg-white px-6 py-6 text-left shadow-2xl transition-all sm:my-8 w-full max-w-4xl">
+        <!-- Close button -->
+        <div class="absolute right-0 top-0 pr-4 pt-4">
+          <button
+            type="button"
+            class="rounded-full bg-white text-[#1E71B8] hover:text-[#73BE5D] focus:outline-none"
+            @click="$emit('close')"
+          >
+            <span class="sr-only">Close</span>
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
 
+        <!-- Modal content -->
         <div>
-          <h3 class="font-bold text-base mb-4">Other Details</h3>
+          <div class="text-center sm:text-left w-full">
+            <h3 class="text-xl font-semibold leading-6 text-[#1E71B8] mb-6">
+              Booking Details - ID #{{ booking.id }}
+            </h3>
 
-          <label class="block font-semibold mb-1">ID Type</label>
-          <select v-model="form.id_type" class="w-full rounded-xl border-2 border-gray-300 px-4 py-2">
-            <option value="">Select ID</option>
-            <option value="Passport">Passport</option>
-            <option value="Driver's License">Driver's License</option>
-            <option value="National ID">National ID</option>
-            <option value="Student ID">Student ID</option>
-            <option value="Senior Citizen ID">Senior Citizen ID</option>
-          </select>
+            <div class="space-y-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Customer Information -->
+                <div class="space-y-4">
+                  <div class="border-2 border-[#1E71B8] rounded-xl p-4 bg-white">
+                    <h4 class="text-lg font-semibold text-[#1E71B8] mb-3">Customer Information</h4>
+                    <div class="space-y-2">
+                      <p><span class="font-medium text-[#1E71B8]">Name:</span> {{ booking.customer_name }}</p>
+                      <p><span class="font-medium text-[#1E71B8]">Email:</span> {{ booking.customer_email ?? '—' }}</p>
+                      <p><span class="font-medium text-[#1E71B8]">Phone:</span> {{ booking.customer_phone ?? '—' }}</p>
+                    </div>
+                  </div>
 
-          <div class="mt-4">
-            <p class="font-semibold mb-1">ID Preview:</p>
-            <div v-if="booking.discount_id_image" class="w-full h-40 border rounded overflow-hidden">
-              <img :src="`/storage/${booking.discount_id_image}`" alt="ID Preview" class="w-full h-full object-contain" />
+                  <div class="border-2 border-[#1E71B8] rounded-xl p-4 bg-white">
+                    <h4 class="text-lg font-semibold text-[#1E71B8] mb-3">Booking Details</h4>
+                    <div class="space-y-2">
+                      <p><span class="font-medium text-[#1E71B8]">Booking Date:</span> {{ formattedDate }}</p>
+                      <p><span class="font-medium text-[#1E71B8]">Discount ID:</span> {{ discountImages.length > 0 ? `${discountImages.length} image(s)` : 'No' }}</p>
+                      <p><span class="font-medium text-[#1E71B8]">Package:</span> {{ booking.package_destination ?? '—' }}</p>
+                      <p><span class="font-medium text-[#1E71B8]">Duration:</span> {{ booking.duration ?? '—' }} Day/s</p>
+                      <p><span class="font-medium text-[#1E71B8]">Number of Pax:</span> {{ booking.total_quantity }}</p>
+                      <p><span class="font-medium text-[#1E71B8]">Booking Type:</span> {{ booking.tour_type ?? '—' }}</p>
+                      <p><span class="font-medium text-[#1E71B8]">Destination:</span> {{ booking.package_destination ?? '—' }}</p>
+                      <p><span class="font-medium text-[#1E71B8]">Travel Date:</span> {{ travelDate }}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ID Preview and Actions -->
+                <div class="space-y-4">
+                  <div class="border-2 border-[#1E71B8] rounded-xl p-4 bg-white">
+                    <h4 class="text-lg font-semibold text-[#1E71B8] mb-3">ID Preview</h4>
+                    <div v-if="discountImages.length > 0" class="grid grid-cols-2 gap-2">
+                      <div 
+                        v-for="(image, index) in discountImages" 
+                        :key="index"
+                        class="w-full h-40 border-2 border-[#1E71B8] rounded-xl overflow-hidden bg-white"
+                      >
+                        <img 
+                          :src="`/storage/${image}`" 
+                          :alt="`ID Preview ${index + 1}`" 
+                          class="w-full h-full object-contain" 
+                        />
+                      </div>
+                    </div>
+                    <p v-else class="text-gray-500 italic">No preview available.</p>
+                  </div>
+
+                  <div class="border-2 border-[#1E71B8] rounded-xl p-4 bg-white">
+                    <label class="block text-sm font-medium text-[#1E71B8] mb-2">Remarks</label>
+                    <textarea
+                      v-model="form.remarks"
+                      rows="4"
+                      class="w-full rounded-xl border-2 border-[#1E71B8] focus:border-[#73BE5D] focus:ring-[#73BE5D] sm:text-sm resize-none"
+                      placeholder="Enter remarks here..."
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="flex justify-end gap-x-4">
+                <button
+                  type="button"
+                  class="rounded-xl px-6 py-2 text-sm font-semibold leading-6 text-[#1E71B8] hover:bg-[#1E71B8] hover:text-white transition-colors"
+                  @click="$emit('close')"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  @click="submitStatus('Rejected')"
+                  class="rounded-xl bg-red-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
+                >
+                  Reject
+                </button>
+                <button
+                  type="button"
+                  @click="submitStatus('Approved')"
+                  class="rounded-xl bg-[#73BE5D] px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#6aae56] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#73BE5D]"
+                >
+                  Approve
+                </button>
+              </div>
             </div>
-            <p v-else class="text-gray-500">No preview available.</p>
-          </div>
-
-          <label class="block font-semibold mt-4 mb-1">Remarks</label>
-          <textarea
-            v-model="form.remarks"
-            rows="4"
-            class="w-full rounded-xl border-2 border-gray-300 px-4 py-2"
-            placeholder="Enter remarks here..."
-          ></textarea>
-
-          <div class="flex justify-end mt-6 gap-4">
-            <button
-              @click="submitStatus('Approved')"
-              class="bg-green-600 text-white px-6 py-2 rounded-xl font-semibold hover:bg-green-700"
-            >
-              Approve
-            </button>
-            <button
-              @click="submitStatus('Rejected')"
-              class="bg-red-600 text-white px-6 py-2 rounded-xl font-semibold hover:bg-red-700"
-            >
-              Reject
-            </button>
-            <button
-              @click="$emit('close')"
-              class="bg-gray-300 text-gray-800 px-6 py-2 rounded-xl font-semibold hover:bg-gray-400"
-            >
-              Cancel
-            </button>
           </div>
         </div>
       </div>
@@ -123,6 +156,27 @@ const discountedPrice = computed(() => {
   if (!props.booking.total_price || !props.booking.discount_rate) return null
   const discount = props.booking.total_price * (props.booking.discount_rate / 100)
   return (props.booking.total_price - discount).toFixed(2)
+})
+
+const discountImages = computed(() => {
+  if (!props.booking.discount_images) return []
+  
+  // Handle both string and array formats
+  if (typeof props.booking.discount_images === 'string') {
+    try {
+      // Try to parse as JSON array
+      const parsed = JSON.parse(props.booking.discount_images)
+      return Array.isArray(parsed) ? parsed : [props.booking.discount_images]
+    } catch {
+      // If not JSON, treat as single string
+      return [props.booking.discount_images]
+    }
+  }
+  
+  // If already an array, return it (max 3 images)
+  return Array.isArray(props.booking.discount_images) 
+    ? props.booking.discount_images.slice(0, 3) 
+    : []
 })
 
 const submitStatus = async (statusValue) => {

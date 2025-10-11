@@ -19,133 +19,49 @@ const headerTitle = computed(() => {
 </script>
 
 <template>
-  <div class="admin-layout">
+  <div class="flex min-h-screen bg-gray-100">
     <!-- Sidebar -->
-    <aside class="admin-sidebar">
-      <div class="admin-logo">
-        <span class="admin-profile-icon">
-          <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="8" r="6" stroke="#fff" stroke-width="2" fill="none"/>
-            <path d="M4 22c0-5 4-8 8-8s8 3 8 8" stroke="#fff" stroke-width="2" fill="none"/>
-          </svg>
-        </span>
-        <span>ADMIN</span>
+    <aside class="w-56 bg-[#1E71B8] text-white flex flex-col justify-between fixed left-0 top-0 h-screen">
+      <!-- Top Section: Logo + Navigation -->
+      <div class="flex flex-col">
+        <div class="flex items-center px-4 py-6 border-b border-[#73BE5D]">
+          <span class="mr-3">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="8" r="6" stroke="#fff" stroke-width="2" fill="none"/>
+              <path d="M4 22c0-5 4-8 8-8s8 3 8 8" stroke="#fff" stroke-width="2" fill="none"/>
+            </svg>
+          </span>
+          <span class="text-xl font-bold tracking-wider">ADMIN</span>
+        </div>
+        <nav class="flex flex-col gap-0.5 mt-4">
+          <Link href="/admin/admindashboard" class="flex items-center px-6 py-3.5 text-white hover:bg-[#73BE5D] transition-colors border-l-4 border-transparent hover:border-[#73BE5D]" :class="isActive('/admin/admindashboard') ? 'bg-[#73BE5D] border-[#73BE5D]' : ''">Dashboard</Link>
+          <Link href="/admin/users" class="flex items-center px-6 py-3.5 text-white hover:bg-[#73BE5D] transition-colors border-l-4 border-transparent hover:border-[#73BE5D]" :class="isActive('/admin/users') ? 'bg-[#73BE5D] border-[#73BE5D]' : ''">Users</Link>
+          <Link href="/admin/packages" class="flex items-center px-6 py-3.5 text-white hover:bg-[#73BE5D] transition-colors border-l-4 border-transparent hover:border-[#73BE5D]" :class="isActive('/admin/packages') ? 'bg-[#73BE5D] border-[#73BE5D]' : ''">Packages</Link>
+          <Link href="/admin/booking-entries" class="flex items-center px-6 py-3.5 text-white hover:bg-[#73BE5D] transition-colors border-l-4 border-transparent hover:border-[#73BE5D]" :class="isActive('/admin/booking-entries') ? 'bg-[#73BE5D] border-[#73BE5D]' : ''">Booking Entries</Link>
+          <Link href="/admin/payment-confirmation" class="flex items-center px-6 py-3.5 text-white hover:bg-[#73BE5D] transition-colors border-l-4 border-transparent hover:border-[#73BE5D]" :class="isActive('/admin/payment-confirmation') ? 'bg-[#73BE5D] border-[#73BE5D]' : ''">Payment Confirmation</Link>
+          <Link href="/admin/content-management" class="flex items-center px-6 py-3.5 text-white hover:bg-[#73BE5D] transition-colors border-l-4 border-transparent hover:border-[#73BE5D]" :class="isActive('/admin/content-management') ? 'bg-[#73BE5D] border-[#73BE5D]' : ''">Content Management</Link>
+          <Link href="/admin/review-feedback" class="flex items-center px-6 py-3.5 text-white hover:bg-[#73BE5D] transition-colors border-l-4 border-transparent hover:border-[#73BE5D]" :class="isActive('/admin/review-feedback') ? 'bg-[#73BE5D] border-[#73BE5D]' : ''">Review & Feedback</Link>
+        </nav>
       </div>
-      <nav class="admin-nav">
-        <Link href="/admin/admindashboard" class="admin-link" :class="isActive('/admin/admindashboard')">Dashboard</Link>
-        <Link href="/admin/users" class="admin-link" :class="isActive('/admin/users')">Users</Link>
-        <Link href="/admin/packages" class="admin-link" :class="isActive('/admin/packages')">Packages</Link>
-        <Link href="/admin/booking-entries" class="admin-link" :class="isActive('/admin/booking-entries')">Booking Entries</Link>
-        <Link href="/admin/payment-confirmation" class="admin-link" :class="isActive('/admin/payment-confirmation')">Payment Confirmation</Link>
-        <Link href="/admin/content-management" class="admin-link" :class="isActive('/admin/content-management')">Content Management</Link>
-        <Link href="/admin/review-feedback" class="admin-link" :class="isActive('/admin/review-feedback')">Review & Feedback</Link>
-      </nav>
-      <div class="admin-sidebar-bottom">
-        <Link href="/admin/settings" class="admin-link settings-link">
-          <span class="icon">&#9881;</span> Settings
+      
+      <!-- Bottom Section: Settings + Logout -->
+      <div class="flex flex-col gap-0.5 mb-6">
+        <Link href="/admin/settings" class="flex items-center px-6 py-3.5 text-white hover:bg-[#73BE5D] transition-colors border-l-4 border-transparent hover:border-[#73BE5D]">
+          <span class="mr-2 text-lg">⚙</span> Settings
         </Link>
-        <Link :href="route('logout')" method="post" as="button" class="admin-link logout-link">
-          <span class="icon">&#x21B6;</span> Logout
+        <Link :href="route('logout')" method="post" as="button" class="flex items-center px-6 py-3.5 text-white hover:bg-[#73BE5D] transition-colors border-l-4 border-transparent hover:border-[#73BE5D]">
+          <span class="mr-2 text-lg">↶</span> Logout
         </Link>
       </div>
     </aside>
     <!-- Main Content -->
-    <div class="admin-main">
-      <header class="admin-header">
-        <h2>{{ headerTitle }}</h2>
+    <div class="flex-1 flex flex-col ml-56">
+      <header class="bg-gray-200 px-8 py-6 border-b border-gray-300">
+        <h2 class="text-xl font-semibold text-[#1E71B8] text-center tracking-wide">{{ headerTitle }}</h2>
       </header>
-      <main class="admin-content">
+      <main class="flex-1 p-8 overflow-x-auto">
         <slot />
       </main>
     </div>
   </div>
 </template>
-
-<style scoped>
-.admin-layout {
-  display: flex;
-  min-height: 100vh;
-  background: #f5f5f5;
-}
-.admin-sidebar {
-  width: 220px;
-  background: #217093;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 0;
-}
-.admin-logo {
-  display: flex;
-  align-items: center;
-  padding: 24px 16px 16px 16px;
-  border-bottom: 1px solid #1a5a73;
-}
-.admin-logo-img {
-  width: 36px;
-  height: 36px;
-  margin-right: 10px;
-}
-.admin-title {
-  font-size: 1.3rem;
-  font-weight: bold;
-  letter-spacing: 2px;
-}
-.admin-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin-top: 24px;
-}
-.admin-link {
-  color: #fff;
-  text-decoration: none;
-  padding: 14px 24px;
-  font-size: 1rem;
-  transition: background 0.2s, color 0.2s;
-  border-left: 4px solid transparent;
-  display: flex;
-  align-items: center;
-}
-.admin-link:hover, .admin-link.active-admin-link {
-  background: #176080;
-  color: #fff;
-  border-left: 4px solid #008DDA;
-}
-.admin-sidebar-bottom {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin-bottom: 24px;
-}
-.settings-link .icon, .logout-link .icon {
-  margin-right: 8px;
-  font-size: 1.2em;
-}
-.logout-link {
-  color: #fff;
-}
-.admin-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-.admin-header {
-  background: #eaeaea;
-  padding: 22.5px 32px;
-  border-bottom: 1px solid #ddd;
-}
-.admin-header h2 {
-  margin: 0;
-  font-size: 1.3rem;
-  color: #444;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-align: center;
-}
-.admin-content {
-  padding: 32px;
-  overflow-x: auto;
-}
-</style>

@@ -114,6 +114,7 @@ onMounted(() => {
   font-size: 1.3rem;
   font-weight: bold;
   margin-bottom: 24px;
+  color: #1E71B8;
 }
 .admin-users-controls {
   display: flex;
@@ -125,9 +126,10 @@ onMounted(() => {
 .admin-users-search {
   width: 240px;
   padding: 8px 16px;
-  border: 1.5px solid #888;
+  border: 1.5px solid #1E71B8;
   border-radius: 8px;
   font-size: 1rem;
+  color: #1E71B8;
 }
 .admin-users-filters {
   display: flex;
@@ -136,37 +138,41 @@ onMounted(() => {
 }
 .admin-users-select {
   padding: 8px 16px;
-  border: 1.5px solid #888;
+  border: 1.5px solid #1E71B8;
   border-radius: 8px;
   font-size: 1rem;
+  color: #1E71B8;
 }
 .admin-users-filter-btn {
   background: #fff;
-  border: 1.5px solid #888;
+  border: 1.5px solid #1E71B8;
   border-radius: 8px;
   padding: 7px 10px;
   cursor: pointer;
   transition: background 0.2s;
   display: flex;
   align-items: center;
+  color: #1E71B8;
 }
 .admin-users-filter-btn:hover {
-  background: #f0f0f0;
+  background: #73BE5D;
+  color: #fff;
 }
 .admin-users-add-btn {
   background: #fff;
-  border: 1.5px solid #888;
+  border: 1.5px solid #1E71B8;
   border-radius: 8px;
   padding: 7px 18px;
   font-size: 1rem;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
   margin-left: 10px;
+  color: #1E71B8;
 }
 .admin-users-add-btn:hover {
-  background: #217093;
+  background: #73BE5D;
   color: #fff;
-  border-color: #217093;
+  border-color: #73BE5D;
 }
 .admin-users-table-wrapper {
   margin-top: 18px;
@@ -179,13 +185,14 @@ onMounted(() => {
 }
 .admin-users-table th,
 .admin-users-table td {
-  border: 2px solid #888;
+  border: 2px solid #1E71B8;
   padding: 10px 8px;
   text-align: left;
   font-size: 1rem;
 }
 .admin-users-table th {
-  background: #e5e5e5;
+  background: #1E71B8;
+  color: #fff;
   font-weight: 600;
 }
 .admin-users-edit-btn {
@@ -193,10 +200,10 @@ onMounted(() => {
   border: none;
   cursor: pointer;
   padding: 4px;
-  color: #222;
+  color: #1E71B8;
   transition: color 0.2s;
 }
 .admin-users-edit-btn:hover {
-  color: #217093;
+  color: #73BE5D;
 }
 </style>

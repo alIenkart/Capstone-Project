@@ -35,8 +35,66 @@ const formData = ref({
     discounted_rate: 0,
 });
 
+// Dynamic itinerary days
+const itineraryDays = ref([
+    { id: 1, content: '' }
+]);
+
 const showDeleteConfirmationModal = ref(false); // Reactive variable for delete confirmation modal
 const imagePreview = ref(null);
+
+// Parse itinerary string into day panels
+const parseItineraryToDays = (itineraryString) => {
+    
+    if (!itineraryString || itineraryString.trim() === '') {
+        return [{ id: 1, content: '' }];
+    }
+    
+    // Try to split by "Day X:" pattern first
+    const dayPattern = /Day\s+\d+:/gi;
+    const dayMatches = [...itineraryString.matchAll(dayPattern)];
+    
+    if (dayMatches.length > 0) {
+        const days = [];
+        let lastIndex = 0;
+        
+        dayMatches.forEach((match, index) => {
+            const startIndex = match.index;
+            const endIndex = index < dayMatches.length - 1 ? dayMatches[index + 1].index : itineraryString.length;
+            
+            // Extract content between day markers
+            const section = itineraryString.substring(startIndex, endIndex).trim();
+            const lines = section.split('\n');
+            const content = lines.slice(1).join('\n').trim(); // Skip the "Day X:" line
+            
+            days.push({
+                id: index + 1,
+                content: content
+            });
+        });
+        
+        return days;
+    }
+    
+    // Fallback: try splitting by double newlines
+    const daySections = itineraryString.split('\n\n').filter(section => section.trim() !== '');
+    if (daySections.length > 1) {
+        const days = daySections.map((section, index) => {
+            // Remove "Day X:" prefix if it exists
+            const content = section.replace(/^Day\s+\d+:\s*/i, '').trim();
+            return {
+                id: index + 1,
+                content: content
+            };
+        });
+        
+        return days;
+    }
+    
+    // If no structured days found, treat as single day
+    const singleDay = [{ id: 1, content: itineraryString.trim() }];
+    return singleDay;
+};
 
 // Watch for changes in show and packageId props to fetch package data when modal opens with an ID
 watch([() => props.show, () => props.packageId], ([newShow, newPackageId]) => {
@@ -77,6 +135,9 @@ const fetchPackage = async (id) => {
         } else {
             imagePreview.value = null;
         }
+        
+        // Parse itinerary into dynamic days
+        itineraryDays.value = parseItineraryToDays(formData.value.itinerary);
     } catch (error) {
         console.error('Error fetching package:', error);
         // Optionally show an error message to the user
@@ -100,7 +161,11 @@ const updatePackage = async () => {
             data.append('region', formData.value.region || '');
             data.append('description', formData.value.description);
             data.append('tour_duration', formData.value.tour_duration);
-            data.append('itinerary', formData.value.itinerary);
+            // Convert itinerary days to formatted string
+            const formattedItinerary = itineraryDays.value
+                .map(day => `Day ${day.id}:\n${day.content}`)
+                .join('\n\n');
+            data.append('itinerary', formattedItinerary);
             data.append('terms_condition', formData.value.terms_condition);
             data.append('exclusions', formData.value.exclusions);
             data.append('capacity', parseInt(formData.value.capacity) || 0);
@@ -118,13 +183,18 @@ const updatePackage = async () => {
             });
         } else {
             // No new image, send JSON
+            // Convert itinerary days to formatted string
+            const formattedItinerary = itineraryDays.value
+                .map(day => `Day ${day.id}:\n${day.content}`)
+                .join('\n\n');
+            
             const payload = {
                 package_name: formData.value.package_name,
                 destination: formData.value.destination,
                 region: formData.value.region || '',
                 description: formData.value.description,
                 tour_duration: formData.value.tour_duration,
-                itinerary: formData.value.itinerary,
+                itinerary: formattedItinerary,
                 terms_condition: formData.value.terms_condition,
                 exclusions: formData.value.exclusions,
                 capacity: parseInt(formData.value.capacity) || 0,
@@ -171,6 +241,13 @@ const resetForm = () => {
         pax_rate: 0,
         discounted_rate: 0,
     };
+    itineraryDays.value = [{ id: 1, content: '' }]; // Reset itinerary days
+}
+
+// Add new day to itinerary
+const addItineraryDay = () => {
+    const newDayNumber = itineraryDays.value.length + 1
+    itineraryDays.value.push({ id: newDayNumber, content: '' })
 }
 
 // TODO: Implement image upload handling if necessary
@@ -195,10 +272,8 @@ const cancelDelete = () => {
 };
 
 const confirmDelete = async () => {
-    console.log('Attempting to delete package with id:', formData.value.id);
     try {
         const response = await axios.delete(`/api/packages/${formData.value.id}`);
-        console.log('Package deleted successfully:', response.data);
         alert('Package deleted successfully!');
         emit('saved', null); // Emit null to indicate package deletion
         closeModal(); // Close both modals
@@ -398,14 +473,39 @@ const confirmDelete = async () => {
                             </div>
 
                             <div>
-                                <label for="itinerary" class="block text-sm font-medium text-gray-700">Itinerary</label>
-                                <textarea
-                                    id="itinerary"
-                                    v-model="formData.itinerary"
-                                    rows="3"
-                                    class="mt-1 block w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm"
-                                    required
-                                ></textarea>
+                                <label class="block text-sm font-medium text-gray-700 mb-3">Itinerary</label>
+                                
+                                <!-- Dynamic Day Panels -->
+                                <div class="space-y-4">
+                                    <div v-for="(day, index) in itineraryDays" :key="day.id" class="border-2 border-gray-200 rounded-xl p-4 bg-gray-50">
+                                        <!-- Day Label -->
+                                        <div class="flex items-center justify-between mb-3">
+                                            <h4 class="text-lg font-semibold text-gray-800">Day {{ day.id }}</h4>
+                                        </div>
+                                        
+                                        <!-- Day Content Textarea -->
+                                        <textarea
+                                            v-model="day.content"
+                                            :placeholder="`Enter itinerary details for Day ${day.id}...`"
+                                            rows="4"
+                                            class="w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-[#217093] sm:text-sm resize-none"
+                                        ></textarea>
+                                        
+                                        <!-- Add Day Button - Only show on the last day -->
+                                        <div v-if="index === itineraryDays.length - 1" class="mt-3 flex justify-end">
+                                            <button
+                                                type="button"
+                                                @click="addItineraryDay"
+                                                class="inline-flex items-center px-4 py-2 bg-[#217093] text-white text-sm font-medium rounded-xl hover:bg-[#1a5a7a] focus:outline-none focus:ring-2 focus:ring-[#217093] focus:ring-offset-2 transition-colors"
+                                            >
+                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                                </svg>
+                                                Add Day
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             <div>

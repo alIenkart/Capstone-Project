@@ -20,9 +20,11 @@ export const storeBooking = defineStore('booking', {
     voucherCode: '',
     user:null,
     discountIdImage: null,
+    discountImages: [],
     selectedIdType: '',
     tourType: '',
     tourClassification: '',
+    remarks: '',
   }),
 
   actions: {
@@ -86,6 +88,12 @@ export const storeBooking = defineStore('booking', {
     },
     setSelectedIdType(type) {
       this.selectedIdType = type;
+    },
+    setDiscountImages(images) {
+      this.discountImages = images;
+    },
+    setRemarks(remarks) {
+      this.remarks = remarks;
     },
 
     reset() {

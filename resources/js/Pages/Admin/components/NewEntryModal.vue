@@ -3,20 +3,20 @@
     <div class="relative bg-white rounded-2xl border-2 border-gray-300 shadow-2xl w-full max-w-4xl px-8 py-8">
       <!-- Close button -->
       <button
-        class="absolute top-4 right-4 text-2xl text-black hover:text-[#217093] font-bold"
+        class="absolute top-4 right-4 text-2xl text-[#1E71B8] hover:text-[#73BE5D] font-bold"
         @click="$emit('close')"
         aria-label="Close"
       >×</button>
-      <h2 class="text-center text-lg font-bold mb-6">New Booking Entry</h2>
+      <h2 class="text-center text-lg font-bold mb-6 text-[#1E71B8]">New Booking Entry</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <!-- Left: Booking Form -->
         <div>
           <div class="mb-4">
-            <label class="block font-semibold mb-1">Customer Name</label>
+            <label class="block font-semibold mb-1 text-[#1E71B8]">Customer Name</label>
             <input
               v-model="customerName"
               type="text"
-              class="w-full rounded-xl border-2 border-gray-300 px-4 py-2 focus:border-[#217093] focus:ring-[#217093]"
+              class="w-full rounded-xl border-2 border-[#1E71B8] px-4 py-2 focus:border-[#73BE5D] focus:ring-[#73BE5D] text-[#1E71B8]"
               placeholder="Name"
             />
           </div>
@@ -85,7 +85,7 @@
             </div>
           </div>
           <div class="flex justify-center">
-            <button @click="submitBooking" class="rounded-xl bg-gray-200 px-8 py-2 text-gray-900 font-semibold hover:bg-gray-300 transition">
+            <button @click="submitBooking" class="rounded-xl bg-[#73BE5D] px-8 py-2 text-white font-semibold hover:bg-[#6aae56] transition">
               Confirm
             </button>
           </div>

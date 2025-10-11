@@ -5,6 +5,9 @@ import { usePage } from '@inertiajs/vue3';
 import { ref, computed, onMounted } from 'vue'
 import { storeBooking } from '../../state/storeBooking'
 import { useToast } from 'vue-toastification'
+import TermsAndPrivacyModal from '../../components/TermsAndPrivacyModal.vue'
+import BookingSuccessModal from '../../components/BookingSuccessModal.vue'
+import LoadingOverlay from '../../components/LoadingOverlay.vue'
 
 defineOptions({ layout: LandingIndex })
 
@@ -20,6 +23,10 @@ const email = ref('')
 const phone_number = ref('')
 const address  = ref('')
 const agreeChecked = ref(false)
+const showModal = ref(false)
+const modalType = ref('terms')
+const showSuccessModal = ref(false)
+const isLoading = ref(false)
 
 const errors = ref({
   first_name: '',
@@ -33,15 +40,15 @@ function validateFields() {
   let isValid = true
   errors.value = { first_name: '', last_name: '', email: '', phone_number: '', address: '' }
 
-  if (!first_name.value.trim()) {
+  if (!first_name.value || !first_name.value.trim()) {
     errors.value.first_name = 'First Name is required.'
     isValid = false
   }
-  if (!last_name.value.trim()) {
+  if (!last_name.value || !last_name.value.trim()) {
     errors.value.last_name = 'Last Name is required.'
     isValid = false
   }
-  if (!email.value.trim()) {
+  if (!email.value || !email.value.trim()) {
     errors.value.email = 'Email is required.'
     isValid = false
   } else {
@@ -51,7 +58,7 @@ function validateFields() {
       isValid = false
     }
   }
-  if (!phone_number.value.trim()) {
+  if (!phone_number.value || !phone_number.value.trim()) {
     errors.value.phone_number = 'Contact No. is required.'
     isValid = false
   } else {
@@ -61,7 +68,7 @@ function validateFields() {
       isValid = false
     }
   }
-  if (!address.value.trim()) {
+  if (!address.value || !address.value.trim()) {
     errors.value.address = 'Address is required.'
     isValid = false
   }
@@ -97,6 +104,9 @@ async function postBooking() {
   if (!validateFields()) {
     return
   }
+  
+  isLoading.value = true
+  
   booking.setUser({
     first_name: first_name.value,
     last_name: last_name.value,
@@ -109,27 +119,73 @@ async function postBooking() {
   const formData = new FormData();
   formData.append('package_id', booking.packageId);
   formData.append('customer_name', `${booking.user.first_name} ${booking.user.last_name}`);
-  formData.append('discount_id', booking.discountId);
   formData.append('voucher_id', booking.voucherCode || '');
-  formData.append('total_quantity', booking.adultsQuantity);
-  formData.append('total_quantity', booking.kidsQuantity);
+  formData.append('total_quantity', booking.adultsQuantity + booking.kidsQuantity);
   formData.append('total_price', booking.amountWithDiscount);
+  formData.append('status', 'Pending');
+  formData.append('remarks', booking.remarks || '');
+  
+  // Package details
+  formData.append('package_destination', booking.packageDestination);
+  formData.append('tour_type', booking.tourType);
+  formData.append('duration', booking.duration);
+  formData.append('start_date', booking.startDate);
+  formData.append('end_date', booking.endDate);
+  
+  // Pricing details
+  formData.append('adults_quantity', booking.adultsQuantity);
+  formData.append('kids_quantity', booking.kidsQuantity);
+  formData.append('adult_rate', booking.adultRate);
+  formData.append('kids_rate', booking.kidsRate);
+  formData.append('adult_total_amount', booking.adultTotalAmount);
+  formData.append('kids_total_amount', booking.kidsTotalAmount);
+  formData.append('original_amount', booking.amount);
+  
+  // Customer contact details
+  formData.append('customer_email', booking.user.email);
+  formData.append('customer_phone', booking.user.phone_number);
+  formData.append('customer_address', booking.user.address);
+  
+  // Add discount images from store
+  if (booking.discountImages && booking.discountImages.length > 0) {
+    booking.discountImages.forEach((image, index) => {
+      formData.append(`discount_images[${index}]`, image.file);
+    });
+  }
+  
   if (discountIdImage.value) {
     formData.append('discount_id_image', discountIdImage.value);
   }
   if (selectedIdType.value) {
-    formData.append('selected_id_type', selectedIdType.value);
+    formData.append('id_type', selectedIdType.value);
   }
 
   try {
     const response = await service.createBooking(formData)
-    toast.success('Booking successfully created!')
-    setTimeout(() => {
-      window.location.href = route('destination')
-    }, 1500)
+    await new Promise(resolve => setTimeout(resolve, 500))
+    isLoading.value = false
+    showSuccessModal.value = true
   } catch (error) {
     console.error('Error saving booking:', error)
+    isLoading.value = false
   }
+}
+
+function openModal(type) {
+  modalType.value = type
+  showModal.value = true
+}
+
+function closeModal() {
+  showModal.value = false
+}
+
+function closeSuccessModal() {
+  showSuccessModal.value = false
+}
+
+function returnHome() {
+  window.location.href = route('destination')
 }
 
 onMounted(() => {
@@ -217,17 +273,21 @@ onMounted(() => {
             <input type="checkbox" id="agree" v-model="agreeChecked" class="accent-[#008DDA] mr-2" />
             <label for="agree" class="text-[#1E71B8] text-sm">
               Check the box to confirm you've read and agree to our
-              <a href="#" class="text-[#2471a3] underline">Terms and Conditions</a> and
-              <a href="#" class="text-[#2471a3] underline">Privacy Policy</a>.
+              <a href="#" @click.prevent="openModal('terms')" class="text-[#2471a3] underline hover:text-[#1E71B8] cursor-pointer">Terms and Conditions</a> and
+              <a href="#" @click.prevent="openModal('privacy')" class="text-[#2471a3] underline hover:text-[#1E71B8] cursor-pointer">Privacy Policy</a>.
             </label>
           </div>
           <button
             @click="postBooking"
             type="button"
-            :disabled="!agreeChecked"
-            :class="['mt-4 w-48 py-4 text-white font-semibold rounded-xl shadow text-lg transition', !agreeChecked ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#1E71B8] hover:bg-[#d95f00]']"
+            :disabled="!agreeChecked || isLoading"
+            :class="['mt-4 w-48 py-4 text-white font-semibold rounded-xl shadow text-lg transition flex items-center justify-center', (!agreeChecked || isLoading) ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#1E71B8] hover:bg-[#d95f00]']"
           >
-            Book Now
+            <svg v-if="isLoading" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            {{ isLoading ? 'Processing...' : 'Book Now' }}
           </button>
         </form>
       </div>
@@ -273,5 +333,25 @@ onMounted(() => {
         </div>
       </div>
     </div>
+    
+    <!-- Terms and Privacy Modal -->
+    <TermsAndPrivacyModal 
+      :show="showModal" 
+      :type="modalType" 
+      @close="closeModal" 
+    />
+    
+    <!-- Booking Success Modal -->
+    <BookingSuccessModal 
+      :show="showSuccessModal" 
+      @close="closeSuccessModal"
+      @returnHome="returnHome"
+    />
+    
+    <!-- Loading Overlay -->
+    <LoadingOverlay 
+      :show="isLoading" 
+      message="Processing your booking..."
+    />
   </div>
 </template>
