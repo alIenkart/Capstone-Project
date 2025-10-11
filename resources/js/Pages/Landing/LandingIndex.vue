@@ -52,7 +52,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { Link, usePage } from '@inertiajs/vue3'
+import { Link, usePage, router } from '@inertiajs/vue3'
 import Footer from './Footer.vue'
 
 const showDropdown = ref(false)
@@ -76,6 +76,10 @@ onMounted(() => {
 
 onUnmounted(() => {
   document.removeEventListener('mousedown', handleClickOutside)
+})
+
+router.on('navigate', () => {
+  showDropdown.value = false
 })
 </script>
 
