@@ -48,7 +48,7 @@ function submitPayment() {
     amountPaid: Number(currentBooking.total_price).toLocaleString('en-PH'),
     remainingBalance: '0'
   };
-  
+
   showReceiptModal.value = true;
 }
 
@@ -57,7 +57,7 @@ function closeReceiptModal() {
 }
 
 onMounted(async () => {
-  bookings.value = await fetchBookingsByUser(userId);
+  bookings.value = [];
   // Fetch payments for the initial booking
   if (bookings.value.length) {
     payments.value = await fetchPaymentsByBookingId(bookings.value[selectedBookingIndex.value].id);
@@ -84,12 +84,7 @@ defineOptions({ layout: LandingIndex })
 
 <template>
   <div class="min-h-screen w-full bg-[#f4f8fb]">
-    <!-- Payment Receipt Modal -->
-    <PaymentReceiptModal 
-      :isOpen="showReceiptModal" 
-      :receiptData="receiptData"
-      @close="closeReceiptModal" 
-    />
+    <PaymentReceiptModal :isOpen="showReceiptModal" :receiptData="receiptData" @close="closeReceiptModal" />
     <div class="w-full bg-[#1E71B8] py-4 px-8 shadow-sm">
       <h2 class="text-white text-3xl font-bold tracking-tight">My Bookings</h2>
     </div>
@@ -97,12 +92,13 @@ defineOptions({ layout: LandingIndex })
       <aside class="w-80 bg-white border-r border-gray-100 h-full py-8 px-4">
         <h3 class="text-gray-700 text-lg font-semibold mb-4 px-2">All Bookings</h3>
         <div class="flex flex-col gap-2 overflow-y-auto" style="max-height: 80vh">
-          <div v-for="(booking, i) in bookings" :key="booking.id" @click="selectedBookingIndex = i" :class="[
-            'cursor-pointer transition-all flex flex-row items-center gap-3 rounded-lg px-4 py-3 group border',
-            i === selectedBookingIndex
-              ? 'bg-blue-50/80 border-blue-300 ring-2 ring-blue-200'
-              : 'hover:bg-gray-50 border-transparent'
-          ]">
+          <div v-if="bookings.length" v-for="(booking, i) in bookings" :key="booking.id"
+            @click="selectedBookingIndex = i" :class="[
+              'cursor-pointer transition-all flex flex-row items-center gap-3 rounded-lg px-4 py-3 group border',
+              i === selectedBookingIndex
+                ? 'bg-blue-50/80 border-blue-300 ring-2 ring-blue-200'
+                : 'hover:bg-gray-50 border-transparent'
+            ]">
             <div class="flex-grow">
               <div class="font-semibold tracking-tight truncate">
                 {{ booking.package_destination }} Tour
@@ -134,8 +130,12 @@ defineOptions({ layout: LandingIndex })
                 <span v-if="booking.tour_type" class="bg-gray-100 text-gray-500 px-2 py-0.5 rounded text-xs">{{
                   booking.tour_type }}</span>
               </div>
+
             </div>
             <span class="font-mono text-xs text-blue-500">B{{ String(booking.id).padStart(5, '0') }}</span>
+          </div>
+          <div v-else class="flex items-center justify-center h-96 text-gray-400 text-lg">
+            No bookings found.
           </div>
         </div>
       </aside>
@@ -164,7 +164,8 @@ defineOptions({ layout: LandingIndex })
                   </svg>
                   {{ bookings[selectedBookingIndex].total_quantity }}
                 </div>
-                <div>Booking Type: <span class="font-semibold text-gray-700">{{ bookings[selectedBookingIndex].tour_type }}</span></div>
+                <div>Booking Type: <span class="font-semibold text-gray-700">{{ bookings[selectedBookingIndex].tour_type
+                    }}</span></div>
                 <div>Booked: <span class="font-semibold text-gray-700">{{ new
                   Date(bookings[selectedBookingIndex].created_at).toLocaleDateString('en-PH', {
                     year: 'numeric',
@@ -201,20 +202,19 @@ defineOptions({ layout: LandingIndex })
             <!-- Payment Status column using computed property -->
             <div class="flex flex-col">
               <span class="text-gray-500 text-sm">Payment Status</span>
-              <span class="text-sm px-3 py-1 rounded-full font-semibold w-fit mt-1 transition-all"
-                :class="{
-                  'bg-yellow-400 text-white': paymentStatus === 'Pending',
-                  'bg-green-400 text-white': paymentStatus === 'Paid',
-                  'bg-red-400 text-white': paymentStatus === 'Unpaid' || paymentStatus === 'Rejected',
-                }"
-              >
+              <span class="text-sm px-3 py-1 rounded-full font-semibold w-fit mt-1 transition-all" :class="{
+                'bg-yellow-400 text-white': paymentStatus === 'Pending',
+                'bg-green-400 text-white': paymentStatus === 'Paid',
+                'bg-red-400 text-white': paymentStatus === 'Unpaid' || paymentStatus === 'Rejected',
+              }">
                 {{ paymentStatus }}
               </span>
             </div>
           </div>
           <div v-if="bookings[selectedBookingIndex].remarks" class="mb-6">
             <span class="text-gray-500 block mb-1">Remarks</span>
-            <span class="bg-gray-50 rounded px-4 py-2 text-gray-700 font-mono">{{ bookings[selectedBookingIndex].remarks }}</span>
+            <span class="bg-gray-50 rounded px-4 py-2 text-gray-700 font-mono">{{
+              bookings[selectedBookingIndex].remarks.toUpperCase() }}</span>
           </div>
           <div class="mt-6 mb-2 border-t border-gray-200 pt-6">
             <h4 class="font-bold text-lg text-gray-700 mb-4 text-center">Payment</h4>
@@ -233,7 +233,8 @@ defineOptions({ layout: LandingIndex })
                 <div>
                   <label class="block mb-2 text-gray-700" for="paymentType">Type of Payment:</label>
                   <select id="paymentType" v-model="selectedPaymentType"
-                    class="rounded-md border border-gray-300 p-2 bg-white focus:ring-2 focus:ring-blue-200 transition" style="width: 50%">
+                    class="rounded-md border border-gray-300 p-2 bg-white focus:ring-2 focus:ring-blue-200 transition"
+                    style="width: 50%">
                     <option value="full">Full Payment</option>
                     <option value="down">Down Payment</option>
                   </select>
@@ -270,8 +271,7 @@ defineOptions({ layout: LandingIndex })
             </div>
             <div>
               <div class="flex flex-col items-center gap-4 mt-8 mb-2">
-                <button
-                  @click="submitPayment"
+                <button @click="submitPayment"
                   class="w-full max-w-xs bg-[#1E71B8] hover:bg-[#155a8a] focus:ring-2 focus:ring-[#52c2f8] transition shadow-lg text-white px-8 py-3 rounded-xl font-bold text-lg focus:outline-none active:scale-95 duration-150">
                   Submit
                 </button>
