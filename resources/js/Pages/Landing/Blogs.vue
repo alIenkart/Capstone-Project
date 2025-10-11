@@ -61,6 +61,30 @@ const blogPosts = [
         category: "Nature",
         date: "2024-01-10"
     },
+    {
+        id: 4,
+        title: "Lorem ipsum dolor sit amet",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        image: "/storage/travel-blogs/blogs/Blog3.jpg", // ← local image
+        category: "Nature",
+        date: "2024-01-10"
+    },
+    {
+        id: 5,
+        title: "Lorem ipsum dolor sit amet",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        image: "/storage/travel-blogs/blogs/Blog3.jpg", // ← local image
+        category: "Nature",
+        date: "2024-01-10"
+    },
+    {
+        id: 6,
+        title: "Lorem ipsum dolor sit amet",
+        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        image: "/storage/travel-blogs/blogs/Blog3.jpg", // ← local image
+        category: "Nature",
+        date: "2024-01-10"
+    },
 ]
 
 // Computed properties
