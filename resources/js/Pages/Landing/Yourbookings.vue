@@ -166,7 +166,7 @@ defineOptions({ layout: LandingIndex })
                   {{ bookings[selectedBookingIndex].total_quantity }}
                 </div>
                 <div>Booking Type: <span class="font-semibold text-gray-700">{{ bookings[selectedBookingIndex].tour_type
-                    }}</span></div>
+                }}</span></div>
                 <div>Booked: <span class="font-semibold text-gray-700">{{ new
                   Date(bookings[selectedBookingIndex].created_at).toLocaleDateString('en-PH', {
                     year: 'numeric',
@@ -252,19 +252,26 @@ defineOptions({ layout: LandingIndex })
                 <div>
                   <label class="block mb-2 text-gray-700 font-medium">Upload Payment Receipt</label>
                   <div class="flex items-center gap-4 mb-4 flex-wrap">
-                    <label
-                      class="flex items-center px-4 py-2 bg-blue-50 text-blue-700 rounded-lg cursor-pointer hover:bg-blue-200 border border-blue-100 shadow-sm transition">
+                    <label :class="[
+                      'flex items-center px-4 py-2 rounded-lg border shadow-sm transition',
+                      bookings[selectedBookingIndex]?.status === 'Pending'
+                        ? 'bg-gray-200 text-gray-400 border-gray-300 cursor-not-allowed'
+                        : 'bg-blue-50 text-blue-700 border-blue-100 hover:bg-blue-200 cursor-pointer'
+                    ]">
                       <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path d="M12 16v-4m0 0V8m0 4h4m-4 0H8m12 4v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4"></path>
                       </svg>
                       <span>Add Image</span>
-                      <input type="file" class="hidden" @change="onFileChange" />
+                      <input type="file" class="hidden" @change="onFileChange"
+                        :disabled="bookings[selectedBookingIndex]?.status === 'Pending'" />
                     </label>
+
                     <div v-if="selectedFile" class="flex items-center bg-white px-3 py-2 rounded shadow border">
                       <img :src="previewUrl" alt="Preview" class="w-7 h-7 mr-2 rounded object-cover border" />
                       <span class="text-gray-700 text-sm truncate max-w-[120px]">{{ selectedFile.name }}</span>
                       <button class="ml-2 text-gray-400 hover:text-red-500 font-bold text-lg transition"
-                        @click="removeFile">&times;
+                        @click="removeFile">
+                        &times;
                       </button>
                     </div>
                   </div>
