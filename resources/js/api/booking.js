@@ -9,3 +9,9 @@ export async function fetchPaymentsByBookingId(bookingId) {
     if (!response.ok) throw new Error('Failed to fetch payments');
     return await response.json();
 }
+
+export async function fetchPaymentsByUserId(userId) {
+    const response = await fetch(`/api/payments?booking_id=${userId}`);
+    if (!response.ok) throw new Error('Failed to fetch payments');
+    return await response.json();
+}
