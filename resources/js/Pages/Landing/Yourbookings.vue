@@ -57,7 +57,7 @@ function closeReceiptModal() {
 }
 
 onMounted(async () => {
-  bookings.value = [];
+  bookings.value = await fetchBookingsByUser(userId);
   // Fetch payments for the initial booking
   if (bookings.value.length) {
     payments.value = await fetchPaymentsByBookingId(bookings.value[selectedBookingIndex.value].id);
