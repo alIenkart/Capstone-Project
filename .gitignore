@@ -4,6 +4,7 @@
 node_modules/
 .env
 app/storage/
+public/storage/packages
 public/hot
 public_html/storage
 public_html/hot
