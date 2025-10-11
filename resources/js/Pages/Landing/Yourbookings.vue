@@ -166,7 +166,7 @@ defineOptions({ layout: LandingIndex })
                   {{ bookings[selectedBookingIndex].total_quantity }}
                 </div>
                 <div>Booking Type: <span class="font-semibold text-gray-700">{{ bookings[selectedBookingIndex].tour_type
-                }}</span></div>
+                    }}</span></div>
                 <div>Booked: <span class="font-semibold text-gray-700">{{ new
                   Date(bookings[selectedBookingIndex].created_at).toLocaleDateString('en-PH', {
                     year: 'numeric',
@@ -233,7 +233,7 @@ defineOptions({ layout: LandingIndex })
               <div class="w-full sm:w-1/2 flex flex-col gap-5 justify-center">
                 <!-- Type of Payment -->
                 <div>
-                  <label class="block mb-2 text-gray-700" for="paymentType">Type of Payment:</label>
+                  <label class="block mb-2 text-gray-700 font-medium" for="paymentType">Type of Payment:</label>
                   <select id="paymentType" v-model="selectedPaymentType"
                     class="rounded-md border border-gray-300 p-2 bg-white focus:ring-2 focus:ring-blue-200 transition"
                     style="width: 50%">
@@ -243,16 +243,16 @@ defineOptions({ layout: LandingIndex })
                 </div>
                 <!-- Amount To Pay -->
                 <div>
-                  <span class="text-gray-500 font-medium">Amount to pay:</span>
+                  <span class="text-gray-700 font-medium">Amount to pay:</span>
                   <span class="ml-2 text-lg font-bold text-green-600">
                     ₱{{ Number(bookings[selectedBookingIndex]?.total_price || 0).toLocaleString('en-PH') }}
                   </span>
                 </div>
                 <!-- Upload Payment Receipt -->
                 <div>
-                  <label class="block mb-2 text-gray-700 font-medium">Upload Payment Receipt</label>
+                  <label class="block mb-2 text-gray-700 font-medium">Upload Payment Receipt:</label>
                   <div class="flex items-center gap-4 mb-4 flex-wrap">
-                    <label :class="[
+                    <label v-if="!selectedFile" :class="[
                       'flex items-center px-4 py-2 rounded-lg border shadow-sm transition',
                       bookings[selectedBookingIndex]?.status === 'Pending'
                         ? 'bg-gray-200 text-gray-400 border-gray-300 cursor-not-allowed'
@@ -266,15 +266,14 @@ defineOptions({ layout: LandingIndex })
                         :disabled="bookings[selectedBookingIndex]?.status === 'Pending'" />
                     </label>
 
-                    <div v-if="selectedFile" class="flex items-center bg-white px-3 py-2 rounded shadow border">
-                      <img :src="previewUrl" alt="Preview" class="w-7 h-7 mr-2 rounded object-cover border" />
-                      <span class="text-gray-700 text-sm truncate max-w-[120px]">{{ selectedFile.name }}</span>
-                      <button class="ml-2 text-gray-400 hover:text-red-500 font-bold text-lg transition"
-                        @click="removeFile">
-                        &times;
-                      </button>
+                    <div v-else class="flex items-center bg-white px-3 py-2 rounded shadow border cursor-pointer"
+                      @click="$refs.fileInput.click()">
+                      <img :src="previewUrl" alt="Preview" class="w-20 h-20 rounded object-cover border" />
+                      <input ref="fileInput" type="file" class="hidden" @change="onFileChange"
+                        :disabled="bookings[selectedBookingIndex]?.status === 'Pending'" />
                     </div>
                   </div>
+
                 </div>
               </div>
             </div>
@@ -309,7 +308,7 @@ defineOptions({ layout: LandingIndex })
                   Please upload the receipt.
                 </span>
 
-                <button
+                <button v-if="paymentStatus === 'Pending' || paymentStatus === 'Unpaid'"
                   class="w-full bg-white hover:bg-red-50 text-red-500 border border-red-400 px-8 py-3 rounded-xl font-bold text-lg transition shadow-md focus:outline-none focus:ring-2 focus:ring-red-100 active:scale-95 duration-150">
                   Cancel Booking
                 </button>
