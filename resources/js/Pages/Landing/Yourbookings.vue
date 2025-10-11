@@ -4,6 +4,7 @@ import PaymentReceiptModal from './PaymentReceiptModal.vue'
 import { fetchBookingsByUser, fetchPaymentsByBookingId } from '@/api/booking';
 import { onMounted, ref, watch, computed } from 'vue';
 import { usePage } from '@inertiajs/vue3';
+import { toCamelCase } from '@/helper/helper'
 
 const user = usePage().props.auth.user;
 const bookings = ref([]);
@@ -204,7 +205,7 @@ defineOptions({ layout: LandingIndex })
               <span class="text-gray-500 text-sm">Payment Status</span>
               <span class="text-sm px-3 py-1 rounded-full font-semibold w-fit mt-1 transition-all" :class="{
                 'bg-yellow-400 text-white': paymentStatus === 'Pending',
-                'bg-green-400 text-white': paymentStatus === 'Paid',
+                'bg-green-400 text-white': paymentStatus === 'Approved',
                 'bg-red-400 text-white': paymentStatus === 'Unpaid' || paymentStatus === 'Rejected',
               }">
                 {{ paymentStatus }}
@@ -213,8 +214,9 @@ defineOptions({ layout: LandingIndex })
           </div>
           <div v-if="bookings[selectedBookingIndex].remarks" class="mb-6">
             <span class="text-gray-500 block mb-1">Remarks</span>
-            <span class="bg-gray-50 rounded px-4 py-2 text-gray-700 font-mono">{{
-              bookings[selectedBookingIndex].remarks.toUpperCase() }}</span>
+            <span class="bg-gray-50 rounded px-4 py-2 text-gray-700 font-mono">
+              {{ toCamelCase(bookings[selectedBookingIndex].remarks) }}
+            </span>
           </div>
           <div class="mt-6 mb-2 border-t border-gray-200 pt-6">
             <h4 class="font-bold text-lg text-gray-700 mb-4 text-center">Payment</h4>
@@ -269,18 +271,44 @@ defineOptions({ layout: LandingIndex })
                 </div>
               </div>
             </div>
-            <div>
-              <div class="flex flex-col items-center gap-4 mt-8 mb-2">
-                <button @click="submitPayment"
-                  class="w-full max-w-xs bg-[#1E71B8] hover:bg-[#155a8a] focus:ring-2 focus:ring-[#52c2f8] transition shadow-lg text-white px-8 py-3 rounded-xl font-bold text-lg focus:outline-none active:scale-95 duration-150">
+            <div class="flex justify-center w-full">
+              <div class="flex flex-col items-center gap-4 mt-8 mb-2 relative group w-full max-w-xs">
+                <button
+                  v-if="bookings[selectedBookingIndex]?.status === 'Approved' && (paymentStatus === 'Pending' || paymentStatus === 'Unpaid')"
+                  :disabled="!selectedFile"
+                  class="w-full bg-[#1E71B8] hover:bg-[#155a8a] focus:ring-2 focus:ring-[#52c2f8] transition shadow-lg text-white px-8 py-3 rounded-xl font-bold text-lg focus:outline-none active:scale-95 duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
+                  Send For Approval
+                </button>
+
+                <button v-if="paymentStatus === 'Approved'" @click="submitPayment"
+                  class="w-full bg-[#1E71B8] hover:bg-[#155a8a] focus:ring-2 focus:ring-[#52c2f8] transition shadow-lg text-white px-8 py-3 rounded-xl font-bold text-lg focus:outline-none active:scale-95 duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
+                  View Receipt
+                </button>
+
+                <button v-if="bookings[selectedBookingIndex]?.status === 'Pending'" @click="submitPayment"
+                  :disabled="bookings[selectedBookingIndex]?.status === 'Pending'"
+                  class="w-full bg-[#1E71B8] hover:bg-[#155a8a] focus:ring-2 focus:ring-[#52c2f8] transition shadow-lg text-white px-8 py-3 rounded-xl font-bold text-lg focus:outline-none active:scale-95 duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
                   Submit
                 </button>
+
+                <!-- Tooltip -->
+                <span v-if="bookings[selectedBookingIndex]?.status === 'Pending'"
+                  class="absolute -top-10 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-sm rounded-md px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
+                  Wait for the booking status to be set to approved.
+                </span>
+
+                <span v-else-if="!selectedFile"
+                  class="absolute -top-10 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-sm rounded-md px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
+                  Please upload the receipt.
+                </span>
+
                 <button
-                  class="w-full max-w-xs bg-white hover:bg-red-50 text-red-500 border border-red-400 px-8 py-3 rounded-xl font-bold text-lg transition shadow-md focus:outline-none focus:ring-2 focus:ring-red-100 active:scale-95 duration-150">
+                  class="w-full bg-white hover:bg-red-50 text-red-500 border border-red-400 px-8 py-3 rounded-xl font-bold text-lg transition shadow-md focus:outline-none focus:ring-2 focus:ring-red-100 active:scale-95 duration-150">
                   Cancel Booking
                 </button>
               </div>
             </div>
+
           </div>
         </div>
         <div v-else class="flex items-center justify-center h-96 text-gray-400 text-lg">
