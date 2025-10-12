@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\PackagesController;
 use App\Http\Controllers\Api\VoucherController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\PaymentController;
+use App\Http\Controllers\Api\InquiryController;
 
 Route::middleware('api')->group(function () {
 
@@ -17,4 +18,5 @@ Route::middleware('api')->group(function () {
     Route::apiResource('vouchers', VoucherController::class);
     Route::apiResource('bookings', BookingController::class);
     Route::apiResource('payments', PaymentController::class);
+    Route::apiResource('inquiries', InquiryController::class);
 });

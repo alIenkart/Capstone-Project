@@ -40,4 +40,9 @@ export class api {
     getPayments() {
         return plainInstance.get("/api/payments");
     }
+
+    //Contacts API
+    createInquiry(payload) {
+        return plainInstance.post("/api/inquiries", payload);
+    }
 }

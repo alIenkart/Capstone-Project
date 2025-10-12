@@ -1,8 +1,15 @@
 <script setup>
+import LoadingOverlay from '../../components/LoadingOverlay.vue'
+import InquirySuccessModal from '../../components/InquirySuccessModal.vue'
 import LandingIndex from './LandingIndex.vue'
-import { reactive, computed } from 'vue'
+import { reactive, computed, ref } from 'vue'
+import { api } from '../../api/api'
 
 defineOptions({ layout: LandingIndex })
+
+const service = new api();
+const isLoading = ref(false)
+const showSuccessModal = ref(false)
 
 const form = reactive({
 	name: '',
@@ -53,13 +60,64 @@ function validateAll() {
 function onSubmit(event) {
 	event.preventDefault()
 	if (!validateAll()) return
-	// Submit handler placeholder; integrate API as needed
+	postInquiry()
+}
+
+function resetForm() {
+	Object.keys(form).forEach(key => {
+		form[key] = ''
+	})
+	Object.keys(errors).forEach(key => {
+		errors[key] = ''
+	})
 }
 
 const hasErrors = computed(() => Object.values(errors).some((m) => m && m.length > 0))
+
+async function postInquiry() {
+	isLoading.value = true
+
+	try {
+		const payload = {
+			name: form.name,
+			email: form.email,
+			destination: form.destination,
+			contact_number: form.contactNumber,
+			adults: Number(form.adults),
+			children: Number(form.children),
+			seniors: Number(form.seniors),
+			subject: form.subject,
+			message: form.message
+		}
+
+		await service.createInquiry(payload)
+
+		await new Promise(resolve => setTimeout(resolve, 500))
+		showSuccessModal.value = true
+		resetForm()
+	} catch (error) {
+		console.error('Error submitting inquiry:', error)
+	} finally {
+		isLoading.value = false
+	}
+}
+
+function closeSuccessModal() {
+  showSuccessModal.value = false
+}
 </script>
 
 <template>
+    <LoadingOverlay 
+      :show="isLoading" 
+      message="Submitting your Inquiry..."
+    />
+
+    <InquirySuccessModal 
+      :show="showSuccessModal" 
+      @close="closeSuccessModal"
+    />
+
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <!-- Left: Get in Touch -->
