@@ -1,5 +1,5 @@
 export async function fetchBookingsByUser(userId) {
-    const response = await fetch(`/api/bookings?user_id=${userId}`);
+    const response = await fetch(`/api/bookings/by-user?user_id=${userId}`);
     if (!response.ok) throw new Error('Failed to fetch bookings');
     return await response.json();
 }

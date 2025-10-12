@@ -14,12 +14,26 @@ class BookingController extends Controller
         $bookings = Booking::all();
         return response()->json($bookings);
     }
+    
+    public function getBookingsByUser(Request $request)
+    {
+        $userId = $request->query('user_id');
+
+        if (!$userId) {
+            return response()->json(['message' => 'Missing user_id parameter'], 400);
+        }
+
+        $bookings = Booking::where('customer_id', $userId)->get();
+
+        return response()->json($bookings);
+    }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'package_id' => 'required|exists:packages,id',
             'customer_name' => 'required|string|max:255',
+            'customer_id' => 'required|exists:users,id',
             'voucher_id' => 'nullable|string',
             'total_quantity' => 'required|integer|min:1',
             'total_price' => 'required|numeric|min:0',

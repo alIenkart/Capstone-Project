@@ -119,6 +119,7 @@ async function postBooking() {
   const formData = new FormData();
   formData.append('package_id', booking.packageId);
   formData.append('customer_name', `${booking.user.first_name} ${booking.user.last_name}`);
+  formData.append('customer_id', user.value.id);
   formData.append('voucher_id', booking.voucherCode || '');
   formData.append('total_quantity', booking.adultsQuantity + booking.kidsQuantity);
   formData.append('total_price', booking.amountWithDiscount);

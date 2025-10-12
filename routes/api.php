@@ -9,6 +9,9 @@ use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\PaymentController;
 
 Route::middleware('api')->group(function () {
+
+    Route::get('bookings/by-user', [BookingController::class, 'getBookingsByUser']);
+
     Route::apiResource('users', UserController::class);
     Route::apiResource('packages', PackagesController::class);
     Route::apiResource('vouchers', VoucherController::class);
