@@ -1,5 +1,11 @@
 <script setup>
 import AdminIndex from './AdminIndex.vue'
+import PackagesChart from './components/Analytics/PackagesChart.vue'
+import BookingsChart from './components/Analytics/BookingsChart.vue'
+import PaymentsChart from './components/Analytics/PaymentsChart.vue'
+import TravelDestinationChart from './components/Analytics/TravelDestinationChart.vue'
+import SalesChart from './components/Analytics/SalesChart.vue'
+
 defineOptions({ layout: AdminIndex })
 </script>
 
@@ -7,37 +13,81 @@ defineOptions({ layout: AdminIndex })
   <div class="dashboard-wrapper">
     <!-- Summary Cards -->
     <div class="dashboard-cards">
-      <div class="dashboard-card">
-        <div class="card-title">Total Bookings</div>
-        <div class="card-value">1,221</div>
-        <div class="card-link">Month <span class="divider">|</span> Year</div>
+
+      <div class="dashboard-cards">
+        <div class="dashboard-card" style="height: 400px;">
+          <PackagesChart />
+          <div>
+            <p class="small-text">
+              Active
+            </p>
+
+            <p class="small-text">
+              Inactive
+            </p>
+          </div>
+        </div>
       </div>
-      <div class="dashboard-card">
-        <div class="card-title">Total Earnings</div>
-        <div class="card-value">64,546</div>
-        <div class="card-link">Month <span class="divider">|</span> Year</div>
+
+      <div class="dashboard-cards">
+        <div class="dashboard-card" style="height: 400px;">
+          <BookingsChart />
+           <div>
+            <p class="small-text">
+              Pending Review
+            </p>
+
+            <p class="small-text">
+              Approved
+            </p>
+
+            <p class="small-text">
+              Cancelled
+            </p>
+
+            <p class="small-text">
+              Rejected
+            </p>
+            
+            <p class="small-text">
+              Completed
+            </p>
+          </div>
+        </div>
       </div>
-      <div class="dashboard-card">
-        <div class="card-title">Upcoming Tours</div>
-        <div class="card-value">11</div>
-        <div class="card-link">Week <span class="divider">|</span> Month <span class="divider">|</span> Calendar</div>
+
+      <div class="dashboard-cards">
+        <div class="dashboard-card" style="height: 400px;">
+          <PaymentsChart />
+
+            <p class="small-text">
+              Fully Paid
+            </p>
+
+            <p class="small-text">
+              Down Payment
+            </p>
+
+            <p class="small-text">
+              Under Review
+            </p>
+            
+        </div>
       </div>
-      <div class="dashboard-card">
-        <div class="card-title">Pending Bookings</div>
-        <div class="card-value">23</div>
-        <div class="card-link">Week <span class="divider">|</span> Month <span class="divider">|</span> View</div>
+
+      <div class="dashboard-cards">
+        <div class="dashboard-card" style="height: 400px;">
+          <TravelDestinationChart />
+        </div>
       </div>
+
     </div>
 
     <!-- Charts Area -->
     <div class="dashboard-charts">
       <div class="chart-box">
-        <div class="chart-title">Top Travel Destinations <span class="chart-link">Months <span class="divider">|</span> Year</span></div>
-        <img src="https://dummyimage.com/400x180/daeaf6/217093&text=Bar+Chart" alt="Bar Chart" class="chart-img" />
-      </div>
-      <div class="chart-box">
-        <div class="chart-title">Monthly sales Overview <span class="chart-link">Months <span class="divider">|</span> Year</span></div>
-        <img src="https://dummyimage.com/400x180/daeaf6/217093&text=Line+Chart" alt="Line Chart" class="chart-img" />
+        <div class="chart-title">Sales Overview <span class="chart-link">Monthly <span class="divider">|</span> Yearly</span></div>
+        <SalesChart />
       </div>
     </div>
 
@@ -101,8 +151,8 @@ defineOptions({ layout: AdminIndex })
   justify-content: space-between;
 }
 .dashboard-card {
-  background: #1E71B8;
-  color: #fff;
+  background: #ffffff;
+  color: #000000;
   flex: 1 1 0;
   border-radius: 8px;
   padding: 18px 24px 12px 24px;
@@ -243,4 +293,12 @@ defineOptions({ layout: AdminIndex })
     gap: 12px;
   }
 }
+
+.small-text {
+  font-size: 12px;
+  font-weight: 400;
+  color: #555;
+  margin: 0;
+}
+
 </style>
