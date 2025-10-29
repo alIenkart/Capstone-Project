@@ -21,7 +21,7 @@ const headerTitle = computed(() => {
 <template>
   <div class="flex min-h-screen bg-gray-100">
     <!-- Sidebar -->
-    <aside class="w-56 bg-[#1E71B8] text-white flex flex-col justify-between fixed left-0 top-0 h-screen">
+    <aside class="w-56 bg-[#1E71B8] text-white flex flex-col justify-between fixed left-0 top-0 h-screen z-50">
       <!-- Top Section: Logo + Navigation -->
       <div class="flex flex-col">
         <div class="flex items-center px-4 py-6 border-b border-[#73BE5D]">
@@ -34,34 +34,93 @@ const headerTitle = computed(() => {
           <span class="text-xl font-bold tracking-wider">ADMIN</span>
         </div>
         <nav class="flex flex-col gap-0.5 mt-4">
-          <Link href="/admin/admindashboard" class="flex items-center px-6 py-3.5 text-white hover:bg-[#73BE5D] transition-colors border-l-4 border-transparent hover:border-[#73BE5D]" :class="isActive('/admin/admindashboard') ? 'bg-[#73BE5D] border-[#73BE5D]' : ''">Dashboard</Link>
-          <Link href="/admin/users" class="flex items-center px-6 py-3.5 text-white hover:bg-[#73BE5D] transition-colors border-l-4 border-transparent hover:border-[#73BE5D]" :class="isActive('/admin/users') ? 'bg-[#73BE5D] border-[#73BE5D]' : ''">Users</Link>
-          <Link href="/admin/packages" class="flex items-center px-6 py-3.5 text-white hover:bg-[#73BE5D] transition-colors border-l-4 border-transparent hover:border-[#73BE5D]" :class="isActive('/admin/packages') ? 'bg-[#73BE5D] border-[#73BE5D]' : ''">Packages</Link>
-          <Link href="/admin/booking-entries" class="flex items-center px-6 py-3.5 text-white hover:bg-[#73BE5D] transition-colors border-l-4 border-transparent hover:border-[#73BE5D]" :class="isActive('/admin/booking-entries') ? 'bg-[#73BE5D] border-[#73BE5D]' : ''">Booking Entries</Link>
-          <Link href="/admin/payment-confirmation" class="flex items-center px-6 py-3.5 text-white hover:bg-[#73BE5D] transition-colors border-l-4 border-transparent hover:border-[#73BE5D]" :class="isActive('/admin/payment-confirmation') ? 'bg-[#73BE5D] border-[#73BE5D]' : ''">Payment Confirmation</Link>
-          <Link href="/admin/content-management" class="flex items-center px-6 py-3.5 text-white hover:bg-[#73BE5D] transition-colors border-l-4 border-transparent hover:border-[#73BE5D]" :class="isActive('/admin/content-management') ? 'bg-[#73BE5D] border-[#73BE5D]' : ''">Content Management</Link>
-          <Link href="/admin/review-feedback" class="flex items-center px-6 py-3.5 text-white hover:bg-[#73BE5D] transition-colors border-l-4 border-transparent hover:border-[#73BE5D]" :class="isActive('/admin/review-feedback') ? 'bg-[#73BE5D] border-[#73BE5D]' : ''">Review & Feedback</Link>
+          <Link 
+            href="/admin/admindashboard" 
+            class="flex items-center px-6 py-3.5 text-white hover:bg-[#73BE5D] transition-colors border-l-4 border-transparent hover:border-[#73BE5D]" 
+            :class="isActive('/admin/admindashboard') ? 'bg-[#73BE5D] border-[#73BE5D]' : ''"
+          >
+            Dashboard
+          </Link>
+          <Link 
+            href="/admin/users" 
+            class="flex items-center px-6 py-3.5 text-white hover:bg-[#73BE5D] transition-colors border-l-4 border-transparent hover:border-[#73BE5D]" 
+            :class="isActive('/admin/users') ? 'bg-[#73BE5D] border-[#73BE5D]' : ''"
+          >
+            Users
+          </Link>
+          <Link 
+            href="/admin/packages" 
+            class="flex items-center px-6 py-3.5 text-white hover:bg-[#73BE5D] transition-colors border-l-4 border-transparent hover:border-[#73BE5D]" 
+            :class="isActive('/admin/packages') ? 'bg-[#73BE5D] border-[#73BE5D]' : ''"
+          >
+            Packages
+          </Link>
+          <Link 
+            href="/admin/booking-entries" 
+            class="flex items-center px-6 py-3.5 text-white hover:bg-[#73BE5D] transition-colors border-l-4 border-transparent hover:border-[#73BE5D]" 
+            :class="isActive('/admin/booking-entries') ? 'bg-[#73BE5D] border-[#73BE5D]' : ''"
+          >
+            Booking Entries
+          </Link>
+          <Link 
+            href="/admin/payment-confirmation" 
+            class="flex items-center px-6 py-3.5 text-white hover:bg-[#73BE5D] transition-colors border-l-4 border-transparent hover:border-[#73BE5D]" 
+            :class="isActive('/admin/payment-confirmation') ? 'bg-[#73BE5D] border-[#73BE5D]' : ''"
+          >
+            Payment Confirmation
+          </Link>
+          <Link 
+            href="/admin/content-management" 
+            class="flex items-center px-6 py-3.5 text-white hover:bg-[#73BE5D] transition-colors border-l-4 border-transparent hover:border-[#73BE5D]" 
+            :class="isActive('/admin/content-management') ? 'bg-[#73BE5D] border-[#73BE5D]' : ''"
+          >
+            Content Management
+          </Link>
+          <Link 
+            href="/admin/review-feedback" 
+            class="flex items-center px-6 py-3.5 text-white hover:bg-[#73BE5D] transition-colors border-l-4 border-transparent hover:border-[#73BE5D]" 
+            :class="isActive('/admin/review-feedback') ? 'bg-[#73BE5D] border-[#73BE5D]' : ''"
+          >
+            Review & Feedback
+          </Link>
         </nav>
       </div>
       
       <!-- Bottom Section: Settings + Logout -->
       <div class="flex flex-col gap-0.5 mb-6">
-        <Link href="/admin/settings" class="flex items-center px-6 py-3.5 text-white hover:bg-[#73BE5D] transition-colors border-l-4 border-transparent hover:border-[#73BE5D]">
+        <Link 
+          href="/admin/settings" 
+          class="flex items-center px-6 py-3.5 text-white hover:bg-[#73BE5D] transition-colors border-l-4 border-transparent hover:border-[#73BE5D]"
+          :class="isActive('/admin/settings') ? 'bg-[#73BE5D] border-[#73BE5D]' : ''"
+        >
           <span class="mr-2 text-lg">⚙</span> Settings
         </Link>
-        <Link :href="route('logout')" method="post" as="button" class="flex items-center px-6 py-3.5 text-white hover:bg-[#73BE5D] transition-colors border-l-4 border-transparent hover:border-[#73BE5D]">
+        <Link 
+          :href="route('logout')" 
+          method="post" 
+          as="button" 
+          class="flex items-center px-6 py-3.5 text-white hover:bg-[#73BE5D] transition-colors border-l-4 border-transparent hover:border-[#73BE5D] w-full text-left"
+        >
           <span class="mr-2 text-lg">↶</span> Logout
         </Link>
       </div>
     </aside>
+
     <!-- Main Content -->
     <div class="flex-1 flex flex-col ml-56">
-      <header class="bg-gray-200 px-8 py-6 border-b border-gray-300">
+      <header class="bg-white px-8 py-6 border-b border-gray-200 sticky top-0 z-40">
         <h2 class="text-xl font-semibold text-[#1E71B8] text-center tracking-wide">{{ headerTitle }}</h2>
       </header>
-      <main class="flex-1 p-8 overflow-x-auto">
+      <main class="flex-1 overflow-x-auto">
         <slot />
       </main>
     </div>
   </div>
 </template>
+
+<style scoped>
+.active-admin-link {
+  background-color: #73BE5D;
+  border-left-color: #73BE5D;
+}
+</style>
