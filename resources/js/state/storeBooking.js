@@ -18,14 +18,22 @@ export const storeBooking = defineStore('booking', {
     kidsRate: 0,
     discountId: null,
     voucherCode: '',
-    user:null,
+    user: null,
     discountIdImage: null,
     discountImages: [],
     selectedIdType: '',
     tourType: '',
     tourClassification: '',
     remarks: '',
+    selectedPackage: null,
   }),
+
+  getters: {
+    getSelectedPackage(state) {
+      if (!state.selectedPackage) return;
+      return state.selectedPackage;
+    }
+  },
 
   actions: {
     setCalendar({ startDate, endDate }) {
@@ -96,6 +104,10 @@ export const storeBooking = defineStore('booking', {
       this.remarks = remarks;
     },
 
+    setPackage(packages) {
+      this.selectedPackage = packages;
+    },
+
     reset() {
       this.startDate = null
       this.endDate = null
@@ -109,5 +121,6 @@ export const storeBooking = defineStore('booking', {
       this.discountId = null
       this.voucherCode = ''
     }
-  }
+  },
+  persist: true
 })

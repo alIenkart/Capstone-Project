@@ -8,8 +8,7 @@ import { createPinia } from 'pinia'
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import Toast from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
-// Main Color #1E71B8
-// Secondary Color #73BE5D
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
@@ -21,12 +20,14 @@ createInertiaApp({
         ),
     setup({ el, App, props, plugin }) {
         const pinia = createPinia();
+        pinia.use(piniaPluginPersistedstate); // Add plugin to pinia BEFORE using it in the app
+        
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(pinia) 
             .use(ZiggyVue)
             .use(Toast)
-            .mount(el);
+            .mount(el); // mount() should be the LAST method - no .use() after this!
     },
     progress: {
         color: '#4B5563',

@@ -4,9 +4,12 @@ import { computed, ref, onMounted } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 import { api } from '../../api/api';
 import { Link } from '@inertiajs/vue3'
+import { storeBooking } from '@/state/storeBooking';
+import { cloneDeep } from 'lodash';
 
 defineOptions({ layout: LandingIndex })
 
+const booking = storeBooking();
 const service = new api();
 const page = usePage();
 const id = computed(() => page.props.id);
@@ -195,6 +198,8 @@ const fetchSelectedPackage = async () => {
   try {
     const response = await service.getPackage(id.value);
     selectedPackage.value = response.data.data;
+    const packageSelected = cloneDeep(selectedPackage.value)
+    booking.setPackage(packageSelected)
   } catch (error) {
     console.error('Error fetching selectedPackage:', error);
   }

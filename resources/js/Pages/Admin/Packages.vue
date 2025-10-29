@@ -2,7 +2,7 @@
 import AdminIndex from './AdminIndex.vue'
 import NewPackageModal from '@/Pages/Admin/components/NewPackageModal.vue'
 import EditPackageModal from '@/Pages/Admin/components/EditPackageModal.vue'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import axios from 'axios'
 
 defineOptions({ layout: AdminIndex })
@@ -38,77 +38,198 @@ const fetchPackages = async () => {
     }
 }
 
+const activePackages = computed(() => packages.value.filter(p => p.status === 'Active').length)
+const inactivePackages = computed(() => packages.value.filter(p => p.status === 'Inactive').length)
+
 onMounted(() => {
     fetchPackages()
 })
 </script>
 
 <template>
-  <div class="admin-packages-wrapper">
-    <h2 class="admin-packages-title">Package Management</h2>
-    <div class="admin-packages-controls">
-      <input
-        type="text"
-        placeholder="Search"
-        class="admin-packages-search"
-      />
-      <div class="admin-packages-filters">
-        <select class="admin-packages-select">
-          <option>All</option>
-          <option>Active</option>
-          <option>Inactive</option>
-        </select>
-        <button class="admin-packages-filter-btn" title="Filter">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path d="M3 4a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v2a1 1 0 0 1-.293.707l-6.414 6.414A1 1 0 0 0 14 14.414V19a1 1 0 0 1-1.447.894l-4-2A1 1 0 0 1 8 17v-2.586a1 1 0 0 0-.293-.707L1.293 6.707A1 1 0 0 1 1 6V4z"/>
-          </svg>
-        </button>
-        <button class="admin-packages-add-btn" @click="createNewPackage">
-          Add new Package
-        </button>
+  <div class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 p-8">
+    <div class="max-w-[1800px] mx-auto">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">Package Management</h1>
+        <p class="text-gray-600">Create and manage tour packages</p>
+      </div>
+
+      <!-- Controls Section -->
+      <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <!-- Search Bar -->
+          <div class="relative flex-1 max-w-md">
+            <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+            <input
+              type="text"
+              placeholder="Search packages..."
+              class="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#1E71B8] focus:ring-2 focus:ring-[#1E71B8]/20 outline-none transition-all"
+            />
+          </div>
+
+          <!-- Filters and Actions -->
+          <div class="flex items-center gap-3 flex-wrap">
+            <!-- Status Filter -->
+            <div class="relative">
+              <select class="appearance-none pl-4 pr-10 py-3 border-2 border-gray-200 rounded-xl focus:border-[#1E71B8] focus:ring-2 focus:ring-[#1E71B8]/20 outline-none transition-all cursor-pointer bg-white font-medium text-gray-700">
+                <option>All Status</option>
+                <option>Active</option>
+                <option>Inactive</option>
+              </select>
+              <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </div>
+
+            <!-- Filter Button -->
+            <button class="p-3 border-2 border-gray-200 hover:border-[#1E71B8] rounded-xl transition-all hover:bg-[#1E71B8] hover:text-white group">
+              <svg class="w-5 h-5 text-gray-700 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+              </svg>
+            </button>
+
+            <!-- Add New Package Button -->
+            <button 
+              @click="createNewPackage"
+              class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#1E71B8] to-[#2a8bb5] hover:from-[#2a8bb5] hover:to-[#1E71B8] text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+              </svg>
+              Add New Package
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table Card -->
+      <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="bg-gradient-to-r from-[#1E71B8] to-[#2a8bb5] text-white">
+                <th class="px-6 py-4 text-left text-sm font-semibold whitespace-nowrap">Package ID</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold whitespace-nowrap">Package Name</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold whitespace-nowrap">Destination</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold whitespace-nowrap">Region</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold whitespace-nowrap">Max Occupancy</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold whitespace-nowrap">Booking Type</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold whitespace-nowrap">Duration</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold whitespace-nowrap">Status</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold whitespace-nowrap">Base Price</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold whitespace-nowrap">Kids Price</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold whitespace-nowrap">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              <tr v-for="packageItem in packages" :key="packageItem.id" class="hover:bg-blue-50/50 transition-colors">
+                <td class="px-6 py-4 text-sm font-medium text-gray-900">
+                  <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-blue-100 text-[#1E71B8] font-semibold">
+                    #{{ packageItem.id }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-sm font-semibold text-gray-900 whitespace-nowrap">
+                  {{ packageItem.package_name }}
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">
+                  <span class="inline-flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                    {{ packageItem.destination }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">
+                  <span class="px-2.5 py-1 rounded-lg bg-purple-100 text-purple-700 font-medium">
+                    {{ packageItem.region }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">
+                  <span class="inline-flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
+                    {{ packageItem.capacity }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-sm whitespace-nowrap">
+                  <span 
+                    :class="{
+                      'bg-blue-100 text-blue-700': !packageItem.joint_booking,
+                      'bg-indigo-100 text-indigo-700': packageItem.joint_booking
+                    }"
+                    class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
+                  >
+                    {{ packageItem.joint_booking ? 'Joint' : 'Exclusive' }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">
+                  <span class="inline-flex items-center gap-1.5">
+                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    {{ packageItem.tour_duration }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-sm whitespace-nowrap">
+                  <span 
+                    :class="{
+                      'bg-green-100 text-green-700': packageItem.status === 'Active',
+                      'bg-gray-100 text-gray-700': packageItem.status === 'Inactive'
+                    }"
+                    class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
+                  >
+                    {{ packageItem.status }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-sm font-semibold text-gray-900 whitespace-nowrap">
+                  ₱{{ packageItem.pax_rate }}
+                </td>
+                <td class="px-6 py-4 text-sm font-semibold text-gray-900 whitespace-nowrap">
+                  ₱{{ packageItem.kids_pax_rate }}
+                </td>
+                <td class="px-6 py-4 text-sm whitespace-nowrap">
+                  <button 
+                    @click="openEditModal(packageItem.id)"
+                    class="p-2 hover:bg-[#1E71B8] hover:text-white rounded-lg transition-all group"
+                    title="Edit"
+                  >
+                    <svg class="w-5 h-5 text-[#1E71B8] group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
+          <div class="flex items-center justify-between">
+            <p class="text-sm text-gray-700">
+              Showing <span class="font-semibold">1</span> to <span class="font-semibold">{{ packages.length }}</span> of <span class="font-semibold">{{ packages.length }}</span> results
+            </p>
+            <div class="flex gap-2">
+              <button class="px-4 py-2 border-2 border-gray-200 rounded-lg hover:bg-gray-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                Previous
+              </button>
+              <button class="px-4 py-2 bg-[#1E71B8] text-white rounded-lg font-semibold">
+                1
+              </button>
+              <button class="px-4 py-2 border-2 border-gray-200 rounded-lg hover:bg-gray-100 transition-all">
+                Next
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="admin-packages-table-wrapper">
-      <table class="admin-packages-table">
-        <thead>
-          <tr>
-            <th>Package ID</th>
-            <th>Package Name</th>
-            <th>Destination</th>
-            <th>Region</th>
-            <th>Max Occupancy</th>
-            <th>Booking Type</th>
-            <th>Duration</th>
-            <th>Status</th>
-            <th>Base Price per Pax</th>
-            <th>Kids Price per Pax</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="packageItem in packages" :key="packageItem.id">
-            <td>{{ packageItem.id }}</td>
-            <td>{{ packageItem.package_name }}</td>
-            <td>{{ packageItem.destination }}</td>
-            <td>{{ packageItem.region }}</td>
-            <td>{{ packageItem.capacity }}</td>
-            <td>{{ packageItem.joint_booking ? 'Joint' : 'Exclusive' }}</td>
-            <td>{{ packageItem.tour_duration }}</td>
-            <td>{{ packageItem.status }}</td>
-            <td>{{ packageItem.pax_rate }}</td>
-            <td>{{ packageItem.kids_pax_rate }}</td>
-            <td>
-              <button class="admin-packages-edit-btn" @click="openEditModal(packageItem.id)" title="Edit">
-                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                  <path d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 1 1 2.828 2.828L11.828 15.828a2 2 0 0 1-1.414.586H7v-3a2 2 0 0 1 .586-1.414z"/>
-                </svg>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
 
+    <!-- Modals -->
     <NewPackageModal
       :show="showModal"
       @close="showModal = false"
@@ -123,180 +244,3 @@ onMounted(() => {
     />
   </div>
 </template>
-
-<style scoped>
-.admin-packages-wrapper {
-  padding: 32px 0 0 0;
-}
-.admin-packages-title {
-  text-align: center;
-  font-size: 1.3rem;
-  font-weight: bold;
-  margin-bottom: 24px;
-  color: #1E71B8;
-}
-.admin-packages-controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 18px;
-  gap: 18px;
-}
-.admin-packages-search {
-  width: 240px;
-  padding: 8px 16px;
-  border: 1.5px solid #1E71B8;
-  border-radius: 8px;
-  font-size: 1rem;
-  color: #1E71B8;
-}
-.admin-packages-filters {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.admin-packages-select {
-  padding: 8px 16px;
-  border: 1.5px solid #1E71B8;
-  border-radius: 8px;
-  font-size: 1rem;
-  color: #1E71B8;
-}
-.admin-packages-filter-btn {
-  background: #fff;
-  border: 1.5px solid #1E71B8;
-  border-radius: 8px;
-  padding: 7px 10px;
-  cursor: pointer;
-  transition: background 0.2s;
-  display: flex;
-  align-items: center;
-  color: #1E71B8;
-}
-.admin-packages-filter-btn:hover {
-  background: #73BE5D;
-  color: #fff;
-}
-.admin-packages-add-btn {
-  background: #fff;
-  border: 1.5px solid #1E71B8;
-  border-radius: 8px;
-  padding: 7px 18px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-  margin-left: 10px;
-  color: #1E71B8;
-}
-.admin-packages-add-btn:hover {
-  background: #73BE5D;
-  color: #fff;
-  border-color: #73BE5D;
-}
-.admin-packages-table-wrapper {
-  margin-top: 18px;
-  overflow-x: auto;
-}
-.admin-packages-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: #fff;
-}
-.admin-packages-table th,
-.admin-packages-table td {
-  border: 2px solid #1E71B8;
-  padding: 10px 8px;
-  text-align: left;
-  font-size: 1rem;
-}
-.admin-packages-table th {
-  background: #1E71B8;
-  color: #fff;
-  font-weight: 600;
-}
-.admin-packages-edit-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  color: #1E71B8;
-  transition: color 0.2s;
-}
-.admin-packages-edit-btn:hover {
-  color: #73BE5D;
-}
-
-/* Mobile/tablet responsiveness */
-.admin-packages-table-wrapper {
-  -webkit-overflow-scrolling: touch;
-}
-
-.admin-packages-table {
-  min-width: 900px; /* force horizontal scroll on small screens */
-}
-
-@media (max-width: 1024px) {
-  .admin-packages-table th,
-  .admin-packages-table td {
-    padding: 8px 6px;
-    font-size: 0.95rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .admin-packages-title {
-    font-size: 1.1rem;
-  }
-
-  .admin-packages-controls {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-  }
-
-  .admin-packages-search {
-    width: 100%;
-  }
-
-  .admin-packages-filters {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .admin-packages-select {
-    flex: 1 1 180px;
-  }
-
-  .admin-packages-filter-btn {
-    padding: 8px 12px;
-  }
-
-  .admin-packages-add-btn {
-    width: 100%;
-    text-align: center;
-  }
-
-  .admin-packages-table th,
-  .admin-packages-table td {
-    padding: 8px 6px;
-    font-size: 0.9rem;
-  }
-
-  .admin-packages-table {
-    min-width: 720px; /* ensure columns remain readable; scroll handles overflow */
-  }
-}
-
-@media (max-width: 480px) {
-  .admin-packages-filter-btn svg {
-    width: 18px;
-    height: 18px;
-  }
-
-  .admin-packages-select {
-    flex: 1 1 100%;
-  }
-}
-</style>

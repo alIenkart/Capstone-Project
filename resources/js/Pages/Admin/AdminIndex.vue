@@ -8,7 +8,7 @@ const isActive = (path) => page.url.startsWith(path) ? 'active-admin-link' : ''
 const headerTitle = computed(() => {
   if (page.url.startsWith('/admin/admindashboard')) return 'Dashboard'
   if (page.url.startsWith('/admin/users')) return 'Users'
-  if (page.url.startsWith('/admin/packages')) return 'Packages'
+  if (page.url.startsWith('/admin/packages')) return 'Package Management'
   if (page.url.startsWith('/admin/booking-entries')) return 'Booking Entries'
   if (page.url.startsWith('/admin/payment-confirmation')) return 'Payment Confirmation'
   if (page.url.startsWith('/admin/content-management')) return 'Content Management'

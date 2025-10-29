@@ -24,172 +24,171 @@ onMounted(() => {
 })
 
 const showApprovalPaymentModal = ref(false)
-const openApprovalPaymentModal = () => {
+const selectedPayment = ref(null)
+
+const openApprovalPaymentModal = (payment = null) => {
+  selectedPayment.value = payment
   showApprovalPaymentModal.value = true
 }
+
 const handleApprovalPaymentClose = () => {
   showApprovalPaymentModal.value = false
+  selectedPayment.value = null
 }
 </script>
 
 <template>
-  <div class="admin-payment-wrapper">
-    <h2 class="admin-payment-title">
-      Payment Confirmation
-    </h2>
-          <!-- Button to open modal for demo (Pakiremove na lang po if done na) -->
-      <button @click="openApprovalPaymentModal">
-        Show Payment Approval Modal
-      </button>
-    <div class="admin-payment-controls">
-      <input
-        type="text"
-        placeholder="Search"
-        class="admin-payment-search"
-      />
-      <div class="admin-payment-filters">
-        <select class="admin-payment-select">
-          <option>All</option>
-          <option>Approved</option>
-          <option>Pending Confirmation</option>
-          <option>Rejected</option>
-        </select>
-        <button class="admin-payment-filter-btn" title="Filter">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path d="M3 4a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v2a1 1 0 0 1-.293.707l-6.414 6.414A1 1 0 0 0 14 14.414V19a1 1 0 0 1-1.447.894l-4-2A1 1 0 0 1 8 17v-2.586a1 1 0 0 0-.293-.707L1.293 6.707A1 1 0 0 1 1 6V4z"/>
-          </svg>
-        </button>
+  <div class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 p-8">
+    <div class="max-w-[1600px] mx-auto">
+      <!-- Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">Payment Management</h1>
+        <p class="text-gray-600">Review and approve customer payment submissions</p>
+      </div>
+
+      <!-- Controls Section -->
+      <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <!-- Search Bar -->
+          <div class="relative flex-1 max-w-md">
+            <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+            <input
+              type="text"
+              placeholder="Search payments..."
+              class="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#1E71B8] focus:ring-2 focus:ring-[#1E71B8]/20 outline-none transition-all"
+            />
+          </div>
+
+          <!-- Filters -->
+          <div class="flex items-center gap-3 flex-wrap">
+            <!-- Status Filter -->
+            <div class="relative">
+              <select class="appearance-none pl-4 pr-10 py-3 border-2 border-gray-200 rounded-xl focus:border-[#1E71B8] focus:ring-2 focus:ring-[#1E71B8]/20 outline-none transition-all cursor-pointer bg-white font-medium text-gray-700">
+                <option>All Status</option>
+                <option>Approved</option>
+                <option>Pending Confirmation</option>
+                <option>Rejected</option>
+              </select>
+              <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </div>
+
+            <!-- Filter Button -->
+            <button class="p-3 border-2 border-gray-200 hover:border-[#1E71B8] rounded-xl transition-all hover:bg-[#1E71B8] hover:text-white group">
+              <svg class="w-5 h-5 text-gray-700 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table Card -->
+      <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="bg-gradient-to-r from-[#1E71B8] to-[#2a8bb5] text-white">
+                <th class="px-6 py-4 text-left text-sm font-semibold">Payment ID</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold">Booking ID</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold">Customer Name</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold">Payment Entry</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold">Status</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold">Payment Method</th>
+                <th class="px-6 py-4 text-left text-sm font-semibold">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+              <tr v-for="p in payments" :key="p.payment_id" class="hover:bg-blue-50/50 transition-colors">
+                <td class="px-6 py-4 text-sm font-medium text-gray-900">
+                  <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-blue-100 text-[#1E71B8] font-semibold">
+                    #{{ p.id }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-sm">
+                  <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-gray-100 text-gray-700 font-medium">
+                    #{{ p.booking_id }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-sm font-medium text-gray-900">
+                  {{ p.booking?.customer_name || 'N/A' }}
+                </td>
+                <td class="px-6 py-4 text-sm">
+                  <span class="inline-flex items-center gap-1.5 text-gray-700">
+                    <svg class="w-5 h-5 text-[#1E71B8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    {{ p.payment_entry }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-sm">
+                  <span 
+                    :class="{
+                      'bg-green-100 text-green-700': p.payment_status === 'Approved',
+                      'bg-yellow-100 text-yellow-700': p.payment_status === 'Pending Confirmation',
+                      'bg-red-100 text-red-700': p.payment_status === 'Rejected',
+                      'bg-gray-100 text-gray-700': !['Approved', 'Pending Confirmation', 'Rejected'].includes(p.payment_status)
+                    }"
+                    class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
+                  >
+                    {{ p.payment_status }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-sm">
+                  <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-purple-100 text-purple-700 font-medium">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                    </svg>
+                    {{ p.payment_method }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-sm">
+                  <button 
+                    @click="openApprovalPaymentModal(p)"
+                    class="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-[#1E71B8] to-[#2a8bb5] hover:from-[#2a8bb5] hover:to-[#1E71B8] text-white rounded-lg font-medium transition-all shadow hover:shadow-lg transform hover:-translate-y-0.5"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                    Review
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
+          <div class="flex items-center justify-between">
+            <p class="text-sm text-gray-700">
+              Showing <span class="font-semibold">1</span> to <span class="font-semibold">{{ payments.length }}</span> of <span class="font-semibold">{{ payments.length }}</span> results
+            </p>
+            <div class="flex gap-2">
+              <button class="px-4 py-2 border-2 border-gray-200 rounded-lg hover:bg-gray-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                Previous
+              </button>
+              <button class="px-4 py-2 bg-[#1E71B8] text-white rounded-lg font-semibold">
+                1
+              </button>
+              <button class="px-4 py-2 border-2 border-gray-200 rounded-lg hover:bg-gray-100 transition-all">
+                Next
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="admin-payment-table-wrapper">
-      <table class="admin-payment-table">
-        <thead>
-          <tr>
-            <th>Payment ID</th>
-            <th>Booking ID</th>
-            <th>Customer Name</th>
-            <th>Payment Entry</th>
-            <th>Status</th>
-            <th>Payment Method</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="p in payments" :key="p.payment_id">
-            <td>{{ p.id }}</td>
-            <td>{{ p.booking_id }}</td>
-            <td>{{ p.booking?.customer_name || 'N/A' }}</td>
-            <td>
-              <svg class="inline mr-1" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <rect x="3" y="3" width="18" height="18" rx="3" stroke="#888"/>
-                <path d="M8 12l2 2 4-4" stroke="#217093" stroke-width="2" fill="none"/>
-              </svg>
-              {{ p.payment_entry }}
-            </td>
-            <td>{{ p.payment_status }}</td>
-            <td>{{ p.payment_method }}</td>
-            <td>
-              <button class="admin-payment-edit-btn" title="Edit" @click="openApprovalPaymentModal">
-                <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                  <path d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 1 1 2.828 2.828L11.828 15.828a2 2 0 0 1-1.414.586H7v-3a2 2 0 0 1 .586-1.414z"/>
-                </svg>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+
     <!-- Approval Payment Modal -->
     <ApprovalPaymentModal
       v-if="showApprovalPaymentModal"
+      :payment="selectedPayment"
       @close="handleApprovalPaymentClose"
     />
   </div>
 </template>
-
-<style scoped>
-.admin-payment-wrapper {
-  padding: 32px 0 0 0;
-}
-.admin-payment-title {
-  text-align: center;
-  font-size: 1.3rem;
-  font-weight: bold;
-  margin-bottom: 24px;
-  color: #1E71B8;
-}
-.admin-payment-controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 18px;
-  gap: 18px;
-}
-.admin-payment-search {
-  width: 240px;
-  padding: 8px 16px;
-  border: 1.5px solid #1E71B8;
-  border-radius: 8px;
-  font-size: 1rem;
-  color: #1E71B8;
-}
-.admin-payment-filters {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.admin-payment-select {
-  padding: 8px 16px;
-  border: 1.5px solid #1E71B8;
-  border-radius: 8px;
-  font-size: 1rem;
-  color: #1E71B8;
-}
-.admin-payment-filter-btn {
-  background: #fff;
-  border: 1.5px solid #1E71B8;
-  border-radius: 8px;
-  padding: 7px 10px;
-  cursor: pointer;
-  transition: background 0.2s;
-  display: flex;
-  align-items: center;
-  color: #1E71B8;
-}
-.admin-payment-filter-btn:hover {
-  background: #73BE5D;
-  color: #fff;
-}
-.admin-payment-table-wrapper {
-  margin-top: 18px;
-  overflow-x: auto;
-}
-.admin-payment-table {
-  width: 100%;
-  border-collapse: collapse;
-  background: #fff;
-}
-.admin-payment-table th,
-.admin-payment-table td {
-  border: 2px solid #1E71B8;
-  padding: 10px 8px;
-  text-align: left;
-  font-size: 1rem;
-}
-.admin-payment-table th {
-  background: #1E71B8;
-  color: #fff;
-  font-weight: 600;
-}
-.admin-payment-edit-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 4px;
-  color: #1E71B8;
-  transition: color 0.2s;
-}
-.admin-payment-edit-btn:hover {
-  color: #73BE5D;
-}
-</style>
