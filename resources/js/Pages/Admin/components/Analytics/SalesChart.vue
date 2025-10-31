@@ -1,6 +1,8 @@
 <template>
-  <div class="chart-container">
-    <Bar :data="chartData" :options="chartOptions" />
+  <div class="bg-white rounded-2xl p-6 shadow-sm w-full max-w-5xl mx-auto mt-6">
+    <div class="w-full h-80">
+      <Bar :data="chartData" :options="chartOptions" />
+    </div>
   </div>
 </template>
 
@@ -27,14 +29,10 @@ const chartData = {
     {
       label: 'Monthly Sales',
       data: [65, 59, 80, 81, 56, 55, 40, 45, 70, 75, 90, 100],
-      backgroundColor: [
-        'rgba(54, 162, 235, 0.3)',
-      ],
-      borderColor: [
-        'rgba(54, 162, 235, 0.6)',
-      ],
+      backgroundColor: 'rgba(54, 162, 235, 0.3)',
+      borderColor: 'rgba(54, 162, 235, 0.6)',
       borderWidth: 1,
-      borderRadius: 3,
+      borderRadius: 6,
       barPercentage: 0.7,
       categoryPercentage: 0.7,
     },
@@ -45,9 +43,8 @@ const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
-    legend: {
-      display: false,
-    },
+    legend: { display: false },
+    tooltip: { enabled: true },
   },
   scales: {
     y: {
@@ -59,17 +56,17 @@ const chartOptions = {
       ticks: {
         color: '#555',
         stepSize: 10,
+        font: { size: 12 },
       },
     },
     x: {
-      grid: {
-        display: false,
-      },
+      grid: { display: false },
       ticks: {
         color: '#555',
         maxRotation: 0,
         minRotation: 0,
         autoSkip: false,
+        font: { size: 12 },
       },
     },
   },
@@ -79,8 +76,6 @@ const chartOptions = {
 <style scoped>
 .chart-container {
   width: 100%;
-  max-width: 1200px;
-  min-width: 600px;
-  height: 350px;
+  height: 100%;
 }
 </style>

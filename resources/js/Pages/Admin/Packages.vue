@@ -1,12 +1,6 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 p-8">
     <div class="max-w-[1800px] mx-auto">
-      <!-- Header -->
-      <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-800 mb-2">Package Management</h1>
-        <p class="text-gray-600">Create and manage tour packages</p>
-      </div>
-
       <!-- Controls Section -->
       <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
