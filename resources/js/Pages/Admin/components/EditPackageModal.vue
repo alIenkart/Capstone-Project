@@ -348,17 +348,10 @@ const fetchPackage = async (id) => {
             kids_pax_rate: packageData.kids_pax_rate || 0,
             discounted_rate: packageData.discounted_rate || 0
         }
-        const apiItinerary = (() => {
-            if (!packageData.itinerary) return {}
-            if (typeof packageData.itinerary === 'string') {
-                try { return JSON.parse(packageData.itinerary) } 
-                catch (e) { 
-                    console.error('Invalid itinerary JSON:', e) 
-                    return {} 
-                }
-            }
-            return packageData.itinerary
-        })()
+        
+        const apiItinerary = typeof packageData.itinerary === 'string'
+            ? JSON.parse(packageData.itinerary) : packageData.itinerary || {}
+        
         itineraryDays.value = Object.keys(apiItinerary).map((key, index) => ({
             id: index + 1,
             number_of_day: index + 1, 
