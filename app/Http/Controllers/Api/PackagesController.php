@@ -29,13 +29,17 @@ class PackagesController extends Controller
             'joint_booking' => filter_var($request->input('joint_booking'), FILTER_VALIDATE_BOOLEAN)
         ]);
 
+        $itinerary = json_decode($request->input('itinerary'), true);
+        $request->merge(['itinerary' => $itinerary]);
+
         $validator = Validator::make($request->all(), [
             'package_name' => 'required|string|max:255',
             'destination' => 'required|string|max:255',
             'region' => 'nullable|string|max:255',
             'description' => 'required|string',
             'tour_duration' => 'required|string|max:255',
-            'itinerary' => 'required|string',
+            'itinerary' => 'required|array',
+            'itinerary.*' => 'required|string',
             'terms_condition' => 'required|string',
             'exclusions' => 'required|string',
             'capacity' => 'required|integer|min:1',
@@ -52,6 +56,9 @@ class PackagesController extends Controller
         }
 
         $data = $request->all();
+
+        $itinerary = $request->input('itinerary'); 
+        $data['itinerary'] = json_encode($itinerary);
 
         // Handle image upload
         if ($request->hasFile('image')) {
@@ -87,13 +94,17 @@ class PackagesController extends Controller
             'joint_booking' => filter_var($request->input('joint_booking'), FILTER_VALIDATE_BOOLEAN)
         ]);
 
+        $itinerary = json_decode($request->input('itinerary'), true);
+        $request->merge(['itinerary' => $itinerary]);
+        
         $validator = Validator::make($request->all(), [
             'package_name' => 'sometimes|required|string|max:255',
             'destination' => 'sometimes|required|string|max:255',
             'region' => 'sometimes|nullable|string|max:255',
             'description' => 'sometimes|required|string',
             'tour_duration' => 'sometimes|required|string|max:255',
-            'itinerary' => 'sometimes|required|string',
+            'itinerary' => 'required|array',
+            'itinerary.*' => 'required|string',
             'terms_condition' => 'sometimes|required|string',
             'exclusions' => 'sometimes|required|string',
             'capacity' => 'sometimes|required|integer|min:1',

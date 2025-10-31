@@ -24,4 +24,8 @@ class Packages extends Model
         'discounted_rate',
         'time_stamp',
     ];
+
+    protected $casts = [
+        'itinerary' => 'array',
+    ];
 }

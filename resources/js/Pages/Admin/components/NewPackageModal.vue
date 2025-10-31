@@ -411,10 +411,6 @@ const savePackage = async () => {
     data.append('destination', formData.value.destination);
     data.append('region', formData.value.region || '');
     data.append('description', formData.value.description || '');
-    const formattedItinerary = itineraryDays.value
-        .map(day => `Day ${day.id}:\n${day.content}`)
-        .join('\n\n');
-    data.append('itinerary', formattedItinerary);
     data.append('terms_condition', formData.value.termsCondition || '');
     data.append('exclusions', formData.value.exclusions || '');
     data.append('capacity', formData.value.maxOccupancy ? parseInt(formData.value.maxOccupancy) : 0);
@@ -423,6 +419,13 @@ const savePackage = async () => {
     data.append('pax_rate', formData.value.basePrice ? parseFloat(formData.value.basePrice) : 0);
     data.append('kids_pax_rate', formData.value.kidsBasePrice ? parseFloat(formData.value.kidsBasePrice) : '');
     data.append('discounted_rate', formData.value.discountedRate ? parseFloat(formData.value.discountedRate) : 0);
+
+    const formattedItinerary = {}
+    itineraryDays.value.forEach(day => {
+        formattedItinerary[`day_${day.id}`] = day.content
+    })
+    data.append('itinerary', JSON.stringify(formattedItinerary))
+
 
     try {
         const response = await axios.post('/api/packages', data, {

@@ -185,6 +185,53 @@
                             </div>
 
                             <div
+                                class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200 shadow-md hover:shadow-xl transition-all">
+                                <div class="flex items-center justify-between mb-5">
+                                    <div class="flex items-center gap-3">
+                                        <h4 class="text-xl font-bold text-slate-800">Itinerary*</h4>
+                                    </div>
+                                    <div class="text-sm font-semibold text-blue-600 bg-blue-100 px-3 py-1 rounded-full">
+                                        Day {{ itineraryDays.length }}
+                                    </div>
+                                </div>
+                                <div class="space-y-4">
+                                    <TransitionGroup name="list">
+                                        <div v-for="(day, index) in itineraryDays" :key="day.id"
+                                            class="bg-white border-2 border-blue-200 rounded-xl p-5 hover:border-blue-400 transition-all shadow-sm hover:shadow-md">
+                                            <div class="flex items-center justify-between mb-3">
+                                                <div class="flex items-center gap-3">
+                                                    <h4 class="text-lg font-bold text-slate-800">Day {{ index + 1 }}</h4>
+                                                </div>
+                                                <button v-if="itineraryDays.length > 1" type="button"
+                                                    @click="removeItineraryDay(day.id)"
+                                                    class="p-2 rounded-lg text-red-500 hover:bg-red-50 hover:text-red-600 transition-all">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                            <textarea v-model="day.content"
+                                                :placeholder="`Describe the activities and highlights for Day ${day.id}...`"
+                                                rows="4"
+                                                class="w-full rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 px-4 py-3 text-sm outline-none transition-all resize-none"></textarea>
+                                        </div>
+                                    </TransitionGroup>
+
+                                    <button type="button" @click="addItineraryDay"
+                                        class="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-sm font-bold rounded-xl hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                        </svg>
+                                        Add Another Day
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div
                                 class="bg-white rounded-2xl p-6 border border-slate-200 shadow-md hover:shadow-xl transition-all">
                                 <div class="flex items-center gap-3 mb-5">
                                     <h4 class="text-xl font-bold text-slate-800">Terms & Conditions*</h4>
@@ -270,38 +317,6 @@ const itineraryDays = ref([{ id: 1, content: '' }])
 const showDeleteConfirmationModal = ref(false)
 const imagePreview = ref(null)
 
-const parseItineraryToDays = (itineraryString) => {
-    if (!itineraryString || itineraryString.trim() === '') {
-        return [{ id: 1, content: '' }]
-    }
-
-    const dayPattern = /Day\s+\d+:/gi
-    const dayMatches = [...itineraryString.matchAll(dayPattern)]
-
-    if (dayMatches.length > 0) {
-        const days = []
-        dayMatches.forEach((match, index) => {
-            const startIndex = match.index
-            const endIndex = index < dayMatches.length - 1 ? dayMatches[index + 1].index : itineraryString.length
-            const section = itineraryString.substring(startIndex, endIndex).trim()
-            const lines = section.split('\n')
-            const content = lines.slice(1).join('\n').trim()
-            days.push({ id: index + 1, content })
-        })
-        return days
-    }
-
-    const daySections = itineraryString.split('\n\n').filter(section => section.trim() !== '')
-    if (daySections.length > 1) {
-        return daySections.map((section, index) => ({
-            id: index + 1,
-            content: section.replace(/^Day\s+\d+:\s*/i, '').trim()
-        }))
-    }
-
-    return [{ id: 1, content: itineraryString.trim() }]
-}
-
 watch([() => props.show, () => props.packageId], ([newShow, newPackageId]) => {
     if (newShow && newPackageId !== null) {
         fetchPackage(newPackageId)
@@ -333,8 +348,12 @@ const fetchPackage = async (id) => {
             kids_pax_rate: packageData.kids_pax_rate || 0,
             discounted_rate: packageData.discounted_rate || 0
         }
+        const apiItinerary = packageData.itinerary ? JSON.parse(packageData.itinerary) : {}
+        itineraryDays.value = Object.keys(apiItinerary).map((key, index) => ({
+            number_of_day: index + 1, 
+            content: apiItinerary[key]
+        }))
         imagePreview.value = formData.value.image_path ? `/storage/${formData.value.image_path}` : null
-        itineraryDays.value = parseItineraryToDays(formData.value.itinerary)
     } catch (error) {
         console.error('Error fetching package:', error)
         alert('Error fetching package data.')
@@ -349,10 +368,10 @@ const closeModal = () => {
 const updatePackage = async () => {
     try {
         let response
-        const formattedItinerary = itineraryDays.value
-            .map(day => `Day ${day.id}:\n${day.content}`)
-            .join('\n\n')
-
+        const formattedItinerary = {}
+        itineraryDays.value.forEach(day => {
+            formattedItinerary[`day_${day.id}`] = day.content
+        })
         if (formData.value.image) {
             const data = new FormData()
             data.append('package_name', formData.value.package_name)
@@ -428,5 +447,23 @@ const handleImageUpload = (event) => {
     const file = event.target.files[0]
     formData.value.image = file
     imagePreview.value = file ? URL.createObjectURL(file) : (formData.value.image_path ? `/storage/${formData.value.image_path}` : null)
+}
+
+const removeItineraryDay = (dayId) => {
+    if (itineraryDays.value.length <= 1) {
+        toast.warning('You must have at least one day in the itinerary.')
+        return
+    }
+
+    itineraryDays.value = itineraryDays.value.filter(day => day.id !== dayId)
+
+    itineraryDays.value.forEach((day, index) => {
+        day.id = index + 1
+    })
+}
+
+const addItineraryDay = () => {
+    const newDayNumber = itineraryDays.value.length + 1
+    itineraryDays.value.push({ id: newDayNumber, content: '' })
 }
 </script>
