@@ -1,7 +1,7 @@
 <template>
   <div :class="[
     'flex min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 transition-all duration-300',
-    { 'overflow-hidden': isLoggingOut } // Prevents scrollbar during transition
+    { 'overflow-hidden': isLoggingOut }
   ]">
 
     <div :class="[
@@ -98,29 +98,27 @@
 </template>
 
 <script setup>
-import { Link, usePage, router } from '@inertiajs/vue3' // Added 'router'
-console.log("🚀 ~ usePage:", usePage())
-import { ref, computed, onMounted } from 'vue'
+import { Link, usePage, router } from '@inertiajs/vue3' 
+import { ref, computed } from 'vue'
 
 const isSidebarOpen = ref(true)
 const toggleSidebar = () => (isSidebarOpen.value = !isSidebarOpen.value)
-const adminName = ref('')
-// **NEW LOGOUT STATE**
+
 const isLoggingOut = ref(false)
 
-// **NEW LOGOUT HANDLER**
 const handleLogout = () => {
-  // 1. Start the animation
   isLoggingOut.value = true
-
-  // 2. Wait for the animation (500ms) before logging out
   setTimeout(() => {
-    // 3. Perform the actual Inertia logout (assuming 'logout' is a defined route)
     router.post(route('logout'))
   }, 1000)
 }
 
 const page = usePage()
+
+const adminName = computed(() => {
+    return page.props.auth?.user?.first_name || 'ADMIN' 
+})
+
 const isActive = (path) => page.url.startsWith(path)
 
 const headerTitle = computed(() => {
@@ -153,14 +151,9 @@ const navigationItems = [
   { href: '/admin/content-management', label: 'Content Management' },
   { href: '/admin/review-feedback', label: 'Review & Feedback' },
 ]
-
-onMounted(() => {
-  adminName.value = usePage().props.auth.user.first_name;
-})
 </script>
 
 <style scoped>
-/* Existing Scrollbar Styling */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
