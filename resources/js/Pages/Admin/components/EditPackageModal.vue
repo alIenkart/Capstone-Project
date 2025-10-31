@@ -266,7 +266,7 @@
                             </svg>
                             Cancel
                         </button>
-                        <button type="submit" form="updateForm"
+                        <button type="submit" @click="updatePackage"
                             class="flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#217093] to-[#2a8bb5] hover:from-[#1a5a7a] hover:to-[#217093] px-7 py-3 text-sm font-bold text-white shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 active:translate-y-0">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -348,8 +348,12 @@ const fetchPackage = async (id) => {
             kids_pax_rate: packageData.kids_pax_rate || 0,
             discounted_rate: packageData.discounted_rate || 0
         }
-        const apiItinerary = packageData.itinerary ? JSON.parse(packageData.itinerary) : {}
+        
+        const apiItinerary = typeof packageData.itinerary === 'string'
+            ? JSON.parse(packageData.itinerary) : packageData.itinerary || {}
+        
         itineraryDays.value = Object.keys(apiItinerary).map((key, index) => ({
+            id: index + 1,
             number_of_day: index + 1, 
             content: apiItinerary[key]
         }))
@@ -379,7 +383,7 @@ const updatePackage = async () => {
             data.append('region', formData.value.region || '')
             data.append('description', formData.value.description)
             data.append('tour_duration', formData.value.tour_duration)
-            data.append('itinerary', formattedItinerary)
+            data.append('itinerary', JSON.stringify(formattedItinerary))
             data.append('terms_condition', formData.value.terms_condition)
             data.append('exclusions', formData.value.exclusions)
             data.append('capacity', parseInt(formData.value.capacity) || 0)
@@ -400,7 +404,7 @@ const updatePackage = async () => {
                 region: formData.value.region || '',
                 description: formData.value.description,
                 tour_duration: formData.value.tour_duration,
-                itinerary: formattedItinerary,
+                itinerary: JSON.stringify(formattedItinerary),
                 terms_condition: formData.value.terms_condition,
                 exclusions: formData.value.exclusions,
                 capacity: parseInt(formData.value.capacity) || 0,
