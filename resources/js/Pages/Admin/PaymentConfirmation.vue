@@ -1,42 +1,3 @@
-<script setup>
-import AdminIndex from './AdminIndex.vue'
-import { ref, onMounted } from 'vue'
-import { api } from '../../api/api'
-import ApprovalPaymentModal from '@/Pages/Admin/components/ApprovalPaymentModal.vue'
-
-defineOptions({ layout: AdminIndex })
-
-const service = new api();
-const payments = ref([])
-
-const fetchPayments = async () => {
-    try {
-        const response = await service.getPayments();
-        payments.value = response.data
-        console.log('Payments fetched:', payments.value)
-    } catch (error) {
-        console.error('Error fetching bookings:', error)
-    }
-}
-
-onMounted(() => {
-    fetchPayments()
-})
-
-const showApprovalPaymentModal = ref(false)
-const selectedPayment = ref(null)
-
-const openApprovalPaymentModal = (payment = null) => {
-  selectedPayment.value = payment
-  showApprovalPaymentModal.value = true
-}
-
-const handleApprovalPaymentClose = () => {
-  showApprovalPaymentModal.value = false
-  selectedPayment.value = null
-}
-</script>
-
 <template>
   <div class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 p-8">
     <div class="max-w-[1600px] mx-auto">
@@ -55,33 +16,39 @@ const handleApprovalPaymentClose = () => {
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
             </svg>
             <input
+              v-model="searchQuery"
               type="text"
-              placeholder="Search payments..."
+              placeholder="Search by ID, customer name, entry, method..."
               class="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#1E71B8] focus:ring-2 focus:ring-[#1E71B8]/20 outline-none transition-all"
             />
+            <button
+              v-if="searchQuery"
+              @click="searchQuery = ''"
+              class="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </button>
           </div>
 
           <!-- Filters -->
           <div class="flex items-center gap-3 flex-wrap">
             <!-- Status Filter -->
             <div class="relative">
-              <select class="appearance-none pl-4 pr-10 py-3 border-2 border-gray-200 rounded-xl focus:border-[#1E71B8] focus:ring-2 focus:ring-[#1E71B8]/20 outline-none transition-all cursor-pointer bg-white font-medium text-gray-700">
+              <select 
+                v-model="statusFilter"
+                class="appearance-none pl-4 pr-10 py-3 border-2 border-gray-200 rounded-xl focus:border-[#1E71B8] focus:ring-2 focus:ring-[#1E71B8]/20 outline-none transition-all cursor-pointer bg-white font-medium text-gray-700"
+              >
                 <option>All Status</option>
                 <option>Approved</option>
-                <option>Pending Confirmation</option>
+                <option>Pending</option>
                 <option>Rejected</option>
               </select>
               <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
               </svg>
             </div>
-
-            <!-- Filter Button -->
-            <button class="p-3 border-2 border-gray-200 hover:border-[#1E71B8] rounded-xl transition-all hover:bg-[#1E71B8] hover:text-white group">
-              <svg class="w-5 h-5 text-gray-700 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
-              </svg>
-            </button>
           </div>
         </div>
       </div>
@@ -102,7 +69,27 @@ const handleApprovalPaymentClose = () => {
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
-              <tr v-for="p in payments" :key="p.payment_id" class="hover:bg-blue-50/50 transition-colors">
+              <tr v-if="filteredPayments.length === 0">
+                <td colspan="7" class="px-6 py-12 text-center">
+                  <div class="flex flex-col items-center gap-3">
+                    <svg class="w-16 h-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <div class="text-gray-500">
+                      <p class="text-lg font-semibold">No payments found</p>
+                      <p class="text-sm">Try adjusting your search or filters</p>
+                    </div>
+                    <button 
+                      v-if="hasActiveFilters"
+                      @click="resetFilters"
+                      class="mt-2 px-4 py-2 bg-[#1E71B8] text-white rounded-lg font-medium hover:bg-[#2a8bb5] transition-all"
+                    >
+                      Clear all filters
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr v-for="p in filteredPayments" :key="p.payment_id" class="hover:bg-blue-50/50 transition-colors">
                 <td class="px-6 py-4 text-sm font-medium text-gray-900">
                   <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-blue-100 text-[#1E71B8] font-semibold">
                     #{{ p.id }}
@@ -128,9 +115,9 @@ const handleApprovalPaymentClose = () => {
                   <span 
                     :class="{
                       'bg-green-100 text-green-700': p.payment_status === 'Approved',
-                      'bg-yellow-100 text-yellow-700': p.payment_status === 'Pending Confirmation',
+                      'bg-yellow-100 text-yellow-700': p.payment_status === 'Pending',
                       'bg-red-100 text-red-700': p.payment_status === 'Rejected',
-                      'bg-gray-100 text-gray-700': !['Approved', 'Pending Confirmation', 'Rejected'].includes(p.payment_status)
+                      'bg-gray-100 text-gray-700': !['Approved', 'Pending', 'Rejected'].includes(p.payment_status)
                     }"
                     class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
                   >
@@ -166,7 +153,7 @@ const handleApprovalPaymentClose = () => {
         <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
           <div class="flex items-center justify-between">
             <p class="text-sm text-gray-700">
-              Showing <span class="font-semibold">1</span> to <span class="font-semibold">{{ payments.length }}</span> of <span class="font-semibold">{{ payments.length }}</span> results
+              Showing <span class="font-semibold">{{ filteredPayments.length > 0 ? 1 : 0 }}</span> to <span class="font-semibold">{{ filteredPayments.length }}</span> of <span class="font-semibold">{{ filteredPayments.length }}</span> results
             </p>
             <div class="flex gap-2">
               <button class="px-4 py-2 border-2 border-gray-200 rounded-lg hover:bg-gray-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
@@ -175,7 +162,7 @@ const handleApprovalPaymentClose = () => {
               <button class="px-4 py-2 bg-[#1E71B8] text-white rounded-lg font-semibold">
                 1
               </button>
-              <button class="px-4 py-2 border-2 border-gray-200 rounded-lg hover:bg-gray-100 transition-all">
+              <button class="px-4 py-2 border-2 border-gray-200 rounded-lg hover:bg-gray-100 transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
                 Next
               </button>
             </div>
@@ -192,3 +179,86 @@ const handleApprovalPaymentClose = () => {
     />
   </div>
 </template>
+
+<script setup>
+import AdminIndex from './AdminIndex.vue'
+import { ref, onMounted, computed } from 'vue'
+import { api } from '../../api/api'
+import ApprovalPaymentModal from '@/Pages/Admin/components/ApprovalPaymentModal.vue'
+
+defineOptions({ layout: AdminIndex })
+
+const service = new api();
+const payments = ref([])
+const searchQuery = ref('')
+const statusFilter = ref('All Status')
+
+const fetchPayments = async () => {
+    try {
+        const response = await service.getPayments();
+        payments.value = response.data
+        console.log('Payments fetched:', payments.value)
+    } catch (error) {
+        console.error('Error fetching bookings:', error)
+    }
+}
+
+onMounted(() => {
+    fetchPayments()
+})
+
+const showApprovalPaymentModal = ref(false)
+const selectedPayment = ref(null)
+
+const openApprovalPaymentModal = (payment = null) => {
+  selectedPayment.value = payment
+  showApprovalPaymentModal.value = true
+}
+
+const handleApprovalPaymentClose = () => {
+  showApprovalPaymentModal.value = false
+  selectedPayment.value = null
+  fetchPayments() // Refresh payments after modal closes
+}
+
+// Computed property for filtered payments
+const filteredPayments = computed(() => {
+  let result = payments.value
+
+  // Apply search filter
+  if (searchQuery.value.trim()) {
+    const query = searchQuery.value.toLowerCase().trim()
+    result = result.filter(p => {
+      const paymentId = p.id?.toString().toLowerCase() || ''
+      const bookingId = p.booking_id?.toString().toLowerCase() || ''
+      const customerName = p.booking?.customer_name?.toLowerCase() || ''
+      const paymentEntry = p.payment_entry?.toLowerCase() || ''
+      const paymentMethod = p.payment_method?.toLowerCase() || ''
+      
+      return paymentId.includes(query) ||
+             bookingId.includes(query) ||
+             customerName.includes(query) ||
+             paymentEntry.includes(query) ||
+             paymentMethod.includes(query)
+    })
+  }
+
+  // Apply status filter
+  if (statusFilter.value !== 'All Status') {
+    result = result.filter(p => p.payment_status === statusFilter.value)
+  }
+
+  return result
+})
+
+// Reset all filters
+const resetFilters = () => {
+  searchQuery.value = ''
+  statusFilter.value = 'All Status'
+}
+
+// Check if any filters are active
+const hasActiveFilters = computed(() => {
+  return searchQuery.value.trim() !== '' || statusFilter.value !== 'All Status'
+})
+</script>
