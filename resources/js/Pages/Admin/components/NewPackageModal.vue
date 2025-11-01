@@ -137,6 +137,15 @@
                                                 Region in Muslim Mindanao</option>
                                         </select>
                                     </div>
+
+                                    <div class="space-y-4">
+                                        <MultiSelectDropdown
+                                        label="Tour Classification"
+                                        :options="['Land Travel', 'Water Adventure', 'Air Travel']"
+                                        v-model="formData.tourClassification"
+                                        placeholder="Select Classification"
+                                        />
+                                    </div>
                                 </div>
                             </div>
 
@@ -334,6 +343,7 @@
 import { ref, watch } from 'vue'
 import axios from 'axios'
 import { useToast } from 'vue-toastification'
+import MultiSelectDropdown from '@/components/MultiSelectDropdown.vue'
 
 const props = defineProps({
     show: {
@@ -359,7 +369,8 @@ const formData = ref({
     maxOccupancy: '',
     bookingType: 'Exclusive',
     status: 'Active',
-    discountedRate: ''
+    discountedRate: '',
+    tourClassification: [] 
 })
 
 const itineraryDays = ref([
@@ -378,6 +389,7 @@ watch(() => props.show, (newValue) => {
             region: '',
             description: '',
             itinerary: '',
+            tourClassification:'',
             termsCondition: '',
             exclusions: '',
             basePrice: '',
@@ -425,6 +437,7 @@ const savePackage = async () => {
         formattedItinerary[`day_${day.id}`] = day.content
     })
     data.append('itinerary', JSON.stringify(formattedItinerary))
+    data.append('tour_classification',JSON.stringify(formData.value.tourClassification))
 
 
     try {

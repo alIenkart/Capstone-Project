@@ -125,6 +125,16 @@
                                                 BARMM: Bangsamoro Autonomous Region in Muslim Mindanao</option>
                                         </select>
                                     </div>
+
+                                    <div class="space-y-4">
+                                        <MultiSelectDropdown
+                                        label="Tour Classification"
+                                        :options="['Land Travel', 'Water Adventure', 'Air Travel']"
+                                        v-model="formData.tour_classification"
+                                        placeholder="Select Classification"
+                                        />
+                                    </div>
+
                                 </div>
                             </div>
 
@@ -285,6 +295,7 @@
 import { ref, watch } from 'vue'
 import axios from 'axios'
 import { useToast } from 'vue-toastification'
+import MultiSelectDropdown from '@/components/MultiSelectDropdown.vue'
 
 const props = defineProps({
     show: Boolean,
@@ -310,13 +321,13 @@ const formData = ref({
     status: 'active',
     pax_rate: 0,
     kids_pax_rate: 0,
-    discounted_rate: 0
+    discounted_rate: 0,
+    tour_classification: []
 })
 
 const itineraryDays = ref([{ id: 1, content: '' }])
 const showDeleteConfirmationModal = ref(false)
 const imagePreview = ref(null)
-
 watch([() => props.show, () => props.packageId], ([newShow, newPackageId]) => {
     if (newShow && newPackageId !== null) {
         fetchPackage(newPackageId)
@@ -346,7 +357,8 @@ const fetchPackage = async (id) => {
             status: packageData.status || 'active',
             pax_rate: packageData.pax_rate || 0,
             kids_pax_rate: packageData.kids_pax_rate || 0,
-            discounted_rate: packageData.discounted_rate || 0
+            discounted_rate: packageData.discounted_rate || 0,
+            tour_classification: packageData.tour_classification || []
         }
         
         const apiItinerary = typeof packageData.itinerary === 'string'
@@ -393,6 +405,10 @@ const updatePackage = async () => {
             data.append('kids_pax_rate', formData.value.kids_pax_rate || 0)
             data.append('discounted_rate', parseFloat(formData.value.discounted_rate) || 0)
             data.append('image', formData.value.image)
+            formData.value.tour_classification.forEach((item, index) => {
+                data.append(`tour_classification[${index}]`, item);
+            });
+
 
             response = await axios.post(`/api/packages/${formData.value.id}?_method=PUT`, data, {
                 headers: { 'Content-Type': 'multipart/form-data' }
@@ -412,7 +428,9 @@ const updatePackage = async () => {
                 status: formData.value.status.toLowerCase(),
                 pax_rate: parseFloat(formData.value.pax_rate) || 0,
                 kids_pax_rate: formData.value.kids_pax_rate || 0,
-                discounted_rate: parseFloat(formData.value.discounted_rate) || 0
+                discounted_rate: parseFloat(formData.value.discounted_rate) || 0,
+                tour_classification: formData.value.tour_classification
+
             }
             response = await axios.put(`/api/packages/${formData.value.id}`, payload)
         }
@@ -442,7 +460,8 @@ const resetForm = () => {
         joint_booking: false,
         status: 'active',
         pax_rate: 0,
-        discounted_rate: 0
+        discounted_rate: 0,
+        tour_classification: []
     }
     itineraryDays.value = [{ id: 1, content: '' }]
 }

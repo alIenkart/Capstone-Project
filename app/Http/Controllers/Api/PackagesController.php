@@ -32,6 +32,9 @@ class PackagesController extends Controller
         $itinerary = json_decode($request->input('itinerary'), true);
         $request->merge(['itinerary' => $itinerary]);
 
+        $tour_classification = json_decode($request->input('tour_classification'), true);
+        $request->merge(['tour_classification' => $tour_classification]);
+
         $validator = Validator::make($request->all(), [
             'package_name' => 'required|string|max:255',
             'destination' => 'required|string|max:255',
@@ -49,6 +52,8 @@ class PackagesController extends Controller
             'kids_pax_rate' => 'nullable|numeric|min:0',
             'discounted_rate' => 'required|numeric|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'tour_classification' => 'required|array',
+            'tour_classification.*' => 'required|string'
         ]);
 
         if ($validator->fails()) {
@@ -96,6 +101,9 @@ class PackagesController extends Controller
 
         $itinerary = json_decode($request->input('itinerary'), true);
         $request->merge(['itinerary' => $itinerary]);
+
+        $tour_classification = $request->input('tour_classification', []); 
+        $request->merge(['tour_classification' => $tour_classification]);
         
         $validator = Validator::make($request->all(), [
             'package_name' => 'sometimes|required|string|max:255',
@@ -114,6 +122,8 @@ class PackagesController extends Controller
             'kids_pax_rate' => 'sometimes|nullable|numeric|min:0',
             'discounted_rate' => 'sometimes|required|numeric|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'tour_classification' => 'sometimes|array',
+            'tour_classification.*' => 'sometimes|string'
         ]);
 
         if ($validator->fails()) {

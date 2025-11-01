@@ -23,9 +23,11 @@ class Packages extends Model
         'kids_pax_rate',
         'discounted_rate',
         'time_stamp',
+        'tour_classification',
     ];
 
     protected $casts = [
         'itinerary' => 'array',
+        'tour_classification' => 'array',
     ];
 }
