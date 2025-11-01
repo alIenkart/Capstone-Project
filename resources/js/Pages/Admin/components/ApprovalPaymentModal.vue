@@ -1,36 +1,84 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { useToast } from 'vue-toastification'
 
 const emit = defineEmits(['close']);
+
+const props = defineProps({
+  payment: Object
+});
 
 const showReceipt = ref(false);
 const remarks = ref('');
 const paymentMethod = ref('GCash');
 const showImageModal = ref(false);
 const showRejectModal = ref(false);
+const paymentData = ref({});
+const receiptData = ref({});
+const imagePreview = ref(null)
+const toast = useToast();
 
-// Sample receipt data - replace with actual data from your booking
-const receiptData = ref({
-  receiptNo: '2025-001234',
-  date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-  customerName: 'John Doe',
-  customerEmail: 'abcd@gmail.com',
-  customerPhone: '+63XXXXXXXXXX',
-  paymentVia: 'GCash',
-  quantity: '10',
-  paymentType: 'Downpayment',
-  tourClassification: 'Land Tour',
-  package: 'Baguio Tour',
-  duration: '3 Days',
-  bookingType: 'Exclusive',
-  destination: 'Baguio City',
-  travelDate: 'April 2, 2025',
-  totalAmount: '50,000',
-  amountPaid: '25,000',
-  remainingBalance: '25,000'
-});
+const fetchPaymentAndBooking = async (id) => {
+  try {
+    const response = await axios.get(`/api/payments/${id}`);
+    const data = response.data.data;
+
+    // Assign defaults safely
+    paymentData.value = {
+      payment_id: data.payment_id || null,
+      booking_id: data.booking_id || null,
+      customer_id: data.customer_id || null,
+      total_price: data.total_price || 0,
+      payment_history: data.payment_history || {},
+      remarks: data.remarks || '',
+      image_path: data.receipt || '',
+      created_at: data.created_at || null,
+      updated_at: data.updated_at || null,
+      booking: {
+        customer_name: data.booking?.customer_name || '',
+        customer_email: data.booking?.customer_email || '',
+        customer_phone: data.booking?.customer_phone || '',
+        package_destination: data.booking?.package_destination || '',
+        tour_type: data.booking?.tour_type || '',
+        duration: data.booking?.duration || '',
+        start_date: data.booking?.start_date || '',
+        end_date: data.booking?.end_date || '',
+        total_quantity: data.booking?.total_quantity || 0,
+        total_price: data.booking?.total_price || 0
+      }
+    };
+
+    receiptData.value = {
+      receiptNo: `2025-${paymentData.value?.payment_id || 'N/A'}`,
+      date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+      customerName: paymentData.value?.booking?.customer_name || '',
+      customerEmail: paymentData.value?.booking?.customer_email || '',
+      customerPhone: paymentData.value?.booking?.customer_phone || '',
+      paymentVia: paymentMethod.value,
+      quantity: paymentData.value?.booking?.total_quantity || 0,
+      paymentType: 'Downpayment',
+      tourClassification: paymentData.value?.booking?.tour_type || '',
+      package: paymentData.value?.booking?.package_destination || '',
+      duration: paymentData.value?.booking?.duration || '',
+      bookingType: 'Exclusive',
+      destination: paymentData.value?.booking?.package_destination || '',
+      travelDate: paymentData.value?.booking?.start_date ? new Date(paymentData.value.booking.start_date).toLocaleDateString('en-US') : '',
+      totalAmount: paymentData.value?.booking?.total_price || 0,
+      amountPaid: paymentData.value?.total_price || 0,
+      remainingBalance: (paymentData.value?.booking?.total_price || 0) - (paymentData.value?.total_price || 0)
+    };
+
+    imagePreview.value = paymentData.value.image_path
+      ? `/storage/${JSON.parse(paymentData.value.image_path)[0]}` : null;
+
+  } catch (error) {
+    console.error('Error fetching payment:', error);
+    alert('Failed to fetch payment data.');
+    emit('close');
+  }
+};
 
 const approvePayment = () => {
   receiptData.value.paymentVia = paymentMethod.value;
@@ -137,6 +185,40 @@ const downloadReceipt = async () => {
     if (buttons) buttons.style.display = 'flex';
   }
 };
+
+async function submitVerificationOfPayment($status) {
+  if (!paymentMethod.value) {
+    return toast.error('Please select a payment method.');
+  }
+
+  const payment_method = { method: paymentMethod.value };
+
+  const data = new FormData();
+  data.append('mode_of_payment', JSON.stringify(payment_method));
+  data.append('remarks', remarks.value || '');
+  data.append('payment_status', $status);
+
+  try {
+    const response = await axios.post(
+      `/api/payments/${props.payment.id}?_method=PUT`, data);
+
+    if (response.status === 200) {
+      toast.success(`Payment Successfully ${$status}!`);
+      emit('close');
+    }
+  } catch (error) {
+    console.error(error);
+    toast.error('Something went wrong while submitting your payment.');
+  }
+}
+
+
+
+onMounted(() => {
+  if (props.payment?.id) {
+    fetchPaymentAndBooking(props.payment.id);
+  }
+});
 </script>
 
 <template>
@@ -271,10 +353,14 @@ const downloadReceipt = async () => {
                 <label class="block text-sm font-medium text-gray-700 mb-2">Proof of Payment</label>
                 <div @click="openImageModal" class="relative group rounded-xl overflow-hidden border-2 border-gray-300 bg-gray-50 aspect-video cursor-pointer">
                   <img 
-                    src="https://i.ibb.co/0j9w1cC/sample-payment.png" 
+                    v-if="imagePreview" 
+                    :src="imagePreview" 
                     alt="Payment Proof" 
                     class="w-full h-full object-cover"
                   />
+                  <div v-else class="w-full h-full flex items-center justify-center text-gray-400">
+                    No Image
+                  </div>
                   <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
                     <div class="text-center transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                       <svg class="w-12 h-12 text-white mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -304,13 +390,13 @@ const downloadReceipt = async () => {
       <!-- Footer Actions -->
       <div class="bg-gray-50 px-8 py-6 border-t border-gray-200">
         <div class="flex flex-wrap justify-center gap-4">
-          <button @click="approvePayment" class="flex items-center gap-2 rounded-xl bg-gradient-to-r from-green-600 to-green-700 px-8 py-3 text-white font-semibold hover:from-green-700 hover:to-green-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+          <button @click="submitVerificationOfPayment('Approved')" class="flex items-center gap-2 rounded-xl bg-gradient-to-r from-green-600 to-green-700 px-8 py-3 text-white font-semibold hover:from-green-700 hover:to-green-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
             </svg>
             Approve Payment
           </button>
-          <button @click="rejectPayment" class="flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-500 to-red-600 px-8 py-3 text-white font-semibold hover:from-red-600 hover:to-red-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+          <button @click="submitVerificationOfPayment('Rejected')" class="flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-500 to-red-600 px-8 py-3 text-white font-semibold hover:from-red-600 hover:to-red-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
             </svg>

@@ -8,13 +8,17 @@ class Payment extends Model
 {
     protected $fillable = [
         'booking_id',
-        'amount_paid',
         'customer_id',
-        'payment_date',
-        'payment_status',
         'total_price',
-        'remaining_payment',
+        'payment_history',
+        'payment_status',
+        'remarks',
+        'proof_of_payment'
     ];
+
+    protected $casts = [
+        'payment_history' => 'array',
+    ];    
 
     public function booking()
     {

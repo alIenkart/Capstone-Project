@@ -15,3 +15,9 @@ export async function fetchPaymentsByUserId(userId) {
     if (!response.ok) throw new Error('Failed to fetch payments');
     return await response.json();
 }
+
+export async function fetchPaymentsByPaymentId(paymentId) {
+    const response = await fetch(`/api/payments?payment_id=${paymentId}`);
+    if (!response.ok) throw new Error('Failed to fetch payments');
+    return await response.json();
+}

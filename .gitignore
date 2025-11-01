@@ -5,6 +5,7 @@ node_modules/
 .env
 app/storage/
 public/storage/packages
+public/storage/receipt
 public/hot
 public_html/storage
 public_html/hot

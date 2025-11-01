@@ -5,8 +5,10 @@ import { fetchBookingsByUser, fetchPaymentsByBookingId } from '@/api/booking';
 import { onMounted, ref, watch, computed } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 import { toCamelCase } from '@/helper/helper'
+import { useToast } from 'vue-toastification'
 
 const user = usePage().props.auth.user;
+const toast = useToast();
 const bookings = ref([]);
 const payments = ref([]);
 const selectedBookingIndex = ref(0);
@@ -16,6 +18,17 @@ const selectedFile = ref(null);
 const previewUrl = ref(null);
 const showReceiptModal = ref(false);
 const receiptData = ref({});
+
+const formData = ref({
+  paymentType: '',
+  downPaymentAmount: 0,
+  fullPaymentAmount: 0,
+  remainingBalance: 0,
+  paymentDate: '',
+  proofOfPayment: null,
+});
+
+const imagePreview = ref(null)
 
 function onFileChange(event) {
   const file = event.target.files[0];
@@ -59,9 +72,12 @@ function closeReceiptModal() {
 
 onMounted(async () => {
   bookings.value = await fetchBookingsByUser(userId);
+  console.log('view bookings', bookings.value)
+  
   // Fetch payments for the initial booking
   if (bookings.value.length) {
     payments.value = await fetchPaymentsByBookingId(bookings.value[selectedBookingIndex.value].id);
+    console.log('view payment',payments.value)
   }
 });
 
@@ -79,6 +95,54 @@ const paymentStatus = computed(() => {
   const currentPayment = payments.value.find(p => p.booking_id === currentBookingId);
   return currentPayment ? currentPayment.payment_status : 'Unpaid';
 });
+
+async function submitProofOfPayment() {
+  const currentBooking = bookings.value[selectedBookingIndex.value];
+  if (!currentBooking) return toast.error('No booking selected.');
+
+  if (selectedPaymentType.value === 'down' && !formData.value.downPaymentAmount) {
+    return toast.error('Please enter a down payment amount.');
+  }
+  if (!selectedFile.value) {
+    return toast.error('Please upload a proof of payment.');
+  }
+
+  const total = Number(currentBooking.total_price);
+  const paidAmount =
+    selectedPaymentType.value === 'full'
+      ? total
+      : Number(formData.value.downPaymentAmount);
+  const remaining = Math.max(total - paidAmount, 0);
+
+  const payment_history = {
+    paymentType: selectedPaymentType.value === 'full' ? 'Full Payment' : 'Down Payment',
+    fullPaymentAmount: selectedPaymentType.value === 'full' ? total : 0,
+    downPaymentAmount: selectedPaymentType.value === 'down' ? paidAmount : 0,
+    remainingBalance: remaining,
+    paymentDate: new Date().toISOString().split('T')[0],
+    proofOfPayment: selectedFile.value ? selectedFile.value.name : null,
+  };
+
+  const data = new FormData();
+  data.append('proof_of_payment', selectedFile.value);
+  data.append('payment_history', JSON.stringify(payment_history));
+  data.append('payment_status', 'Under Review'); // always "Under Review" for customer submission
+
+  try {
+    const response = await axios.post(
+      `/api/payments/${currentBooking.id}?_method=PUT`,
+      data
+    );
+
+    if (response.status === 200) {
+      toast.success('Payment successfully submitted!');
+      payments.value = await fetchPaymentsByBookingId(currentBooking.id);
+    }
+  } catch (error) {
+    console.error(error);
+    toast.error('Something went wrong while submitting your payment.');
+  }
+}
 
 defineOptions({ layout: LandingIndex })
 </script>
@@ -242,11 +306,22 @@ defineOptions({ layout: LandingIndex })
                   </select>
                 </div>
                 <!-- Amount To Pay -->
-                <div>
+                <div v-if="selectedPaymentType === 'full'">
                   <span class="text-gray-700 font-medium">Amount to pay:</span>
                   <span class="ml-2 text-lg font-bold text-green-600">
                     ₱{{ Number(bookings[selectedBookingIndex]?.total_price || 0).toLocaleString('en-PH') }}
                   </span>
+                </div>
+                <div v-else-if="selectedPaymentType === 'down'">
+                  <label class="block mb-2 text-gray-700 font-medium" for="downPaymentAmount">Enter Down Payment Amount:</label>
+                  <input
+                    id="downPaymentAmount"
+                    v-model.number="formData.downPaymentAmount"
+                    type="number"
+                    min="0"
+                    class="rounded-md border border-gray-300 p-2 w-1/2 focus:ring-2 focus:ring-blue-200 transition"
+                    placeholder="Enter amount (₱)"
+                  />
                 </div>
                 <!-- Upload Payment Receipt -->
                 <div>
@@ -281,7 +356,7 @@ defineOptions({ layout: LandingIndex })
               <div class="flex flex-col items-center gap-4 mt-8 mb-2 relative group w-full max-w-xs">
                 <button
                   v-if="bookings[selectedBookingIndex]?.status === 'Approved' && (paymentStatus === 'Pending' || paymentStatus === 'Unpaid')"
-                  :disabled="!selectedFile"
+                  :disabled="!selectedFile" @click="submitProofOfPayment()"
                   class="w-full bg-[#1E71B8] hover:bg-[#155a8a] focus:ring-2 focus:ring-[#52c2f8] transition shadow-lg text-white px-8 py-3 rounded-xl font-bold text-lg focus:outline-none active:scale-95 duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
                   Send For Approval
                 </button>
