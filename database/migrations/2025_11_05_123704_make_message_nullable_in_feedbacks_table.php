@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('feedbacks', function (Blueprint $table) {
+        Schema::table('feedback', function (Blueprint $table) {
             $table->text('message')->nullable()->change();
             $table->string('visibility')->default('public');
         });
@@ -19,7 +19,7 @@ return new class extends Migration
 
     public function down()
     {
-        Schema::table('feedbacks', function (Blueprint $table) {
+        Schema::table('feedback', function (Blueprint $table) {
             $table->text('message')->nullable(false)->change();
         });
     }
