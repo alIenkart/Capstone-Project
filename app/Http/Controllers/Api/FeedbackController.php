@@ -13,7 +13,8 @@ class FeedbackController extends Controller
      */
     public function index()
     {
-        //
+        $feedback = Feedback::all();
+        return response()->json($feedback);
     }
 
     /**
@@ -21,7 +22,19 @@ class FeedbackController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'rate' => 'required|integer|min:1|max:5',
+            'message' => 'nullable|string',
+            'visibility' => 'required|boolean',
+        ]);
+
+        $feedback = Feedback::create($validatedData);
+
+        return response()->json([
+            'message' => 'Feedback created successfully',
+            'data' => $feedback
+        ], 201);
     }
 
     /**
@@ -29,7 +42,7 @@ class FeedbackController extends Controller
      */
     public function show(Feedback $feedback)
     {
-        //
+        return response()->json($feedback);
     }
 
     /**
@@ -37,7 +50,19 @@ class FeedbackController extends Controller
      */
     public function update(Request $request, Feedback $feedback)
     {
-        //
+        $validatedData = $request->validate([
+            'user_id' => 'sometimes|exists:users,id',
+            'rate' => 'sometimes|integer|min:1|max:5',
+            'message' => 'nullable|string',
+            'visibility' => 'sometimes|boolean',
+        ]);
+
+        $feedback->update($validatedData);
+
+        return response()->json([
+            'message' => 'Feedback updated successfully',
+            'data' => $feedback
+        ]);
     }
 
     /**
@@ -45,6 +70,7 @@ class FeedbackController extends Controller
      */
     public function destroy(Feedback $feedback)
     {
-        //
+        $feedback->delete();
+        return response()->json(['message' => 'Feedback deleted successfully']);
     }
 }
