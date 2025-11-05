@@ -316,7 +316,7 @@ const loadTestimonials = async () => {
                     date: item.created_at
                         ? new Date(item.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
                         : 'Recently',
-                    is_public: item.visibility === 'public'
+                    is_public: item.visibility === '0' ? false : true
                 }
             })
 
@@ -343,36 +343,7 @@ const filteredReviews = computed(() => {
             is_public: t.is_public !== false
         }))
 
-    // Filter by search query
-    if (searchQuery.value) {
-        const query = searchQuery.value.toLowerCase()
-        reviews = reviews.filter(r =>
-            r.name.toLowerCase().includes(query) ||
-            r.comment.toLowerCase().includes(query)
-        )
-    }
-
-    // Filter by rating
-    if (selectedRating.value) {
-        const minRating = parseInt(selectedRating.value)
-        reviews = reviews.filter(r => r.rating >= minRating)
-    }
-
-    // Filter by status
-    if (selectedStatus.value) {
-        const isPublic = selectedStatus.value === 'public'
-        reviews = reviews.filter(r => r.is_public === isPublic)
-    }
-
-    console.log("🚀 ~ reviews:", reviews)
-    return reviews
-})
-
-// Average rating computed property
-const averageRating = computed(() => {
-    if (filteredReviews.value.length === 0) return 0
-    const totalRating = filteredReviews.value.reduce((sum, r) => sum + r.rating, 0)
-    return (totalRating / filteredReviews.value.length).toFixed(1)
+    return reviews;
 })
 
 // New testimonial
