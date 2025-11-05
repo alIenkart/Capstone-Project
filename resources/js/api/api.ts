@@ -45,4 +45,17 @@ export class api {
     createInquiry(payload) {
         return plainInstance.post("/api/inquiries", payload);
     }
+
+    //Feedbacks
+    getFeedbacks() {
+        return plainInstance.get("/api/feedbacks");
+    }
+
+    updateFeedback(id, data) {
+        return plainInstance.patch(`/api/feedbacks/${id}`, data);
+    }
+
+    deleteFeedback(id) {
+        return plainInstance.delete(`/api/feedbacks/${id}`);
+    }
 }

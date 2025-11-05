@@ -1,6 +1,6 @@
 <script setup>
 import LandingIndex from './LandingIndex.vue'
-import { computed, ref, onMounted } from 'vue';
+import { computed, ref, onMounted, toRaw } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 import { api } from '../../api/api';
 import { Link } from '@inertiajs/vue3'
@@ -24,28 +24,22 @@ const parsedItinerary = computed(() => {
     return [];
   }
   
-  const itineraryString = selectedPackage.value.itinerary;
+  const itineraryString = Object.values(selectedPackage.value.itinerary);
   
   // Try to split by "Day X:" pattern first
-  const dayPattern = /Day\s+\d+:/gi;
-  const dayMatches = [...itineraryString.matchAll(dayPattern)];
+  // const dayPattern = /Day\s+\d+:/gi;
+  // const dayMatches = [...itineraryString.matchAll(dayPattern)];
   
-  if (dayMatches.length > 0) {
+  console.log("🚀 ~ itineraryString:", itineraryString)
+  if (itineraryString.length > 0) {
     const days = [];
     let lastIndex = 0;
     
-    dayMatches.forEach((match, index) => {
-      const startIndex = match.index;
-      const endIndex = index < dayMatches.length - 1 ? dayMatches[index + 1].index : itineraryString.length;
-      
-      // Extract content between day markers
-      const section = itineraryString.substring(startIndex, endIndex).trim();
-      const lines = section.split('\n');
-      const content = lines.slice(1).join('\n').trim(); // Skip the "Day X:" line
+    Object.values(itineraryString).forEach((match, index) => {
       
       days.push({
         dayNumber: index + 1,
-        content: content
+        content: match
       });
     });
     

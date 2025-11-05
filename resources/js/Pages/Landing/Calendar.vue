@@ -195,8 +195,8 @@ const currentYear = ref(currentDate.getFullYear())
 
 const tourType = ref('Joiners')
 const tourTypes = ['Joiners', 'Exclusive']
-const tourClassification = ref('Land Travel')
-const tourClassifications = ['Land Travel', 'Water Adventure', 'Air Travel']
+const tourClassification = ref('')
+const tourClassifications = ref(null);
 const isTypeOpen = ref(false)
 const isClassOpen = ref(false)
 const typeDropdownRef = ref(null)
@@ -449,8 +449,10 @@ function postDate() {
 
 onMounted(() => {
   console.log(booking.$state)
-  selectedDate.value = booking.startDate || ''
-  selectedEndDate.value = booking.endDate || ''
+  selectedDate.value = booking.startDate || '';
+  selectedEndDate.value = booking.endDate || '';
+  tourClassifications.value = booking.selectedPackage.tour_classification;
+  tourClassification.value = booking.selectedPackage.tour_classification[0];
 
   document.addEventListener('click', handleClickOutside)
 });

@@ -26,6 +26,16 @@
                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>
+              <!-- Add New Entry Button -->
+            <button 
+              @click="openNewEntryModal"
+              class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#1E71B8] to-[#2a8bb5] hover:from-[#2a8bb5] hover:to-[#1E71B8] text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+              </svg>
+              Add New Entry
+            </button>
             </div>
           </div>
         </div>
@@ -69,7 +79,7 @@
                 </td>
                 <td class="px-6 py-4 text-sm text-gray-700">{{ entry.total_quantity }}</td>
                 <td class="px-6 py-4 text-sm">
-                  <span v-if="entry.discount_id === 'Yes'"
+                  <span v-if="entry.discount_images"
                     class="inline-flex items-center gap-1 text-green-600 font-medium">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -172,7 +182,8 @@ const filteredBookings = computed(() => {
     })
   }
 
-  return filtered
+  console.log("🚀 ~ filtered:", filtered)
+  return filtered;
 })
 
 const fetchBookings = async () => {

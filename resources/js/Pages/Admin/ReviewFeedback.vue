@@ -78,7 +78,7 @@
                   </svg>
                 </div>
                 <div>
-                  <p class="text-lg font-semibold text-gray-900 leading-tight">{{ review.user_name }}</p>
+                  <p class="text-lg font-semibold text-gray-900 leading-tight">{{ review.name }}</p>
                   <p class="text-sm text-gray-500">{{ review.date }}</p>
                 </div>
               </div>
@@ -119,7 +119,7 @@
                       d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                   </svg>
                 </button>
-                <button @click="deleteReview(review.id)" title="Delete Review"
+                <button @click="askDeleteReview(review.id)" title="Delete Review"
                   class="p-2 text-red-500 rounded-full hover:bg-red-100 transition-all duration-200">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -142,35 +142,67 @@
       </div>
 
     </div>
+    <ConfirmationModal :show="showDeleteModal" title="Delete Review"
+      message="Are you sure you want to permanently delete this review?" @confirm="confirmDelete"
+      @cancel="showDeleteModal = false" />
   </div>
 </template>
 
 <script setup>
 import AdminIndex from './AdminIndex.vue'
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { usePage } from '@inertiajs/vue3'
+import { api } from '../../api/api'
+import { useToast } from 'vue-toastification'
+import ConfirmationModal from '@/components/ConfirmationModal.vue';
 
 defineOptions({ layout: AdminIndex })
-// --- MOCK DATA ---
-const allReviews = ref([
-  { id: 1, user_name: 'Jane Doe', date: 'Oct 28, 2025', rating: 5, comment: 'The tour was flawlessly organized and the guide was fantastic! Five stars all the way. Exceeded all expectations.', is_public: true },
-  { id: 2, user_name: 'John Smith', date: 'Oct 25, 2025', rating: 4, comment: 'Very good value, although the hotel check-in process was a bit slow. Still enjoyed the destination immensely.', is_public: false },
-  { id: 3, user_name: 'Anya Taylor', date: 'Oct 20, 2025', rating: 5, comment: 'The best family vacation we have ever had. Everything exceeded expectations and the service was top-notch.', is_public: true },
-  { id: 4, user_name: 'Mike Johnson', date: 'Oct 15, 2025', rating: 3, comment: 'Average experience. The scenery was nice, but transportation felt rushed and the seats were uncomfortable.', is_public: true },
-  { id: 5, user_name: 'Sara Connor', date: 'Oct 10, 2025', rating: 5, comment: 'Unforgettable trip! The guides were knowledgeable and very friendly. Will definitely book again next year.', is_public: false },
-  { id: 6, user_name: 'David Lee', date: 'Oct 05, 2025', rating: 2, comment: 'Disappointing. The package description was misleading about the accommodations. Needs significant improvement.', is_public: true },
-  { id: 7, user_name: 'Emily Wong', date: 'Sep 30, 2025', rating: 4, comment: 'A solid four-star experience. Great food and lovely people. Just a minor issue with the pickup timing.', is_public: true },
-]);
 
-// --- FILTERS ---
+const page = usePage();
+const toast = useToast()
+const service = new api();
 const searchQuery = ref('');
 const selectedRating = ref('');
 const selectedStatus = ref('');
+const feedback = ref()
+const users = ref()
+const allReviews = ref([]);
+const showDeleteModal = ref(false)
+const reviewToDelete = ref(null)
 
-// --- COMPUTED PROPERTIES ---
+const loadTestimonials = async () => {
+  try {
+    const responseFeedbacks = await service.getFeedbacks();
+    const responseGetAllUsers = await service.getUsers();
 
-/**
- * Filters and searches the reviews based on user input.
- */
+    feedback.value = responseFeedbacks.data;
+    users.value = responseGetAllUsers.data.data;
+
+    if (Array.isArray(feedback.value)) {
+      const apiTestimonials = feedback.value.map(item => {
+        const user = users.value.find(u => u.id === item.user_id);
+
+        return {
+          id: item.id,
+          name: user ? `${user.first_name} ${user.last_name ? user.last_name.charAt(0).toUpperCase() + '.' : ''}` : 'Anonymous Traveler',
+          rating: item.rate || 0,
+          comment: item.message || 'No comment provided.',
+          date: item.created_at
+            ? new Date(item.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+            : 'Recently',
+          is_public: item.visibility === 'public'
+        }
+      })
+
+      allReviews.value = [...apiTestimonials];
+    } else {
+      allReviews.value = [];
+    }
+  } catch (error) {
+    console.error("Error loading testimonials:", error);
+  }
+}
+
 const filteredReviews = computed(() => {
   let reviews = allReviews.value;
 
@@ -208,23 +240,45 @@ const averageRating = computed(() => {
   return totalRating / filteredReviews.value.length;
 });
 
+const togglePublic = async (id) => {
+  const review = allReviews.value.find(r => r.id === id)
+  if (!review) return
 
-// --- ACTIONS ---
+  review.is_public = !review.is_public
+  const newVisibility = review.is_public
 
-const togglePublic = (id) => {
-  const review = allReviews.value.find(r => r.id === id);
-  if (review) {
-    review.is_public = !review.is_public;
-    // TODO: Send update to backend API
-    console.log(`Review ${id} public status toggled to ${review.is_public}`);
+  try {
+    await service.updateFeedback(id, { visibility: newVisibility })
+    toast.success(`Feedback is now ${newVisibility ? 'public' : 'private'}.`)
+  } catch (error) {
+    console.error(error)
+    review.is_public = !review.is_public
+    toast.error('Failed to update visibility. Please try again.')
   }
-};
+}
 
-const deleteReview = (id) => {
-  // In a real app, you would send a DELETE request to your backend first.
-  if (confirm('Are you sure you want to delete this review? This action cannot be undone.')) {
-    allReviews.value = allReviews.value.filter(r => r.id !== id);
-    console.log(`Review ${id} deleted.`);
+const askDeleteReview = (id) => {
+  reviewToDelete.value = id
+  showDeleteModal.value = true
+}
+
+const confirmDelete = async () => {
+  if (!reviewToDelete.value) return
+
+  try {
+    await service.deleteFeedback(reviewToDelete.value)
+    allReviews.value = allReviews.value.filter(r => r.id !== reviewToDelete.value)
+    toast.success('Review deleted successfully.')
+  } catch (error) {
+    console.error(error)
+    toast.error('Failed to delete review. Please try again.')
+  } finally {
+    showDeleteModal.value = false
+    reviewToDelete.value = null
   }
-};
+}
+
+onMounted(() => {
+  loadTestimonials()
+})
 </script>
