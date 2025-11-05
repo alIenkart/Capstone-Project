@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\VoucherController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\InquiryController;
+use App\Http\Controllers\Api\FeedbackController;
+use App\Models\Feedback;
 
 Route::middleware('api')->group(function () {
 
@@ -19,4 +21,5 @@ Route::middleware('api')->group(function () {
     Route::apiResource('bookings', BookingController::class);
     Route::apiResource('payments', PaymentController::class);
     Route::apiResource('inquiries', InquiryController::class);
+    Route::apiResource('feedbacks', FeedbackController::class);
 });
