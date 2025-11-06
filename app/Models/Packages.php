@@ -3,9 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class Packages extends Model
 {
+    use RevisionableTrait;
+
+    protected $revisionEnabled = true;
+
+
     protected $fillable = [
         'destination',
         'region',

@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class Booking extends Model
 {
+    use RevisionableTrait;
+
     protected $fillable = [
         'package_id',
         'customer_name',

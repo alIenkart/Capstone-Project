@@ -3,9 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Venturecraft\Revisionable\RevisionableTrait;
+
 
 class Payment extends Model
 {
+    use RevisionableTrait;
+
     protected $fillable = [
         'booking_id',
         'customer_id',
@@ -18,7 +22,7 @@ class Payment extends Model
 
     protected $casts = [
         'payment_history' => 'array',
-    ];    
+    ];
 
     public function booking()
     {
