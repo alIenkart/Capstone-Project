@@ -69,4 +69,11 @@
       0 => 'Tighten\\Ziggy\\ZiggyServiceProvider',
     ),
   ),
+  'venturecraft/revisionable' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Venturecraft\\Revisionable\\RevisionableServiceProvider',
+    ),
+  ),
 );
