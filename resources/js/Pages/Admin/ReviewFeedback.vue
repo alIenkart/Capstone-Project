@@ -14,32 +14,155 @@
         </div>
 
         <div class="flex items-center gap-3 flex-wrap">
+          <!-- Rating Filter Dropdown -->
           <div class="relative">
-            <select v-model="selectedRating"
-              class="appearance-none pl-4 pr-10 py-3 border-2 border-gray-200 rounded-xl focus:border-[#1E71B8] focus:ring-2 focus:ring-[#1E71B8]/20 outline-none transition-all cursor-pointer bg-white font-medium text-gray-700">
-              <option value="">All Ratings</option>
-              <option value="5">5 Stars</option>
-              <option value="4">4 Stars & Up</option>
-              <option value="3">3 Stars & Up</option>
-              <option value="2">2 Stars & Up</option>
-            </select>
-            <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
-              fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
+            <button @click="handleFilterClick('rating')"
+              class="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 min-w-[180px]">
+              <span class="font-semibold text-gray-800">
+                {{ selectedRating === '' ? 'All Ratings' : 'Rating: ' + selectedRating + ' Stars' }}
+              </span>
+              <svg :class="['w-5 h-5 text-blue-600 transition-transform duration-300', isRatingFilterOpen ? 'rotate-180' : '']"
+                fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+              </svg>
+            </button>
+
+            <!-- Rating Dropdown Menu -->
+            <div v-if="isRatingFilterOpen" @click.stop class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10 overflow-hidden">
+              <div @click="selectedRating = ''; closeAllFilters()"
+                :class="[
+                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
+                  selectedRating === '' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                ]">
+                <span :class="['font-medium', selectedRating === '' ? 'text-blue-700' : 'text-gray-700']">
+                  All Ratings
+                </span>
+                <svg v-if="selectedRating === ''" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+              </div>
+
+              <div @click="selectedRating = '5'; closeAllFilters()"
+                :class="[
+                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
+                  selectedRating === '5' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                ]">
+                <span :class="['font-medium', selectedRating === '5' ? 'text-blue-700' : 'text-gray-700']">
+                  5 Stars
+                </span>
+                <svg v-if="selectedRating === '5'" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+              </div>
+
+              <div @click="selectedRating = '4'; closeAllFilters()"
+                :class="[
+                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
+                  selectedRating === '4' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                ]">
+                <span :class="['font-medium', selectedRating === '4' ? 'text-blue-700' : 'text-gray-700']">
+                  4 Stars
+                </span>
+                <svg v-if="selectedRating === '4'" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+              </div>
+
+              <div @click="selectedRating = '3'; closeAllFilters()"
+                :class="[
+                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
+                  selectedRating === '3' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                ]">
+                <span :class="['font-medium', selectedRating === '3' ? 'text-blue-700' : 'text-gray-700']">
+                  3 Stars
+                </span>
+                <svg v-if="selectedRating === '3'" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+              </div>
+
+              <div @click="selectedRating = '2'; closeAllFilters()"
+                :class="[
+                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 hover:bg-blue-50',
+                  selectedRating === '2' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                ]">
+                <span :class="['font-medium', selectedRating === '2' ? 'text-blue-700' : 'text-gray-700']">
+                  2 Stars
+                </span>
+                <svg v-if="selectedRating === '2'" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+              </div>
+
+              <div @click="selectedRating = '1'; closeAllFilters()"
+                :class="[
+                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 hover:bg-blue-50',
+                  selectedRating === '1' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                ]">
+                <span :class="['font-medium', selectedRating === '1' ? 'text-blue-700' : 'text-gray-700']">
+                  1 Stars
+                </span>
+                <svg v-if="selectedRating === '1'" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+              </div>
+            </div>
           </div>
 
+          <!-- Status Filter Dropdown -->
           <div class="relative">
-            <select v-model="selectedStatus"
-              class="appearance-none pl-4 pr-10 py-3 border-2 border-gray-200 rounded-xl focus:border-[#1E71B8] focus:ring-2 focus:ring-[#1E71B8]/20 outline-none transition-all cursor-pointer bg-white font-medium text-gray-700">
-              <option value="">All Status</option>
-              <option value="public">Public</option>
-              <option value="private">Private</option>
-            </select>
-            <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
-              fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
+            <button @click="handleFilterClick('status')"
+              class="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 min-w-[180px]">
+              <span class="font-semibold text-gray-800">
+                {{ selectedStatus === '' ? 'All Status' : selectedStatus === 'public' ? 'Public' : 'Private' }}
+              </span>
+              <svg :class="['w-5 h-5 text-blue-600 transition-transform duration-300', isStatusFilterOpen ? 'rotate-180' : '']"
+                fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+              </svg>
+            </button>
+
+            <!-- Status Dropdown Menu -->
+            <div v-if="isStatusFilterOpen" @click.stop class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10 overflow-hidden">
+              <div @click="selectedStatus = ''; closeAllFilters()"
+                :class="[
+                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
+                  selectedStatus === '' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                ]">
+                <span :class="['font-medium', selectedStatus === '' ? 'text-blue-700' : 'text-gray-700']">
+                  All Status
+                </span>
+                <svg v-if="selectedStatus === ''" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+              </div>
+
+              <div @click="selectedStatus = 'public'; closeAllFilters()"
+                :class="[
+                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
+                  selectedStatus === 'public' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                ]">
+                <span :class="['font-medium', selectedStatus === 'public' ? 'text-blue-700' : 'text-gray-700']">
+                  Public
+                </span>
+                <svg v-if="selectedStatus === 'public'" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+              </div>
+
+              <div @click="selectedStatus = 'private'; closeAllFilters()"
+                :class="[
+                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 hover:bg-blue-50',
+                  selectedStatus === 'private' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                ]">
+                <span :class="['font-medium', selectedStatus === 'private' ? 'text-blue-700' : 'text-gray-700']">
+                  Private
+                </span>
+                <svg v-if="selectedStatus === 'private'" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -150,7 +273,7 @@
 
 <script setup>
 import AdminIndex from './AdminIndex.vue'
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { usePage } from '@inertiajs/vue3'
 import { api } from '../../api/api'
 import { useToast } from 'vue-toastification'
@@ -169,6 +292,26 @@ const users = ref()
 const allReviews = ref([]);
 const showDeleteModal = ref(false)
 const reviewToDelete = ref(null)
+
+const isRatingFilterOpen = ref(false)
+const isStatusFilterOpen = ref(false)
+
+// Close all filters
+const closeAllFilters = () => {
+  isRatingFilterOpen.value = false
+  isStatusFilterOpen.value = false
+}
+
+// Handle filter button clicks - close others and toggle current
+const handleFilterClick = (filterType) => {
+  if (filterType === 'rating') {
+    isRatingFilterOpen.value = !isRatingFilterOpen.value
+    isStatusFilterOpen.value = false
+  } else if (filterType === 'status') {
+    isRatingFilterOpen.value = false
+    isStatusFilterOpen.value = !isStatusFilterOpen.value
+  }
+}
 
 const loadTestimonials = async () => {
   try {
@@ -210,15 +353,15 @@ const filteredReviews = computed(() => {
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase();
     reviews = reviews.filter(r =>
-      r.user_name.toLowerCase().includes(query) ||
+      r.name.toLowerCase().includes(query) ||
       r.comment.toLowerCase().includes(query)
     );
   }
 
   // 2. Filter by Rating
   if (selectedRating.value) {
-    const minRating = parseInt(selectedRating.value);
-    reviews = reviews.filter(r => r.rating >= minRating);
+    const exactRating = parseInt(selectedRating.value);
+    reviews = reviews.filter(r => r.rating === exactRating);
   }
 
   // 3. Filter by Status
@@ -280,5 +423,15 @@ const confirmDelete = async () => {
 
 onMounted(() => {
   loadTestimonials()
+  
+  // Close all filters when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.relative')) {
+      closeAllFilters()
+    }
+  })
+})
+
+watch([searchQuery, selectedRating, selectedStatus], () => {
 })
 </script>

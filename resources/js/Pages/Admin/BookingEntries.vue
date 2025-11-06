@@ -14,29 +14,103 @@
           </div>
 
           <div class="flex items-center gap-3 flex-wrap">
+            <!-- Modern Dropdown Filter -->
             <div class="relative">
-              <select v-model="statusFilter"
-                class="appearance-none pl-4 pr-10 py-3 border-2 border-gray-200 rounded-xl focus:border-[#1E71B8] focus:ring-2 focus:ring-[#1E71B8]/20 outline-none transition-all cursor-pointer bg-white font-medium text-gray-700">
-                <option value="">All Status</option>
-                <option value="Approved">Approved</option>
-                <option value="Pending">Pending</option>
-                <option value="Rejected">Rejected</option>
-              </select>
-              <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
-                fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-              </svg>
-              <!-- Add New Entry Button -->
-            <button 
-              @click="openNewEntryModal"
-              class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#1E71B8] to-[#2a8bb5] hover:from-[#2a8bb5] hover:to-[#1E71B8] text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-            >
+              <button @click="isFilterOpen = !isFilterOpen"
+                class="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 group min-w-[200px]">
+                <div class="flex items-center gap-2">
+                  <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+                  </svg>
+                  <span class="font-semibold text-gray-800">
+                    {{ statusFilter === '' ? 'All Status' : statusFilter }}
+                  </span>
+                </div>
+                <svg :class="['w-5 h-5 text-blue-600 transition-transform duration-300', isFilterOpen ? 'rotate-180' : '']"
+                  fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+              </button>
+
+              <!-- Dropdown Menu -->
+              <div v-if="isFilterOpen" class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10 overflow-hidden">
+                <div @click="statusFilter = ''; isFilterOpen = false"
+                  :class="[
+                    'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
+                    statusFilter === '' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                  ]">
+                  <span class="text-lg"></span>
+                  <span :class="[
+                    'font-medium',
+                    statusFilter === '' ? 'text-blue-700' : 'text-gray-700'
+                  ]">
+                    All Status
+                  </span>
+                  <svg v-if="statusFilter === ''" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+
+                <div @click="statusFilter = 'Approved'; isFilterOpen = false"
+                  :class="[
+                    'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
+                    statusFilter === 'Approved' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                  ]">
+                  <span class="text-lg"></span>
+                  <span :class="[
+                    'font-medium',
+                    statusFilter === 'Approved' ? 'text-blue-700' : 'text-gray-700'
+                  ]">
+                    Approved
+                  </span>
+                  <svg v-if="statusFilter === 'Approved'" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+
+                <div @click="statusFilter = 'Pending'; isFilterOpen = false"
+                  :class="[
+                    'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
+                    statusFilter === 'Pending' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                  ]">
+                  <span class="text-lg"></span>
+                  <span :class="[
+                    'font-medium',
+                    statusFilter === 'Pending' ? 'text-blue-700' : 'text-gray-700'
+                  ]">
+                    Pending
+                  </span>
+                  <svg v-if="statusFilter === 'Pending'" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+
+                <div @click="statusFilter = 'Rejected'; isFilterOpen = false"
+                  :class="[
+                    'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 hover:bg-blue-50',
+                    statusFilter === 'Rejected' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                  ]">
+                  <span class="text-lg"></span>
+                  <span :class="[
+                    'font-medium',
+                    statusFilter === 'Rejected' ? 'text-blue-700' : 'text-gray-700'
+                  ]">
+                    Rejected
+                  </span>
+                  <svg v-if="statusFilter === 'Rejected'" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <button @click="openNewEntryModal"
+              class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#1E71B8] to-[#2a8bb5] hover:from-[#2a8bb5] hover:to-[#1E71B8] text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
               </svg>
               Add New Entry
             </button>
-            </div>
           </div>
         </div>
       </div>
@@ -79,8 +153,7 @@
                 </td>
                 <td class="px-6 py-4 text-sm text-gray-700">{{ entry.total_quantity }}</td>
                 <td class="px-6 py-4 text-sm">
-                  <span v-if="entry.discount_images"
-                    class="inline-flex items-center gap-1 text-green-600 font-medium">
+                  <span v-if="entry.discount_images" class="inline-flex items-center gap-1 text-green-600 font-medium">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -91,18 +164,18 @@
                 </td>
                 <td class="px-6 py-4 text-sm text-gray-700">
                   {{ new Date(entry.created_at).toLocaleDateString('en-US', {
-                    month: 'short', day: 'numeric', year:
-                  'numeric' }) }}
+                    month: 'short', day: 'numeric', year: 'numeric'
+                  }) }}
                 </td>
-                <td class="px-6 py-4 text-sm font-semibold text-gray-900">₱{{ entry.total_price | intcomma }}</td>
+                <td class="px-6 py-4 text-sm font-semibold text-gray-900">₱{{ formatNumber(entry.total_price) }}</td>
                 <td class="px-6 py-4 text-sm">
-                  <button 
-                    @click="openUpdateEntryModal(entry)"
-                    class="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-[#1E71B8] to-[#2a8bb5] hover:from-[#2a8bb5] hover:to-[#1E71B8] text-white rounded-lg font-medium transition-all shadow hover:shadow-lg transform hover:-translate-y-0.5"
-                  >
+                  <button @click="openUpdateEntryModal(entry)"
+                    class="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-[#1E71B8] to-[#2a8bb5] hover:from-[#2a8bb5] hover:to-[#1E71B8] text-white rounded-lg font-medium transition-all shadow hover:shadow-lg transform hover:-translate-y-0.5">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                     </svg>
                     Review
                   </button>
@@ -116,7 +189,7 @@
           <div class="flex items-center justify-between">
             <p class="text-sm text-gray-700">
               Showing <span class="font-semibold">1</span> to <span class="font-semibold">{{ filteredBookings.length
-                }}</span> of <span class="font-semibold">{{ filteredBookings.length }}</span> results
+              }}</span> of <span class="font-semibold">{{ filteredBookings.length }}</span> results
             </p>
             <div class="flex gap-2">
               <button
@@ -159,6 +232,7 @@ const updateEntryModal = ref(false)
 const selectedBooking = ref(null)
 const searchQuery = ref('')
 const statusFilter = ref('')
+const isFilterOpen = ref(false)
 
 const filteredBookings = computed(() => {
   let filtered = bookings.value
@@ -182,9 +256,12 @@ const filteredBookings = computed(() => {
     })
   }
 
-  console.log("🚀 ~ filtered:", filtered)
   return filtered;
 })
+
+const formatNumber = (num) => {
+  return new Intl.NumberFormat().format(num)
+}
 
 const fetchBookings = async () => {
   try {

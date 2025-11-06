@@ -1,226 +1,3 @@
-<script setup>
-import { ref, onMounted } from 'vue';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
-import { useToast } from 'vue-toastification'
-
-const emit = defineEmits(['close']);
-
-const props = defineProps({
-  payment: Object
-});
-
-const showReceipt = ref(false);
-const remarks = ref('');
-const paymentMethod = ref('GCash');
-const showImageModal = ref(false);
-const showRejectModal = ref(false);
-const paymentData = ref({});
-const receiptData = ref({});
-const imagePreview = ref(null)
-const toast = useToast();
-
-const fetchPaymentAndBooking = async (id) => {
-  try {
-    const response = await axios.get(`/api/payments/${id}`);
-    const data = response.data.data;
-
-    // Assign defaults safely
-    paymentData.value = {
-      payment_id: data.payment_id || null,
-      booking_id: data.booking_id || null,
-      customer_id: data.customer_id || null,
-      total_price: data.total_price || 0,
-      payment_history: data.payment_history || {},
-      remarks: data.remarks || '',
-      image_path: data.receipt || '',
-      created_at: data.created_at || null,
-      updated_at: data.updated_at || null,
-      booking: {
-        customer_name: data.booking?.customer_name || '',
-        customer_email: data.booking?.customer_email || '',
-        customer_phone: data.booking?.customer_phone || '',
-        package_destination: data.booking?.package_destination || '',
-        tour_type: data.booking?.tour_type || '',
-        duration: data.booking?.duration || '',
-        start_date: data.booking?.start_date || '',
-        end_date: data.booking?.end_date || '',
-        total_quantity: data.booking?.total_quantity || 0,
-        total_price: data.booking?.total_price || 0
-      }
-    };
-
-    receiptData.value = {
-      receiptNo: `2025-${paymentData.value?.payment_id || 'N/A'}`,
-      date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-      customerName: paymentData.value?.booking?.customer_name || '',
-      customerEmail: paymentData.value?.booking?.customer_email || '',
-      customerPhone: paymentData.value?.booking?.customer_phone || '',
-      paymentVia: paymentMethod.value,
-      quantity: paymentData.value?.booking?.total_quantity || 0,
-      paymentType: 'Downpayment',
-      tourClassification: paymentData.value?.booking?.tour_type || '',
-      package: paymentData.value?.booking?.package_destination || '',
-      duration: paymentData.value?.booking?.duration || '',
-      bookingType: 'Exclusive',
-      destination: paymentData.value?.booking?.package_destination || '',
-      travelDate: paymentData.value?.booking?.start_date ? new Date(paymentData.value.booking.start_date).toLocaleDateString('en-US') : '',
-      totalAmount: paymentData.value?.booking?.total_price || 0,
-      amountPaid: paymentData.value?.total_price || 0,
-      remainingBalance: (paymentData.value?.booking?.total_price || 0) - (paymentData.value?.total_price || 0)
-    };
-
-    imagePreview.value = paymentData.value.image_path
-      ? `/storage/${JSON.parse(paymentData.value.image_path)[0]}` : null;
-
-  } catch (error) {
-    console.error('Error fetching payment:', error);
-    alert('Failed to fetch payment data.');
-    emit('close');
-  }
-};
-
-const approvePayment = () => {
-  receiptData.value.paymentVia = paymentMethod.value;
-  showReceipt.value = true;
-};
-
-const rejectPayment = () => {
-  showRejectModal.value = true;
-};
-
-const confirmReject = () => {
-  showRejectModal.value = false;
-  emit('close');
-};
-
-const cancelReject = () => {
-  showRejectModal.value = false;
-};
-
-const closeReceipt = () => {
-  showReceipt.value = false;
-};
-
-const openImageModal = () => {
-  showImageModal.value = true;
-};
-
-const closeImageModal = () => {
-  showImageModal.value = false;
-};
-
-const downloadReceipt = async () => {
-  const receiptElement = document.getElementById('receipt-content');
-  
-  if (!receiptElement) {
-    alert('Receipt element not found');
-    return;
-  }
-  
-  const buttons = document.getElementById('receipt-buttons');
-  if (buttons) buttons.style.display = 'none';
-  
-  const originalMaxHeight = receiptElement.style.maxHeight;
-  const originalOverflow = receiptElement.style.overflow;
-  receiptElement.style.maxHeight = 'none';
-  receiptElement.style.overflow = 'visible';
-  
-  try {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    const canvas = await html2canvas(receiptElement, {
-      scale: 2.5,
-      useCORS: false,
-      allowTaint: true,
-      logging: false,
-      backgroundColor: '#ffffff',
-      windowHeight: receiptElement.scrollHeight,
-      height: receiptElement.scrollHeight,
-      imageTimeout: 0,
-      removeContainer: true,
-      ignoreElements: (element) => {
-        if (element.id === 'close-button' || element.classList.contains('print:hidden')) {
-          return true;
-        }
-        if (element.tagName === 'IMG' && element.naturalHeight === 0) {
-          return true;
-        }
-        return false;
-      }
-    });
-    
-    const imgData = canvas.toDataURL('image/png', 1.0);
-    const pdf = new jsPDF({
-      orientation: 'portrait',
-      unit: 'mm',
-      format: 'a4',
-      compress: true
-    });
-    
-    const pdfWidth = 210;
-    const pdfHeight = 297;
-    const imgWidth = pdfWidth - 20;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-    
-    const xOffset = 10;
-    const yOffset = 10;
-    
-    if (imgHeight <= pdfHeight - 20) {
-      pdf.addImage(imgData, 'PNG', xOffset, yOffset, imgWidth, imgHeight, undefined, 'FAST');
-    } else {
-      const scaledHeight = pdfHeight - 20;
-      const scaledWidth = (canvas.width * scaledHeight) / canvas.height;
-      const centeredX = (pdfWidth - scaledWidth) / 2;
-      pdf.addImage(imgData, 'PNG', centeredX, yOffset, scaledWidth, scaledHeight, undefined, 'FAST');
-    }
-    
-    pdf.save(`Payment_Receipt_${receiptData.value.receiptNo}.pdf`);
-  } catch (error) {
-    console.error('Error generating PDF:', error);
-    alert('Failed to generate PDF. Please try again.');
-  } finally {
-    receiptElement.style.maxHeight = originalMaxHeight;
-    receiptElement.style.overflow = originalOverflow;
-    if (buttons) buttons.style.display = 'flex';
-  }
-};
-
-async function submitVerificationOfPayment($status) {
-  if (!paymentMethod.value) {
-    return toast.error('Please select a payment method.');
-  }
-
-  const payment_method = { method: paymentMethod.value };
-
-  const data = new FormData();
-  data.append('mode_of_payment', JSON.stringify(payment_method));
-  data.append('remarks', remarks.value || '');
-  data.append('payment_status', $status);
-
-  try {
-    const response = await axios.post(
-      `/api/payments/${props.payment.id}?_method=PUT`, data);
-
-    if (response.status === 200) {
-      toast.success(`Payment Successfully ${$status}!`);
-      emit('close');
-    }
-  } catch (error) {
-    console.error(error);
-    toast.error('Something went wrong while submitting your payment.');
-  }
-}
-
-
-
-onMounted(() => {
-  if (props.payment?.id) {
-    fetchPaymentAndBooking(props.payment.id);
-  }
-});
-</script>
-
 <template>
   <!-- Payment Approval Modal -->
   <div v-if="!showReceipt" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
@@ -644,3 +421,226 @@ onMounted(() => {
     </div>
   </div>
 </template>
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+import { useToast } from 'vue-toastification'
+
+const emit = defineEmits(['close']);
+
+const props = defineProps({
+  payment: Object
+});
+
+const showReceipt = ref(false);
+const remarks = ref('');
+const paymentMethod = ref('GCash');
+const showImageModal = ref(false);
+const showRejectModal = ref(false);
+const paymentData = ref({});
+const receiptData = ref({});
+const imagePreview = ref(null)
+const toast = useToast();
+
+const fetchPaymentAndBooking = async (id) => {
+  try {
+    const response = await axios.get(`/api/payments/${id}`);
+    const data = response.data.data;
+
+    // Assign defaults safely
+    paymentData.value = {
+      payment_id: data.payment_id || null,
+      booking_id: data.booking_id || null,
+      customer_id: data.customer_id || null,
+      total_price: data.total_price || 0,
+      payment_history: data.payment_history || {},
+      remarks: data.remarks || '',
+      image_path: data.receipt || '',
+      created_at: data.created_at || null,
+      updated_at: data.updated_at || null,
+      booking: {
+        customer_name: data.booking?.customer_name || '',
+        customer_email: data.booking?.customer_email || '',
+        customer_phone: data.booking?.customer_phone || '',
+        package_destination: data.booking?.package_destination || '',
+        tour_type: data.booking?.tour_type || '',
+        duration: data.booking?.duration || '',
+        start_date: data.booking?.start_date || '',
+        end_date: data.booking?.end_date || '',
+        total_quantity: data.booking?.total_quantity || 0,
+        total_price: data.booking?.total_price || 0
+      }
+    };
+
+    receiptData.value = {
+      receiptNo: `2025-${paymentData.value?.payment_id || 'N/A'}`,
+      date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+      customerName: paymentData.value?.booking?.customer_name || '',
+      customerEmail: paymentData.value?.booking?.customer_email || '',
+      customerPhone: paymentData.value?.booking?.customer_phone || '',
+      paymentVia: paymentMethod.value,
+      quantity: paymentData.value?.booking?.total_quantity || 0,
+      paymentType: 'Downpayment',
+      tourClassification: paymentData.value?.booking?.tour_type || '',
+      package: paymentData.value?.booking?.package_destination || '',
+      duration: paymentData.value?.booking?.duration || '',
+      bookingType: 'Exclusive',
+      destination: paymentData.value?.booking?.package_destination || '',
+      travelDate: paymentData.value?.booking?.start_date ? new Date(paymentData.value.booking.start_date).toLocaleDateString('en-US') : '',
+      totalAmount: paymentData.value?.booking?.total_price || 0,
+      amountPaid: paymentData.value?.total_price || 0,
+      remainingBalance: (paymentData.value?.booking?.total_price || 0) - (paymentData.value?.total_price || 0)
+    };
+
+    imagePreview.value = paymentData.value.image_path
+      ? `/storage/${JSON.parse(paymentData.value.image_path)[0]}` : null;
+
+  } catch (error) {
+    console.error('Error fetching payment:', error);
+    alert('Failed to fetch payment data.');
+    emit('close');
+  }
+};
+
+const approvePayment = () => {
+  receiptData.value.paymentVia = paymentMethod.value;
+  showReceipt.value = true;
+};
+
+const rejectPayment = () => {
+  showRejectModal.value = true;
+};
+
+const confirmReject = () => {
+  showRejectModal.value = false;
+  emit('close');
+};
+
+const cancelReject = () => {
+  showRejectModal.value = false;
+};
+
+const closeReceipt = () => {
+  showReceipt.value = false;
+};
+
+const openImageModal = () => {
+  showImageModal.value = true;
+};
+
+const closeImageModal = () => {
+  showImageModal.value = false;
+};
+
+const downloadReceipt = async () => {
+  const receiptElement = document.getElementById('receipt-content');
+  
+  if (!receiptElement) {
+    alert('Receipt element not found');
+    return;
+  }
+  
+  const buttons = document.getElementById('receipt-buttons');
+  if (buttons) buttons.style.display = 'none';
+  
+  const originalMaxHeight = receiptElement.style.maxHeight;
+  const originalOverflow = receiptElement.style.overflow;
+  receiptElement.style.maxHeight = 'none';
+  receiptElement.style.overflow = 'visible';
+  
+  try {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    const canvas = await html2canvas(receiptElement, {
+      scale: 2.5,
+      useCORS: false,
+      allowTaint: true,
+      logging: false,
+      backgroundColor: '#ffffff',
+      windowHeight: receiptElement.scrollHeight,
+      height: receiptElement.scrollHeight,
+      imageTimeout: 0,
+      removeContainer: true,
+      ignoreElements: (element) => {
+        if (element.id === 'close-button' || element.classList.contains('print:hidden')) {
+          return true;
+        }
+        if (element.tagName === 'IMG' && element.naturalHeight === 0) {
+          return true;
+        }
+        return false;
+      }
+    });
+    
+    const imgData = canvas.toDataURL('image/png', 1.0);
+    const pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4',
+      compress: true
+    });
+    
+    const pdfWidth = 210;
+    const pdfHeight = 297;
+    const imgWidth = pdfWidth - 20;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    
+    const xOffset = 10;
+    const yOffset = 10;
+    
+    if (imgHeight <= pdfHeight - 20) {
+      pdf.addImage(imgData, 'PNG', xOffset, yOffset, imgWidth, imgHeight, undefined, 'FAST');
+    } else {
+      const scaledHeight = pdfHeight - 20;
+      const scaledWidth = (canvas.width * scaledHeight) / canvas.height;
+      const centeredX = (pdfWidth - scaledWidth) / 2;
+      pdf.addImage(imgData, 'PNG', centeredX, yOffset, scaledWidth, scaledHeight, undefined, 'FAST');
+    }
+    
+    pdf.save(`Payment_Receipt_${receiptData.value.receiptNo}.pdf`);
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    alert('Failed to generate PDF. Please try again.');
+  } finally {
+    receiptElement.style.maxHeight = originalMaxHeight;
+    receiptElement.style.overflow = originalOverflow;
+    if (buttons) buttons.style.display = 'flex';
+  }
+};
+
+async function submitVerificationOfPayment($status) {
+  if (!paymentMethod.value) {
+    return toast.error('Please select a payment method.');
+  }
+
+  const payment_method = { method: paymentMethod.value };
+
+  const data = new FormData();
+  data.append('mode_of_payment', JSON.stringify(payment_method));
+  data.append('remarks', remarks.value || '');
+  data.append('payment_status', $status);
+
+  try {
+    const response = await axios.post(
+      `/api/payments/${props.payment.id}?_method=PUT`, data);
+
+    if (response.status === 200) {
+      toast.success(`Payment Successfully ${$status}!`);
+      emit('close');
+    }
+  } catch (error) {
+    console.error(error);
+    toast.error('Something went wrong while submitting your payment.');
+  }
+}
+
+
+
+onMounted(() => {
+  if (props.payment?.id) {
+    fetchPaymentAndBooking(props.payment.id);
+  }
+});
+</script>

@@ -17,47 +17,184 @@
 
           <!-- Filters and Actions -->
           <div class="flex items-center gap-3 flex-wrap">
-            <!-- Status Filter -->
+            <!-- Status Filter Dropdown -->
             <div class="relative">
-              <select v-model="selectedStatus"
-                class="appearance-none pl-4 pr-10 py-3 border-2 border-gray-200 rounded-xl focus:border-[#1E71B8] focus:ring-2 focus:ring-[#1E71B8]/20 outline-none transition-all cursor-pointer bg-white font-medium text-gray-700">
-                <option value="">All Status</option>
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-              </select>
-              <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
-                fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-              </svg>
+              <button @click="handleFilterClick('status')"
+                class="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 min-w-[180px]">
+                <span class="font-semibold text-gray-800">
+                  {{ selectedStatus === '' ? 'All Status' : selectedStatus }}
+                </span>
+                <svg
+                  :class="['w-5 h-5 text-blue-600 transition-transform duration-300', isStatusFilterOpen ? 'rotate-180' : '']"
+                  fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+              </button>
+
+              <!-- Status Dropdown Menu -->
+              <div v-if="isStatusFilterOpen" @click.stop
+                class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10 overflow-hidden">
+                <div @click="selectedStatus = ''; closeAllFilters()" :class="[
+                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
+                  selectedStatus === '' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                ]">
+                  <span :class="['font-medium', selectedStatus === '' ? 'text-blue-700' : 'text-gray-700']">
+                    All Status
+                  </span>
+                  <svg v-if="selectedStatus === ''" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor"
+                    viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+
+                <div @click="selectedStatus = 'Active'; closeAllFilters()" :class="[
+                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
+                  selectedStatus === 'Active' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                ]">
+                  <span :class="['font-medium', selectedStatus === 'Active' ? 'text-blue-700' : 'text-gray-700']">
+                    Active
+                  </span>
+                  <svg v-if="selectedStatus === 'Active'" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor"
+                    viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+
+                <div @click="selectedStatus = 'Inactive'; closeAllFilters()" :class="[
+                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 hover:bg-blue-50',
+                  selectedStatus === 'Inactive' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                ]">
+                  <span :class="['font-medium', selectedStatus === 'Inactive' ? 'text-blue-700' : 'text-gray-700']">
+                    Inactive
+                  </span>
+                  <svg v-if="selectedStatus === 'Inactive'" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor"
+                    viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+              </div>
             </div>
 
-            <!-- Booking Type Filter -->
+            <!-- Booking Type Filter Dropdown -->
             <div class="relative">
-              <select v-model="selectedBookingType"
-                class="appearance-none pl-4 pr-10 py-3 border-2 border-gray-200 rounded-xl focus:border-[#1E71B8] focus:ring-2 focus:ring-[#1E71B8]/20 outline-none transition-all cursor-pointer bg-white font-medium text-gray-700">
-                <option value="">All Types</option>
-                <option value="exclusive">Exclusive</option>
-                <option value="joint">Joint</option>
-              </select>
-              <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
-                fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-              </svg>
+              <button @click="handleFilterClick('bookingType')"
+                class="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 min-w-[180px]">
+                <span class="font-semibold text-gray-800">
+                  {{ selectedBookingType === '' ? 'All Types' : selectedBookingType === 'exclusive' ? 'Exclusive' :
+                  'Joint' }}
+                </span>
+                <svg
+                  :class="['w-5 h-5 text-blue-600 transition-transform duration-300', isBookingTypeFilterOpen ? 'rotate-180' : '']"
+                  fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+              </button>
+
+              <!-- Booking Type Dropdown Menu -->
+              <div v-if="isBookingTypeFilterOpen" @click.stop
+                class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10 overflow-hidden">
+                <div @click="selectedBookingType = ''; closeAllFilters()" :class="[
+                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
+                  selectedBookingType === '' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                ]">
+                  <span :class="['font-medium', selectedBookingType === '' ? 'text-blue-700' : 'text-gray-700']">
+                    All Types
+                  </span>
+                  <svg v-if="selectedBookingType === ''" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor"
+                    viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+
+                <div @click="selectedBookingType = 'exclusive'; closeAllFilters()" :class="[
+                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
+                  selectedBookingType === 'exclusive' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                ]">
+                  <span
+                    :class="['font-medium', selectedBookingType === 'exclusive' ? 'text-blue-700' : 'text-gray-700']">
+                    Exclusive
+                  </span>
+                  <svg v-if="selectedBookingType === 'exclusive'" class="w-5 h-5 text-blue-600 ml-auto"
+                    fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+
+                <div @click="selectedBookingType = 'joint'; closeAllFilters()" :class="[
+                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 hover:bg-blue-50',
+                  selectedBookingType === 'joint' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                ]">
+                  <span :class="['font-medium', selectedBookingType === 'joint' ? 'text-blue-700' : 'text-gray-700']">
+                    Joint
+                  </span>
+                  <svg v-if="selectedBookingType === 'joint'" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor"
+                    viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+              </div>
             </div>
 
-            <!-- Region Filter -->
+            <!-- Region Filter Dropdown -->
             <div class="relative">
-              <select v-model="selectedRegion"
-                class="appearance-none pl-4 pr-10 py-3 border-2 border-gray-200 rounded-xl focus:border-[#1E71B8] focus:ring-2 focus:ring-[#1E71B8]/20 outline-none transition-all cursor-pointer bg-white font-medium text-gray-700">
-                <option value="">All Regions</option>
-                <option v-for="region in uniqueRegions" :key="region" :value="region">
-                  {{ region }}
-                </option>
-              </select>
-              <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
-                fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-              </svg>
+              <button @click="handleFilterClick('region')"
+                class="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 min-w-[180px]">
+                <span class="font-semibold text-gray-800">
+                  {{ selectedRegion === '' ? 'All Regions' : selectedRegion }}
+                </span>
+                <svg
+                  :class="['w-5 h-5 text-blue-600 transition-transform duration-300', isRegionFilterOpen ? 'rotate-180' : '']"
+                  fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+              </button>
+
+              <!-- Region Dropdown Menu -->
+              <div v-if="isRegionFilterOpen" @click.stop
+                class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10 overflow-hidden max-h-96 overflow-y-auto">
+                <div @click="selectedRegion = ''; closeAllFilters()" :class="[
+                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50 sticky top-0 bg-white',
+                  selectedRegion === '' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                ]">
+                  <span :class="['font-medium', selectedRegion === '' ? 'text-blue-700' : 'text-gray-700']">
+                    All Regions
+                  </span>
+                  <svg v-if="selectedRegion === ''" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor"
+                    viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+
+                <div v-for="region in uniqueRegions" :key="region" @click="selectedRegion = region; closeAllFilters()"
+                  :class="[
+                    'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50 last:border-b-0',
+                    selectedRegion === region ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                  ]">
+                  <span :class="['font-medium', selectedRegion === region ? 'text-blue-700' : 'text-gray-700']">
+                    {{ region }}
+                  </span>
+                  <svg v-if="selectedRegion === region" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor"
+                    viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+              </div>
             </div>
 
             <!-- Add New Package Button -->
@@ -191,7 +328,7 @@
           <div class="flex items-center justify-between">
             <p class="text-sm text-gray-700">
               Showing <span class="font-semibold">{{ startIndex + 1 }}</span> to <span class="font-semibold">{{ endIndex
-                }}</span> of <span class="font-semibold">{{ filteredPackages.length }}</span> results
+              }}</span> of <span class="font-semibold">{{ filteredPackages.length }}</span> results
             </p>
             <div class="flex gap-2">
               <button @click="previousPage" :disabled="currentPage === 1"
@@ -242,6 +379,10 @@ const searchQuery = ref('')
 const selectedStatus = ref('')
 const selectedBookingType = ref('')
 const selectedRegion = ref('')
+
+const isStatusFilterOpen = ref(false)
+const isBookingTypeFilterOpen = ref(false)
+const isRegionFilterOpen = ref(false)
 
 const currentPage = ref(1)
 const itemsPerPage = ref(10)
@@ -373,6 +514,28 @@ const nextPage = () => {
   }
 }
 
+const closeAllFilters = () => {
+  isStatusFilterOpen.value = false
+  isBookingTypeFilterOpen.value = false
+  isRegionFilterOpen.value = false
+}
+
+const handleFilterClick = (filterType) => {
+  if (filterType === 'status') {
+    isStatusFilterOpen.value = !isStatusFilterOpen.value
+    isBookingTypeFilterOpen.value = false
+    isRegionFilterOpen.value = false
+  } else if (filterType === 'bookingType') {
+    isStatusFilterOpen.value = false
+    isBookingTypeFilterOpen.value = !isBookingTypeFilterOpen.value
+    isRegionFilterOpen.value = false
+  } else if (filterType === 'region') {
+    isStatusFilterOpen.value = false
+    isBookingTypeFilterOpen.value = false
+    isRegionFilterOpen.value = !isRegionFilterOpen.value
+  }
+}
+
 watch([searchQuery, selectedStatus, selectedBookingType, selectedRegion], () => {
   currentPage.value = 1
 })
@@ -382,5 +545,12 @@ const inactivePackages = computed(() => packages.value.filter(p => p.status === 
 
 onMounted(() => {
   fetchPackages()
+
+  // Close all filters when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.relative')) {
+      closeAllFilters()
+    }
+  })
 })
 </script>

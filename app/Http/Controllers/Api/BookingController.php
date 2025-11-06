@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Payment;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\BookingRejected;
 
 class BookingController extends Controller
 {
@@ -99,13 +102,32 @@ class BookingController extends Controller
             'status' => 'required|in:Pending,Approved,Rejected',
             'id_type' => 'nullable|string|max:255',
             'remarks' => 'nullable|string|max:1000',
+            'rejection_reason' => 'nullable|string|max:1000',
+            'rejection_category' => 'nullable|string|max:255',
         ]);
 
         $booking = Booking::findOrFail($id);
-        $booking->update($validated);
+        $admin = auth()->user();
 
         if ($validated['status'] === 'Approved') {
+            $validated['approved_by'] = $admin->id;
+            $validated['approved_at'] = now();
+            $booking->update($validated);
             Payment::createFromBooking($booking);
+        } 
+        elseif ($validated['status'] === 'Rejected') {
+            $booking->update($validated);
+            
+            try {
+                Mail::to($booking->customer_email)->send(
+                    new BookingRejected($booking)
+                );
+            } catch (\Exception $e) {
+                \Log::error('Failed to send rejection email: ' . $e->getMessage());
+            }
+        }
+        else {
+            $booking->update($validated);
         }
 
         return response()->json([

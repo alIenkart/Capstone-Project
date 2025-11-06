@@ -19,30 +19,132 @@
           <div class="flex items-center gap-3 flex-wrap">
             <!-- Role Filter -->
             <div class="relative">
-              <select v-model="selectedRole"
-                class="appearance-none pl-4 pr-10 py-3 border-2 border-gray-200 rounded-xl focus:border-[#1E71B8] focus:ring-2 focus:ring-[#1E71B8]/20 outline-none transition-all cursor-pointer bg-white font-medium text-gray-700">
-                <option value="">All Roles</option>
-                <option value="Admin">Admin</option>
-                <option value="Customer">Customer</option>
-              </select>
-              <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
-                fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-              </svg>
+              <button @click="handleFilterClick('role')"
+                class="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 min-w-[180px]">
+                <span class="font-semibold text-gray-800">
+                  {{ selectedRole === '' ? 'All Roles' : selectedRole }}
+                </span>
+                <svg
+                  :class="['w-5 h-5 text-blue-600 transition-transform duration-300', isRoleFilterOpen ? 'rotate-180' : '']"
+                  fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+              </button>
+
+              <!-- Role Dropdown Menu -->
+              <div v-if="isRoleFilterOpen" @click.stop
+                class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10 overflow-hidden">
+                <div @click="selectedRole = ''; closeAllFilters()" :class="[
+                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
+                  selectedRole === '' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                ]">
+                  <span :class="['font-medium', selectedRole === '' ? 'text-blue-700' : 'text-gray-700']">
+                    All Roles
+                  </span>
+                  <svg v-if="selectedRole === ''" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor"
+                    viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+
+                <div @click="selectedRole = 'Admin'; closeAllFilters()" :class="[
+                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
+                  selectedRole === 'Admin' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                ]">
+                  <span :class="['font-medium', selectedRole === 'Admin' ? 'text-blue-700' : 'text-gray-700']">
+                    Admin
+                  </span>
+                  <svg v-if="selectedRole === 'Admin'" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor"
+                    viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+
+                <div @click="selectedRole = 'Customer'; closeAllFilters()" :class="[
+                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 hover:bg-blue-50',
+                  selectedRole === 'Customer' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                ]">
+                  <span :class="['font-medium', selectedRole === 'Customer' ? 'text-blue-700' : 'text-gray-700']">
+                    Customer
+                  </span>
+                  <svg v-if="selectedRole === 'Customer'" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor"
+                    viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+              </div>
             </div>
 
             <!-- Email Status Filter -->
             <div class="relative">
-              <select v-model="selectedEmailStatus"
-                class="appearance-none pl-4 pr-10 py-3 border-2 border-gray-200 rounded-xl focus:border-[#1E71B8] focus:ring-2 focus:ring-[#1E71B8]/20 outline-none transition-all cursor-pointer bg-white font-medium text-gray-700">
-                <option value="">All Status</option>
-                <option value="verified">Verified</option>
-                <option value="not_verified">Not Verified</option>
-              </select>
-              <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
-                fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-              </svg>
+              <button @click="handleFilterClick('emailStatus')"
+                class="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 min-w-[180px]">
+                <span class="font-semibold text-gray-800">
+                  {{ selectedEmailStatus === '' ? 'All Status' : selectedEmailStatus === 'verified' ? 'Verified' : 'Not Verified' }}
+                </span>
+                <svg
+                  :class="['w-5 h-5 text-blue-600 transition-transform duration-300', isEmailStatusFilterOpen ? 'rotate-180' : '']"
+                  fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+              </button>
+
+              <!-- Email Status Dropdown Menu -->
+              <div v-if="isEmailStatusFilterOpen" @click.stop
+                class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10 overflow-hidden">
+                <div @click="selectedEmailStatus = ''; closeAllFilters()" :class="[
+                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
+                  selectedEmailStatus === '' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                ]">
+                  <span :class="['font-medium', selectedEmailStatus === '' ? 'text-blue-700' : 'text-gray-700']">
+                    All Status
+                  </span>
+                  <svg v-if="selectedEmailStatus === ''" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor"
+                    viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+
+                <div @click="selectedEmailStatus = 'verified'; closeAllFilters()" :class="[
+                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
+                  selectedEmailStatus === 'verified' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                ]">
+                  <span
+                    :class="['font-medium', selectedEmailStatus === 'verified' ? 'text-blue-700' : 'text-gray-700']">
+                    Verified
+                  </span>
+                  <svg v-if="selectedEmailStatus === 'verified'" class="w-5 h-5 text-blue-600 ml-auto"
+                    fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+
+                <div @click="selectedEmailStatus = 'not_verified'; closeAllFilters()" :class="[
+                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 hover:bg-blue-50',
+                  selectedEmailStatus === 'not_verified' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                ]">
+                  <span
+                    :class="['font-medium', selectedEmailStatus === 'not_verified' ? 'text-blue-700' : 'text-gray-700']">
+                    Not Verified
+                  </span>
+                  <svg v-if="selectedEmailStatus === 'not_verified'" class="w-5 h-5 text-blue-600 ml-auto"
+                    fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+              </div>
             </div>
 
             <!-- Add New User Button -->
@@ -167,7 +269,7 @@
           <div class="flex items-center justify-between">
             <p class="text-sm text-gray-700">
               Showing <span class="font-semibold">{{ startIndex + 1 }}</span> to <span class="font-semibold">{{ endIndex
-                }}</span> of <span class="font-semibold">{{ filteredUsers.length }}</span> results
+              }}</span> of <span class="font-semibold">{{ filteredUsers.length }}</span> results
             </p>
             <div class="flex gap-2">
               <button @click="previousPage" :disabled="currentPage === 1"
@@ -202,7 +304,7 @@
 import AdminIndex from './AdminIndex.vue'
 import EditUserModal from './components/EditUserModal.vue'
 import { api } from '../../api/api'
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 
 defineOptions({ layout: AdminIndex })
 
@@ -215,8 +317,28 @@ const searchQuery = ref('')
 const selectedRole = ref('')
 const selectedEmailStatus = ref('')
 
+const isRoleFilterOpen = ref(false)
+const isEmailStatusFilterOpen = ref(false)
+
 const currentPage = ref(1)
 const itemsPerPage = ref(10)
+
+// Close all filters
+const closeAllFilters = () => {
+  isRoleFilterOpen.value = false
+  isEmailStatusFilterOpen.value = false
+}
+
+// Handle filter button clicks - close others and toggle current
+const handleFilterClick = (filterType) => {
+  if (filterType === 'role') {
+    isRoleFilterOpen.value = !isRoleFilterOpen.value
+    isEmailStatusFilterOpen.value = false
+  } else if (filterType === 'emailStatus') {
+    isRoleFilterOpen.value = false
+    isEmailStatusFilterOpen.value = !isEmailStatusFilterOpen.value
+  }
+}
 
 const hasActiveFilters = computed(() => {
   return searchQuery.value !== '' || selectedRole.value !== '' || selectedEmailStatus.value !== ''
@@ -329,12 +451,18 @@ const nextPage = () => {
   }
 }
 
-import { watch } from 'vue'
 watch([searchQuery, selectedRole, selectedEmailStatus], () => {
   currentPage.value = 1
 })
 
 onMounted(() => {
   fetchUsers()
+
+  // Close all filters when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.relative')) {
+      closeAllFilters()
+    }
+  })
 })
 </script>

@@ -28,20 +28,87 @@
 
           <!-- Filters -->
           <div class="flex items-center gap-3 flex-wrap">
-            <!-- Status Filter -->
+            <!-- Status Filter Dropdown -->
             <div class="relative">
-              <select 
-                v-model="statusFilter"
-                class="appearance-none pl-4 pr-10 py-3 border-2 border-gray-200 rounded-xl focus:border-[#1E71B8] focus:ring-2 focus:ring-[#1E71B8]/20 outline-none transition-all cursor-pointer bg-white font-medium text-gray-700"
-              >
-                <option>All Status</option>
-                <option>Approved</option>
-                <option>Pending</option>
-                <option>Rejected</option>
-              </select>
-              <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-              </svg>
+              <button @click="isFilterOpen = !isFilterOpen"
+                class="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 group min-w-[200px]">
+                <div class="flex items-center gap-2">
+                  <span class="font-semibold text-gray-800">
+                    {{ statusFilter === 'All Status' ? 'All Status' : statusFilter }}
+                  </span>
+                </div>
+                <svg :class="['w-5 h-5 text-blue-600 transition-transform duration-300', isFilterOpen ? 'rotate-180' : '']"
+                  fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
+              </button>
+
+              <!-- Dropdown Menu -->
+              <div v-if="isFilterOpen" class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10 overflow-hidden">
+                <div @click="statusFilter = 'All Status'; isFilterOpen = false"
+                  :class="[
+                    'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
+                    statusFilter === 'All Status' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                  ]">
+                  <span :class="[
+                    'font-medium',
+                    statusFilter === 'All Status' ? 'text-blue-700' : 'text-gray-700'
+                  ]">
+                    All Status
+                  </span>
+                  <svg v-if="statusFilter === 'All Status'" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+
+                <div @click="statusFilter = 'Approved'; isFilterOpen = false"
+                  :class="[
+                    'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
+                    statusFilter === 'Approved' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                  ]">
+                  <span :class="[
+                    'font-medium',
+                    statusFilter === 'Approved' ? 'text-blue-700' : 'text-gray-700'
+                  ]">
+                    Approved
+                  </span>
+                  <svg v-if="statusFilter === 'Approved'" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+
+                <div @click="statusFilter = 'Pending'; isFilterOpen = false"
+                  :class="[
+                    'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
+                    statusFilter === 'Pending' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                  ]">
+                  <span :class="[
+                    'font-medium',
+                    statusFilter === 'Pending' ? 'text-blue-700' : 'text-gray-700'
+                  ]">
+                    Pending
+                  </span>
+                  <svg v-if="statusFilter === 'Pending'" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+
+                <div @click="statusFilter = 'Rejected'; isFilterOpen = false"
+                  :class="[
+                    'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 hover:bg-blue-50',
+                    statusFilter === 'Rejected' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                  ]">
+                  <span :class="[
+                    'font-medium',
+                    statusFilter === 'Rejected' ? 'text-blue-700' : 'text-gray-700'
+                  ]">
+                    Rejected
+                  </span>
+                  <svg v-if="statusFilter === 'Rejected'" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -98,10 +165,7 @@
                   {{ p.booking?.customer_name || 'N/A' }}
                 </td>
                 <td class="px-6 py-4 text-sm">
-                  <span class="inline-flex items-center gap-1.5 text-gray-700">
-                    <svg class="w-5 h-5 text-[#1E71B8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
+                  <span class="text-gray-700">
                     {{ p.payment_entry }}
                   </span>
                 </td>
@@ -186,6 +250,7 @@ const service = new api();
 const payments = ref([])
 const searchQuery = ref('')
 const statusFilter = ref('All Status')
+const isFilterOpen = ref(false)
 
 const fetchPayments = async () => {
     try {

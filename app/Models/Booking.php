@@ -18,6 +18,11 @@ class Booking extends Model
         'id_type',
         'discount_id_image',
         'discount_images',
+        'rejection_reason',
+        'rejection_category', // Add this line
+        'approved_by',
+        'approved_at',
+        'travel_date',
         
         // Package details
         'package_destination',
@@ -41,6 +46,12 @@ class Booking extends Model
         'customer_address',
     ];
 
+    protected $casts = [
+        'created_at' => 'datetime',
+        'approved_at' => 'datetime',
+        'travel_date' => 'datetime',
+    ];
+
     public function package()
     {
         return $this->belongsTo(Packages::class);
@@ -49,5 +60,10 @@ class Booking extends Model
     public function voucher()
     {
         return $this->belongsTo(Voucher::class);
+    }
+
+    public function approvedByUser()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
     }
 }
