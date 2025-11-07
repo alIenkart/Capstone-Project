@@ -4,7 +4,7 @@
 
         <div class="mb-6 flex flex-col items-center">
             <img class="logo-img w-32 h-auto mb-4" src="/storage/logo/Logo.png" alt="JE Travel & Tours" />
-            <h2 class="text-2xl font-bold text-orange-600 mb-2">Login to your account.</h2>
+            <h2 class="text-2xl font-bold text-[#1E71B8] mb-2">Login to your account.</h2>
             <p class="text-sm text-gray-600">Hello, welcome back to your account</p>
         </div>
 
@@ -76,7 +76,7 @@
 
             <div class="flex items-center justify-center mt-6">
                 <PrimaryButton
-                    class="w-48 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-3xl flex justify-center items-center"
+                    class="w-48 py-3 bg-[#1E71B8] hover:bg-[#73BE5D] text-white font-bold rounded-3xl flex justify-center items-center"
                     :class="{ 'opacity-25': form.processing }"
                     :disabled="form.processing"
                 >
