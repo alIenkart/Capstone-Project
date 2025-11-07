@@ -191,6 +191,15 @@
               </div>
               <div class="w-full sm:w-1/2 flex flex-col gap-5 justify-center">
                 <div>
+                  <label class="block mb-2 text-gray-700 font-medium" for="paymentType">Mode of Payment:</label>
+                  <select id="modeOfPayment" v-model="selectedModeOfPayment"
+                    class="rounded-md border border-gray-300 p-2 bg-white focus:ring-2 focus:ring-blue-200 transition"
+                    style="width: 50%">
+                    <option value="GCASH">GCASH</option>
+                    <option value="Pay Maya">Pay Maya</option>
+                  </select>
+                </div>
+                <div>
                   <label class="block mb-2 text-gray-700 font-medium" for="paymentType">Type of Payment:</label>
                   <select id="paymentType" v-model="selectedPaymentType"
                     class="rounded-md border border-gray-300 p-2 bg-white focus:ring-2 focus:ring-blue-200 transition"
@@ -307,6 +316,7 @@ const payments = ref([]);
 const selectedBookingIndex = ref(0);
 const userId = user?.id;
 const selectedPaymentType = ref('full');
+const selectedModeOfPayment = ref('GCASH');
 const selectedFile = ref(null);
 const previewUrl = ref(null);
 const showReceiptModal = ref(false);
@@ -440,6 +450,7 @@ async function submitProofOfPayment() {
   const data = new FormData();
   data.append('proof_of_payment', selectedFile.value);
   data.append('payment_history', JSON.stringify(payment_history));
+  data.append('mode_of_payment', selectedModeOfPayment.value);
   data.append('payment_status', 'Under Review');
 
   try {

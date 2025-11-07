@@ -199,10 +199,6 @@
                 <span>Kids Rate ₱ {{ selectedPackage.kids_pax_rate }} x ({{ kidsPax }})</span>
                 <span>₱ {{ kidsTotalAmount }}</span>
               </div>
-              <div class="flex justify-between">
-                <span>Discount ID</span>
-                <span>{{ selectedPackage.discounted_rate }}%</span>
-              </div>
             </div>
             <hr class="border-[#73BE5D] my-4" />
             <div class="flex justify-between items-center font-bold text-white text-lg mt-4">

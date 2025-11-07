@@ -318,10 +318,6 @@ onMounted(() => {
               <span>Kids Rate ₱ {{ booking.kidsRate }} x ({{ booking.kidsQuantity }})</span>
               <span>₱ {{ booking.kidsTotalAmount }}</span>
             </div>
-            <div class="flex justify-between">
-              <span>Discount ID</span>
-              <span>- 20%</span>
-            </div>
             <!-- <div class="flex justify-between font-bold mt-2">
               <span>Subtotal:</span>
               <span>P XXXX</span>

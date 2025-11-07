@@ -439,8 +439,7 @@ const updatePackage = async () => {
         emit('saved', response.data.data)
         closeModal()
     } catch (error) {
-        console.error('Error updating package:', error)
-        alert('Error updating package. Please check console.')
+        toast.error('Error updating package',)
     }
 }
 

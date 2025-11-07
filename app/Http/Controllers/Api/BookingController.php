@@ -121,17 +121,14 @@ class BookingController extends Controller
         ]);
 
         $booking = Booking::findOrFail($id);
-        $admin = auth()->user();
 
         if ($validated['status'] === 'Approved') {
-            $validated['approved_by'] = $admin->id;
-            $validated['approved_at'] = now();
             $booking->update($validated);
             Payment::createFromBooking($booking);
-        } 
-        elseif ($validated['status'] === 'Rejected') {
+        }
+
+        if($validated['status'] === 'Rejected') {
             $booking->update($validated);
-            
             try {
                 Mail::to($booking->customer_email)->send(
                     new BookingRejected($booking)
@@ -139,9 +136,6 @@ class BookingController extends Controller
             } catch (\Exception $e) {
                 \Log::error('Failed to send rejection email: ' . $e->getMessage());
             }
-        }
-        else {
-            $booking->update($validated);
         }
 
         return response()->json([
