@@ -16,7 +16,7 @@
                   <path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
                 </svg>
                 <span class="font-semibold text-gray-800">
-                  {{ selectedStatusFilter === 'All' ? 'All Statuses' : selectedStatusFilter }}
+                  {{ selectedStatusFilter === 'All' ? 'All Status' : selectedStatusFilter }}
                 </span>
               </div>
               <svg :class="['w-5 h-5 text-blue-600 transition-transform duration-300', isFilterOpen ? 'rotate-180' : '']"
@@ -25,7 +25,6 @@
               </svg>
             </button>
 
-            <!-- Dropdown Menu -->
             <div v-if="isFilterOpen" class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10 overflow-hidden animate-in fade-in slide-in-from-top-2">
               <div v-for="status in uniqueStatuses" :key="status"
                 @click="selectedStatusFilter = status; isFilterOpen = false"
@@ -42,7 +41,7 @@
                   'font-medium',
                   selectedStatusFilter === status ? 'text-blue-700' : 'text-gray-700'
                 ]">
-                  {{ status === 'All' ? 'All Statuses' : status }}
+                  {{ status === 'All' ? 'All Status' : status }}
                 </span>
                 
                 <svg v-if="selectedStatusFilter === status" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor" viewBox="0 0 20 20">
@@ -127,7 +126,8 @@
                   </svg>
                   {{ filteredBookings[selectedBookingIndex].total_quantity }}
                 </div>
-                <div>Booking Type: <span class="font-semibold text-gray-700">{{ filteredBookings[selectedBookingIndex].tour_type
+                <div>Booking Type: <span class="font-semibold text-gray-700">{{
+                  filteredBookings[selectedBookingIndex].tour_type
                     }}</span></div>
                 <div>Booked: <span class="font-semibold text-gray-700">{{ new
                   Date(filteredBookings[selectedBookingIndex].created_at).toLocaleDateString('en-PH', {
@@ -154,7 +154,8 @@
             </div>
             <div class="flex flex-col">
               <span class="text-gray-500 text-sm">Guests</span>
-              <span class="font-medium text-gray-800 mt-1">{{ filteredBookings[selectedBookingIndex].total_quantity }}</span>
+              <span class="font-medium text-gray-800 mt-1">{{ filteredBookings[selectedBookingIndex].total_quantity
+              }}</span>
             </div>
             <div class="flex flex-col">
               <span class="text-gray-500 text-sm">Total Due</span>
@@ -181,50 +182,108 @@
           </div>
           <div class="mt-6 mb-2 border-t border-gray-200 pt-6">
             <h4 class="font-bold text-lg text-gray-700 mb-4 text-center">Payment</h4>
-            <div class="flex flex-col sm:flex-row gap-8 items-center mb-6">
-              <div class="w-full sm:w-1/2 flex flex-col justify-center items-center">
-                <div class="font-semibold text-gray-800 text-center text-xl mb-1">Dorie Magjobos</div>
-                <div class="text-gray-500 text-center text-base mb-3">xxxx xxx 1200</div>
-                <img src="/storage/qr-payment/qr.png" alt="QR Payment"
-                  class="w-48 h-48 bg-white border-2 border-gray-200 rounded-lg object-contain mb-2 shadow-sm" />
-                <div class="text-sm text-gray-500 mt-2 text-center">Scan this QR code to pay</div>
-              </div>
-              <div class="w-full sm:w-1/2 flex flex-col gap-5 justify-center">
-                <div>
-                  <label class="block mb-2 text-gray-700 font-medium" for="paymentType">Mode of Payment:</label>
-                  <select id="modeOfPayment" v-model="selectedModeOfPayment"
-                    class="rounded-md border border-gray-300 p-2 bg-white focus:ring-2 focus:ring-blue-200 transition"
-                    style="width: 50%">
-                    <option value="GCASH">GCASH</option>
-                    <option value="Pay Maya">Pay Maya</option>
-                  </select>
+            <div class="flex flex-col lg:flex-row gap-8 items-start mb-6">
+              <div class="w-full lg:w-2/3 flex flex-col gap-5 justify-start">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <label class="block mb-3 text-gray-700 font-semibold text-sm tracking-wide" for="modeOfPayment">Mode
+                      of Payment</label>
+                    <div class="relative w-64 mode-payment-dropdown">
+                      <button @click="toggleModeDropdown"
+                        class="w-full flex justify-between items-center px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl shadow-sm text-gray-800 font-medium hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all">
+                        {{ selectedModeOfPayment }}
+                        <svg class="w-5 h-5 text-gray-500 transition-transform duration-200"
+                          :class="{ 'rotate-180': dropdownOpenModePayment }" fill="none" stroke="currentColor" stroke-width="2"
+                          viewBox="0 0 24 24">
+                          <path d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                      </button>
+                      <div v-if="dropdownOpenModePayment"
+                        class="absolute z-10 w-full mt-1 bg-white border-2 border-gray-200 rounded-xl shadow-lg overflow-hidden">
+                        <div v-for="option in modeOfPaymentOptions" :key="option.value" @click="selectOptionModePayment(option)"
+                          class="px-4 py-3 cursor-pointer hover:bg-blue-100 hover:text-blue-700 transition-colors">
+                          {{ option.label }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block mb-3 text-gray-700 font-semibold text-sm tracking-wide" for="paymentType">Type
+                      of Payment</label>
+                    <div class="relative w-64 type-payment-dropdown">
+                      <button @click="toggleTypeDropdown"
+                        class="w-full flex justify-between items-center px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl shadow-sm text-gray-800 font-medium hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all">
+                        {{ selectedPaymentType }}
+                        <svg class="w-5 h-5 text-gray-500 transition-transform duration-200"
+                          :class="{ 'rotate-180': dropdownOpenTypePayment }" fill="none" stroke="currentColor" stroke-width="2"
+                          viewBox="0 0 24 24">
+                          <path d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                      </button>
+                      <div v-if="dropdownOpenTypePayment"
+                        class="absolute z-10 w-full mt-1 bg-white border-2 border-gray-200 rounded-xl shadow-lg overflow-hidden">
+                        <div v-for="option in paymentTypeOptions" :key="option.value" @click="selectOptionTypePayment(option)"
+                          class="px-4 py-3 cursor-pointer hover:bg-blue-100 hover:text-blue-700 transition-colors">
+                          {{ option.label }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <label class="block mb-2 text-gray-700 font-medium" for="paymentType">Type of Payment:</label>
-                  <select id="paymentType" v-model="selectedPaymentType"
-                    class="rounded-md border border-gray-300 p-2 bg-white focus:ring-2 focus:ring-blue-200 transition"
-                    style="width: 50%">
-                    <option value="full">Full Payment</option>
-                    <option value="down">Down Payment</option>
-                  </select>
+
+                <div v-if="selectedPaymentType === 'Full Payment'"
+                  class="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-5 shadow-sm">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                      <div class="bg-green-100 p-2.5 rounded-lg">
+                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" stroke-width="2"
+                          viewBox="0 0 24 24">
+                          <path
+                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1">
+                          </path>
+                        </svg>
+                      </div>
+                      <div>
+                        <span class="text-gray-600 text-sm font-medium block">Amount to Pay</span>
+                        <span class="text-2xl font-bold text-green-700">
+                          ₱{{ Number(filteredBookings[selectedBookingIndex]?.total_price || 0).toLocaleString('en-PH')
+                          }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                      FULL
+                    </div>
+                  </div>
                 </div>
-                <div v-if="selectedPaymentType === 'full'">
-                  <span class="text-gray-700 font-medium">Amount to pay:</span>
-                  <span class="ml-2 text-lg font-bold text-green-600">
-                    ₱{{ Number(filteredBookings[selectedBookingIndex]?.total_price || 0).toLocaleString('en-PH') }}
-                  </span>
+
+                <div v-else-if="selectedPaymentType === 'Down Payment'" class="space-y-3">
+                  <div
+                    class="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-4 shadow-sm">
+                    <label class="flex items-center gap-2 text-gray-700 font-semibold text-sm mb-3"
+                      for="downPaymentAmount">
+                      <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2"
+                        viewBox="0 0 24 24">
+                        <path
+                          d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z">
+                        </path>
+                      </svg>
+                      Enter Down Payment Amount
+                    </label>
+                    <div class="relative">
+                      <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold text-lg">₱</span>
+                      <input id="downPaymentAmount" v-model.number="formData.downPaymentAmount" type="number" min="0"
+                        class="w-full rounded-xl border-2 border-gray-200 pl-10 pr-4 py-3.5 bg-white text-gray-800 font-semibold text-lg focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 hover:border-blue-300 hover:shadow-md shadow-sm"
+                        placeholder="0.00" />
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-between text-sm px-2">
+                    <span class="text-gray-600">Total Amount:</span>
+                    <span class="font-bold text-gray-800">₱{{ Number(filteredBookings[selectedBookingIndex]?.total_price
+                      || 0).toLocaleString('en-PH') }}</span>
+                  </div>
                 </div>
-                <div v-else-if="selectedPaymentType === 'down'">
-                  <label class="block mb-2 text-gray-700 font-medium" for="downPaymentAmount">Enter Down Payment Amount:</label>
-                  <input
-                    id="downPaymentAmount"
-                    v-model.number="formData.downPaymentAmount"
-                    type="number"
-                    min="0"
-                    class="rounded-md border border-gray-300 p-2 w-1/2 focus:ring-2 focus:ring-blue-200 transition"
-                    placeholder="Enter amount (₱)"
-                  />
-                </div>
+
                 <div>
                   <label class="block mb-2 text-gray-700 font-medium">Upload Payment Receipt:</label>
                   <div class="flex items-center gap-4 mb-4 flex-wrap">
@@ -249,10 +308,18 @@
                         :disabled="filteredBookings[selectedBookingIndex]?.status === 'Pending'" />
                     </div>
                   </div>
-
                 </div>
               </div>
+
+              <div class="w-full lg:w-1/3 flex flex-col justify-center items-center h-fit">
+                <div class="font-semibold text-gray-800 text-center text-xl mb-1">Dorie Magjobos</div>
+                <div class="text-gray-500 text-center text-base mb-3">xxxx xxx 1200</div>
+                <img src="/storage/qr-payment/qr.png" alt="QR Payment"
+                  class="w-48 h-48 bg-white border-2 border-gray-200 rounded-lg object-contain mb-2 shadow-sm flex-shrink-0" />
+                <div class="text-sm text-gray-500 mt-2 text-center">Scan this QR code to pay</div>
+              </div>
             </div>
+
             <div class="flex justify-center w-full">
               <div class="flex flex-col items-center gap-4 mt-8 mb-2 relative group w-full max-w-xs">
                 <button
@@ -304,7 +371,7 @@
 import LandingIndex from './LandingIndex.vue'
 import PaymentReceiptModal from './PaymentReceiptModal.vue'
 import { fetchBookingsByUser, fetchPaymentsByBookingId } from '@/api/booking';
-import { onMounted, ref, watch, computed } from 'vue';
+import { onMounted, onBeforeUnmount, ref, watch, computed, nextTick } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 import { toCamelCase } from '@/helper/helper'
 import { useToast } from 'vue-toastification'
@@ -315,7 +382,7 @@ const bookings = ref([]);
 const payments = ref([]);
 const selectedBookingIndex = ref(0);
 const userId = user?.id;
-const selectedPaymentType = ref('full');
+const selectedPaymentType = ref('Full Payment');
 const selectedModeOfPayment = ref('GCASH');
 const selectedFile = ref(null);
 const previewUrl = ref(null);
@@ -323,6 +390,19 @@ const showReceiptModal = ref(false);
 const receiptData = ref({});
 const selectedStatusFilter = ref('All');
 const isFilterOpen = ref(false);
+const dropdownOpenModePayment = ref(false)
+const dropdownOpenTypePayment = ref(false)
+
+const modeOfPaymentOptions = [
+  { label: 'GCASH', value: 'GCASH' },
+  { label: 'Pay Maya', value: 'Pay Maya' },
+  { label: 'Bank', value: 'Bank' }
+]
+
+const paymentTypeOptions = [
+  { label: 'Full Payment', value: 'Full Payment' },
+  { label: 'Down Payment', value: 'Down Payment' }
+]
 
 const formData = ref({
   paymentType: '',
@@ -333,7 +413,16 @@ const formData = ref({
   proofOfPayment: null,
 });
 
-// Computed property for filtered bookings
+const selectOptionModePayment = (option) => {
+  selectedModeOfPayment.value = option.value
+  dropdownOpenModePayment.value = false
+};
+
+const selectOptionTypePayment = (option) => {
+  selectedPaymentType.value = option.value
+  dropdownOpenTypePayment.value = false
+};
+
 const filteredBookings = computed(() => {
   if (selectedStatusFilter.value === 'All') {
     return bookings.value;
@@ -341,7 +430,6 @@ const filteredBookings = computed(() => {
   return bookings.value.filter(booking => booking.status === selectedStatusFilter.value);
 });
 
-// Get unique statuses from bookings
 const uniqueStatuses = computed(() => {
   const statuses = new Set(bookings.value.map(b => b.status));
   return ['All', ...Array.from(statuses)];
@@ -393,7 +481,7 @@ const closeReceiptModal = () => {
 onMounted(async () => {
   bookings.value = await fetchBookingsByUser(userId);
   console.log('view bookings', bookings.value)
-  
+
   if (filteredBookings.value.length) {
     payments.value = await fetchPaymentsByBookingId(filteredBookings.value[selectedBookingIndex.value].id);
     console.log('view payment', payments.value)
@@ -407,7 +495,6 @@ watch(selectedBookingIndex, async (newIndex) => {
   }
 });
 
-// Reset selectedBookingIndex when filter changes
 watch(selectedStatusFilter, () => {
   selectedBookingIndex.value = 0;
   isFilterOpen.value = false;
@@ -468,6 +555,49 @@ async function submitProofOfPayment() {
     toast.error('Something went wrong while submitting your payment.');
   }
 }
+
+const toggleModeDropdown = async (event) => {
+  event.stopPropagation()
+  const wasOpen = dropdownOpenModePayment.value
+  closeAllDropdowns()
+  await nextTick()
+  dropdownOpenModePayment.value = !wasOpen
+}
+
+const toggleTypeDropdown = async (event) => {
+  event.stopPropagation()
+  const wasOpen = dropdownOpenTypePayment.value
+  closeAllDropdowns()
+  await nextTick()
+  dropdownOpenTypePayment.value = !wasOpen
+}
+
+const closeAllDropdowns = () => {
+  dropdownOpenModePayment.value = false
+  dropdownOpenTypePayment.value = false
+}
+
+const handleClickOutside = (event) => {
+  const filterDropdown = document.querySelector('.filter-dropdown')
+  const modeDropdown = document.querySelector('.mode-payment-dropdown')
+  const typeDropdown = document.querySelector('.type-payment-dropdown')
+
+  if (
+    !filterDropdown?.contains(event.target) &&
+    !modeDropdown?.contains(event.target) &&
+    !typeDropdown?.contains(event.target)
+  ) {
+    closeAllDropdowns()
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
 
 defineOptions({ layout: LandingIndex })
 </script>
