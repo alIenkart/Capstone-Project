@@ -51,7 +51,7 @@ class PaymentController extends Controller
         }
 
         if ($request->has('mode_of_payment')) {
-            $payment->mode_of_payment = json_decode($request->mode_of_payment, true);
+            $payment->mode_of_payment = $request->mode_of_payment;
         }
 
         if ($request->has('remarks')) {

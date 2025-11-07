@@ -168,6 +168,7 @@
               <span class="text-sm px-3 py-1 rounded-full font-semibold w-fit mt-1 transition-all" :class="{
                 'bg-yellow-400 text-white': paymentStatus === 'Pending',
                 'bg-green-400 text-white': paymentStatus === 'Approved',
+                'bg-blue-400 text-white': paymentStatus === 'Down Payment Approved',
                 'bg-red-400 text-white': paymentStatus === 'Unpaid' || paymentStatus === 'Rejected',
               }">
                 {{ paymentStatus }}
@@ -211,6 +212,16 @@
                     <label class="block mb-3 text-gray-700 font-semibold text-sm tracking-wide" for="paymentType">Type
                       of Payment</label>
                     <div class="relative w-64 type-payment-dropdown">
+                      
+                      <div v-if="isDownPaymentApproved()">
+                        <label class="block mt-4 mb-3 text-gray-700 font-semibold text-s tracking-wide" for="paymentType">                     
+                          <div class="bg-gray-100 border border-gray-300 rounded-md px-3 py-2 w-64">
+                            {{ typeOfPayment }}
+                          </div>                        
+                        </label>
+                      </div>   
+
+                      <div v-else>
                       <button @click="toggleTypeDropdown"
                         class="w-full flex justify-between items-center px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl shadow-sm text-gray-800 font-medium hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all">
                         {{ selectedPaymentType }}
@@ -220,6 +231,8 @@
                           <path d="M19 9l-7 7-7-7"></path>
                         </svg>
                       </button>
+                      </div>
+                      
                       <div v-if="dropdownOpenTypePayment"
                         class="absolute z-10 w-full mt-1 bg-white border-2 border-gray-200 rounded-xl shadow-lg overflow-hidden">
                         <div v-for="option in paymentTypeOptions" :key="option.value" @click="selectOptionTypePayment(option)"
@@ -334,7 +347,7 @@
                   View Receipt
                 </button>
 
-                <button v-if="filteredBookings[selectedBookingIndex]?.status === 'Pending'" @click="submitPayment"
+                <button v-if="filteredBookings[selectedBookingIndex]?.status === 'Pending' || isPaymentApproved()" @click="submitPayment"
                   :disabled="filteredBookings[selectedBookingIndex]?.status === 'Pending'"
                   class="w-full bg-[#1E71B8] hover:bg-[#155a8a] focus:ring-2 focus:ring-[#52c2f8] transition shadow-lg text-white px-8 py-3 rounded-xl font-bold text-lg focus:outline-none active:scale-95 duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
                   Submit
@@ -507,6 +520,15 @@ const paymentStatus = computed(() => {
   return currentPayment ? currentPayment.payment_status : 'Unpaid';
 });
 
+const typeOfPayment = computed(() => {
+  if (!payments.value.length || !filteredBookings.value.length) return '';
+
+  const currentBookingId = filteredBookings.value[selectedBookingIndex.value].id;
+  const currentPayment = payments.value.find(p => p.booking_id === currentBookingId);
+
+  return currentPayment?.payment_history?.paymentType || '';
+});
+
 async function submitProofOfPayment() {
   const currentBooking = filteredBookings.value[selectedBookingIndex.value];
   if (!currentBooking) return toast.error('No booking selected.');
@@ -590,6 +612,14 @@ const handleClickOutside = (event) => {
     closeAllDropdowns()
   }
 }
+
+const isPaymentApproved = () => {
+  return paymentStatus.value === 'Approved' || paymentStatus.value === 'Down Payment Approved';
+};
+
+const isDownPaymentApproved = () => {
+  return paymentStatus.value === 'Down Payment Approved';
+};
 
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)

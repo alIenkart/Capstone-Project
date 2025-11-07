@@ -112,20 +112,6 @@
                 </svg>
                 <h3 class="font-bold text-gray-800">Payment Proof</h3>
               </div>
-              
-              <div class="mb-4">
-                <label for="paymentMethod" class="block text-sm font-medium text-gray-700 mb-2">Payment Method</label>
-                <select 
-                  id="paymentMethod" 
-                  v-model="paymentMethod"
-                  class="w-full rounded-xl border-2 border-gray-300 px-4 py-2.5 focus:border-[#217093] focus:ring-2 focus:ring-[#217093]/20 outline-none transition-all"
-                >
-                  <option>GCash</option>
-                  <option>PayMaya</option>
-                  <option>Bank Transfer</option>
-                </select>
-              </div>
-
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Proof of Payment</label>
                 <div @click="openImageModal" class="relative group rounded-xl overflow-hidden border-2 border-gray-300 bg-gray-50 aspect-video cursor-pointer">
@@ -149,6 +135,12 @@
                   </div>
                 </div>
               </div>
+
+              <div class="mt-5">
+                <label for="paymentMethod" class="block text-sm font-medium text-gray-700">Type of Payment: {{ typeOfPayment }}</label> 
+                <label for="paymentMethod" class="block text-sm font-medium text-gray-700">Payment Method: {{ paymentMethod }}</label>        
+              </div>
+              
             </div>
 
             <div>
@@ -167,12 +159,25 @@
       <!-- Footer Actions -->
       <div class="bg-gray-50 px-8 py-6 border-t border-gray-200">
         <div class="flex flex-wrap justify-center gap-4">
-          <button @click="submitVerificationOfPayment('Approved')" class="flex items-center gap-2 rounded-xl bg-gradient-to-r from-green-600 to-green-700 px-8 py-3 text-white font-semibold hover:from-green-700 hover:to-green-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-            </svg>
-            Approve Payment
-          </button>
+
+          <div v-if="!isDownPayment()">
+            <button @click="submitVerificationOfPayment('Approved')" class="flex items-center gap-2 rounded-xl bg-gradient-to-r from-green-600 to-green-700 px-8 py-3 text-white font-semibold hover:from-green-700 hover:to-green-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+              Approve Payment
+            </button>
+          </div>
+
+          <div v-else>
+            <button @click="submitVerificationOfPayment('Down Payment Approved')" class="flex items-center gap-2 rounded-xl bg-gradient-to-r from-green-600 to-green-700 px-8 py-3 text-white font-semibold hover:from-green-700 hover:to-green-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+              Approve Down Payment
+            </button>
+          </div>
+
           <button @click="submitVerificationOfPayment('Rejected')" class="flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-500 to-red-600 px-8 py-3 text-white font-semibold hover:from-red-600 hover:to-red-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -443,6 +448,8 @@ const paymentData = ref({});
 const receiptData = ref({});
 const imagePreview = ref(null)
 const toast = useToast();
+let typeOfPayment = ref('');
+let paymentStatus = ref('');
 
 const fetchPaymentAndBooking = async (id) => {
   try {
@@ -458,6 +465,7 @@ const fetchPaymentAndBooking = async (id) => {
       payment_history: data.payment_history || {},
       remarks: data.remarks || '',
       image_path: data.receipt || '',
+      payment_status: data.payment_status || '',
       created_at: data.created_at || null,
       updated_at: data.updated_at || null,
       booking: {
@@ -473,6 +481,9 @@ const fetchPaymentAndBooking = async (id) => {
         total_price: data.booking?.total_price || 0
       }
     };
+
+    typeOfPayment.value = paymentData.value.payment_history.paymentType || '';
+    paymentStatus.value = paymentData.value.payment_status || '';
 
     receiptData.value = {
       receiptNo: `2025-${paymentData.value?.payment_id || 'N/A'}`,
@@ -532,6 +543,10 @@ const openImageModal = () => {
 
 const closeImageModal = () => {
   showImageModal.value = false;
+};
+
+const isDownPayment = () => {
+  return typeOfPayment.value === "Down Payment";
 };
 
 const downloadReceipt = async () => {
@@ -611,14 +626,7 @@ const downloadReceipt = async () => {
 };
 
 async function submitVerificationOfPayment($status) {
-  if (!paymentMethod.value) {
-    return toast.error('Please select a payment method.');
-  }
-
-  const payment_method = { method: paymentMethod.value };
-
   const data = new FormData();
-  data.append('mode_of_payment', JSON.stringify(payment_method));
   data.append('remarks', remarks.value || '');
   data.append('payment_status', $status);
 
