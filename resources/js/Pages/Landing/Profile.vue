@@ -1,41 +1,3 @@
-<script setup>
-import LandingIndex from './LandingIndex.vue'
-import { usePage } from '@inertiajs/vue3'
-import { ref, computed, onMounted } from 'vue'
-import { useToast } from 'vue-toastification'
-
-defineOptions({ layout: LandingIndex })
-const page = usePage()
-const user = computed(() => page.props.auth?.user)
-const toast = useToast();
-
-const firstName = ref('')
-const lastName = ref('')
-const email = ref('')
-const phone = ref('')
-const password = ref('password')
-
-const saveChanges = () => {
-    try {
-        isEditing.value = false
-        toast.success('Profile updated successfully!');
-    } catch (e) {
-        console.error(e);
-    }
-
-}
-
-onMounted(() => {
-    firstName.value = user?.value?.first_name ?? '';
-    lastName.value = user?.value?.last_name ?? '';
-    email.value = user?.value?.email ?? '';
-    phone.value = user?.value?.phone_number ?? ''
-});
-
-// Global edit mode – enables fields and save button
-const isEditing = ref(false)
-</script>
-
 <template>
     <div class="w-full">
         <!-- Top banner -->
@@ -165,3 +127,41 @@ const isEditing = ref(false)
         </div>
     </div>
 </template>
+
+<script setup>
+import LandingIndex from './LandingIndex.vue'
+import { usePage } from '@inertiajs/vue3'
+import { ref, computed, onMounted } from 'vue'
+import { useToast } from 'vue-toastification'
+
+defineOptions({ layout: LandingIndex })
+const page = usePage()
+const user = computed(() => page.props.auth?.user)
+const toast = useToast();
+
+const firstName = ref('')
+const lastName = ref('')
+const email = ref('')
+const phone = ref('')
+const password = ref('password')
+
+const saveChanges = () => {
+    try {
+        isEditing.value = false
+        toast.success('Profile updated successfully!');
+    } catch (e) {
+        console.error(e);
+    }
+
+}
+
+onMounted(() => {
+    firstName.value = user?.value?.first_name ?? '';
+    lastName.value = user?.value?.last_name ?? '';
+    email.value = user?.value?.email ?? '';
+    phone.value = user?.value?.phone_number ?? ''
+});
+
+// Global edit mode – enables fields and save button
+const isEditing = ref(false)
+</script>
