@@ -136,6 +136,8 @@ const headerTitle = computed(() => {
     return { title: 'Content Management', subtitle: 'Manage site content and pages' }
   if (page.url.startsWith('/admin/review-feedback'))
     return { title: 'Review & Feedback', subtitle: 'View user reviews and feedback' }
+    if (page.url.startsWith('/admin/login-history'))
+    return { title: 'Login History', subtitle: 'Track user login activity' }
   if (page.url.startsWith('/admin/settings'))
     return { title: 'Settings', subtitle: 'Configure system preferences' }
   return { title: 'Admin', subtitle: '' }
@@ -150,6 +152,7 @@ const navigationItems = [
   { href: '/admin/payment-confirmation', label: 'Payment Management' },
   { href: '/admin/content-management', label: 'Content Management' },
   { href: '/admin/review-feedback', label: 'Review & Feedback' },
+  { href: '/admin/login-history', label: 'Login History' },
 ]
 </script>
 

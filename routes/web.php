@@ -126,6 +126,11 @@ Route::get('/admin/review-feedback', function () {
     return Inertia::render('Admin/ReviewFeedback');
 })->name('admin.review-feedback');
 
+// Login History
+Route::get('/admin/login-history', function () {
+    return Inertia::render('Admin/LoginHistory');
+})->name('admin.login-history');
+
 // Settings
 Route::get('/admin/settings', function () {
     return Inertia::render('Admin/Settings');

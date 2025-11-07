@@ -14,91 +14,44 @@
           </div>
 
           <div class="flex items-center gap-3 flex-wrap">
-            <!-- Modern Dropdown Filter -->
-            <div class="relative">
-              <button @click="isFilterOpen = !isFilterOpen"
+            <div class="relative" data-filter-container>
+              <button @click="isFilterOpen = !isFilterOpen" data-filter-button
                 class="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 group min-w-[200px]">
                 <div class="flex items-center gap-2">
-                  <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+                  <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2"
+                    viewBox="0 0 24 24">
+                    <path
+                      d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z">
+                    </path>
                   </svg>
                   <span class="font-semibold text-gray-800">
                     {{ statusFilter === '' ? 'All Status' : statusFilter }}
                   </span>
                 </div>
-                <svg :class="['w-5 h-5 text-blue-600 transition-transform duration-300', isFilterOpen ? 'rotate-180' : '']"
+                <svg
+                  :class="['w-5 h-5 text-blue-600 transition-transform duration-300', isFilterOpen ? 'rotate-180' : '']"
                   fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                   <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
                 </svg>
               </button>
 
-              <!-- Dropdown Menu -->
-              <div v-if="isFilterOpen" class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10 overflow-hidden">
-                <div @click="statusFilter = ''; isFilterOpen = false"
-                  :class="[
-                    'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
-                    statusFilter === '' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
-                  ]">
-                  <span class="text-lg"></span>
+              <div v-if="isFilterOpen" data-filter-menu
+                class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10 overflow-hidden">
+                <div v-for="option in filterOptions" :key="option" @click="handleFilterSelect(option)" :class="[
+                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 last:border-b-0 hover:bg-blue-50',
+                  (option === '' && statusFilter === '') || (option !== '' && statusFilter === option) ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                ]">
                   <span :class="[
                     'font-medium',
-                    statusFilter === '' ? 'text-blue-700' : 'text-gray-700'
+                    (option === '' && statusFilter === '') || (option !== '' && statusFilter === option) ? 'text-blue-700' : 'text-gray-700'
                   ]">
-                    All Status
+                    {{ option === '' ? 'All Status' : option }}
                   </span>
-                  <svg v-if="statusFilter === ''" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-
-                <div @click="statusFilter = 'Approved'; isFilterOpen = false"
-                  :class="[
-                    'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
-                    statusFilter === 'Approved' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
-                  ]">
-                  <span class="text-lg"></span>
-                  <span :class="[
-                    'font-medium',
-                    statusFilter === 'Approved' ? 'text-blue-700' : 'text-gray-700'
-                  ]">
-                    Approved
-                  </span>
-                  <svg v-if="statusFilter === 'Approved'" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-
-                <div @click="statusFilter = 'Pending'; isFilterOpen = false"
-                  :class="[
-                    'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
-                    statusFilter === 'Pending' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
-                  ]">
-                  <span class="text-lg"></span>
-                  <span :class="[
-                    'font-medium',
-                    statusFilter === 'Pending' ? 'text-blue-700' : 'text-gray-700'
-                  ]">
-                    Pending
-                  </span>
-                  <svg v-if="statusFilter === 'Pending'" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-
-                <div @click="statusFilter = 'Rejected'; isFilterOpen = false"
-                  :class="[
-                    'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 hover:bg-blue-50',
-                    statusFilter === 'Rejected' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
-                  ]">
-                  <span class="text-lg"></span>
-                  <span :class="[
-                    'font-medium',
-                    statusFilter === 'Rejected' ? 'text-blue-700' : 'text-gray-700'
-                  ]">
-                    Rejected
-                  </span>
-                  <svg v-if="statusFilter === 'Rejected'" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                  <svg v-if="(option === '' && statusFilter === '') || (option !== '' && statusFilter === option)"
+                    class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clip-rule="evenodd"></path>
                   </svg>
                 </div>
               </div>
@@ -120,28 +73,42 @@
           <table class="w-full">
             <thead>
               <tr class="bg-gradient-to-r from-[#1E71B8] to-[#2a8bb5] text-white">
-                <th class="px-6 py-4 text-left text-sm font-semibold">Booking ID</th>
-                <th class="px-6 py-4 text-left text-sm font-semibold">Package ID</th>
-                <th class="px-6 py-4 text-left text-sm font-semibold">Customer Name</th>
-                <th class="px-6 py-4 text-left text-sm font-semibold">Status</th>
-                <th class="px-6 py-4 text-left text-sm font-semibold">Total Pax</th>
-                <th class="px-6 py-4 text-left text-sm font-semibold">Discount</th>
-                <th class="px-6 py-4 text-left text-sm font-semibold">Entry Date</th>
-                <th class="px-6 py-4 text-left text-sm font-semibold">Total Sum</th>
-                <th class="px-6 py-4 text-left text-sm font-semibold">Actions</th>
+                <th class="px-6 py-4 text-center text-sm font-semibold">Booking ID</th>
+                <th class="px-6 py-4 text-center text-sm font-semibold">Package ID</th>
+                <th class="px-6 py-4 text-center text-sm font-semibold">Customer Name</th>
+                <th class="px-6 py-4 text-center text-sm font-semibold">Status</th>
+                <th class="px-6 py-4 text-center text-sm font-semibold">Total Pax</th>
+                <th class="px-6 py-4 text-center text-sm font-semibold">Discount</th>
+                <th class="px-6 py-4 text-center text-sm font-semibold">Entry Date</th>
+                <th class="px-6 py-4 text-center text-sm font-semibold">Total Sum</th>
+                <th class="px-6 py-4 text-center text-sm font-semibold">Actions</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
+              <tr v-if="filteredBookings.length === 0">
+                <td colspan="9" class="px-6 py-12 text-center">
+                  <div class="flex flex-col items-center gap-3">
+                    <svg class="w-16 h-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div class="text-gray-500">
+                      <p class="text-lg font-semibold">No bookings found</p>
+                      <p class="text-sm">Try adjusting your search or filters</p>
+                    </div>
+                  </div>
+                </td>
+              </tr>
               <tr v-for="entry in filteredBookings" :key="entry.id" class="hover:bg-blue-50/50 transition-colors">
-                <td class="px-6 py-4 text-sm font-medium text-gray-900">
+                <td class="px-6 py-4 text-sm font-medium text-gray-900 text-center">
                   <span
                     class="inline-flex items-center px-2.5 py-1 rounded-lg bg-blue-100 text-[#1E71B8] font-semibold">
                     #{{ entry.id }}
                   </span>
                 </td>
-                <td class="px-6 py-4 text-sm text-gray-700">{{ entry.package_id }}</td>
-                <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ entry.customer_name }}</td>
-                <td class="px-6 py-4 text-sm">
+                <td class="px-6 py-4 text-sm text-gray-700 text-center">{{ entry.package_id }}</td>
+                <td class="px-6 py-4 text-sm font-medium text-gray-900 text-center">{{ entry.customer_name }}</td>
+                <td class="px-6 py-4 text-sm text-center">
                   <span :class="{
                     'bg-green-100 text-green-700': entry.status === 'Approved',
                     'bg-yellow-100 text-yellow-700': entry.status === 'Pending',
@@ -151,8 +118,8 @@
                     {{ entry.status }}
                   </span>
                 </td>
-                <td class="px-6 py-4 text-sm text-gray-700">{{ entry.total_quantity }}</td>
-                <td class="px-6 py-4 text-sm">
+                <td class="px-6 py-4 text-sm text-gray-700 text-center">{{ entry.total_quantity }}</td>
+                <td class="px-6 py-4 text-sm text-center">
                   <span v-if="entry.discount_images" class="inline-flex items-center gap-1 text-green-600 font-medium">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -162,13 +129,14 @@
                   </span>
                   <span v-else class="text-gray-500 font-medium">No</span>
                 </td>
-                <td class="px-6 py-4 text-sm text-gray-700">
+                <td class="px-6 py-4 text-sm text-gray-700 text-center">
                   {{ new Date(entry.created_at).toLocaleDateString('en-US', {
                     month: 'short', day: 'numeric', year: 'numeric'
                   }) }}
                 </td>
-                <td class="px-6 py-4 text-sm font-semibold text-gray-900">₱{{ formatNumber(entry.total_price) }}</td>
-                <td class="px-6 py-4 text-sm">
+                <td class="px-6 py-4 text-sm font-semibold text-gray-900 text-center">₱{{
+                  formatNumber(entry.total_price) }}</td>
+                <td class="px-6 py-4 text-sm text-center">
                   <button @click="openUpdateEntryModal(entry)"
                     class="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-[#1E71B8] to-[#2a8bb5] hover:from-[#2a8bb5] hover:to-[#1E71B8] text-white rounded-lg font-medium transition-all shadow hover:shadow-lg transform hover:-translate-y-0.5">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -188,8 +156,9 @@
         <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
           <div class="flex items-center justify-between">
             <p class="text-sm text-gray-700">
-              Showing <span class="font-semibold">1</span> to <span class="font-semibold">{{ filteredBookings.length
-              }}</span> of <span class="font-semibold">{{ filteredBookings.length }}</span> results
+              Showing <span class="font-semibold">{{ filteredBookings.length > 0 ? 1 : 0 }}</span> to <span
+                class="font-semibold">{{ filteredBookings.length
+                }}</span> of <span class="font-semibold">{{ filteredBookings.length }}</span> results
             </p>
             <div class="flex gap-2">
               <button
@@ -221,11 +190,11 @@ import AdminIndex from './AdminIndex.vue'
 import NewEntryModal from '@/Pages/Admin/components/NewEntryModal.vue'
 import UpdateEntryModal from '@/Pages/Admin/components/UpdateEntryModal.vue'
 import { api } from '../../api/api'
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, onBeforeUnmount } from 'vue'
 
 defineOptions({ layout: AdminIndex })
 
-const service = new api();
+const service = new api()
 const bookings = ref([])
 const showNewEntryModal = ref(false)
 const updateEntryModal = ref(false)
@@ -233,6 +202,8 @@ const selectedBooking = ref(null)
 const searchQuery = ref('')
 const statusFilter = ref('')
 const isFilterOpen = ref(false)
+
+const filterOptions = ['', 'Approved', 'Pending', 'Rejected']
 
 const filteredBookings = computed(() => {
   let filtered = bookings.value
@@ -256,7 +227,7 @@ const filteredBookings = computed(() => {
     })
   }
 
-  return filtered;
+  return filtered
 })
 
 const formatNumber = (num) => {
@@ -265,7 +236,7 @@ const formatNumber = (num) => {
 
 const fetchBookings = async () => {
   try {
-    const response = await service.getBookings();
+    const response = await service.getBookings()
     bookings.value = response.data
   } catch (error) {
     console.error('Error fetching bookings:', error)
@@ -295,7 +266,24 @@ const openUpdateEntryModal = (entry) => {
   updateEntryModal.value = true
 }
 
+const handleClickOutside = (event) => {
+  const filterContainer = document.querySelector('[data-filter-container]')
+  if (filterContainer && !filterContainer.contains(event.target)) {
+    isFilterOpen.value = false
+  }
+}
+
+const handleFilterSelect = (option) => {
+  statusFilter.value = option
+  isFilterOpen.value = false
+}
+
 onMounted(() => {
   fetchBookings()
+  document.addEventListener('click', handleClickOutside)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside)
 })
 </script>

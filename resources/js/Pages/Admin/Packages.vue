@@ -1,10 +1,8 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 p-8">
     <div class="max-w-[1800px] mx-auto">
-      <!-- Controls Section -->
       <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-          <!-- Search Bar -->
           <div class="relative flex-1 max-w-md">
             <svg class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none"
               stroke="currentColor" viewBox="0 0 24 24">
@@ -15,9 +13,7 @@
               class="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:border-[#1E71B8] focus:ring-2 focus:ring-[#1E71B8]/20 outline-none transition-all" />
           </div>
 
-          <!-- Filters and Actions -->
           <div class="flex items-center gap-3 flex-wrap">
-            <!-- Status Filter Dropdown -->
             <div class="relative">
               <button @click="handleFilterClick('status')"
                 class="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 min-w-[180px]">
@@ -31,47 +27,16 @@
                 </svg>
               </button>
 
-              <!-- Status Dropdown Menu -->
-              <div v-if="isStatusFilterOpen" @click.stop
+              <div v-if="isStatusFilterOpen"
                 class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10 overflow-hidden">
-                <div @click="selectedStatus = ''; closeAllFilters()" :class="[
-                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
-                  selectedStatus === '' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                <div v-for="option in statusOptions" :key="option" @click="handleStatusSelect(option)" :class="[
+                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 last:border-b-0 hover:bg-blue-50',
+                  selectedStatus === option ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
                 ]">
-                  <span :class="['font-medium', selectedStatus === '' ? 'text-blue-700' : 'text-gray-700']">
-                    All Status
+                  <span :class="['font-medium', selectedStatus === option ? 'text-blue-700' : 'text-gray-700']">
+                    {{ option === '' ? 'All Status' : option }}
                   </span>
-                  <svg v-if="selectedStatus === ''" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor"
-                    viewBox="0 0 20 20">
-                    <path fill-rule="evenodd"
-                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                      clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-
-                <div @click="selectedStatus = 'Active'; closeAllFilters()" :class="[
-                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
-                  selectedStatus === 'Active' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
-                ]">
-                  <span :class="['font-medium', selectedStatus === 'Active' ? 'text-blue-700' : 'text-gray-700']">
-                    Active
-                  </span>
-                  <svg v-if="selectedStatus === 'Active'" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor"
-                    viewBox="0 0 20 20">
-                    <path fill-rule="evenodd"
-                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                      clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-
-                <div @click="selectedStatus = 'Inactive'; closeAllFilters()" :class="[
-                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 hover:bg-blue-50',
-                  selectedStatus === 'Inactive' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
-                ]">
-                  <span :class="['font-medium', selectedStatus === 'Inactive' ? 'text-blue-700' : 'text-gray-700']">
-                    Inactive
-                  </span>
-                  <svg v-if="selectedStatus === 'Inactive'" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor"
+                  <svg v-if="selectedStatus === option" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor"
                     viewBox="0 0 20 20">
                     <path fill-rule="evenodd"
                       d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -81,13 +46,11 @@
               </div>
             </div>
 
-            <!-- Booking Type Filter Dropdown -->
             <div class="relative">
               <button @click="handleFilterClick('bookingType')"
                 class="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 min-w-[180px]">
                 <span class="font-semibold text-gray-800">
-                  {{ selectedBookingType === '' ? 'All Types' : selectedBookingType === 'exclusive' ? 'Exclusive' :
-                  'Joint' }}
+                  {{ selectedBookingType === '' ? 'All Types' : selectedBookingType === 'exclusive' ? 'Exclusive' : 'Joint' }}
                 </span>
                 <svg
                   :class="['w-5 h-5 text-blue-600 transition-transform duration-300', isBookingTypeFilterOpen ? 'rotate-180' : '']"
@@ -96,48 +59,16 @@
                 </svg>
               </button>
 
-              <!-- Booking Type Dropdown Menu -->
-              <div v-if="isBookingTypeFilterOpen" @click.stop
+              <div v-if="isBookingTypeFilterOpen"
                 class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10 overflow-hidden">
-                <div @click="selectedBookingType = ''; closeAllFilters()" :class="[
-                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
-                  selectedBookingType === '' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                <div v-for="option in bookingTypeOptions" :key="option" @click="handleBookingTypeSelect(option)" :class="[
+                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 last:border-b-0 hover:bg-blue-50',
+                  selectedBookingType === option ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
                 ]">
-                  <span :class="['font-medium', selectedBookingType === '' ? 'text-blue-700' : 'text-gray-700']">
-                    All Types
+                  <span :class="['font-medium', selectedBookingType === option ? 'text-blue-700' : 'text-gray-700']">
+                    {{ option === '' ? 'All Types' : option === 'exclusive' ? 'Exclusive' : 'Joint' }}
                   </span>
-                  <svg v-if="selectedBookingType === ''" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor"
-                    viewBox="0 0 20 20">
-                    <path fill-rule="evenodd"
-                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                      clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-
-                <div @click="selectedBookingType = 'exclusive'; closeAllFilters()" :class="[
-                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
-                  selectedBookingType === 'exclusive' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
-                ]">
-                  <span
-                    :class="['font-medium', selectedBookingType === 'exclusive' ? 'text-blue-700' : 'text-gray-700']">
-                    Exclusive
-                  </span>
-                  <svg v-if="selectedBookingType === 'exclusive'" class="w-5 h-5 text-blue-600 ml-auto"
-                    fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd"
-                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                      clip-rule="evenodd"></path>
-                  </svg>
-                </div>
-
-                <div @click="selectedBookingType = 'joint'; closeAllFilters()" :class="[
-                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 hover:bg-blue-50',
-                  selectedBookingType === 'joint' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
-                ]">
-                  <span :class="['font-medium', selectedBookingType === 'joint' ? 'text-blue-700' : 'text-gray-700']">
-                    Joint
-                  </span>
-                  <svg v-if="selectedBookingType === 'joint'" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor"
+                  <svg v-if="selectedBookingType === option" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor"
                     viewBox="0 0 20 20">
                     <path fill-rule="evenodd"
                       d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
@@ -147,7 +78,6 @@
               </div>
             </div>
 
-            <!-- Region Filter Dropdown -->
             <div class="relative">
               <button @click="handleFilterClick('region')"
                 class="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 min-w-[180px]">
@@ -161,11 +91,10 @@
                 </svg>
               </button>
 
-              <!-- Region Dropdown Menu -->
-              <div v-if="isRegionFilterOpen" @click.stop
+              <div v-if="isRegionFilterOpen"
                 class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10 overflow-hidden max-h-96 overflow-y-auto">
-                <div @click="selectedRegion = ''; closeAllFilters()" :class="[
-                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50 sticky top-0 bg-white',
+                <div @click="handleRegionSelect('')" :class="[
+                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 sticky top-0 bg-white hover:bg-blue-50',
                   selectedRegion === '' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
                 ]">
                   <span :class="['font-medium', selectedRegion === '' ? 'text-blue-700' : 'text-gray-700']">
@@ -179,11 +108,10 @@
                   </svg>
                 </div>
 
-                <div v-for="region in uniqueRegions" :key="region" @click="selectedRegion = region; closeAllFilters()"
-                  :class="[
-                    'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50 last:border-b-0',
-                    selectedRegion === region ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
-                  ]">
+                <div v-for="region in uniqueRegions" :key="region" @click="handleRegionSelect(region)" :class="[
+                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 last:border-b-0 hover:bg-blue-50',
+                  selectedRegion === region ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                ]">
                   <span :class="['font-medium', selectedRegion === region ? 'text-blue-700' : 'text-gray-700']">
                     {{ region }}
                   </span>
@@ -197,7 +125,6 @@
               </div>
             </div>
 
-            <!-- Add New Package Button -->
             <button @click="createNewPackage"
               class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#1E71B8] to-[#2a8bb5] hover:from-[#2a8bb5] hover:to-[#1E71B8] text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -209,52 +136,47 @@
         </div>
       </div>
 
-      <!-- Table Card -->
       <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
         <div v-if="filteredPackages.length > 0" class="overflow-x-auto">
           <table class="w-full">
             <thead>
               <tr class="bg-gradient-to-r from-[#1E71B8] to-[#2a8bb5] text-white">
-                <th class="px-6 py-4 text-left text-sm font-semibold whitespace-nowrap">Package ID</th>
-                <th class="px-6 py-4 text-left text-sm font-semibold whitespace-nowrap">Package Name</th>
-                <th class="px-6 py-4 text-left text-sm font-semibold whitespace-nowrap">Destination</th>
-                <th class="px-6 py-4 text-left text-sm font-semibold whitespace-nowrap">Region</th>
-                <th class="px-6 py-4 text-left text-sm font-semibold whitespace-nowrap">Max Occupancy</th>
-                <th class="px-6 py-4 text-left text-sm font-semibold whitespace-nowrap">Booking Type</th>
-                <th class="px-6 py-4 text-left text-sm font-semibold whitespace-nowrap">Duration</th>
-                <th class="px-6 py-4 text-left text-sm font-semibold whitespace-nowrap">Status</th>
-                <th class="px-6 py-4 text-left text-sm font-semibold whitespace-nowrap">Base Price</th>
-                <th class="px-6 py-4 text-left text-sm font-semibold whitespace-nowrap">Kids Price</th>
-                <th class="px-6 py-4 text-left text-sm font-semibold whitespace-nowrap">Actions</th>
+                <th class="px-6 py-4 text-center text-sm font-semibold whitespace-nowrap">Package ID</th>
+                <th class="px-6 py-4 text-center text-sm font-semibold whitespace-nowrap">Package Name</th>
+                <th class="px-6 py-4 text-center text-sm font-semibold whitespace-nowrap">Destination</th>
+                <th class="px-6 py-4 text-center text-sm font-semibold whitespace-nowrap">Region</th>
+                <th class="px-6 py-4 text-center text-sm font-semibold whitespace-nowrap">Max Occupancy</th>
+                <th class="px-6 py-4 text-center text-sm font-semibold whitespace-nowrap">Booking Type</th>
+                <th class="px-6 py-4 text-center text-sm font-semibold whitespace-nowrap">Duration</th>
+                <th class="px-6 py-4 text-center text-sm font-semibold whitespace-nowrap">Status</th>
+                <th class="px-6 py-4 text-center text-sm font-semibold whitespace-nowrap">Base Price</th>
+                <th class="px-6 py-4 text-center text-sm font-semibold whitespace-nowrap">Kids Price</th>
+                <th class="px-6 py-4 text-center text-sm font-semibold whitespace-nowrap">Actions</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
               <tr v-for="packageItem in paginatedPackages" :key="packageItem.id"
                 class="hover:bg-blue-50/50 transition-colors">
-                <td class="px-6 py-4 text-sm font-medium text-gray-900">
+                <td class="px-6 py-4 text-sm font-medium text-gray-900 text-center">
                   <span
                     class="inline-flex items-center px-2.5 py-1 rounded-lg bg-blue-100 text-[#1E71B8] font-semibold">
                     #{{ packageItem.id }}
                   </span>
                 </td>
-                <td class="px-6 py-4 text-sm font-semibold text-gray-900 whitespace-nowrap">
+                <td class="px-6 py-4 text-sm font-semibold text-gray-900 whitespace-nowrap text-center">
                   {{ packageItem.package_name }}
                 </td>
-                <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">
+                <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap text-center">
                   <span class="inline-flex items-center gap-1.5">
-                    <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 24 24">
-                      <path
-                        d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                    </svg>
                     {{ packageItem.destination }}
                   </span>
                 </td>
-                <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">
+                <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap text-center">
                   <span class="px-2.5 py-1 rounded-lg bg-purple-100 text-purple-700 font-medium">
                     {{ packageItem.region }}
                   </span>
                 </td>
-                <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">
+                <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap text-center">
                   <span class="inline-flex items-center gap-1.5">
                     <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -263,7 +185,7 @@
                     {{ packageItem.capacity }}
                   </span>
                 </td>
-                <td class="px-6 py-4 text-sm whitespace-nowrap">
+                <td class="px-6 py-4 text-sm whitespace-nowrap text-center">
                   <span :class="{
                     'bg-blue-100 text-blue-700': !packageItem.joint_booking,
                     'bg-indigo-100 text-indigo-700': packageItem.joint_booking
@@ -271,7 +193,7 @@
                     {{ packageItem.joint_booking ? 'Joint' : 'Exclusive' }}
                   </span>
                 </td>
-                <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap">
+                <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap text-center">
                   <span class="inline-flex items-center gap-1.5">
                     <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -280,7 +202,7 @@
                     {{ packageItem.tour_duration }}
                   </span>
                 </td>
-                <td class="px-6 py-4 text-sm whitespace-nowrap">
+                <td class="px-6 py-4 text-sm whitespace-nowrap text-center">
                   <span :class="{
                     'bg-green-100 text-green-700': packageItem.status === 'Active',
                     'bg-gray-100 text-gray-700': packageItem.status === 'Inactive'
@@ -288,13 +210,13 @@
                     {{ packageItem.status }}
                   </span>
                 </td>
-                <td class="px-6 py-4 text-sm font-semibold text-gray-900 whitespace-nowrap">
+                <td class="px-6 py-4 text-sm font-semibold text-gray-900 whitespace-nowrap text-center">
                   ₱{{ Number(packageItem.pax_rate).toLocaleString() }}
                 </td>
-                <td class="px-6 py-4 text-sm font-semibold text-gray-900 whitespace-nowrap">
+                <td class="px-6 py-4 text-sm font-semibold text-gray-900 whitespace-nowrap text-center">
                   ₱{{ Number(packageItem.kids_pax_rate).toLocaleString() }}
                 </td>
-                <td class="px-6 py-4 text-sm whitespace-nowrap">
+                <td class="px-6 py-4 text-sm whitespace-nowrap text-center">
                   <button @click="openEditModal(packageItem.id)"
                     class="p-2 hover:bg-[#1E71B8] hover:text-white rounded-lg transition-all group" title="Edit">
                     <svg class="w-5 h-5 text-[#1E71B8] group-hover:text-white transition-colors" fill="none"
@@ -309,7 +231,6 @@
           </table>
         </div>
 
-        <!-- No Results -->
         <div v-else class="py-16 text-center">
           <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -323,12 +244,10 @@
           </button>
         </div>
 
-        <!-- Pagination -->
         <div v-if="filteredPackages.length > 0" class="bg-gray-50 px-6 py-4 border-t border-gray-200">
           <div class="flex items-center justify-between">
             <p class="text-sm text-gray-700">
-              Showing <span class="font-semibold">{{ startIndex + 1 }}</span> to <span class="font-semibold">{{ endIndex
-              }}</span> of <span class="font-semibold">{{ filteredPackages.length }}</span> results
+              Showing <span class="font-semibold">{{ startIndex + 1 }}</span> to <span class="font-semibold">{{ endIndex }}</span> of <span class="font-semibold">{{ filteredPackages.length }}</span> results
             </p>
             <div class="flex gap-2">
               <button @click="previousPage" :disabled="currentPage === 1"
@@ -353,7 +272,6 @@
       </div>
     </div>
 
-    <!-- Modals -->
     <NewPackageModal :show="showModal" @close="showModal = false" @save="handleSavePackage" />
 
     <EditPackageModal :show="showEditModal" :packageId="selectedPackageId"
