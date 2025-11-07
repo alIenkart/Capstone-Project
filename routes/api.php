@@ -9,7 +9,8 @@ use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\InquiryController;
 use App\Http\Controllers\Api\FeedbackController;
-use App\Models\Feedback;
+use App\Http\Controllers\Api\ContentController;
+use App\Http\Controllers\Api\TravelBlogController;
 
 Route::middleware('api')->group(function () {
 
@@ -22,4 +23,11 @@ Route::middleware('api')->group(function () {
     Route::apiResource('payments', PaymentController::class);
     Route::apiResource('inquiries', InquiryController::class);
     Route::apiResource('feedbacks', FeedbackController::class);
+
+    Route::apiResource('contents', ContentController::class);
+    Route::post('contents/{content}/upload-image', [ContentController::class, 'uploadImage']);
+
+    // Travel Blogs
+    Route::apiResource('travel-blogs', TravelBlogController::class);
+    Route::post('travel-blogs/{travel_blog}/upload-image', [TravelBlogController::class, 'uploadImage']);
 });

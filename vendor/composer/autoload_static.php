@@ -561,6 +561,7 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
 
     public static $classMap = array (
         'App\\Http\\Controllers\\Api\\BookingController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/BookingController.php',
+        'App\\Http\\Controllers\\Api\\ContentController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/ContentController.php',
         'App\\Http\\Controllers\\Api\\FeedbackController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/FeedbackController.php',
         'App\\Http\\Controllers\\Api\\InquiryController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/InquiryController.php',
         'App\\Http\\Controllers\\Api\\PackagesController' => __DIR__ . '/../..' . '/app/Http/Controllers/Api/PackagesController.php',
@@ -585,6 +586,7 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
         'App\\Http\\Resources\\PaymentResource' => __DIR__ . '/../..' . '/app/Http/Resources/PaymentResource.php',
         'App\\Mail\\BookingRejected' => __DIR__ . '/../..' . '/app/Mail/BookingRejected.php',
         'App\\Models\\Booking' => __DIR__ . '/../..' . '/app/Models/Booking.php',
+        'App\\Models\\Content' => __DIR__ . '/../..' . '/app/Models/Content.php',
         'App\\Models\\Discount' => __DIR__ . '/../..' . '/app/Models/Discount.php',
         'App\\Models\\Feedback' => __DIR__ . '/../..' . '/app/Models/Feedback.php',
         'App\\Models\\Gallery' => __DIR__ . '/../..' . '/app/Models/Gallery.php',

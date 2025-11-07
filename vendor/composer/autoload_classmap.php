@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'App\\Http\\Controllers\\Api\\BookingController' => $baseDir . '/app/Http/Controllers/Api/BookingController.php',
+    'App\\Http\\Controllers\\Api\\ContentController' => $baseDir . '/app/Http/Controllers/Api/ContentController.php',
     'App\\Http\\Controllers\\Api\\FeedbackController' => $baseDir . '/app/Http/Controllers/Api/FeedbackController.php',
     'App\\Http\\Controllers\\Api\\InquiryController' => $baseDir . '/app/Http/Controllers/Api/InquiryController.php',
     'App\\Http\\Controllers\\Api\\PackagesController' => $baseDir . '/app/Http/Controllers/Api/PackagesController.php',
@@ -31,6 +32,7 @@ return array(
     'App\\Http\\Resources\\PaymentResource' => $baseDir . '/app/Http/Resources/PaymentResource.php',
     'App\\Mail\\BookingRejected' => $baseDir . '/app/Mail/BookingRejected.php',
     'App\\Models\\Booking' => $baseDir . '/app/Models/Booking.php',
+    'App\\Models\\Content' => $baseDir . '/app/Models/Content.php',
     'App\\Models\\Discount' => $baseDir . '/app/Models/Discount.php',
     'App\\Models\\Feedback' => $baseDir . '/app/Models/Feedback.php',
     'App\\Models\\Gallery' => $baseDir . '/app/Models/Gallery.php',

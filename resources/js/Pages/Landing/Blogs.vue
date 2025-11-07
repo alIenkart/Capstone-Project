@@ -1,6 +1,5 @@
 <template>
     <div class="min-h-screen bg-white">
-        <!-- Hero Section -->
         <section class="relative h-[60vh] min-h-[400px] flex items-center justify-center overflow-hidden">
             <div class="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed"
                 style="background-image: url('/storage/travel-blogs/Header.jpg'); background-size: 100% 100%;">
@@ -14,7 +13,6 @@
             </div>
         </section>
 
-        <!-- First Slider -->
         <section class="mt-12 py-2.5 overflow-hidden" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
             <div class="relative w-full h-[30vh] min-h-[200px] overflow-hidden">
                 <div class="slider-track flex gap-5 h-full w-fit" ref="sliderRef">
@@ -25,7 +23,6 @@
             </div>
         </section>
 
-        <!-- Blog Grid Section -->
         <section class="py-20 bg-white">
             <div class="max-w-7xl mx-auto px-5">
                 <h2 class="text-3xl font-bold text-gray-800 mb-4 text-center">Blogs</h2>
@@ -33,20 +30,14 @@
                     <div v-for="post in visiblePosts" :key="post.id"
                         class="bg-white rounded-xl overflow-hidden shadow-lg transition-all duration-300 cursor-pointer hover:-translate-y-2 hover:shadow-2xl">
                         <div class="relative h-[250px] overflow-hidden">
-                            <img :src="post.image" :alt="post.title"
+                            <img v-if="post.image" :src="post.image" alt="Thumbnail"
                                 class="w-full h-full object-cover transition-transform duration-300 hover:scale-105" />
-                            <div class="absolute top-4 left-4 z-[2]">
-                                <span
-                                    class="bg-blue-500/90 text-white px-3 py-1.5 rounded-full text-xs font-semibold uppercase tracking-wide">
-                                    {{ post.category }}
-                                </span>
-                            </div>
                         </div>
                         <div class="p-6">
                             <h3 class="text-xl font-bold text-gray-800 mb-3 leading-tight">{{ post.title }}</h3>
-                            <p class="text-gray-600 text-sm leading-relaxed mb-4">{{ post.description }}</p>
+                            <p class="text-gray-600 text-sm leading-relaxed mb-4">{{ post.excerpt }}</p>
                             <div class="flex items-center justify-between">
-                                <span class="text-gray-400 text-xs font-medium">{{ post.date }}</span>
+                                <span class="text-gray-400 text-xs font-medium">Author: {{ post.author }}</span>
                             </div>
                         </div>
                     </div>
@@ -61,7 +52,6 @@
             </div>
         </section>
 
-        <!-- Testimonials Section -->
         <section class="py-20 bg-gradient-to-br from-gray-50 to-white border-t border-gray-200">
             <div class="max-w-7xl mx-auto px-5">
                 <h2 class="text-4xl font-bold text-gray-800 mb-2 text-center">Traveler Reviews & Feedback</h2>
@@ -74,7 +64,6 @@
                         class="bg-white rounded-2xl shadow-lg overflow-hidden border-t-4 transition-all duration-300 hover:shadow-xl"
                         :class="review.is_public ? 'border-green-500' : 'border-yellow-500'">
                         <div class="p-6">
-                            <!-- Header -->
                             <div class="flex justify-between items-start mb-4">
                                 <div class="flex items-center">
                                     <div
@@ -91,7 +80,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Stars -->
                                 <div class="flex items-center space-x-1">
                                     <template v-for="n in 5" :key="review.id + '-star-' + n">
                                         <svg class="w-5 h-5"
@@ -112,7 +100,6 @@
                     </div>
                 </div>
 
-                <!-- Empty State -->
                 <div v-else class="py-12 text-center bg-white rounded-2xl shadow-lg mb-8">
                     <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24">
@@ -123,7 +110,6 @@
                     <p class="text-gray-500">Try adjusting your search or filter criteria.</p>
                 </div>
 
-                <!-- Add Review Form -->
                 <div class="bg-white p-8 rounded-2xl shadow-lg">
                     <h3 class="text-2xl font-bold text-gray-800 mb-2">Share Your Experience</h3>
                     <p class="text-gray-600 mb-6">
@@ -133,7 +119,6 @@
                     </p>
 
                     <div class="border-t border-gray-200 pt-6">
-                        <!-- Rating -->
                         <div class="mb-4">
                             <label class="block text-gray-700 font-medium mb-3">Your Rating</label>
                             <div class="flex gap-3">
@@ -151,7 +136,6 @@
                             </div>
                         </div>
 
-                        <!-- Comment -->
                         <div class="mb-6">
                             <label class="block text-gray-700 font-medium mb-2">Your Comment</label>
                             <textarea v-model="newTestimonial.comment" rows="4" placeholder="Share your thoughts..."
@@ -178,21 +162,16 @@ import { useToast } from 'vue-toastification'
 
 defineOptions({ layout: LandingIndex })
 
-// Slider refs
-const page = usePage();
+const page = usePage()
 const toast = useToast()
 const isSubmitting = ref(false)
 const sliderRef = ref(null)
 const isPaused = ref(false)
-const service = new api();
+const service = new api()
 const feedback = ref()
 const users = ref()
-
-// Pagination for blog posts
 const visiblePostsCount = ref(4)
 const postsPerLoad = 4
-
-// Background images for sliders
 const backgroundImages = [
     '/storage/travel-blogs/travel-slider/Slider1.jpg',
     '/storage/travel-blogs/travel-slider/Slider2.jpg',
@@ -201,113 +180,43 @@ const backgroundImages = [
     '/storage/travel-blogs/travel-slider/Slider5.jpg',
     '/storage/travel-blogs/travel-slider/Slider6.jpg'
 ]
-
-// Infinite loop images
 const infiniteImages = [...backgroundImages, ...backgroundImages, ...backgroundImages]
-
-// Pause/Resume functions
 const handleMouseEnter = () => {
     isPaused.value = true
     if (sliderRef.value) sliderRef.value.style.animationPlayState = 'paused'
 }
-
 const handleMouseLeave = () => {
     isPaused.value = false
     if (sliderRef.value) sliderRef.value.style.animationPlayState = 'running'
 }
-
-const blogPosts = [
-    {
-        id: 1,
-        title: "Lorem ipsum dolor sit amet",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        image: "/storage/travel-blogs/blogs/Blog1.jpg",
-        category: "Nature",
-        date: "2024-01-15"
-    },
-    {
-        id: 2,
-        title: "Lorem ipsum dolor sit amet",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        image: "/storage/travel-blogs/blogs/Blog2.jpg",
-        category: "Nature",
-        date: "2024-01-12"
-    },
-    {
-        id: 3,
-        title: "Lorem ipsum dolor sit amet",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        image: "/storage/travel-blogs/blogs/Blog3.jpg",
-        category: "Nature",
-        date: "2024-01-10"
-    },
-    {
-        id: 4,
-        title: "Lorem ipsum dolor sit amet",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        image: "/storage/travel-blogs/blogs/Blog3.jpg",
-        category: "Nature",
-        date: "2024-01-10"
-    },
-    {
-        id: 5,
-        title: "Lorem ipsum dolor sit amet",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        image: "/storage/travel-blogs/blogs/Blog3.jpg",
-        category: "Nature",
-        date: "2024-01-10"
-    },
-    {
-        id: 6,
-        title: "Lorem ipsum dolor sit amet",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        image: "/storage/travel-blogs/blogs/Blog3.jpg",
-        category: "Nature",
-        date: "2024-01-10"
-    },
-    {
-        id: 7,
-        title: "Lorem ipsum dolor sit amet",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        image: "/storage/travel-blogs/blogs/Blog3.jpg",
-        category: "Nature",
-        date: "2024-01-10"
-    },
-    {
-        id: 8,
-        title: "Lorem ipsum dolor sit amet",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        image: "/storage/travel-blogs/blogs/Blog3.jpg",
-        category: "Nature",
-        date: "2024-01-10"
-    },
-]
-
-// Computed properties
-const visiblePosts = computed(() => blogPosts.slice(0, visiblePostsCount.value))
-const hasMorePosts = computed(() => visiblePostsCount.value < blogPosts.length)
-const loadMorePosts = () => visiblePostsCount.value += postsPerLoad
-
-// Testimonials filters
-const searchQuery = ref('')
-const selectedRating = ref('')
-const selectedStatus = ref('')
-
-// Testimonials data with enhanced properties
-const testimonials = ref([]);
-
+const blogPosts = ref([])
+const visiblePosts = computed(() => blogPosts.value.slice(0, visiblePostsCount.value))
+const hasMorePosts = computed(() => visiblePostsCount.value < blogPosts.value.length)
+const loadMorePosts = () => {
+    visiblePostsCount.value += postsPerLoad
+}
+const testimonials = ref([])
+const getImageUrl = (path) => path ? `${window.location.origin}/storage/${path}` : ''
+const loadTravelBlogs = async () => {
+    try {
+        const response = await service.getTravelBlogs()
+        blogPosts.value = response.data.map(blog => ({
+            ...blog,
+            image: getImageUrl(blog.image)
+        }))
+    } catch (err) {
+        console.error('Failed to load travel blogs', err)
+    }
+}
 const loadTestimonials = async () => {
     try {
-        const responseFeedbacks = await service.getFeedbacks();
-        const responseGetAllUsers = await service.getUsers();
-
-        feedback.value = responseFeedbacks.data;
-        users.value = responseGetAllUsers.data.data;
-
+        const responseFeedbacks = await service.getFeedbacks()
+        const responseGetAllUsers = await service.getUsers()
+        feedback.value = responseFeedbacks.data
+        users.value = responseGetAllUsers.data.data
         if (Array.isArray(feedback.value)) {
-            const apiTestimonials = feedback.value.map(item => {
-                const user = users.value.find(u => u.id === item.user_id);
-
+            testimonials.value = feedback.value.map(item => {
+                const user = users.value.find(u => u.id === item.user_id)
                 return {
                     id: item.id,
                     name: user ? `${user.first_name} ${user.last_name ? user.last_name.charAt(0).toUpperCase() + '.' : ''}` : 'Anonymous Traveler',
@@ -316,56 +225,39 @@ const loadTestimonials = async () => {
                     date: item.created_at
                         ? new Date(item.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
                         : 'Recently',
-                    is_public: item.visibility === '0' ? false : true
+                    is_public: item.visibility !== '0'
                 }
             })
-
-            testimonials.value = [...apiTestimonials];
         } else {
-            testimonials.value = [];
+            testimonials.value = []
         }
     } catch (error) {
-        console.error("Error loading testimonials:", error);
+        console.error("Error loading testimonials:", error)
     }
 }
-
-
-// Filtered reviews computed property
 const filteredReviews = computed(() => {
-    let reviews = testimonials.value
-        .filter(t => t.is_public !== false)
+    return testimonials.value
+        .filter(t => t.is_public)
         .map((t, index) => ({
             id: index,
             name: t.name,
             date: t.date || 'Recently',
             rating: t.rating,
             comment: t.comment,
-            is_public: t.is_public !== false
+            is_public: t.is_public
         }))
-
-    return reviews;
 })
-
-// New testimonial
 const newTestimonial = ref({
     user_id: page.props?.auth?.user?.id,
     rating: 0,
     comment: ""
 })
-
-// Submit testimonial
 const submitTestimonial = async () => {
-    if (
-        !newTestimonial.value.user_id ||
-        !newTestimonial.value.comment ||
-        newTestimonial.value.rating === 0
-    ) {
+    if (!newTestimonial.value.user_id || !newTestimonial.value.comment || newTestimonial.value.rating === 0) {
         toast.warning("Please complete all fields before submitting.")
         return
     }
-
     isSubmitting.value = true
-
     try {
         const testimonialData = {
             user_id: newTestimonial.value.user_id,
@@ -373,7 +265,6 @@ const submitTestimonial = async () => {
             message: newTestimonial.value.comment,
             visibility: false
         }
-
         const response = await fetch('/api/feedbacks', {
             method: 'POST',
             headers: {
@@ -382,46 +273,33 @@ const submitTestimonial = async () => {
             },
             body: JSON.stringify(testimonialData)
         })
-
         if (!response.ok) {
             const err = await response.json()
-            console.error("Server error:", err)
             throw new Error(err.message || 'Failed to submit testimonial')
         }
-
         const result = await response.json()
-
-        // Add the new testimonial locally
         testimonials.value.unshift({
             id: result.data.id,
             name: page.props?.auth?.user?.name || 'Anonymous Traveler',
             rating: testimonialData.rate,
             comment: testimonialData.message,
-            date: new Date().toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            })
+            date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
         })
-
-        // Reset form
         newTestimonial.value = {
             user_id: page.props?.auth?.user?.id,
             rating: 0,
             comment: ""
         }
-
         toast.success("Thank you for your feedback!")
     } catch (error) {
-        console.error('Error submitting testimonial:', error)
         toast.error("There was an error submitting your feedback. Please try again.")
     } finally {
         isSubmitting.value = false
     }
 }
-
 onMounted(() => {
     loadTestimonials()
+    loadTravelBlogs()
 })
 </script>
 
@@ -462,7 +340,6 @@ onMounted(() => {
     overflow: hidden;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
 
     .slider-track,
