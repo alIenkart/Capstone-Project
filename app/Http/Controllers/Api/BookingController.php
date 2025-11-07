@@ -33,7 +33,16 @@ class BookingController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $data = $request->all();
+
+        if ($request->has('itinerary') && is_string($request->itinerary)) {
+            $decoded = json_decode($request->itinerary, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $data['itinerary'] = $decoded;
+            }
+        }
+
+        $validated = validator($data, [
             'package_id' => 'required|exists:packages,id',
             'customer_name' => 'required|string|max:255',
             'customer_id' => 'required|exists:users,id',
@@ -44,14 +53,19 @@ class BookingController extends Controller
             'remarks' => 'nullable|string|max:1000',
             'id_type' => 'nullable|string|max:255',
             'discount_id_image' => 'nullable|file|mimes:jpeg,png,jpg,gif,pdf|max:2048',
-            
+
             // Package details
             'package_destination' => 'nullable|string|max:255',
             'tour_type' => 'nullable|string|max:255',
             'duration' => 'nullable|integer|min:1',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date',
-            
+
+            // Itinerary (array of objects)
+            'itinerary' => 'nullable|array',
+            'itinerary.*.id' => 'nullable|integer',
+            'itinerary.*.content' => 'required|string|max:2000',
+
             // Pricing details
             'adults_quantity' => 'nullable|integer|min:0',
             'kids_quantity' => 'nullable|integer|min:0',
@@ -60,12 +74,12 @@ class BookingController extends Controller
             'adult_total_amount' => 'nullable|numeric|min:0',
             'kids_total_amount' => 'nullable|numeric|min:0',
             'original_amount' => 'nullable|numeric|min:0',
-            
+
             // Customer contact details
             'customer_email' => 'nullable|email|max:255',
             'customer_phone' => 'nullable|string|max:255',
             'customer_address' => 'nullable|string|max:500',
-        ]);
+        ])->validate();
 
         // Handle single discount ID image upload
         if ($request->hasFile('discount_id_image')) {

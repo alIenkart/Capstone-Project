@@ -114,7 +114,7 @@ async function postBooking() {
     phone_number: phone_number.value,
     address: address.value
   })
-
+  console.log("🚀 ~ postBooking ~ booking.itinerary:", booking.itinerary)
   // Use FormData to send file
   const formData = new FormData();
   formData.append('package_id', booking.packageId);
@@ -132,6 +132,7 @@ async function postBooking() {
   formData.append('duration', booking.duration);
   formData.append('start_date', booking.startDate);
   formData.append('end_date', booking.endDate);
+  formData.append('itinerary', JSON.stringify(booking.itinerary));
   
   // Pricing details
   formData.append('adults_quantity', booking.adultsQuantity);

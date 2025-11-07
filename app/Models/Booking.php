@@ -33,6 +33,7 @@ class Booking extends Model
         'duration',
         'start_date',
         'end_date',
+        'itinerary',
         
         // Pricing details
         'adults_quantity',
@@ -53,6 +54,7 @@ class Booking extends Model
         'created_at' => 'datetime',
         'approved_at' => 'datetime',
         'travel_date' => 'datetime',
+        'itinerary' => 'array',
     ];
 
     public function package()

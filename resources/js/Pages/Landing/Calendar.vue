@@ -423,6 +423,7 @@ function postDate() {
     return
   }
 
+  booking.reset();
   booking.tourType = tourType.value
   booking.tourClassification = tourClassification.value
 
@@ -445,6 +446,9 @@ function postDate() {
     startDate: selectedDate.value,
     endDate: endDate,
   })
+
+  booking.setTourType(booking.tourType);
+  booking.setTourClassification(booking.tourClassification);
   emit('next')
 }
 

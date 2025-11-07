@@ -366,6 +366,84 @@
               </div>
               <p class="text-gray-400 text-xs mt-2">* Maximum of 3 Discount ID Upload</p>
             </div>
+
+            <div class="mt-6">
+              <div class="flex w-full mb-6 items-center justify-between">
+                <h2 class="text-2xl font-bold text-[#1E71B8] tracking-tight">Itinerary</h2>
+
+                <div v-if="isExclusiveTour" class="flex items-center gap-3">
+                  <button
+                    @click="toggleCustomize"
+                    class="px-5 py-2.5 rounded-xl text-white font-medium transition-all duration-300"
+                    :class="isEditingItinerary
+                      ? 'bg-[#73BE5D] hover:bg-[#5AA449]'
+                      : 'bg-[#1E71B8] hover:bg-[#155E9C]'">
+                    {{ isEditingItinerary ? 'Save Customization' : 'Customize' }}
+                  </button>
+
+                  <div v-if="isEditingItinerary" class="relative group flex items-center gap-3">
+                    <button
+                      @click="addNewDay"
+                      :disabled="editableItinerary.length >= durationDays"
+                      class="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl shadow-md
+                             bg-[#1E71B8] text-white transition-all duration-200
+                             hover:bg-[#155E9C] disabled:bg-gray-300 disabled:text-gray-700 disabled:cursor-not-allowed">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                      </svg>
+                      Add Day
+                    </button>
+
+                    <div v-if="editableItinerary.length >= durationDays"
+                      class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max bg-gray-800 text-white
+                             text-xs px-3 py-1.5 rounded-lg shadow-lg opacity-0 pointer-events-none
+                             group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+                      {{
+                        durationDays === 0
+                          ? 'Please select your start and end dates first.'
+                          : 'You\'ve reached the maximum number of days allowed by your booking.'
+                      }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div v-if="itineraryDays.length === 0"
+                class="w-full rounded-2xl border border-gray-200 bg-white p-6 text-center text-gray-500 italic shadow-sm">
+                No itinerary available yet.
+              </div>
+
+              <div v-else class="grid gap-6">
+                <div
+                  v-for="(day, index) in isEditingItinerary ? editableItinerary : itineraryDays"
+                  :key="day.id"
+                  class="w-full rounded-2xl bg-gradient-to-br from-white to-[#f9fcff] border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300">
+                  <div class="px-6 py-4 border-b border-gray-100 bg-[#f8fbff] rounded-t-2xl flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-[#1E71B8] tracking-wide">Day {{ day.id }}</h3>
+                    <button
+                      v-if="isEditingItinerary"
+                      @click="removeDay(index)"
+                      class="text-red-500 hover:text-red-600 text-sm font-semibold flex items-center gap-1 transition">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                      Remove
+                    </button>
+                  </div>
+                  <div class="px-6 py-5 text-gray-700 leading-relaxed whitespace-pre-wrap text-[15px]">
+                    <template v-if="isEditingItinerary">
+                      <textarea
+                        v-model="editableItinerary[index].content"
+                        rows="5"
+                        class="w-full p-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1E71B8]"></textarea>
+                    </template>
+                    <template v-else>
+                      {{ day.content }}
+                    </template>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div class="bg-gradient-to-br from-[#1E71B8] via-[#2980c9] to-[#1E71B8] rounded-3xl p-8 flex flex-col justify-between min-h-[500px] shadow-2xl relative overflow-hidden">
@@ -463,7 +541,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, onBeforeUnmount } from 'vue'
+import { ref, onMounted, computed, onBeforeUnmount, watch } from 'vue'
 import { api } from '../../../api/api'
 import { useToast } from 'vue-toastification'
 
@@ -475,8 +553,8 @@ const currentStep = ref(0)
 const stepTitles = ['Booking Info', 'Select Date', 'Reservation Details']
 const packages = ref([])
 const selectedPackage = ref('')
-const pax = ref(1)
-const kidsPax = ref(1)
+const pax = ref(0)
+const kidsPax = ref(0)
 const customerName = ref('')
 const voucherCode = ref('')
 const selectedDate = ref('')
@@ -490,6 +568,11 @@ const currentYear = ref(currentDate.getFullYear())
 const isPackageOpen = ref(false)
 const isTypeOpen = ref(false)
 const isClassOpen = ref(false)
+const isTooltipOpen = ref(false)
+const tooltipX = ref(0)
+const tooltipY = ref(0)
+const tooltipData = ref({})
+const tourInfoByDate = ref({})
 
 const tourType = ref('Joiners')
 const tourTypes = ['Joiners', 'Exclusive']
@@ -499,6 +582,12 @@ const tourClassifications = ref([])
 const packageDropdownRef = ref(null)
 const typeDropdownRef = ref(null)
 const classDropdownRef = ref(null)
+const calendarWrapperRef = ref(null)
+const tooltipRef = ref(null)
+
+const isEditingItinerary = ref(false)
+const editableItinerary = ref([])
+const customItinerary = ref([])
 
 const availabilityByDate = ref({
   '2025-01-10': 'accepting',
@@ -541,6 +630,10 @@ const durationDays = computed(() => {
   const days = Math.floor(diffMs / (1000 * 60 * 60 * 24)) + 1
   return days > 0 ? days : 0
 })
+
+const isExclusiveTour = computed(() =>
+  tourType.value?.toLowerCase() === 'exclusive'
+)
 
 const monthName = computed(() =>
   new Date(currentYear.value, currentMonthIndex.value, 1).toLocaleString('default', { month: 'long' })
@@ -592,6 +685,92 @@ const calendarDays = computed(() => {
   }
   return grid
 })
+
+const parseItineraryToDays = (itineraryString) => {
+  if (typeof itineraryString === 'object' && itineraryString !== null) {
+    return Object.entries(itineraryString).map(([key, value], index) => ({
+      id: index + 1,
+      content: value || ''
+    }))
+  }
+  if (typeof itineraryString !== 'string' || itineraryString.trim() === '') {
+    return [{ id: 1, content: '' }]
+  }
+  const dayPattern = /Day\s+\d+:/gi
+  const dayMatches = [...itineraryString.matchAll(dayPattern)]
+  if (dayMatches.length > 0) {
+    const days = []
+    dayMatches.forEach((match, index) => {
+      const startIndex = match.index
+      const endIndex =
+        index < dayMatches.length - 1
+          ? dayMatches[index + 1].index
+          : itineraryString.length
+      const section = itineraryString.substring(startIndex, endIndex).trim()
+      const lines = section.split('\n')
+      const content = lines.slice(1).join('\n').trim()
+      days.push({ id: index + 1, content })
+    })
+    return days
+  }
+  const daySections = itineraryString
+    .split('\n\n')
+    .filter((section) => section.trim() !== '')
+  if (daySections.length > 1) {
+    return daySections.map((section, index) => ({
+      id: index + 1,
+      content: section.replace(/^Day\s+\d+:\s*/i, '').trim()
+    }))
+  }
+  return [{ id: 1, content: itineraryString.trim() }]
+}
+
+const itineraryDays = computed(() => {
+  return customItinerary.value?.length
+    ? customItinerary.value
+    : parseItineraryToDays(selectedPackageData.value.itinerary || '')
+})
+
+watch(
+  () => selectedPackageData.value.itinerary,
+  (newItinerary) => {
+    editableItinerary.value = parseItineraryToDays(newItinerary || '')
+  },
+  { immediate: true }
+)
+
+function toggleCustomize() {
+  if (!isExclusiveTour.value) return
+  if (isEditingItinerary.value) {
+    customItinerary.value = editableItinerary.value
+    toast.success('Customization saved successfully!')
+    isEditingItinerary.value = false
+  } else {
+    editableItinerary.value = [...itineraryDays.value]
+    isEditingItinerary.value = true
+  }
+}
+
+function addNewDay() {
+  const maxDays = durationDays.value
+  if (editableItinerary.value.length < maxDays) {
+    editableItinerary.value.push({
+      id: editableItinerary.value.length + 1,
+      content: ''
+    })
+  }
+}
+
+function removeDay(index) {
+  if (editableItinerary.value.length > 1) {
+    editableItinerary.value.splice(index, 1)
+    editableItinerary.value.forEach((day, idx) => {
+      day.id = idx + 1
+    })
+  } else {
+    toast.warning('You must have at least one day in the itinerary.')
+  }
+}
 
 function formatYmd(year, monthIndex, day) {
   const m = String(monthIndex + 1).padStart(2, '0')
@@ -812,7 +991,8 @@ async function submitBooking() {
       tour_type: tourType.value,
       tour_classification: tourClassification.value,
       remarks: remarks.value,
-      discount_images: discountImages.value
+      discount_images: discountImages.value,
+      custom_itinerary: customItinerary.value.length ? customItinerary.value : null
     }
 
     const response = await service.createBooking(payload)

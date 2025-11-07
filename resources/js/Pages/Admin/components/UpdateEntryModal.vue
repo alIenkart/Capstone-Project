@@ -88,7 +88,36 @@
                   </div>
                 </div>
               </div>
-
+              <div class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-center gap-3 mb-6">
+                  <div class="p-2.5 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg shadow-md">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+                    </svg>
+                  </div>
+                  <h4 class="text-xl font-bold text-slate-800">Itinerary</h4>
+                </div>
+                <div v-if="booking.itinerary && booking.itinerary.length" class="space-y-6">
+                  <div v-for="(item, index) in booking.itinerary" :key="item.id"
+                    class="p-5 bg-gradient-to-br from-slate-50 to-white border border-slate-200 rounded-xl hover:shadow-md transition-all">
+                    <p class="text-2xl font-bold text-[#217093] mb-2 tracking-tight">
+                      Day {{ index + 1 }}
+                    </p>
+                    <p class="text-slate-700 text-base leading-relaxed">
+                      {{ item.content }}
+                    </p>
+                  </div>
+                </div>
+                <div v-else class="text-center py-10 bg-slate-50 rounded-lg border-2 border-dashed border-slate-200">
+                  <svg class="w-10 h-10 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V7a2 2 0 012-2h5l2 2h5a2 2 0 012 2v11a2 2 0 01-2 2z" />
+                  </svg>
+                  <p class="text-slate-400 text-sm font-medium">No itinerary available for this booking</p>
+                </div>
+              </div>
               <div
                 class="bg-gradient-to-br from-emerald-50 to-white rounded-xl p-6 border border-emerald-200 shadow-sm hover:shadow-md transition-shadow">
                 <div class="flex items-center gap-3 mb-4">

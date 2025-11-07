@@ -26,12 +26,40 @@ export const storeBooking = defineStore('booking', {
     tourClassification: '',
     remarks: '',
     selectedPackage: null,
+    customItinerary: [],
+    itinerary: []
   }),
 
   getters: {
     getSelectedPackage(state) {
       if (!state.selectedPackage) return;
       return state.selectedPackage;
+    },
+
+    getTourType(state){
+      if (!state.tourType) return;
+      return state.tourType;
+    },
+
+    getTourClassification(state){
+      if (!state.tourClassification) return;
+      return state.tourClassification;
+    },
+
+    getHowManyDays(state) {
+      if (!state.startDate || !state.endDate) return 0
+    
+      const start = new Date(state.startDate)
+      const end = new Date(state.endDate)
+    
+      start.setHours(0, 0, 0, 0)
+      end.setHours(0, 0, 0, 0)
+    
+      const diffMs = end - start
+    
+      const days = Math.floor(diffMs / (1000 * 60 * 60 * 24)) + 1
+    
+      return days > 0 ? days : 0
     }
   },
 
@@ -108,6 +136,22 @@ export const storeBooking = defineStore('booking', {
       this.selectedPackage = packages;
     },
 
+    setTourType(type) {
+      this.tourType = type;
+    },
+
+    setTourClassification(classification) {
+      this.tourClassification = classification;
+    },
+
+    setCustomItinerary(itinerary) {
+      this.customItinerary = itinerary
+    },
+    
+    setItinerary(itinerary) {
+      this.itinerary = itinerary
+    },
+
     reset() {
       this.startDate = null
       this.endDate = null
@@ -120,6 +164,7 @@ export const storeBooking = defineStore('booking', {
       this.kidsTotalAmount = 0
       this.discountId = null
       this.voucherCode = ''
+      this.customItinerary = []
     }
   },
   persist: true
