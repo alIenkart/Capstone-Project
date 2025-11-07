@@ -231,7 +231,7 @@ const tourDuration = computed(() => {
   return duration ? parseInt(duration) : 1
 })
 
-function isDateInRange(dateKey) {
+const isDateInRange = (dateKey) => {
   if (!selectedDate.value) return false
 
   if (tourType.value === 'Exclusive') {
@@ -288,25 +288,25 @@ watch([currentMonthIndex, currentYear], () => {
   }
 })
 
-function formatHuman(ymd) {
+const formatHuman = (ymd) => {
   const [y, m, d] = ymd.split('-').map(Number)
   const date = new Date(y, m - 1, d)
   return date.toLocaleDateString('en-US', { day: '2-digit', month: 'long', year: 'numeric' })
 }
 
-function selectTourType(t) {
+const selectTourType = (t) => {
   tourType.value = t
   isTypeOpen.value = false
   selectedDate.value = ''
   selectedEndDate.value = ''
 }
 
-function selectTourClassification(c) {
+const selectTourClassification = (c) => {
   tourClassification.value = c
   isClassOpen.value = false
 }
 
-function handleClickOutside(event) {
+const handleClickOutside = (event) => {
   const typeEl = typeDropdownRef.value
   const classEl = classDropdownRef.value
   const wrapperEl = calendarWrapperRef.value
@@ -322,7 +322,7 @@ function handleClickOutside(event) {
   }
 }
 
-function showTooltip(event, dateKey) {
+const showTooltip = (event, dateKey) => {
   const info = tourInfoByDate.value[dateKey] || null
   isTooltipOpen.value = true
   tooltipData.value = {
@@ -347,17 +347,17 @@ function showTooltip(event, dateKey) {
   }
 }
 
-function closeTooltip() {
+const closeTooltip = () => {
   isTooltipOpen.value = false
 }
 
-function formatYmd(year, monthIndex, day) {
+const formatYmd = (year, monthIndex, day) => {
   const m = String(monthIndex + 1).padStart(2, '0')
   const d = String(day).padStart(2, '0')
   return `${year}-${m}-${d}`
 }
 
-function isPastDate(year, monthIndex, day) {
+const isPastDate = (year, monthIndex, day) => {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
   const cellDate = new Date(year, monthIndex, day)
@@ -365,7 +365,7 @@ function isPastDate(year, monthIndex, day) {
   return cellDate < today
 }
 
-function prevMonth() {
+const prevMonth = () => {
   if (currentMonthIndex.value === 0) {
     currentMonthIndex.value = 11
     currentYear.value -= 1
@@ -374,7 +374,7 @@ function prevMonth() {
   }
 }
 
-function nextMonth() {
+const nextMonth = () => {
   if (currentMonthIndex.value === 11) {
     currentMonthIndex.value = 0
     currentYear.value += 1
@@ -383,7 +383,7 @@ function nextMonth() {
   }
 }
 
-function handleDateClick(event, cell) {
+const handleDateClick = (event, cell) => {
   if (!cell.day || cell.isPast) {
     return
   }
@@ -412,7 +412,7 @@ function handleDateClick(event, cell) {
 
 const toast = useToast();
 
-function postDate() {
+const postDate = () => {
   if (!selectedDate.value) {
     toast.warning('Please select a date before continuing.')
     return

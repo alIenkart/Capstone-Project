@@ -339,18 +339,18 @@ const uniqueStatuses = computed(() => {
 
 const imagePreview = ref(null)
 
-function onFileChange(event) {
+const onFileChange = (event) => {
   const file = event.target.files[0];
   selectedFile.value = file;
   previewUrl.value = file ? URL.createObjectURL(file) : null;
 }
 
-function removeFile() {
+const removeFile = () => {
   selectedFile.value = null;
   previewUrl.value = null;
 }
 
-function submitPayment() {
+const submitPayment = () => {
   const currentBooking = filteredBookings.value[selectedBookingIndex.value];
 
   receiptData.value = {
@@ -376,7 +376,7 @@ function submitPayment() {
   showReceiptModal.value = true;
 }
 
-function closeReceiptModal() {
+const closeReceiptModal = () => {
   showReceiptModal.value = false;
 }
 

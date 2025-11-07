@@ -58,7 +58,7 @@ const userId = user?.id
 const bookings = ref([])
 const payments = ref([])
 
-function formatDateTime(isoString) {
+const formatDateTime = (isoString) => {
   const date = new Date(isoString)
   return date.toLocaleString('en-US', {
     year: 'numeric',

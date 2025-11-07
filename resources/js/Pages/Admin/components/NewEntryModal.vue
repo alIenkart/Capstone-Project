@@ -739,7 +739,7 @@ watch(
   { immediate: true }
 )
 
-function toggleCustomize() {
+const toggleCustomize = () => {
   if (!isExclusiveTour.value) return
   if (isEditingItinerary.value) {
     customItinerary.value = editableItinerary.value
@@ -751,7 +751,7 @@ function toggleCustomize() {
   }
 }
 
-function addNewDay() {
+const addNewDay = () => {
   const maxDays = durationDays.value
   if (editableItinerary.value.length < maxDays) {
     editableItinerary.value.push({
@@ -761,7 +761,7 @@ function addNewDay() {
   }
 }
 
-function removeDay(index) {
+const removeDay = (index) => {
   if (editableItinerary.value.length > 1) {
     editableItinerary.value.splice(index, 1)
     editableItinerary.value.forEach((day, idx) => {
@@ -772,13 +772,13 @@ function removeDay(index) {
   }
 }
 
-function formatYmd(year, monthIndex, day) {
+const formatYmd = (year, monthIndex, day) => {
   const m = String(monthIndex + 1).padStart(2, '0')
   const d = String(day).padStart(2, '0')
   return `${year}-${m}-${d}`
 }
 
-function isPastDate(year, monthIndex, day) {
+const isPastDate = (year, monthIndex, day) => {
   const today = new Date()
   today.setHours(0, 0, 0, 0)
   const cellDate = new Date(year, monthIndex, day)
@@ -786,7 +786,7 @@ function isPastDate(year, monthIndex, day) {
   return cellDate < today
 }
 
-function handleDateClick(event, cell) {
+const handleDateClick = (event, cell) => {
   if (!cell.day || cell.isPast) return
   
   if (tourType.value === 'Exclusive') {
@@ -819,7 +819,7 @@ function handleDateClick(event, cell) {
   }
 }
 
-function showTooltip(event, dateKey) {
+const showTooltip = (event, dateKey) => {
   const info = tourInfoByDate.value[dateKey] || null
   isTooltipOpen.value = true
   tooltipData.value = {
@@ -844,17 +844,17 @@ function showTooltip(event, dateKey) {
   }
 }
 
-function closeTooltip() {
+const closeTooltip = () =>{
   isTooltipOpen.value = false
 }
 
-function formatHuman(ymd) {
+const formatHuman = (ymd) => {
   const [y, m, d] = ymd.split('-').map(Number)
   const date = new Date(y, m - 1, d)
   return date.toLocaleDateString('en-US', { day: '2-digit', month: 'long', year: 'numeric' })
 }
 
-function prevMonth() {
+const prevMonth = () => {
   if (currentMonthIndex.value === 0) {
     currentMonthIndex.value = 11
     currentYear.value -= 1
@@ -863,7 +863,7 @@ function prevMonth() {
   }
 }
 
-function nextMonth() {
+const nextMonth= () => {
   if (currentMonthIndex.value === 11) {
     currentMonthIndex.value = 0
     currentYear.value += 1
@@ -872,19 +872,19 @@ function nextMonth() {
   }
 }
 
-function selectTourType(t) {
+const selectTourType = (t) => {
   tourType.value = t
   isTypeOpen.value = false
   selectedDate.value = ''
   selectedEndDate.value = ''
 }
 
-function selectTourClassification(c) {
+const selectTourClassification = (c) => {
   tourClassification.value = c
   isClassOpen.value = false
 }
 
-function handlePackageSelect(id) {
+const handlePackageSelect = (id) => {
   selectedPackage.value = id
   isPackageOpen.value = false
   tourClassifications.value = packages.value.find(p => p.id === id)?.tour_classification || []
@@ -893,7 +893,7 @@ function handlePackageSelect(id) {
   }
 }
 
-function handleImageUpload(event) {
+const handleImageUpload = (event) => {
   const files = Array.from(event.target.files)
   const imageFiles = files.filter(file => file.type.startsWith('image/'))
   const remainingSlots = 3 - discountImages.value.length
@@ -915,15 +915,15 @@ function handleImageUpload(event) {
   event.target.value = ''
 }
 
-function removeImage(imageId) {
+const removeImage = (imageId) => {
   discountImages.value = discountImages.value.filter(img => img.id !== imageId)
 }
 
-function triggerFileInput() {
+const triggerFileInput = () => {
   document.getElementById('discount-image-upload').click()
 }
 
-function handleClickOutside(event) {
+const handleClickOutside = (event) => {
   const packageEl = packageDropdownRef.value
   const typeEl = typeDropdownRef.value
   const classEl = classDropdownRef.value
@@ -946,7 +946,7 @@ function handleClickOutside(event) {
   }
 }
 
-function nextStep() {
+const nextStep = () => {
   if (currentStep.value === 0) {
     if (!customerName.value) {
       toast.warning('Please enter customer name')
@@ -970,13 +970,13 @@ function nextStep() {
   currentStep.value++
 }
 
-function prevStep() {
+const prevStep = () => {
   if (currentStep.value > 0) {
     currentStep.value--
   }
 }
 
-async function submitBooking() {
+async function submitBooking () {
   try {
     const payload = {
       package_id: selectedPackage.value,

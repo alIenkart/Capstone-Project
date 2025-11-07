@@ -507,7 +507,6 @@ const closeModal = () => {
     if (fileInput.value) fileInput.value.value = null
 }
 
-// Blog Modal Functions
 const openAddBlog = () => {
     isEditingBlog.value = false
     editableBlog.value = { id: null, title: '', destination: '', excerpt: '', date: '', author: '', image: '' }

@@ -15,7 +15,7 @@ const email = ref('')
 const phone = ref('')
 const password = ref('password')
 
-function saveChanges() {
+const saveChanges = () => {
     try {
         isEditing.value = false
         toast.success('Profile updated successfully!');

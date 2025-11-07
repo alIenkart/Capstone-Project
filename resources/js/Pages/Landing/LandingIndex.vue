@@ -60,11 +60,11 @@ const page = usePage()
 const user = computed(() => page.props.auth?.user)
 const dropdown = ref(null)
 
-function toggleDropdown() {
+const toggleDropdown = () => {
   showDropdown.value = !showDropdown.value
 }
 
-function handleClickOutside(event) {
+const handleClickOutside = (event) => {
   if (dropdown.value && !dropdown.value.contains(event.target)) {
     showDropdown.value = false
   }

@@ -8,7 +8,7 @@ const props = defineProps({
 
 const emit = defineEmits(['close'])
 
-function closeModal() {
+const closeModal = () => {
   emit('close')
 }
 

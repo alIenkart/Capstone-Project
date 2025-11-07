@@ -13,11 +13,11 @@ const showFilter = ref(false)
 const searchQuery = ref('')
 const selectedRegion = ref(null)
 
-function toggleFilter() {
+const toggleFilter = () => {
   showFilter.value = !showFilter.value
 }
 
-function closeFilter() {
+const closeFilter = () => {
   showFilter.value = false
 }
 
@@ -58,7 +58,7 @@ const regions = computed(() => {
   return Array.from(unique).sort()
 })
 
-function selectRegion(region) {
+const selectRegion = (region) => {
   selectedRegion.value = region
   showFilter.value = false
 }

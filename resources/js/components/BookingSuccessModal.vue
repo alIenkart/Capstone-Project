@@ -8,11 +8,11 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'returnHome'])
 
-function closeModal() {
+const closeModal = () => {
   emit('close')
 }
 
-function returnHome() {
+const returnHome = () => {
   emit('returnHome')
 }
 </script>

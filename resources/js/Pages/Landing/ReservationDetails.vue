@@ -268,7 +268,7 @@ const isExclusiveTour = computed(() =>
   booking.tourType?.toLowerCase() === 'exclusive'
 )
 
-function toggleCustomize() {
+const toggleCustomize = () => {
   if (!isExclusiveTour.value) return
   if (isEditingItinerary.value) {
     booking.customItinerary = editableItinerary.value
@@ -280,7 +280,7 @@ function toggleCustomize() {
   }
 }
 
-function addNewDay() {
+const addNewDay = () => {
   const maxDays = booking.getHowManyDays
   if (editableItinerary.value.length < maxDays) {
     editableItinerary.value.push({
@@ -290,7 +290,7 @@ function addNewDay() {
   }
 }
 
-function removeDay(index) {
+const removeDay = (index) => {
   if (editableItinerary.value.length > 1) {
     editableItinerary.value.splice(index, 1)
     editableItinerary.value.forEach((day, idx) => {
@@ -346,7 +346,7 @@ const itineraryDays = computed(() => {
     : parseItineraryToDays(selectedPackage.value.itinerary || '')
 })
 
-function postPackage() {
+const postPackage = () => {
   if (pax.value === 0 && kidsPax.value === 0) {
     toast.error('Please select at least one traveler before proceeding.')
     return

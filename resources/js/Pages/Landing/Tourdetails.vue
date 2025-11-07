@@ -208,7 +208,7 @@ const fetchPackages = async () => {
     }
 }
 
-function setTab(tab) {
+const setTab = (tab) => {
   activeTab.value = tab;
 }
 

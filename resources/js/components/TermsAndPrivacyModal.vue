@@ -98,7 +98,7 @@ const modalTitle = computed(() => {
   return props.type === 'terms' ? 'Terms and Conditions' : 'Privacy Policy'
 })
 
-function closeModal() {
+const closeModal = () => {
   emit('close')
 }
 </script>

@@ -78,11 +78,11 @@ const isOpen = ref(false);
 const selectedValues = ref([...props.modelValue]);
 const dropdownRef = ref(null);
 
-function toggleDropdown() {
+const toggleDropdown = () => {
   isOpen.value = !isOpen.value;
 }
 
-function toggleOption(option) {
+const toggleOption = (option) => {
   const index = selectedValues.value.indexOf(option);
   if (index > -1) {
     selectedValues.value.splice(index, 1);
@@ -92,12 +92,12 @@ function toggleOption(option) {
   emit("update:modelValue", [...selectedValues.value]);
 }
 
-function removeOption(option) {
+const removeOption = (option) => {
   selectedValues.value = selectedValues.value.filter((o) => o !== option);
   emit("update:modelValue", [...selectedValues.value]);
 }
 
-function handleClickOutside(e) {
+const handleClickOutside = (e) => {
   if (dropdownRef.value && !dropdownRef.value.contains(e.target)) {
     isOpen.value = false;
   }

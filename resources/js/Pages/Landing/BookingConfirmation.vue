@@ -36,7 +36,7 @@ const errors = ref({
   address: ''
 })
 
-function validateFields() {
+const validateFields = () => {
   let isValid = true
   errors.value = { first_name: '', last_name: '', email: '', phone_number: '', address: '' }
 
@@ -173,20 +173,20 @@ async function postBooking() {
   }
 }
 
-function openModal(type) {
+const openModal = (type) => {
   modalType.value = type
   showModal.value = true
 }
 
-function closeModal() {
+const closeModal = () => {
   showModal.value = false
 }
 
-function closeSuccessModal() {
+const closeSuccessModal = () => {
   showSuccessModal.value = false
 }
 
-function returnHome() {
+const returnHome = () => {
   window.location.href = route('destination')
 }
 

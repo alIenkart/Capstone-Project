@@ -12,11 +12,11 @@ const stepIndex = ref(0)
 
 const currentStep = computed(() => steps[stepIndex.value])
 
-function goNext() {
+const goNext = () => {
   if (stepIndex.value < steps.length - 1) stepIndex.value++
 }
 
-function goBack() {
+const goBack = () => {
   if (stepIndex.value > 0) stepIndex.value--
 }
 </script>

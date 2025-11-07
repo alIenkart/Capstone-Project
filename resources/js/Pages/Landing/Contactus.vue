@@ -1,112 +1,3 @@
-<script setup>
-import LoadingOverlay from '../../components/LoadingOverlay.vue'
-import InquirySuccessModal from '../../components/InquirySuccessModal.vue'
-import LandingIndex from './LandingIndex.vue'
-import { reactive, computed, ref } from 'vue'
-import { api } from '../../api/api'
-
-defineOptions({ layout: LandingIndex })
-
-const service = new api();
-const isLoading = ref(false)
-const showSuccessModal = ref(false)
-
-const form = reactive({
-	name: '',
-	email: '',
-	destination: '',
-	contactNumber: '',
-	adults: '',
-	children: '',
-	seniors: '',
-	subject: '',
-	message: ''
-})
-
-const errors = reactive({
-	name: '',
-	email: '',
-	destination: '',
-	contactNumber: '',
-	adults: '',
-	children: '',
-	seniors: '',
-	subject: '',
-	message: ''
-})
-
-const validators = {
-	name: (v) => v && String(v).trim().length > 0 ? '' : 'Name is required.',
-	email: (v) => v && String(v).includes('@') ? '' : 'Valid email is required.',
-	destination: (v) => v && String(v).trim().length > 0 ? '' : 'Destination is required.',
-	contactNumber: (v) => /^\d+$/.test(String(v)) ? '' : 'Contact number must be an integer.',
-	adults: (v) => /^\d+$/.test(String(v)) ? '' : 'Number of adults must be an integer.',
-	children: (v) => /^\d+$/.test(String(v)) ? '' : 'Number of children must be an integer.',
-	seniors: (v) => /^\d+$/.test(String(v)) ? '' : 'Number of seniors must be an integer.',
-	subject: (v) => v && String(v).trim().length > 0 ? '' : 'Inquiry subject is required.',
-	message: (v) => v && String(v).trim().length > 0 ? '' : 'Message is required.'
-}
-
-function validateField(key) {
-	const msg = validators[key](form[key] ?? '')
-	errors[key] = msg
-	return !msg
-}
-
-function validateAll() {
-	return Object.keys(validators).every((k) => validateField(k))
-}
-
-function onSubmit(event) {
-	event.preventDefault()
-	if (!validateAll()) return
-	postInquiry()
-}
-
-function resetForm() {
-	Object.keys(form).forEach(key => {
-		form[key] = ''
-	})
-	Object.keys(errors).forEach(key => {
-		errors[key] = ''
-	})
-}
-
-const hasErrors = computed(() => Object.values(errors).some((m) => m && m.length > 0))
-
-async function postInquiry() {
-	isLoading.value = true
-
-	try {
-		const payload = {
-			name: form.name,
-			email: form.email,
-			destination: form.destination,
-			contact_number: form.contactNumber,
-			adults: Number(form.adults),
-			children: Number(form.children),
-			seniors: Number(form.seniors),
-			subject: form.subject,
-			message: form.message
-		}
-
-		await service.createInquiry(payload)
-
-		await new Promise(resolve => setTimeout(resolve, 500))
-		showSuccessModal.value = true
-		resetForm()
-	} catch (error) {
-		console.error('Error submitting inquiry:', error)
-	} finally {
-		isLoading.value = false
-	}
-}
-
-function closeSuccessModal() {
-  showSuccessModal.value = false
-}
-</script>
-
 <template>
     <LoadingOverlay 
       :show="isLoading" 
@@ -259,3 +150,112 @@ function closeSuccessModal() {
         </div>
     </div>
 </template>
+
+<script setup>
+import LoadingOverlay from '../../components/LoadingOverlay.vue'
+import InquirySuccessModal from '../../components/InquirySuccessModal.vue'
+import LandingIndex from './LandingIndex.vue'
+import { reactive, computed, ref } from 'vue'
+import { api } from '../../api/api'
+
+defineOptions({ layout: LandingIndex })
+
+const service = new api();
+const isLoading = ref(false)
+const showSuccessModal = ref(false)
+
+const form = reactive({
+	name: '',
+	email: '',
+	destination: '',
+	contactNumber: '',
+	adults: '',
+	children: '',
+	seniors: '',
+	subject: '',
+	message: ''
+})
+
+const errors = reactive({
+	name: '',
+	email: '',
+	destination: '',
+	contactNumber: '',
+	adults: '',
+	children: '',
+	seniors: '',
+	subject: '',
+	message: ''
+})
+
+const validators = {
+	name: (v) => v && String(v).trim().length > 0 ? '' : 'Name is required.',
+	email: (v) => v && String(v).includes('@') ? '' : 'Valid email is required.',
+	destination: (v) => v && String(v).trim().length > 0 ? '' : 'Destination is required.',
+	contactNumber: (v) => /^\d+$/.test(String(v)) ? '' : 'Contact number must be an integer.',
+	adults: (v) => /^\d+$/.test(String(v)) ? '' : 'Number of adults must be an integer.',
+	children: (v) => /^\d+$/.test(String(v)) ? '' : 'Number of children must be an integer.',
+	seniors: (v) => /^\d+$/.test(String(v)) ? '' : 'Number of seniors must be an integer.',
+	subject: (v) => v && String(v).trim().length > 0 ? '' : 'Inquiry subject is required.',
+	message: (v) => v && String(v).trim().length > 0 ? '' : 'Message is required.'
+}
+
+const validateField = (key) => {
+	const msg = validators[key](form[key] ?? '')
+	errors[key] = msg
+	return !msg
+}
+
+const validateAll = () => {
+	return Object.keys(validators).every((k) => validateField(k))
+}
+
+const onSubmit = (event) => {
+	event.preventDefault()
+	if (!validateAll()) return
+	postInquiry()
+}
+
+const resetForm = () => {
+	Object.keys(form).forEach(key => {
+		form[key] = ''
+	})
+	Object.keys(errors).forEach(key => {
+		errors[key] = ''
+	})
+}
+
+const hasErrors = computed(() => Object.values(errors).some((m) => m && m.length > 0))
+
+async function postInquiry() {
+	isLoading.value = true
+
+	try {
+		const payload = {
+			name: form.name,
+			email: form.email,
+			destination: form.destination,
+			contact_number: form.contactNumber,
+			adults: Number(form.adults),
+			children: Number(form.children),
+			seniors: Number(form.seniors),
+			subject: form.subject,
+			message: form.message
+		}
+
+		await service.createInquiry(payload)
+
+		await new Promise(resolve => setTimeout(resolve, 500))
+		showSuccessModal.value = true
+		resetForm()
+	} catch (error) {
+		console.error('Error submitting inquiry:', error)
+	} finally {
+		isLoading.value = false
+	}
+}
+
+const closeSuccessModal = () => {
+  showSuccessModal.value = false
+}
+</script>

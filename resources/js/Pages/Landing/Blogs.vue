@@ -35,6 +35,7 @@
                         </div>
                         <div class="p-6">
                             <h3 class="text-xl font-bold text-gray-800 mb-3 leading-tight">{{ post.title }}</h3>
+                            <p class="text-gray-800 text-sm leading-relaxed mb-4 font-bold flex items-center gap-1">{{ post.destination }}</p>
                             <p class="text-gray-600 text-sm leading-relaxed mb-4">{{ post.excerpt }}</p>
                             <div class="flex items-center justify-between">
                                 <span class="text-gray-400 text-xs font-medium">Author: {{ post.author }}</span>
