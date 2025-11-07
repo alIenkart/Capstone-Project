@@ -37,15 +37,31 @@ class LoginRequest extends FormRequest
      *
      * @throws \Illuminate\Validation\ValidationException
      */
+    // app/Http/Requests/Auth/LoginRequest.php
+
     public function authenticate(): void
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt(credentials: $this->only('email', 'password'), remember: $this->boolean('remember'))) {
+        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
+            ]);
+        }
+
+        $user = Auth::user();
+
+        // 🔸 Check if email is verified
+        if (! $user->hasVerifiedEmail()) {
+            Auth::logout();
+
+            // Send verification email
+            $user->sendEmailVerificationNotification();
+
+            throw ValidationException::withMessages([
+                'email' => 'Your email address is not verified. We’ve sent you a verification email.',
             ]);
         }
 

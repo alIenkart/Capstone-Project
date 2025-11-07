@@ -30,10 +30,17 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
-
         $request->session()->regenerate();
 
         $user = $request->user();
+
+        if (!$user->hasVerifiedEmail()) {
+            Auth::logout();
+            return back()->withErrors([
+                'email' => 'Your email address is not verified. Please check your inbox.',
+            ]);
+        }
+
         if ($user->role === 'Admin') {
             return redirect()->route('admin.admindashboard');
         }

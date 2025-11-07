@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
+use App\Http\Controllers\Auth\OtpRegisterController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -14,127 +15,103 @@ Route::get('/', function () {
     ]);
 })->name('dashboard');
 
-
-
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/yourbookings', function () {
+        return Inertia::render('Landing/Yourbookings');
+    })->name('yourbookings');
+
+    Route::get('/notifications', function () {
+        return Inertia::render('Landing/Notifications');
+    })->name('notifications');
+
+    Route::get('/process-booking/{id}', function ($id) {
+        return Inertia::render('Landing/ProcessBooking', [
+            'id' => $id,
+        ]);
+    })->name('process-booking');
+
+    Route::get('/calendar', function () {
+        return Inertia::render('Landing/Calendar');
+    })->name('calendar');
+
+    Route::get('/selectpackage', function () {
+        return Inertia::render('Landing/SelectPackage');
+    })->name('selectpackage');
+
+    Route::get('/bookingconfirmation', function () {
+        return Inertia::render('Landing/BookingConfirmation');
+    })->name('bookingconfirmation');
 });
 
-// Route::get('/dashboard', function () {
-//     return Inertia::render('Dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/home', function () {
+    return Inertia::render('Landing/Home');
+})->name('home');
 
-// Home
-    Route::get('/home', function () {
-        return Inertia::render('Landing/Home');
-    })->name('home');
-
-// Destinations
 Route::get('/destination', function () {
     return Inertia::render('Landing/Destination');
 })->name('destination');
 
-// Blogs
 Route::get('/blogs', function () {
     return Inertia::render('Landing/Blogs');
 })->name('blogs');
 
-// About Us
 Route::get('/aboutus', function () {
     return Inertia::render('Landing/Aboutus');
 })->name('aboutus');
 
-// Contact Us
 Route::get('/contactus', function () {
     return Inertia::render('Landing/Contactus');
 })->name('contactus');
 
-// Profile
-Route::get('/profile', function () {
-    return Inertia::render('Landing/Profile');
-})->name('profile');
-
-// Your Bookings
-Route::get('/yourbookings', function () {
-    return Inertia::render('Landing/Yourbookings');
-})->name('yourbookings');
-
-// Notitications
-Route::get('/notifications', function () {
-    return Inertia::render('Landing/Notifications');
-})->name('notifications');
-// Tour Details
 Route::get('/tourdetails/{id}', function ($id) {
     return Inertia::render('Landing/Tourdetails', [
         'id' => $id
     ]);
 })->name('tourdetails');
-// Process Booking
-Route::get('/process-booking/{id}', function ($id) {
-    return Inertia::render('Landing/ProcessBooking', [
-        'id' => $id,
-    ]);
-})->name('process-booking');
-// Calendar
-Route::get('/calendar', function () {
-    return Inertia::render('Landing/Calendar');
-})->name('calendar');
-//Select Package
-Route::get('/selectpackage', function () {
-    return Inertia::render('Landing/SelectPackage');
-})->name('selectpackage');
-// Booking Confirmation
-Route::get('/bookingconfirmation', function () {
-    return Inertia::render('Landing/BookingConfirmation');
-})->name('bookingconfirmation');
 
-// Admin Dashboard
 Route::middleware(['auth', 'is.admin'])->group(function () {
-Route::get('/admin/admindashboard', function () {
-    return Inertia::render('Admin/AdminDashboard');
-})->name('admin.admindashboard');
+    Route::get('/admin/admindashboard', function () {
+        return Inertia::render('Admin/AdminDashboard');
+    })->name('admin.admindashboard');
 
-// Admin Users
-Route::get('/admin/users', function () {
-    return Inertia::render('Admin/UserList');
-})->name('admin.admindashboard');
+    Route::get('/admin/users', function () {
+        return Inertia::render('Admin/UserList');
+    })->name('admin.users');
 
-// Packages
-Route::get('/admin/packages', function () {
-    return Inertia::render('Admin/Packages');
-})->name('admin.packages');
+    Route::get('/admin/packages', function () {
+        return Inertia::render('Admin/Packages');
+    })->name('admin.packages');
 
-// Booking Entries
-Route::get('/admin/booking-entries', function () {
-    return Inertia::render('Admin/BookingEntries');
-})->name('admin.booking-entries');
+    Route::get('/admin/booking-entries', function () {
+        return Inertia::render('Admin/BookingEntries');
+    })->name('admin.booking-entries');
 
-// Payment Confirmation
-Route::get('/admin/payment-confirmation', function () {
-    return Inertia::render('Admin/PaymentConfirmation');
-})->name('admin.payment-confirmation');
+    Route::get('/admin/payment-confirmation', function () {
+        return Inertia::render('Admin/PaymentConfirmation');
+    })->name('admin.payment-confirmation');
 
-// Content Management
-Route::get('/admin/content-management', function () {
-    return Inertia::render('Admin/ContentManagement');
-})->name('admin.content-management');
+    Route::get('/admin/content-management', function () {
+        return Inertia::render('Admin/ContentManagement');
+    })->name('admin.content-management');
 
-// Review & Feedback
-Route::get('/admin/review-feedback', function () {
-    return Inertia::render('Admin/ReviewFeedback');
-})->name('admin.review-feedback');
+    Route::get('/admin/review-feedback', function () {
+        return Inertia::render('Admin/ReviewFeedback');
+    })->name('admin.review-feedback');
 
-// Login History
-Route::get('/admin/login-history', function () {
-    return Inertia::render('Admin/LoginHistory');
-})->name('admin.login-history');
+    Route::get('/admin/login-history', function () {
+        return Inertia::render('Admin/LoginHistory');
+    })->name('admin.login-history');
 
-// Settings
-Route::get('/admin/settings', function () {
-    return Inertia::render('Admin/Settings');
-})->name('admin.settings');
+    Route::get('/admin/settings', function () {
+        return Inertia::render('Admin/Settings');
+    })->name('admin.settings');
 });
 
-require __DIR__.'/auth.php';
+Route::post('/send-otp', [OtpRegisterController::class, 'sendOtp'])->name('otp.send');
+Route::post('/verify-otp', [OtpRegisterController::class, 'verifyOtp'])->name('otp.verify');
+
+require __DIR__ . '/auth.php';
