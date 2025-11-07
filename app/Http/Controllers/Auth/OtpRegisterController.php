@@ -43,6 +43,7 @@ class OtpRegisterController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|email',
+            'phone_number' => 'required|string|max:255',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'otp_code' => 'required',
         ]);
@@ -62,6 +63,7 @@ class OtpRegisterController extends Controller
             'last_name' => $request->last_name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'phone_number' => $request->phone_number,
         ]);
 
         // Delete OTP after successful verificationw

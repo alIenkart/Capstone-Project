@@ -73,6 +73,21 @@
                     </div>
 
                     <div class="mb-4">
+                        <InputLabel for="phone_number" value="Contact Number:" />
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8m-1 10a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h12a2 2 0 012 2v12z" />
+                                </svg>
+                            </div>
+                            <TextInput id="phone_number" type="phone_number" class="mt-1 block w-full pl-10" v-model="form.phone_number"
+                                required placeholder="+63 0912 123 1234" />
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
                         <InputLabel for="password" value="Password:" />
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -150,6 +165,7 @@ const form = useForm({
     first_name: '',
     last_name: '',
     email: '',
+    phone_number: '',
     password: '',
     password_confirmation: '',
 });
