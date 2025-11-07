@@ -41,14 +41,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <button
-                            class="flex items-center justify-center px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all">
-                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                            </svg>
-                        </button>
                     </div>
                 </div>
             </div>
@@ -166,8 +158,45 @@ const loginData = [
 
 const filterOptions = ['All', 'Today', 'This Week', 'This Month']
 
+const getDateFilter = () => {
+    const today = new Date('2024-11-07')
+    const oneWeekAgo = new Date(today)
+    oneWeekAgo.setDate(today.getDate() - 7)
+    const oneMonthAgo = new Date(today)
+    oneMonthAgo.setMonth(today.getMonth() - 1)
+
+    return {
+        today,
+        oneWeekAgo,
+        oneMonthAgo
+    }
+}
+
+const parseLoginTime = (timeStr) => {
+    return new Date(timeStr.split(' ')[0])
+}
+
 const filteredData = computed(() => {
     let filtered = loginData
+    const { today, oneWeekAgo, oneMonthAgo } = getDateFilter()
+
+    if (filterType.value === 'Today') {
+        filtered = filtered.filter(item => {
+            const itemDate = parseLoginTime(item.loginTime)
+            return itemDate.toDateString() === today.toDateString()
+        })
+    } else if (filterType.value === 'This Week') {
+        filtered = filtered.filter(item => {
+            const itemDate = parseLoginTime(item.loginTime)
+            return itemDate >= oneWeekAgo && itemDate <= today
+        })
+    } else if (filterType.value === 'This Month') {
+        filtered = filtered.filter(item => {
+            const itemDate = parseLoginTime(item.loginTime)
+            return itemDate >= oneMonthAgo && itemDate <= today
+        })
+    }
+
     if (searchQuery.value.trim()) {
         const query = searchQuery.value.toLowerCase()
         filtered = filtered.filter(item =>
@@ -177,6 +206,7 @@ const filteredData = computed(() => {
             item.contact.includes(query)
         )
     }
+
     return filtered
 })
 
@@ -221,6 +251,10 @@ const nextPage = () => {
 }
 
 watch(searchQuery, () => {
+    currentPage.value = 1
+})
+
+watch(filterType, () => {
     currentPage.value = 1
 })
 </script>
