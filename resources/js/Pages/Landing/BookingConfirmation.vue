@@ -1,20 +1,17 @@
 <template>
   <div class="w-full min-h-screen flex flex-col items-center bg-[#fcfcfc] py-8">
+    <!-- Stepper at the top -->
     <div class="flex items-center gap-2 mb-16 mt-2 w-full max-w-5xl justify-center">
       <div class="flex items-center gap-1">
         <span class="w-4 h-4 rounded-full border-2 border-[#008DDA] bg-[#008DDA] flex items-center justify-center">
-          <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 16 16">
-            <circle cx="8" cy="8" r="8" />
-          </svg>
+          <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 16 16"><circle cx="8" cy="8" r="8"/></svg>
         </span>
         <span class="ml-1 text-[#008DDA] font-semibold text-base">Availability</span>
       </div>
       <span class="w-16 h-0.5 bg-[#008DDA] mx-2"></span>
       <div class="flex items-center gap-1">
         <span class="w-4 h-4 rounded-full border-2 border-[#008DDA] bg-[#008DDA] flex items-center justify-center">
-          <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 16 16">
-            <circle cx="8" cy="8" r="8" />
-          </svg>
+          <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 16 16"><circle cx="8" cy="8" r="8"/></svg>
         </span>
         <span class="ml-1 text-[#008DDA] font-semibold text-base">Select Package</span>
       </div>
@@ -26,12 +23,12 @@
         <span class="ml-1 text-[#008DDA] font-semibold text-base border-b-2 border-[#008DDA] pb-0.5">Confirmation</span>
       </div>
     </div>
-
+    <!-- Main Content -->
     <div class="flex flex-row w-full max-w-6xl justify-center gap-8">
+      <!-- Left Side: Details Form -->
       <div class="flex-1">
         <div class="flex justify-start mb-4">
-          <button @click="emit('back')"
-            class="w-24 rounded-full py-2 font-bold text-lg transition bg-[#1E71B8] text-white hover:bg-[#73BE5D]">
+          <button @click="emit('back')" class="w-24 rounded-full py-2 font-bold text-lg transition bg-[#1E71B8] text-white hover:bg-[#73BE5D]">
             Back
           </button>
         </div>
@@ -39,59 +36,60 @@
         <form class="flex flex-col gap-4">
           <div>
             <label class="block text-[#1E71B8] font-semibold mb-1">First Name</label>
-            <input type="text" v-model="first_name"
-              :class="['w-full border-2 rounded-xl px-4 py-3 bg-white text-[#00000] focus:outline-none focus:ring-2 focus:ring-[#008DDA]', errors.first_name ? 'border-red-500' : 'border-[#1E71B8]']" />
-            <p v-if="errors.first_name" class="text-red-600 text-sm mt-1">{{ errors.first_name }}</p>
+          <input type="text" v-model ="first_name" :class="['w-full border-2 rounded-xl px-4 py-3 bg-white text-[#00000] focus:outline-none focus:ring-2 focus:ring-[#008DDA]', errors.first_name ? 'border-red-500' : 'border-[#1E71B8]']" />
+          <p v-if="errors.first_name" class="text-red-600 text-sm mt-1">{{ errors.first_name }}</p>
           </div>
           <div>
             <label class="block text-[#1E71B8] font-semibold mb-1">Last Name</label>
-            <input type="text" v-model="last_name"
-              :class="['w-full border-2 rounded-xl px-4 py-3 bg-white text-[#00000] focus:outline-none focus:ring-2 focus:ring-[#008DDA]', errors.last_name ? 'border-red-500' : 'border-[#1E71B8]']" />
-            <p v-if="errors.last_name" class="text-red-600 text-sm mt-1">{{ errors.last_name }}</p>
+          <input type="text" v-model ="last_name" :class="['w-full border-2 rounded-xl px-4 py-3 bg-white text-[#00000] focus:outline-none focus:ring-2 focus:ring-[#008DDA]', errors.last_name ? 'border-red-500' : 'border-[#1E71B8]']" />
+          <p v-if="errors.last_name" class="text-red-600 text-sm mt-1">{{ errors.last_name }}</p>
           </div>
           <div>
             <label class="block text-[#1E71B8] font-semibold mb-1">Email</label>
-            <input type="email" v-model="email"
-              :class="['w-full border-2 rounded-xl px-4 py-3 bg-white text-[#00000] focus:outline-none focus:ring-2 focus:ring-[#008DDA]', errors.email ? 'border-red-500' : 'border-[#1E71B8]']" />
-            <p v-if="errors.email" class="text-red-600 text-sm mt-1">{{ errors.email }}</p>
+          <input type="email" v-model ="email" :class="['w-full border-2 rounded-xl px-4 py-3 bg-white text-[#00000] focus:outline-none focus:ring-2 focus:ring-[#008DDA]', errors.email ? 'border-red-500' : 'border-[#1E71B8]']" />
+          <p v-if="errors.email" class="text-red-600 text-sm mt-1">{{ errors.email }}</p>
           </div>
           <div>
             <label class="block text-[#1E71B8] font-semibold mb-1">Contact No.</label>
-            <input type="text" v-model="phone_number"
-              :class="['w-full border-2 rounded-xl px-4 py-3 bg-white text-[#00000] focus:outline-none focus:ring-2 focus:ring-[#008DDA]', errors.phone_number ? 'border-red-500' : 'border-[#1E71B8]']" />
-            <p v-if="errors.phone_number" class="text-red-600 text-sm mt-1">{{ errors.phone_number }}</p>
+          <input type="text" v-model ="phone_number" :class="['w-full border-2 rounded-xl px-4 py-3 bg-white text-[#00000] focus:outline-none focus:ring-2 focus:ring-[#008DDA]', errors.phone_number ? 'border-red-500' : 'border-[#1E71B8]']" />
+          <p v-if="errors.phone_number" class="text-red-600 text-sm mt-1">{{ errors.phone_number }}</p>
           </div>
           <div>
             <label class="block text-[#1E71B8] font-semibold mb-1">Address</label>
-            <input type="text" v-model="address"
-              :class="['w-full border-2 rounded-xl px-4 py-3 bg-white text-[#00000] focus:outline-none focus:ring-2 focus:ring-[#008DDA]', errors.address ? 'border-red-500' : 'border-[#1E71B8]']" />
-            <p v-if="errors.address" class="text-red-600 text-sm mt-1">{{ errors.address }}</p>
+          <input type="text" v-model="address" :class="['w-full border-2 rounded-xl px-4 py-3 bg-white text-[#00000] focus:outline-none focus:ring-2 focus:ring-[#008DDA]', errors.address ? 'border-red-500' : 'border-[#1E71B8]']" />
+          <p v-if="errors.address" class="text-red-600 text-sm mt-1">{{ errors.address }}</p>
           </div>
-
+          <!--
+          <div>
+            <label class="block text-[#1E71B8] font-semibold mb-1">City &amp; Province</label>
+            <select class="w-full border-2 border-[#1E71B8] rounded-xl px-4 py-3 bg-white text-[#1E71B8] focus:outline-none focus:ring-2 focus:ring-[#008DDA]">
+              <option>City &amp; Province</option>
+            </select>
+          </div>  
+          -->
           <div class="flex items-center mt-2">
             <input type="checkbox" id="agree" v-model="agreeChecked" class="accent-[#008DDA] mr-2" />
             <label for="agree" class="text-[#1E71B8] text-sm">
               Check the box to confirm you've read and agree to our
-              <a href="#" @click.prevent="openModal('terms')"
-                class="text-[#2471a3] underline hover:text-[#1E71B8] cursor-pointer">Terms and Conditions</a> and
-              <a href="#" @click.prevent="openModal('privacy')"
-                class="text-[#2471a3] underline hover:text-[#1E71B8] cursor-pointer">Privacy Policy</a>.
+              <a href="#" @click.prevent="openModal('terms')" class="text-[#2471a3] underline hover:text-[#1E71B8] cursor-pointer">Terms and Conditions</a> and
+              <a href="#" @click.prevent="openModal('privacy')" class="text-[#2471a3] underline hover:text-[#1E71B8] cursor-pointer">Privacy Policy</a>.
             </label>
           </div>
-          <button @click="postBooking" type="button" :disabled="!agreeChecked || isLoading"
-            :class="['mt-4 w-48 py-4 text-white font-semibold rounded-xl shadow text-lg transition flex items-center justify-center', (!agreeChecked || isLoading) ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#1E71B8] hover:bg-[#d95f00]']">
-            <svg v-if="isLoading" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg"
-              fill="none" viewBox="0 0 24 24">
+          <button
+            @click="postBooking"
+            type="button"
+            :disabled="!agreeChecked || isLoading"
+            :class="['mt-4 w-48 py-4 text-white font-semibold rounded-xl shadow text-lg transition flex items-center justify-center', (!agreeChecked || isLoading) ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#1E71B8] hover:bg-[#d95f00]']"
+          >
+            <svg v-if="isLoading" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-              </path>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
             {{ isLoading ? 'Processing...' : 'Book Now' }}
           </button>
         </form>
       </div>
-
+      <!-- Right Side: Summary Card -->
       <div class="w-full max-w-sm bg-[#1E71B8] rounded-xl p-8 flex flex-col min-h-[350px] self-start">
         <div>
           <div class="font-bold text-white text-2xl mb-4 text-center">Details</div>
@@ -101,8 +99,7 @@
             <div>Tour Type: <span class="text-white">{{ booking.tourType }}</span></div>
           </div>
           <div class="text-white mb-4">
-            <div>Duration: <span class="text-white">{{ booking.duration }} Day<span
-                  v-if="durationDays !== 1">s</span></span></div>
+            <div>Duration: <span class="text-white">{{ booking.duration }} Day<span v-if="durationDays !== 1">s</span></span></div>
           </div>
           <div class="text-white mb-4">
             <div>Starting Date: <span class="text-white">{{ booking.startDate }}</span></div>
@@ -117,10 +114,10 @@
               <span>Kids Rate ₱ {{ booking.kidsRate }} x ({{ booking.kidsQuantity }})</span>
               <span>₱ {{ booking.kidsTotalAmount }}</span>
             </div>
-            <div class="flex justify-between">
-              <span>Discount ID</span>
-              <span>- 20%</span>
-            </div>
+            <!-- <div class="flex justify-between font-bold mt-2">
+              <span>Subtotal:</span>
+              <span>P XXXX</span>
+            </div> -->
           </div>
           <hr class="border-[#73BE5D] my-4" />
           <div class="flex justify-between items-center font-bold text-white text-xl mt-4">
@@ -130,10 +127,26 @@
         </div>
       </div>
     </div>
-
-    <TermsAndPrivacyModal :show="showModal" :type="modalType" @close="closeModal" />
-    <BookingSuccessModal :show="showSuccessModal" @close="closeSuccessModal" @returnHome="returnHome" />
-    <LoadingOverlay :show="isLoading" message="Processing your booking..." />
+    
+    <!-- Terms and Privacy Modal -->
+    <TermsAndPrivacyModal 
+      :show="showModal" 
+      :type="modalType" 
+      @close="closeModal" 
+    />
+    
+    <!-- Booking Success Modal -->
+    <BookingSuccessModal 
+      :show="showSuccessModal" 
+      @close="closeSuccessModal"
+      @returnHome="returnHome"
+    />
+    
+    <!-- Loading Overlay -->
+    <LoadingOverlay 
+      :show="isLoading" 
+      message="Processing your booking..."
+    />
   </div>
 </template>
 

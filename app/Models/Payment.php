@@ -38,6 +38,7 @@ class Payment extends Model
                 'amount_paid' => 0,
                 'customer_id' => $booking->customer_id,
                 'remaining_payment' => $booking->total_price,
+                'mode_of_payment' => $booking->mode_of_payment,
                 'payment_status' => 'Pending',
                 'payment_date' => now(),
             ]
