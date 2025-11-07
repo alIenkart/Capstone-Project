@@ -7,18 +7,18 @@
         </div>
 
         <div class="flex items-center gap-20 flex-1 justify-center">
-          <Link href="/" class="text-blue-600 font-medium text-m uppercase hover:text-green-500 transition">Home</Link>
-          <Link href="/destination" class="text-blue-600 font-medium text-m uppercase hover:text-green-500 transition">Destinations</Link>
-          <Link href="/blogs" class="text-blue-600 font-medium text-m uppercase hover:text-green-500 transition">Travel Blogs</Link>
-          <Link href="/aboutus" class="text-blue-600 font-medium text-m uppercase hover:text-green-500 transition">About Us</Link>
-          <Link href="/contactus" class="text-blue-600 font-medium text-m uppercase hover:text-green-500 transition">Contact Us</Link>
+          <Link href="/" class="text-[#008DDA] font-medium text-m uppercase hover:text-green-500 transition">Home</Link>
+          <Link href="/destination" class="text-[#008DDA] font-medium text-m uppercase hover:text-green-500 transition">Destinations</Link>
+          <Link href="/blogs" class="text-[#008DDA] font-medium text-m uppercase hover:text-green-500 transition">Travel Blogs</Link>
+          <Link href="/aboutus" class="text-[#008DDA] font-medium text-m uppercase hover:text-green-500 transition">About Us</Link>
+          <Link href="/contactus" class="text-[#008DDA] font-medium text-m uppercase hover:text-green-500 transition">Contact Us</Link>
         </div>
 
         <div v-if="user" class="flex items-center gap-6">
           <div class="relative" ref="notificationRef">
             <button
               @click="showNotifications = !showNotifications"
-              class="relative p-2 text-blue-600 hover:bg-gray-100 rounded-full transition"
+              class="relative p-2 text-[#008DDA] hover:bg-gray-100 rounded-full transition"
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
@@ -30,7 +30,7 @@
             </button>
 
             <div v-if="showNotifications" class="absolute right-0 mt-3 w-96 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-              <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
+              <div class="bg-gradient-to-r from-[#008DDA] to-blue-700 px-6 py-4">
                 <h3 class="text-white font-semibold text-lg">Notifications</h3>
               </div>
 
@@ -64,7 +64,7 @@
                       <div class="flex items-start gap-3">
                         <div
                           class="w-2 h-2 rounded-full mt-2 flex-shrink-0"
-                          :class="notif.read ? 'bg-gray-300' : 'bg-blue-600'"
+                          :class="notif.read ? 'bg-gray-300' : 'bg-[#008DDA]'"
                         ></div>
                         <div class="flex-1 min-w-0">
                           <p class="text-gray-800 font-medium text-sm leading-relaxed">
@@ -86,7 +86,7 @@
               </div>
 
               <div class="bg-gray-50 px-6 py-3 text-center border-t border-gray-100">
-                <button @click="markAllAsRead" class="text-blue-600 text-sm font-medium hover:text-blue-700 transition">
+                <button @click="markAllAsRead" class="text-[#008DDA] text-sm font-medium hover:text-blue-700 transition">
                   Mark All as Read
                 </button>
               </div>
@@ -96,7 +96,7 @@
           <div class="relative" ref="dropdownRef">
             <button
               @click="showDropdown = !showDropdown"
-              class="p-2 text-blue-600 hover:bg-gray-100 rounded-full transition border-2 border-blue-600"
+              class="p-2 text-[#008DDA] hover:bg-gray-100 rounded-full transition border-2 border-[#008DDA]"
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
@@ -106,14 +106,14 @@
 
             <div v-if="showDropdown" class="absolute right-0 mt-3 w-48 bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden">
               <Link href="/profile" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 transition border-b border-gray-100">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-blue-600">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#008DDA]">
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                   <circle cx="12" cy="7" r="4"/>
                 </svg>
                 <span class="text-sm font-medium">Profile</span>
               </Link>
               <Link href="/yourbookings" class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 transition border-b border-gray-100">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-blue-600">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#008DDA]">
                   <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
                   <line x1="16" y1="2" x2="16" y2="6"/>
                   <line x1="8" y1="2" x2="8" y2="6"/>
@@ -134,7 +134,7 @@
         </div>
 
         <div v-else>
-          <Link href="/login" class="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition text-sm">
+          <Link href="/login" class="px-6 py-2 bg-[#008DDA] text-white rounded-lg font-medium hover:bg-blue-700 transition text-sm">
             Login
           </Link>
         </div>
