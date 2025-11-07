@@ -19,7 +19,8 @@
       </div>
     </div>
     <div class="flex flex-row w-full max-w-[1400px] justify-center flex-1 items-start">
-      <div class="flex flex-col items-start mt-4 min-w-[160px]">
+      <div
+        class="flex flex-col items-start mt-4 min-w-[160px] bg-white rounded-xl p-4 shadow-lg border border-gray-100 mx-2">
         <span class="text-lg text-[#1E71B8] mb-2 ml-0 uppercase">Legends</span>
         <div class="flex items-center gap-2 mb-2">
           <span class="inline-block w-3 h-3 rounded-full bg-[#737373]"></span>
