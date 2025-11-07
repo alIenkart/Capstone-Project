@@ -466,3 +466,35 @@ onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside)
 })
 </script>
+
+<style>
+.dropdown-menu {
+  position: absolute;
+  top: 60px;
+  right: 0;
+  background: #fff;
+  border: 1px solid #eee;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+  border-radius: 8px;
+  min-width: 180px;
+  z-index: 100;
+  padding: 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.dropdown-item {
+  display: block;
+  padding: 12px 24px;
+  color: #008DDA;
+  text-align: left;
+  text-decoration: none;
+  font-size: 15px;
+  transition: background 0.2s, color 0.2s;
+  border-radius: 0;
+}
+.dropdown-item:hover {
+  background: #eeece9;
+  color: #73BE5D;
+}
+</style>

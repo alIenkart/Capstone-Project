@@ -99,20 +99,20 @@
                   {{
                     booking.getHowManyDays === 0
                       ? 'Please select your start and end dates first.'
-                      : 'You’ve reached the maximum number of days allowed by your booking.'
+                      : 'You\'ve reached the maximum number of days allowed by your booking.'
                   }}
                 </div>
               </div>
             </div>
           </div>
 
-          <div v-if="itineraryDays.length === 0"
+          <div v-if="displayItinerary.length === 0"
             class="w-full rounded-2xl border border-gray-200 bg-white p-6 text-center text-gray-500 italic shadow-sm">
             No itinerary available yet.
           </div>
 
           <div v-else class="grid gap-6">
-            <div v-for="(day, index) in isEditingItinerary ? editableItinerary : itineraryDays" :key="day.id"
+            <div v-for="(day, index) in displayItinerary" :key="day.id"
               class="w-full rounded-2xl bg-gradient-to-br from-white to-[#f9fcff] border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300">
               <div
                 class="px-6 py-4 border-b border-gray-100 bg-[#f8fbff] rounded-t-2xl flex justify-between items-center">
@@ -268,6 +268,10 @@ const isExclusiveTour = computed(() =>
   booking.tourType?.toLowerCase() === 'exclusive'
 )
 
+const displayItinerary = computed(() => {
+  return isEditingItinerary.value ? editableItinerary.value : booking.itinerary || []
+})
+
 const toggleCustomize = () => {
   if (!isExclusiveTour.value) return
   if (isEditingItinerary.value) {
@@ -275,7 +279,7 @@ const toggleCustomize = () => {
     toast.success('Customization saved successfully!')
     isEditingItinerary.value = false
   } else {
-    editableItinerary.value = [...itineraryDays.value]
+    editableItinerary.value = JSON.parse(JSON.stringify(booking.itinerary || []))
     isEditingItinerary.value = true
   }
 }
@@ -300,92 +304,6 @@ const removeDay = (index) => {
     toast.warning('You must have at least one day in the itinerary.')
   }
 }
-
-const parseItineraryToDays = (itineraryString) => {
-  if (typeof itineraryString === 'object' && itineraryString !== null) {
-    return Object.entries(itineraryString).map(([key, value], index) => ({
-      id: index + 1,
-      content: value || ''
-    }))
-  }
-  if (typeof itineraryString !== 'string' || itineraryString.trim() === '') {
-    return [{ id: 1, content: '' }]
-  }
-  const dayPattern = /Day\s+\d+:/gi
-  const dayMatches = [...itineraryString.matchAll(dayPattern)]
-  if (dayMatches.length > 0) {
-    const days = []
-    dayMatches.forEach((match, index) => {
-      const startIndex = match.index
-      const endIndex =
-        index < dayMatches.length - 1
-          ? dayMatches[index + 1].index
-          : itineraryString.length
-      const section = itineraryString.substring(startIndex, endIndex).trim()
-      const lines = section.split('\n')
-      const content = lines.slice(1).join('\n').trim()
-      days.push({ id: index + 1, content })
-    })
-    return days
-  }
-  const daySections = itineraryString
-    .split('\n\n')
-    .filter((section) => section.trim() !== '')
-  if (daySections.length > 1) {
-    return daySections.map((section, index) => ({
-      id: index + 1,
-      content: section.replace(/^Day\s+\d+:\s*/i, '').trim()
-    }))
-  }
-  return [{ id: 1, content: itineraryString.trim() }]
-}
-
-const itineraryDays = computed(() => {
-  return booking.customItinerary?.length
-    ? booking.customItinerary
-    : parseItineraryToDays(selectedPackage.value.itinerary || '')
-})
-
-const postPackage = () => {
-  if (pax.value === 0 && kidsPax.value === 0) {
-    toast.error('Please select at least one traveler before proceeding.')
-    return
-  }
-
-  if (isExclusiveTour.value && isEditingItinerary.value) {
-    toast.warning('Please save your itinerary customization before proceeding.')
-    return
-  }
-
-  booking.setPackageId(id.value)
-  booking.setAdultsQuantity(pax.value)
-  booking.setKidsQuantity(kidsPax.value)
-  booking.setAmount(totalAmount.value)
-  booking.setTotalAmountWithDiscount(totalAmountWithDiscount.value)
-  booking.setPackageDestination(selectedPackage.value.destination)
-  booking.setDuration(durationDays.value)
-  booking.setAdultRate(selectedPackage.value.pax_rate || 0)
-  booking.setKidsRate(selectedPackage.value.kids_pax_rate || 0)
-  booking.setAdultTotalAmount(adultTotalAmount.value)
-  booking.setKidsTotalAmount(kidsTotalAmount.value)
-  booking.setDiscountImages(discountImages.value)
-  booking.setRemarks(remarks.value)
-
-  const finalItinerary = booking.customItinerary?.length
-    ? booking.customItinerary
-    : itineraryDays.value
-  booking.setItinerary(finalItinerary)
-
-  emit('next')
-}
-
-watch(
-  () => selectedPackage.value.itinerary,
-  (newItinerary) => {
-    editableItinerary.value = parseItineraryToDays(newItinerary || '')
-  },
-  { immediate: true }
-)
 
 const handleImageUpload = (event) => {
   const file = event.target.files[0]
@@ -419,6 +337,39 @@ const removeImage = (imageId) => {
 
 const triggerFileInput = () => {
   document.getElementById('discount-image-upload').click()
+}
+
+const postPackage = () => {
+  if (pax.value === 0 && kidsPax.value === 0) {
+    toast.error('Please select at least one traveler before proceeding.')
+    return
+  }
+
+  if (isExclusiveTour.value && isEditingItinerary.value) {
+    toast.warning('Please save your itinerary customization before proceeding.')
+    return
+  }
+
+  booking.setPackageId(id.value)
+  booking.setAdultsQuantity(pax.value)
+  booking.setKidsQuantity(kidsPax.value)
+  booking.setAmount(totalAmount.value)
+  booking.setTotalAmountWithDiscount(totalAmountWithDiscount.value)
+  booking.setPackageDestination(selectedPackage.value.destination)
+  booking.setDuration(durationDays.value)
+  booking.setAdultRate(selectedPackage.value.pax_rate || 0)
+  booking.setKidsRate(selectedPackage.value.kids_pax_rate || 0)
+  booking.setAdultTotalAmount(adultTotalAmount.value)
+  booking.setKidsTotalAmount(kidsTotalAmount.value)
+  booking.setDiscountImages(discountImages.value)
+  booking.setRemarks(remarks.value)
+
+  const finalItinerary = booking.customItinerary?.length
+    ? booking.customItinerary
+    : booking.itinerary || []
+  booking.setItinerary(finalItinerary)
+
+  emit('next')
 }
 
 const fetchSelectedPackage = async () => {

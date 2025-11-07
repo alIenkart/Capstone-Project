@@ -204,10 +204,10 @@
                 </td>
                 <td class="px-6 py-4 text-sm whitespace-nowrap text-center">
                   <span :class="{
-                    'bg-green-100 text-green-700': packageItem.status === 'Active',
-                    'bg-gray-100 text-gray-700': packageItem.status === 'Inactive'
+                    'bg-green-100 text-green-700': packageItem.status === 'active',
+                    'bg-gray-100 text-gray-700': packageItem.status === 'inactive'
                   }" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold">
-                    {{ packageItem.status }}
+                    {{ _.startCase(packageItem.status) }}
                   </span>
                 </td>
                 <td class="px-6 py-4 text-sm font-semibold text-gray-900 whitespace-nowrap text-center">
@@ -284,6 +284,7 @@ import AdminIndex from './AdminIndex.vue'
 import NewPackageModal from '@/Pages/Admin/components/NewPackageModal.vue'
 import EditPackageModal from '@/Pages/Admin/components/EditPackageModal.vue'
 import { ref, onMounted, computed, watch } from 'vue'
+import _ from 'lodash';
 import axios from 'axios'
 
 defineOptions({ layout: AdminIndex })

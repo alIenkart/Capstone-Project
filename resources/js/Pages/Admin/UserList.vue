@@ -138,7 +138,7 @@
                 <td class="px-6 py-4 text-sm text-center">
                   <span :class="{
                     'bg-purple-100 text-purple-700': user.role === 'Admin',
-                    'bg-blue-100 text-blue-700': user.role === 'Customer'
+                    'bg-blue-100 text-blue-700': user.role === 'customer'
                   }" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold capitalize">
                     {{ user.role }}
                   </span>
