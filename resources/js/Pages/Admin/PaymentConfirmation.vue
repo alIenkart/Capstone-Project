@@ -201,7 +201,7 @@ const filterOptions = ['All Status', 'Approved', 'Pending', 'Rejected']
 const fetchPayments = async () => {
   try {
     const response = await service.getPayments()
-    payments.value = response.data
+    payments.value = response.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
   } catch (error) {
     console.error('Error fetching payments:', error)
   }

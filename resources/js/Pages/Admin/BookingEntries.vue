@@ -237,7 +237,7 @@ const formatNumber = (num) => {
 const fetchBookings = async () => {
   try {
     const response = await service.getBookings()
-    bookings.value = response.data
+    bookings.value = response.data.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
   } catch (error) {
     console.error('Error fetching bookings:', error)
   }
