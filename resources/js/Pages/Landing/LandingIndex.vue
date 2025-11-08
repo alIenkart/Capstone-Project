@@ -269,7 +269,7 @@ onMounted(async () => {
     
     const interval = setInterval(() => {
       loadUnreadCount()
-    }, 30000)
+    }, 5000)
     
     onUnmounted(() => {
       clearInterval(interval)
