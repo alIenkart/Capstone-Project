@@ -22,9 +22,11 @@ class Booking extends Model
         'discount_id_image',
         'discount_images',
         'rejection_reason',
-        'rejection_category', // Add this line
+        'rejection_category',
         'approved_by',
         'approved_at',
+        'rejected_by',
+        'rejected_at',
         'travel_date',
         
         // Package details
@@ -53,6 +55,7 @@ class Booking extends Model
     protected $casts = [
         'created_at' => 'datetime',
         'approved_at' => 'datetime',
+        'rejected_at' => 'datetime',
         'travel_date' => 'datetime',
         'itinerary' => 'array',
     ];
@@ -70,5 +73,10 @@ class Booking extends Model
     public function approvedByUser()
     {
         return $this->belongsTo(User::class, 'approved_by');
+    }
+    
+    public function rejectedByUser()
+    {
+        return $this->belongsTo(User::class, 'rejected_by');
     }
 }

@@ -118,16 +118,20 @@ class BookingController extends Controller
             'remarks' => 'nullable|string|max:1000',
             'rejection_reason' => 'nullable|string|max:1000',
             'rejection_category' => 'nullable|string|max:255',
+            'approved_by' => 'nullable|exists:users,id',
+            'rejected_by' => 'nullable|exists:users,id',
         ]);
 
         $booking = Booking::findOrFail($id);
 
         if ($validated['status'] === 'Approved') {
+            $validated['approved_at'] = now();
+            
             $booking->update($validated);
             Payment::createFromBooking($booking);
         }
 
-        if($validated['status'] === 'Rejected') {
+        if ($validated['status'] === 'Rejected') {
             $booking->update($validated);
             try {
                 Mail::to($booking->customer_email)->send(
@@ -136,6 +140,10 @@ class BookingController extends Controller
             } catch (\Exception $e) {
                 \Log::error('Failed to send rejection email: ' . $e->getMessage());
             }
+        }
+
+        if ($validated['status'] === 'Pending') {
+            $booking->update($validated);
         }
 
         return response()->json([

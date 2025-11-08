@@ -213,9 +213,15 @@
                         d="M6 18L18 6M6 6l12 12" />
                     </svg>
                   </div>
-                  <div>
+                  <div v-if="booking.status === 'Approved'">
                     <p class="text-sm font-semibold text-slate-600 uppercase tracking-wider">
-                      {{ booking.status === 'Approved' ? 'Approved by' : 'Rejected by' }}
+                      Approved by
+                    </p>
+                    <p class="text-base font-bold" :class="statusTextClass">{{ adminName }}</p>
+                  </div>
+                  <div v-else-if="booking.status === 'Rejected'">
+                    <p class="text-sm font-semibold text-slate-600 uppercase tracking-wider">
+                      Rejected by
                     </p>
                     <p class="text-base font-bold" :class="statusTextClass">{{ adminName }}</p>
                   </div>
@@ -224,7 +230,6 @@
             </div>
           </div>
         </div>
-
         <div class="bg-white px-8 py-5 border-t border-slate-200">
           <div class="flex justify-end gap-3">
             <button type="button"
@@ -232,25 +237,51 @@
               @click="$emit('close')">
               Cancel
             </button>
-            <button type="button" @click="showRejectionModal = true"
-              class="flex items-center gap-2 rounded-lg bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 px-6 py-2.5 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-              Reject Booking
-            </button>
-            <button type="button" @click="submitStatus('Approved')"
-              class="flex items-center gap-2 rounded-lg bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 px-6 py-2.5 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-              </svg>
-              Approve Booking
-            </button>
+            <div class="relative group">
+              <button type="button" @click="showRejectionModal = true" :disabled="isApprovedOrRejected" :class="[
+                'flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold text-white shadow-lg transition-all',
+                isApprovedOrRejected
+                  ? 'bg-gray-400 cursor-not-allowed opacity-60'
+                  : 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 hover:shadow-xl transform hover:-translate-y-0.5'
+              ]">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                Reject Booking
+              </button>
+              <div v-if="isApprovedOrRejected"
+                class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-slate-800 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap pointer-events-none z-50">
+                Booking already {{ booking.status.toLowerCase() }}
+                <div
+                  class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 border-4 border-transparent border-t-slate-800">
+                </div>
+              </div>
+            </div>
+            <div class="relative group">
+              <button type="button" @click="submitStatus('Approved')" :disabled="isApprovedOrRejected" :class="[
+                'flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold text-white shadow-lg transition-all',
+                isApprovedOrRejected
+                  ? 'bg-gray-400 cursor-not-allowed opacity-60'
+                  : 'bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 hover:shadow-xl transform hover:-translate-y-0.5'
+              ]">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                Approve Booking
+              </button>
+
+              <div v-if="isApprovedOrRejected"
+                class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-slate-800 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap pointer-events-none z-50">
+                Booking already {{ booking.status.toLowerCase() }}
+                <div
+                  class="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 border-4 border-transparent border-t-slate-800">
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-
     <!-- Rejection Modal -->
     <Transition enter-active-class="transition-all duration-300 ease-out" enter-from-class="opacity-0 scale-95"
       enter-to-class="opacity-100 scale-100" leave-active-class="transition-all duration-200 ease-in"
@@ -274,18 +305,46 @@
           <!-- Body -->
           <div class="px-6 py-6 space-y-4">
             <div>
-              <label class="block text-sm font-semibold text-slate-700 mb-2">
+              <label class="block text-sm font-semibold text-slate-700 mb-3">
                 Rejection Category <span class="text-red-500">*</span>
               </label>
-              <select v-model="rejectionCategory"
-                class="w-full rounded-lg border-2 border-slate-200 focus:border-red-500 focus:ring-4 focus:ring-red-500/10 px-4 py-3 text-sm outline-none transition-all bg-white"
-                :class="{ 'text-slate-400': !rejectionCategory }">
-                <option value="" disabled>Select a rejection reason</option>
-                <option v-for="category in rejectionCategories" :key="category" :value="category">
-                  {{ category }}
-                </option>
-              </select>
-              <p v-if="!rejectionCategory" class="text-xs text-red-500 mt-2">Please select a rejection category</p>
+              <div class="relative">
+                <button type="button" @click="isDropdownOpen = !isDropdownOpen" :class="[
+                  'w-full px-5 py-4 text-left bg-white border-2 rounded-xl transition-all duration-200 text-sm font-medium',
+                  rejectionCategory
+                    ? 'border-red-500 text-slate-800'
+                    : 'border-slate-200 text-slate-400',
+                  isDropdownOpen ? 'ring-4 ring-red-500/10 border-red-500' : 'hover:border-slate-300'
+                ]">
+                  {{ rejectionCategory || 'Select a rejection reason' }}
+                </button>
+                <Transition enter-active-class="transition-all duration-200 ease-out"
+                  enter-from-class="opacity-0 scale-95 -translate-y-2"
+                  enter-to-class="opacity-100 scale-100 translate-y-0"
+                  leave-active-class="transition-all duration-150 ease-in"
+                  leave-from-class="opacity-100 scale-100 translate-y-0"
+                  leave-to-class="opacity-0 scale-95 -translate-y-2">
+                  <div v-if="isDropdownOpen">
+                    <div class="fixed inset-0 z-10" @click="isDropdownOpen = false" />
+                    <div
+                      class="absolute z-20 w-full mt-2 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden">
+                      <button v-for="(category, index) in rejectionCategories" :key="category" type="button"
+                        @click="selectCategory(category)" :class="[
+                          'w-full px-5 py-4 text-left text-sm font-medium transition-all duration-150',
+                          rejectionCategory === category
+                            ? 'bg-red-50 text-red-700'
+                            : 'text-slate-700 hover:bg-slate-50',
+                          index !== 0 ? 'border-t border-slate-100' : ''
+                        ]">
+                        {{ category }}
+                      </button>
+                    </div>
+                  </div>
+                </Transition>
+              </div>
+              <p v-if="!rejectionCategory" class="text-xs text-red-500 mt-3 font-medium">
+                Please select a rejection category
+              </p>
             </div>
 
             <div>
@@ -362,7 +421,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { api } from '@/api/api'
 import { useToast } from 'vue-toastification'
 import { usePage } from '@inertiajs/vue3'
@@ -382,8 +441,10 @@ const showRejectionModal = ref(false)
 const rejectionReason = ref('')
 const rejectionCategory = ref('')
 const isSubmitting = ref(false)
+const isDropdownOpen = ref(false)
 const selectedImage = ref(null)
 const imageLoadErrors = ref([])
+const users = ref();
 
 const rejectionCategories = [
   'Incomplete/Invalid Information',
@@ -391,6 +452,11 @@ const rejectionCategories = [
   'Policy Violations',
   'Invalid Discount ID'
 ]
+
+const selectCategory = (category) => {
+  rejectionCategory.value = category
+  isDropdownOpen.value = false
+}
 
 const handleImageError = (event) => {
   const imgSrc = event.target.src
@@ -470,9 +536,17 @@ const isApprovedOrRejected = computed(() => {
 })
 
 const adminName = computed(() => {
-  if (!page.props.auth.user) return ''
-  const { first_name, last_name } = page.props.auth.user
-  return `${first_name} ${last_name}`
+  if (!users.value) return 'Unknown Admin';
+
+  const userId = props.booking?.status === 'Approved'
+    ? props.booking?.approved_by
+    : props.booking?.rejected_by;
+
+  if (!userId) return 'Unknown Admin';
+
+  const user = users.value.find(user => user.id === userId);
+
+  return user ? `${user.first_name} ${user.last_name}` : 'Unknown Admin';
 })
 
 const statusBgClass = computed(() => {
@@ -504,11 +578,17 @@ const statusTextClass = computed(() => {
 
 const submitStatus = async (statusValue) => {
   try {
-    await service.updateBooking(props.booking.id, {
+    const payload = {
       status: statusValue,
       id_type: form.value.id_type,
       remarks: form.value.remarks
-    })
+    }
+
+    if (statusValue === 'Approved') {
+      payload.approved_by = page.props.auth.user.id
+    }
+
+    await service.updateBooking(props.booking.id, payload)
     toast.success(`Booking ${statusValue}!`)
     emit('booking-updated')
     emit('close')
@@ -531,7 +611,8 @@ const submitRejection = async () => {
       id_type: form.value.id_type,
       remarks: form.value.remarks,
       rejection_category: rejectionCategory.value,
-      rejection_reason: rejectionReason.value || null
+      rejection_reason: rejectionReason.value || null,
+      rejected_by: page.props.auth.user.id
     })
 
     toast.success('Booking rejected and email sent!')
@@ -547,4 +628,13 @@ const submitRejection = async () => {
     isSubmitting.value = false
   }
 }
+
+const loadUsers = async () => {
+  const response = await service.getUsers();
+  users.value = response?.data?.data;
+};
+
+onMounted(() => {
+  loadUsers();
+});
 </script>
