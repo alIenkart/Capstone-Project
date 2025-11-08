@@ -12,23 +12,27 @@
             <button @click="isFilterOpen = !isFilterOpen"
               class="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 group">
               <div class="flex items-center gap-2">
-                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                  <path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" stroke-width="2"
+                  viewBox="0 0 24 24">
+                  <path
+                    d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z">
+                  </path>
                 </svg>
                 <span class="font-semibold text-gray-800">
                   {{ selectedStatusFilter === 'All' ? 'All Status' : selectedStatusFilter }}
                 </span>
               </div>
-              <svg :class="['w-5 h-5 text-blue-600 transition-transform duration-300', isFilterOpen ? 'rotate-180' : '']"
+              <svg
+                :class="['w-5 h-5 text-blue-600 transition-transform duration-300', isFilterOpen ? 'rotate-180' : '']"
                 fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
               </svg>
             </button>
 
-            <div v-if="isFilterOpen" class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10 overflow-hidden animate-in fade-in slide-in-from-top-2">
+            <div v-if="isFilterOpen"
+              class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10 overflow-hidden animate-in fade-in slide-in-from-top-2">
               <div v-for="status in uniqueStatuses" :key="status"
-                @click="selectedStatusFilter = status; isFilterOpen = false"
-                :class="[
+                @click="selectedStatusFilter = status; isFilterOpen = false" :class="[
                   'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 last:border-b-0 hover:bg-blue-50',
                   selectedStatusFilter === status ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
                 ]">
@@ -36,22 +40,25 @@
                 <span v-else-if="status === 'Approved'" class="text-lg"></span>
                 <span v-else-if="status === 'Pending'" class="text-lg"></span>
                 <span v-else-if="status === 'Rejected'" class="text-lg"></span>
-                
+
                 <span :class="[
                   'font-medium',
                   selectedStatusFilter === status ? 'text-blue-700' : 'text-gray-700'
                 ]">
                   {{ status === 'All' ? 'All Status' : status }}
                 </span>
-                
-                <svg v-if="selectedStatusFilter === status" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+
+                <svg v-if="selectedStatusFilter === status" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor"
+                  viewBox="0 0 20 20">
+                  <path fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"></path>
                 </svg>
               </div>
             </div>
           </div>
         </div>
-        
+
         <h3 class="text-gray-700 text-lg font-semibold mb-4 px-2">All Bookings</h3>
         <div class="flex flex-col gap-2 overflow-y-auto" style="max-height: 70vh">
           <div v-if="filteredBookings.length" v-for="(booking, i) in filteredBookings" :key="booking.id"
@@ -155,7 +162,7 @@
             <div class="flex flex-col">
               <span class="text-gray-500 text-sm">Guests</span>
               <span class="font-medium text-gray-800 mt-1">{{ filteredBookings[selectedBookingIndex].total_quantity
-              }}</span>
+                }}</span>
             </div>
             <div class="flex flex-col">
               <span class="text-gray-500 text-sm">Total Due</span>
@@ -194,14 +201,15 @@
                         class="w-full flex justify-between items-center px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl shadow-sm text-gray-800 font-medium hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all">
                         {{ selectedModeOfPayment }}
                         <svg class="w-5 h-5 text-gray-500 transition-transform duration-200"
-                          :class="{ 'rotate-180': dropdownOpenModePayment }" fill="none" stroke="currentColor" stroke-width="2"
-                          viewBox="0 0 24 24">
+                          :class="{ 'rotate-180': dropdownOpenModePayment }" fill="none" stroke="currentColor"
+                          stroke-width="2" viewBox="0 0 24 24">
                           <path d="M19 9l-7 7-7-7"></path>
                         </svg>
                       </button>
                       <div v-if="dropdownOpenModePayment"
                         class="absolute z-10 w-full mt-1 bg-white border-2 border-gray-200 rounded-xl shadow-lg overflow-hidden">
-                        <div v-for="option in modeOfPaymentOptions" :key="option.value" @click="selectOptionModePayment(option)"
+                        <div v-for="option in modeOfPaymentOptions" :key="option.value"
+                          @click="selectOptionModePayment(option)"
                           class="px-4 py-3 cursor-pointer hover:bg-blue-100 hover:text-blue-700 transition-colors">
                           {{ option.label }}
                         </div>
@@ -212,30 +220,32 @@
                     <label class="block mb-3 text-gray-700 font-semibold text-sm tracking-wide" for="paymentType">Type
                       of Payment</label>
                     <div class="relative w-64 type-payment-dropdown">
-                      
+
                       <div v-if="isDownPaymentApproved()">
-                        <label class="block mt-4 mb-3 text-gray-700 font-semibold text-s tracking-wide" for="paymentType">                     
+                        <label class="block mt-4 mb-3 text-gray-700 font-semibold text-s tracking-wide"
+                          for="paymentType">
                           <div class="bg-gray-100 border border-gray-300 rounded-md px-3 py-2 w-64">
                             {{ typeOfPayment }}
-                          </div>                        
+                          </div>
                         </label>
-                      </div>   
+                      </div>
 
                       <div v-else>
-                      <button @click="toggleTypeDropdown"
-                        class="w-full flex justify-between items-center px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl shadow-sm text-gray-800 font-medium hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all">
-                        {{ selectedPaymentType }}
-                        <svg class="w-5 h-5 text-gray-500 transition-transform duration-200"
-                          :class="{ 'rotate-180': dropdownOpenTypePayment }" fill="none" stroke="currentColor" stroke-width="2"
-                          viewBox="0 0 24 24">
-                          <path d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                      </button>
+                        <button @click="toggleTypeDropdown"
+                          class="w-full flex justify-between items-center px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl shadow-sm text-gray-800 font-medium hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all">
+                          {{ selectedPaymentType }}
+                          <svg class="w-5 h-5 text-gray-500 transition-transform duration-200"
+                            :class="{ 'rotate-180': dropdownOpenTypePayment }" fill="none" stroke="currentColor"
+                            stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M19 9l-7 7-7-7"></path>
+                          </svg>
+                        </button>
                       </div>
-                      
+
                       <div v-if="dropdownOpenTypePayment"
                         class="absolute z-10 w-full mt-1 bg-white border-2 border-gray-200 rounded-xl shadow-lg overflow-hidden">
-                        <div v-for="option in paymentTypeOptions" :key="option.value" @click="selectOptionTypePayment(option)"
+                        <div v-for="option in paymentTypeOptions" :key="option.value"
+                          @click="selectOptionTypePayment(option)"
                           class="px-4 py-3 cursor-pointer hover:bg-blue-100 hover:text-blue-700 transition-colors">
                           {{ option.label }}
                         </div>
@@ -302,7 +312,7 @@
                   <div class="flex items-center gap-4 mb-4 flex-wrap">
                     <label v-if="!selectedFile" :class="[
                       'flex items-center px-4 py-2 rounded-lg border shadow-sm transition',
-                      filteredBookings[selectedBookingIndex]?.status === 'Pending'
+                      filteredBookings[selectedBookingIndex]?.status === 'Pending' || filteredBookings[selectedBookingIndex]?.status === 'Rejected' || paymentStatus === 'Under Review'
                         ? 'bg-gray-200 text-gray-400 border-gray-300 cursor-not-allowed'
                         : 'bg-blue-50 text-blue-700 border-blue-100 hover:bg-blue-200 cursor-pointer'
                     ]">
@@ -311,14 +321,13 @@
                       </svg>
                       <span>Add Image</span>
                       <input type="file" class="hidden" @change="onFileChange"
-                        :disabled="filteredBookings[selectedBookingIndex]?.status === 'Pending'" />
+                      :disabled="filteredBookings[selectedBookingIndex]?.status === 'Pending' || filteredBookings[selectedBookingIndex]?.status === 'Rejected' || paymentStatus === 'Under Review'" />
                     </label>
 
-                    <div v-else class="flex items-center bg-white px-3 py-2 rounded shadow border cursor-pointer"
-                      @click="$refs.fileInput.click()">
+                    <div v-else :class="['flex items-center bg-white px-3 py-2 rounded shadow border', paymentStatus === 'Under Review' ? 'cursor-not-allowed opacity-60' : 'cursor-pointer']" @click="paymentStatus !== 'Under Review' ? $refs.fileInput.click() : null">
                       <img :src="previewUrl" alt="Preview" class="w-20 h-20 rounded object-cover border" />
                       <input ref="fileInput" type="file" class="hidden" @change="onFileChange"
-                        :disabled="filteredBookings[selectedBookingIndex]?.status === 'Pending'" />
+                      :disabled="filteredBookings[selectedBookingIndex]?.status === 'Pending' || filteredBookings[selectedBookingIndex]?.status === 'Rejected' || paymentStatus === 'Under Review'" />
                     </div>
                   </div>
                 </div>
@@ -347,8 +356,8 @@
                   View Receipt
                 </button>
 
-                <button v-if="filteredBookings[selectedBookingIndex]?.status === 'Pending' || isPaymentApproved()" @click="submitPayment"
-                  :disabled="filteredBookings[selectedBookingIndex]?.status === 'Pending'"
+                <button v-if="filteredBookings[selectedBookingIndex]?.status === 'Pending' || isPaymentApproved()"
+                  @click="submitPayment" :disabled="filteredBookings[selectedBookingIndex]?.status === 'Pending'"
                   class="w-full bg-[#1E71B8] hover:bg-[#155a8a] focus:ring-2 focus:ring-[#52c2f8] transition shadow-lg text-white px-8 py-3 rounded-xl font-bold text-lg focus:outline-none active:scale-95 duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
                   Submit
                 </button>
@@ -394,6 +403,7 @@ const toast = useToast();
 const bookings = ref([]);
 const payments = ref([]);
 const selectedBookingIndex = ref(0);
+const selectedBookingId = ref(null);
 const userId = user?.id;
 const selectedPaymentType = ref('Full Payment');
 const selectedModeOfPayment = ref('GCASH');
@@ -471,14 +481,14 @@ const submitPayment = () => {
   }
 
   const paymentHistory = currentPayment.payment_history || {};
-  const amountPaid = paymentHistory.paymentType === 'Full Payment' 
+  const amountPaid = paymentHistory.paymentType === 'Full Payment'
     ? paymentHistory.fullPaymentAmount || currentBooking.total_price
     : paymentHistory.downPaymentAmount || 0;
   const remainingBalance = paymentHistory.remainingBalance || 0;
 
   receiptData.value = {
     receiptNo: `B${String(currentBooking.id).padStart(5, '0')}`,
-    date: paymentHistory.paymentDate 
+    date: paymentHistory.paymentDate
       ? new Date(paymentHistory.paymentDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
       : new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
     customerName: currentBooking.customer_name || '',
