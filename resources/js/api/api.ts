@@ -173,4 +173,37 @@ export class api {
     deleteAccreditation(id: number) {
         return plainInstance.delete(`/api/accreditations/${id}`);
     }
+
+    // Notifications API
+    getNotifications(userId: number) {
+        return plainInstance.get("/api/notifications", {
+            params: { user_id: userId }
+        });
+    }
+
+    getUnreadNotifications(userId: number) {
+        return plainInstance.get("/api/notifications/unread", {
+            params: { user_id: userId }
+        });
+    }
+
+    getUnreadNotificationCount(userId: number) {
+        return plainInstance.get("/api/notifications/unread-count", {
+            params: { user_id: userId }
+        });
+    }
+
+    markNotificationAsRead(id: number) {
+        return plainInstance.patch(`/api/notifications/${id}/read`);
+    }
+
+    markAllNotificationsAsRead(userId: number) {
+        return plainInstance.post("/api/notifications/mark-all-read", null, {
+            params: { user_id: userId }
+        });
+    }
+
+    deleteNotification(id: number) {
+        return plainInstance.delete(`/api/notifications/${id}`);
+    }
 }

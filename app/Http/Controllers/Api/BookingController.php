@@ -5,19 +5,26 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Payment;
-use App\Models\User;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
 use App\Mail\BookingRejected;
 
 class BookingController extends Controller
 {
+    protected NotificationService $notificationService;
+
+    public function __construct(NotificationService $notificationService)
+    {
+        $this->notificationService = $notificationService;
+    }
+
     public function index()
     {
-        $bookings = Booking::all();
-        return response()->json($bookings);
+        return response()->json(Booking::all());
     }
-    
+
     public function getBookingsByUser(Request $request)
     {
         $userId = $request->query('user_id');
@@ -27,7 +34,6 @@ class BookingController extends Controller
         }
 
         $bookings = Booking::where('customer_id', $userId)->get();
-
         return response()->json($bookings);
     }
 
@@ -35,6 +41,7 @@ class BookingController extends Controller
     {
         $data = $request->all();
 
+        // Decode itinerary JSON if passed as a string
         if ($request->has('itinerary') && is_string($request->itinerary)) {
             $decoded = json_decode($request->itinerary, true);
             if (json_last_error() === JSON_ERROR_NONE) {
@@ -60,6 +67,7 @@ class BookingController extends Controller
             'duration' => 'nullable|integer|min:1',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date',
+            'travel_date' => 'nullable|date',
 
             // Itinerary (array of objects)
             'itinerary' => 'nullable|array',
@@ -88,19 +96,17 @@ class BookingController extends Controller
         }
 
         // Handle multiple discount images
-        $discountImagePaths = [];
         if ($request->hasFile('discount_images')) {
-            foreach ($request->file('discount_images') as $index => $file) {
+            $discountImagePaths = [];
+            foreach ($request->file('discount_images') as $file) {
                 $path = $file->store('discount_ids', 'public');
                 $discountImagePaths[] = $path;
             }
             $validated['discount_images'] = json_encode($discountImagePaths);
         }
 
-        // Set default status if not provided
-        if (!isset($validated['status'])) {
-            $validated['status'] = 'Pending';
-        }
+        // Default status
+        $validated['status'] = $validated['status'] ?? 'Pending';
 
         $booking = Booking::create($validated);
 
@@ -123,32 +129,62 @@ class BookingController extends Controller
         ]);
 
         $booking = Booking::findOrFail($id);
+        $oldStatus = $booking->status;
 
-        if ($validated['status'] === 'Approved') {
-            $validated['approved_at'] = now();
-            
-            $booking->update($validated);
-            Payment::createFromBooking($booking);
-        }
+        DB::beginTransaction();
 
-        if ($validated['status'] === 'Rejected') {
-            $booking->update($validated);
-            try {
-                Mail::to($booking->customer_email)->send(
-                    new BookingRejected($booking)
-                );
-            } catch (\Exception $e) {
-                \Log::error('Failed to send rejection email: ' . $e->getMessage());
+        try {
+            if ($validated['status'] === 'Approved') {
+                $validated['approved_at'] = now();
+                $booking->update($validated);
+
+                // Create payment record
+                Payment::createFromBooking($booking);
+
+                // Create notification (only if status changed)
+                if ($oldStatus !== 'Approved') {
+                    $this->notificationService->createApprovedNotification($booking);
+                }
             }
-        }
 
-        if ($validated['status'] === 'Pending') {
-            $booking->update($validated);
-        }
+            if ($validated['status'] === 'Rejected') {
+                $validated['rejected_at'] = now();
+                $booking->update($validated);
 
-        return response()->json([
-            'message' => 'Booking updated successfully.',
-            'data' => $booking
-        ]);
+                // Send rejection email
+                try {
+                    Mail::to($booking->customer_email)->send(new BookingRejected($booking));
+                } catch (\Exception $e) {
+                    \Log::warning('Rejection email failed: ' . $e->getMessage());
+                }
+
+                // Create notification (only if status changed)
+                if ($oldStatus !== 'Rejected') {
+                    $this->notificationService->createRejectedNotification(
+                        $booking,
+                        $validated['rejection_category'] ?? null
+                    );
+                }
+            }
+
+            if ($validated['status'] === 'Pending') {
+                $booking->update($validated);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Booking updated successfully.',
+                'data' => $booking
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Booking update failed: ' . $e->getMessage());
+
+            return response()->json([
+                'message' => 'Failed to update booking.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

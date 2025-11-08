@@ -47,13 +47,43 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
+    /**
+     * Get all notifications for the user
+     */
     public function notifications()
     {
-        return $this->hasMany(Notification::class, 'customers_id');
+        return $this->hasMany(Notification::class)->orderBy('created_at', 'desc');
     }
 
-    public function user()
+    /**
+     * Get unread notifications for the user
+     */
+    public function unreadNotifications()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasMany(Notification::class)->where('is_read', false)->orderBy('created_at', 'desc');
+    }
+
+    /**
+     * Get all bookings made by this user
+     */
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class, 'customer_id');
+    }
+
+    /**
+     * Get bookings approved by this user (admin)
+     */
+    public function approvedBookings()
+    {
+        return $this->hasMany(Booking::class, 'approved_by');
+    }
+
+    /**
+     * Get bookings rejected by this user (admin)
+     */
+    public function rejectedBookings()
+    {
+        return $this->hasMany(Booking::class, 'rejected_by');
     }
 }

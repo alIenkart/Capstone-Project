@@ -21,7 +21,7 @@
 
         <div v-if="user" class="flex items-center gap-6">
           <div class="relative" ref="notificationRef">
-            <button @click="showNotifications = !showNotifications"
+            <button @click="toggleNotifications"
               class="relative p-2 text-[#008DDA] hover:bg-gray-100 rounded-full transition">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
@@ -41,38 +41,28 @@
 
               <div class="max-h-96 overflow-y-auto">
                 <div v-if="notifications.length > 0">
-                  <div v-for="notif in notifications" :key="notif.id" @click="notif.read = true"
+                  <div v-for="notif in notifications" :key="notif.id" @click="markAsRead(notif.id)"
                     class="border-b border-gray-100 hover:bg-gray-50 transition cursor-pointer">
-                    <div v-if="notif.type === 'booking'" class="p-4 bg-white hover:bg-gray-50">
+                    <div class="p-4 bg-white hover:bg-gray-50">
                       <div class="border-2 border-gray-300 rounded-lg p-4">
                         <div class="flex items-start justify-between mb-3">
                           <h4 class="font-bold text-gray-900 text-sm">{{ notif.title }}</h4>
-                          <div class="flex items-center gap-2" v-if="!notif.read">
-                            <span class="text-xs font-mono bg-blue-100 text-blue-700 px-2 py-1 rounded">{{
-                              notif.bookingId }}</span>
+                          <div class="flex items-center gap-2" v-if="!notif.is_read">
+                            <span class="text-xs font-mono bg-blue-100 text-blue-700 px-2 py-1 rounded">
+                              B{{ String(notif.booking_id).padStart(5, '0') }}
+                            </span>
                             <div class="w-3 h-3 rounded-full bg-red-500"></div>
                           </div>
                           <div class="flex items-center gap-2" v-else>
-                            <span class="text-xs font-mono bg-blue-100 text-blue-700 px-2 py-1 rounded">{{
-                              notif.bookingId }}</span>
+                            <span class="text-xs font-mono bg-blue-100 text-blue-700 px-2 py-1 rounded">
+                              B{{ String(notif.booking_id).padStart(5, '0') }}
+                            </span>
                           </div>
                         </div>
                         <p class="text-gray-700 text-sm leading-relaxed mb-3">
                           {{ notif.message }}
                         </p>
-                        <p class="text-gray-500 text-xs">{{ notif.time }}</p>
-                      </div>
-                    </div>
-                    <div v-else class="px-6 py-4">
-                      <div class="flex items-start gap-3">
-                        <div class="w-2 h-2 rounded-full mt-2 flex-shrink-0"
-                          :class="notif.read ? 'bg-gray-300' : 'bg-[#008DDA]'"></div>
-                        <div class="flex-1 min-w-0">
-                          <p class="text-gray-800 font-medium text-sm leading-relaxed">
-                            {{ notif.message }}
-                          </p>
-                          <p class="text-gray-500 text-xs mt-1">{{ notif.time }}</p>
-                        </div>
+                        <p class="text-gray-500 text-xs">{{ formatNotificationDate(notif.created_at) }}</p>
                       </div>
                     </div>
                   </div>
@@ -166,6 +156,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { Link, usePage, router } from '@inertiajs/vue3'
+import { api } from '@/api/api'
 
 const showDropdown = ref(false)
 const showNotifications = ref(false)
@@ -173,47 +164,94 @@ const page = usePage()
 const user = computed(() => page.props.auth?.user)
 const dropdownRef = ref(null)
 const notificationRef = ref(null)
+const service = new api()
 
-const notifications = ref([
-  {
-    id: 1,
-    title: 'Your Booking is Confirmed!',
-    message: 'Your booking for Baguio Tour - 3 Days on January 2, 2025 has been confirmed. Please proceed with the payment of ₱ XXXX using the QR code provided to in the My Booking section. Make sure to upload your payment receipt for verification. Thank you!',
-    bookingId: 'BT0125',
-    time: 'March 2, 2025 at 1:15 pm',
-    read: false,
-    type: 'booking'
-  },
-  {
-    id: 2,
-    title: 'Your Booking is Confirmed!',
-    message: 'Your booking for Baguio Tour - 3 Days on January 2, 2025 has been confirmed. Please proceed with the payment of ₱ XXXX using the QR code provided to in the My Booking section. Make sure to upload your payment receipt for verification. Thank you!',
-    bookingId: 'BT0125',
-    time: 'March 2, 2025 at 1:15 pm',
-    read: false,
-    type: 'booking'
-  },
-  {
-    id: 3,
-    title: 'Your Booking is Confirmed!',
-    message: 'Your booking for Baguio Tour - 3 Days on January 2, 2025 has been confirmed. Please proceed with the payment of ₱ XXXX using the QR code provided to in the My Booking section. Make sure to upload your payment receipt for verification. Thank you!',
-    bookingId: 'BT0125',
-    time: 'March 2, 2025 at 1:15 pm',
-    read: false,
-    type: 'booking'
-  },
-  {
-    id: 4,
-    title: 'Your Booking is Confirmed!',
-    message: 'Your booking for Baguio Tour - 3 Days on January 2, 2025 has been confirmed. Please proceed with the payment of ₱ XXXX using the QR code provided to in the My Booking section. Make sure to upload your payment receipt for verification. Thank you!',
-    bookingId: 'BT0125',
-    time: 'March 2, 2025 at 1:15 pm',
-    read: false,
-    type: 'booking'
-  },
-])
+const notifications = ref([])
+const unreadCount = ref(0)
 
-const unreadCount = computed(() => notifications.value.filter(n => !n.read).length)
+const loadNotifications = async () => {
+  if (!user.value) return
+
+  try {
+    const response = await service.getNotifications(user.value.id)
+
+    if (Array.isArray(response.data)) {
+      notifications.value = response.data
+    } else if (response?.data?.data) {
+      notifications.value = response.data.data
+    } else {
+      notifications.value = []
+    }
+
+    notifications.value.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+  } catch (error) {
+    console.error('Failed to load notifications:', error)
+  }
+}
+
+
+const loadUnreadCount = async () => {
+  if (!user.value) return
+
+  try {
+    const response = await service.getUnreadNotificationCount(user.value.id)
+    unreadCount.value = response?.data?.count || 0
+  } catch (error) {
+    console.error('Failed to load unread count:', error)
+  }
+}
+
+
+const toggleNotifications = async () => {
+  showNotifications.value = !showNotifications.value
+  if (showNotifications.value) {
+    await loadNotifications()
+  }
+}
+
+const markAsRead = async (notificationId) => {
+  try {
+    const response = await service.markNotificationAsRead(notificationId)
+    if (response?.data?.success) {
+      const notif = notifications.value.find(n => n.id === notificationId)
+      if (notif) {
+        notif.is_read = true
+      }
+      await loadUnreadCount()
+    }
+  } catch (error) {
+    console.error('Failed to mark notification as read:', error)
+  }
+}
+
+const markAllAsRead = async () => {
+  if (!user.value) return
+
+  try {
+    const response = await service.markAllNotificationsAsRead(user.value.id)
+    if (response?.data?.success) {
+      notifications.value.forEach(notif => {
+        notif.is_read = true
+      })
+      unreadCount.value = 0
+    }
+  } catch (error) {
+    console.error('Failed to mark all as read:', error)
+  }
+}
+
+const formatNotificationDate = (dateString) => {
+  const date = new Date(dateString)
+  const options = { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true
+  }
+  return date.toLocaleDateString('en-US', options).replace(',', ' at')
+}
 
 const handleClickOutside = (event) => {
   if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
@@ -224,8 +262,19 @@ const handleClickOutside = (event) => {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
   document.addEventListener('mousedown', handleClickOutside)
+  if (user.value) {
+    await loadUnreadCount()
+    
+    const interval = setInterval(() => {
+      loadUnreadCount()
+    }, 30000)
+    
+    onUnmounted(() => {
+      clearInterval(interval)
+    })
+  }
 })
 
 onUnmounted(() => {
@@ -236,10 +285,4 @@ router.on('navigate', () => {
   showDropdown.value = false
   showNotifications.value = false
 })
-
-const markAllAsRead = () => {
-  notifications.value.forEach(notif => {
-    notif.read = true
-  })
-}
 </script>

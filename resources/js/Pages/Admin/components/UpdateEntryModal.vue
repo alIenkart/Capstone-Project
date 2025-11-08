@@ -581,7 +581,7 @@ const submitStatus = async (statusValue) => {
     const payload = {
       status: statusValue,
       id_type: form.value.id_type,
-      remarks: form.value.remarks
+      remarks: form.value.remarks,
     }
 
     if (statusValue === 'Approved') {
@@ -589,6 +589,7 @@ const submitStatus = async (statusValue) => {
     }
 
     await service.updateBooking(props.booking.id, payload)
+
     toast.success(`Booking ${statusValue}!`)
     emit('booking-updated')
     emit('close')
@@ -615,10 +616,8 @@ const submitRejection = async () => {
       rejected_by: page.props.auth.user.id
     })
 
-    toast.success('Booking rejected and email sent!')
+    toast.success('Booking rejected!')
     showRejectionModal.value = false
-    rejectionCategory.value = ''
-    rejectionReason.value = ''
     emit('booking-updated')
     emit('close')
   } catch (error) {

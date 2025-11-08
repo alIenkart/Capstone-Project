@@ -87,9 +87,9 @@
                 <span class="rounded px-2 py-0.5 text-xs font-semibold transition" :class="{
                   'bg-green-100 text-green-700': booking.status === 'Approved',
                   'bg-yellow-100 text-yellow-700': booking.status === 'Pending',
-                  'bg-red-100 text-red-600': booking.status === 'reject'
+                  'bg-red-100 text-red-600': booking.status === 'Rejected'
                 }">{{ booking.status }}</span>
-                <span v-if="booking.tour_type" class="bg-gray-100 text-gray-500 px-2 py-0.5 rounded text-xs">{{
+                <span v-if="booking.tour_type" class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-xs">{{
                   booking.tour_type }}</span>
               </div>
 

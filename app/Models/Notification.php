@@ -2,14 +2,48 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Notification extends Model
 {
-    protected $fillable = ['customers_id', 'message', 'status'];
+    use HasFactory;
 
-    public function customer()
+    protected $fillable = [
+        'user_id',
+        'booking_id',
+        'type',
+        'title',
+        'message',
+        'is_read',
+        'read_at',
+    ];
+
+    protected $casts = [
+        'is_read' => 'boolean',
+        'read_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(Customers::class, 'customers_id');
+        return $this->belongsTo(User::class);
+    }
+
+    public function booking(): BelongsTo
+    {
+        return $this->belongsTo(Booking::class);
+    }
+
+    public function markAsRead(): void
+    {
+        if (!$this->is_read) {
+            $this->update([
+                'is_read' => true,
+                'read_at' => now(),
+            ]);
+        }
     }
 }

@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\TravelBlogController;
 use App\Http\Controllers\Api\AboutUsController;
 use App\Http\Controllers\Api\OurStoryController;
 use App\Http\Controllers\Api\AccreditationController;
+use App\Http\Controllers\Api\NotificationController;
 
 
 Route::middleware('api')->group(function () {
@@ -44,4 +45,12 @@ Route::middleware('api')->group(function () {
     Route::post('our-story/upload-image', [OurStoryController::class, 'uploadImage']);
 
     Route::apiResource('accreditations', AccreditationController::class, ['only' => ['index', 'store', 'destroy']]);
+
+    // Notifications
+    Route::get('notifications', [NotificationController::class, 'index']);
+    Route::get('notifications/unread', [NotificationController::class, 'unread']);
+    Route::get('notifications/unread-count', [NotificationController::class, 'unreadCount']);
+    Route::patch('notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+    Route::post('notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
+    Route::delete('notifications/{id}', [NotificationController::class, 'destroy']);
 });

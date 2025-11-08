@@ -60,23 +60,51 @@ class Booking extends Model
         'itinerary' => 'array',
     ];
 
+    /**
+     * Get the package associated with this booking
+     */
     public function package()
     {
         return $this->belongsTo(Packages::class);
     }
 
+    /**
+     * Get the voucher associated with this booking
+     */
     public function voucher()
     {
         return $this->belongsTo(Voucher::class);
     }
 
+    /**
+     * Get the customer who made this booking
+     */
+    public function customer()
+    {
+        return $this->belongsTo(User::class, 'customer_id');
+    }
+
+    /**
+     * Get the admin who approved this booking
+     */
     public function approvedByUser()
     {
         return $this->belongsTo(User::class, 'approved_by');
     }
     
+    /**
+     * Get the admin who rejected this booking
+     */
     public function rejectedByUser()
     {
         return $this->belongsTo(User::class, 'rejected_by');
+    }
+
+    /**
+     * Get all notifications for this booking
+     */
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
     }
 }
