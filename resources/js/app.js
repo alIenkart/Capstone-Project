@@ -9,6 +9,7 @@ import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import Toast from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+import '../css/app.css';
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
