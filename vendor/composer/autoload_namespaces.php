@@ -7,4 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Venturecraft\\Revisionable' => array($vendorDir . '/venturecraft/revisionable/src'),
+    'Detection' => array($vendorDir . '/mobiledetect/mobiledetectlib/namespaced'),
 );
