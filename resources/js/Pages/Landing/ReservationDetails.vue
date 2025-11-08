@@ -112,27 +112,26 @@
           </div>
 
           <div v-else class="grid gap-6">
-            <div v-for="(day, index) in displayItinerary" :key="day.id"
+            <div v-for="(item, index) in displayItinerary" :key="item.dayNumber"
               class="w-full rounded-2xl bg-gradient-to-br from-white to-[#f9fcff] border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300">
               <div
                 class="px-6 py-4 border-b border-gray-100 bg-[#f8fbff] rounded-t-2xl flex justify-between items-center">
-                <h3 class="text-lg font-semibold text-[#1E71B8] tracking-wide">Day {{ day.id }}</h3>
-                <button v-if="isEditingItinerary" @click="removeDay(index)"
-                  class="text-red-500 hover:text-red-600 text-sm font-semibold flex items-center gap-1 transition">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                <h3 class="text-lg font-semibold text-[#1E71B8] tracking-wide">Day {{ item.dayNumber }}</h3>
+                <button v-if="isEditingItinerary" @click="removeDay(item.dayNumber)"
+                  class="text-red-500 hover:text-red-600 w-6 h-6 text-sm font-semibold flex items-center gap-1 transition">
+                  <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
-                  Remove
                 </button>
               </div>
               <div class="px-6 py-5 text-gray-700 leading-relaxed whitespace-pre-wrap text-[15px]">
                 <template v-if="isEditingItinerary">
-                  <textarea v-model="editableItinerary[index].content" rows="5"
+                  <textarea v-model="editableItinerary[`day_${item.dayNumber}`]" rows="5"
                     class="w-full p-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1E71B8]"></textarea>
                 </template>
                 <template v-else>
-                  {{ day.content }}
+                  {{ item.content }}
                 </template>
               </div>
             </div>
@@ -265,7 +264,29 @@ const isExclusiveTour = computed(() =>
 )
 
 const displayItinerary = computed(() => {
-  return isEditingItinerary.value ? editableItinerary.value : booking.itinerary || []
+  let itinerary = isEditingItinerary.value 
+    ? editableItinerary.value 
+    : (booking.customItinerary && Object.keys(booking.customItinerary).length > 0 
+        ? booking.customItinerary 
+        : booking.itinerary)
+
+  if (itinerary && typeof itinerary === 'object' && !Array.isArray(itinerary)) {
+    return Object.entries(itinerary)
+      .sort(([keyA], [keyB]) => {
+        const numA = parseInt(keyA.replace('day_', ''))
+        const numB = parseInt(keyB.replace('day_', ''))
+        return numA - numB
+      })
+      .map(([key, value]) => {
+        const dayNumber = parseInt(key.replace('day_', ''))
+        return {
+          dayNumber: dayNumber,
+          content: value
+        }
+      })
+  }
+
+  return Array.isArray(itinerary) ? itinerary : []
 })
 
 const toggleCustomize = () => {
@@ -282,20 +303,36 @@ const toggleCustomize = () => {
 
 const addNewDay = () => {
   const maxDays = booking.getHowManyDays
-  if (editableItinerary.value.length < maxDays) {
-    editableItinerary.value.push({
-      id: editableItinerary.value.length + 1,
-      content: ''
-    })
+  const currentDayCount = Object.keys(editableItinerary.value).length
+
+  if (currentDayCount < maxDays) {
+    const newDayNumber = currentDayCount + 1
+    editableItinerary.value[`day_${newDayNumber}`] = ''
   }
 }
 
-const removeDay = (index) => {
-  if (editableItinerary.value.length > 1) {
-    editableItinerary.value.splice(index, 1)
-    editableItinerary.value.forEach((day, idx) => {
-      day.id = idx + 1
-    })
+const removeDay = (dayNumber) => {
+  const currentDayCount = Object.keys(editableItinerary.value).length
+
+  if (currentDayCount > 1) {
+    const newItinerary = {}
+    let newDayCounter = 1
+
+    Object.keys(editableItinerary.value)
+      .sort((a, b) => {
+        const numA = parseInt(a.replace('day_', ''))
+        const numB = parseInt(b.replace('day_', ''))
+        return numA - numB
+      })
+      .forEach((key) => {
+        const currentDayNum = parseInt(key.replace('day_', ''))
+        if (currentDayNum !== dayNumber) {
+          newItinerary[`day_${newDayCounter}`] = editableItinerary.value[key]
+          newDayCounter++
+        }
+      })
+
+    editableItinerary.value = newItinerary
   } else {
     toast.warning('You must have at least one day in the itinerary.')
   }

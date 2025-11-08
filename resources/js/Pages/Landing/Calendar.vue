@@ -453,7 +453,6 @@ const postDate = () => {
 }
 
 onMounted(() => {
-  console.log(booking.$state)
   selectedDate.value = booking.startDate || '';
   selectedEndDate.value = booking.endDate || '';
   tourClassifications.value = booking.selectedPackage.tour_classification;

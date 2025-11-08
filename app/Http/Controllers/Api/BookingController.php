@@ -70,9 +70,9 @@ class BookingController extends Controller
             'travel_date' => 'nullable|date',
 
             // Itinerary (array of objects)
-            'itinerary' => 'nullable|array',
+            'itinerary' => 'required|array',
             'itinerary.*.id' => 'nullable|integer',
-            'itinerary.*.content' => 'required|string|max:2000',
+            'itinerary.*.content' => 'nullable|string|max:2000',
 
             // Pricing details
             'adults_quantity' => 'nullable|integer|min:0',

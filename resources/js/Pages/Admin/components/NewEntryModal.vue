@@ -507,7 +507,7 @@
 
               <div class="flex justify-between items-center bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
                 <span class="text-white font-bold text-xl">Total Amount</span>
-                <span class="text-[#73BE5D] font-bold text-3xl">₱{{ totalAmount }}</span>
+                <span class="text-white font-bold text-3xl">₱{{ totalAmount }}</span>
               </div>
             </div>
 
