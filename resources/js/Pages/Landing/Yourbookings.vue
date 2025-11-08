@@ -35,7 +35,7 @@
                 <span v-if="status === 'All'" class="text-lg"></span>
                 <span v-else-if="status === 'Approved'" class="text-lg"></span>
                 <span v-else-if="status === 'Pending'" class="text-lg"></span>
-                <span v-else-if="status === 'reject'" class="text-lg"></span>
+                <span v-else-if="status === 'Rejected'" class="text-lg"></span>
                 
                 <span :class="[
                   'font-medium',
@@ -438,7 +438,7 @@ const selectOptionTypePayment = (option) => {
 
 const filteredBookings = computed(() => {
   if (selectedStatusFilter.value === 'All') {
-    return bookings.value;
+    return bookings.value.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
   }
   return bookings.value.filter(booking => booking.status === selectedStatusFilter.value);
 });
