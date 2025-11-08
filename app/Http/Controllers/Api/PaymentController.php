@@ -89,6 +89,10 @@ class PaymentController extends Controller
 
         if ($request->has('is_fully_paid')) {
             $payment->is_fully_paid = $request->is_fully_paid;
+        
+            if ($request->is_fully_paid) {
+                $payment->payment_status = 'Approved';
+            }
         }
 
         if ($request->has('type_of_payment')) {
