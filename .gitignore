@@ -9,5 +9,6 @@ public/storage/receipt
 public/hot
 public_html/storage
 public_html/hot
+public/build
 .qodo
 /storage/logs/laravel.log
