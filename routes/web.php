@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\Auth\OtpRegisterController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminLoginHistoryController;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -102,9 +103,8 @@ Route::middleware(['auth', 'is.admin'])->group(function () {
         return Inertia::render('Admin/ReviewFeedback');
     })->name('admin.review-feedback');
 
-    Route::get('/admin/login-history', function () {
-        return Inertia::render('Admin/LoginHistory');
-    })->name('admin.login-history');
+    Route::get('/admin/login-history', [AdminLoginHistoryController::class, 'index'])
+    ->name('admin.login-history');
 
     Route::get('/admin/settings', function () {
         return Inertia::render('Admin/Settings');
