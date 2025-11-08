@@ -8,11 +8,9 @@
         <p class="text-white/80 text-sm mt-1">Review and process payment submission</p>
         <button
           class="absolute top-6 right-6 text-white/80 hover:text-white hover:bg-white/20 rounded-full w-10 h-10 flex items-center justify-center transition-all"
-          @click="$emit('close')"
-          aria-label="Close"
-        >
+          @click="$emit('close')" aria-label="Close">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
@@ -25,7 +23,8 @@
             <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 border border-gray-200">
               <div class="flex items-center gap-2 mb-4">
                 <svg class="w-5 h-5 text-[#217093]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
                 <h3 class="font-bold text-gray-800">Customer Information</h3>
               </div>
@@ -48,7 +47,8 @@
             <div class="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-2xl p-6 border border-blue-200">
               <div class="flex items-center gap-2 mb-4">
                 <svg class="w-5 h-5 text-[#217093]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
                 <h3 class="font-bold text-gray-800">Booking Details</h3>
               </div>
@@ -108,27 +108,29 @@
             <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-200">
               <div class="flex items-center gap-2 mb-4">
                 <svg class="w-5 h-5 text-[#217093]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                 </svg>
                 <h3 class="font-bold text-gray-800">Payment Proof</h3>
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Proof of Payment</label>
-                <div @click="openImageModal" class="relative group rounded-xl overflow-hidden border-2 border-gray-300 bg-gray-50 aspect-video cursor-pointer">
-                  <img 
-                    v-if="imagePreview" 
-                    :src="imagePreview" 
-                    alt="Payment Proof" 
-                    class="w-full h-full object-cover"
-                  />
+                <div @click="openImageModal"
+                  class="relative group rounded-xl overflow-hidden border-2 border-gray-300 bg-gray-50 aspect-video cursor-pointer">
+                  <img v-if="imagePreview" :src="imagePreview" alt="Payment Proof" class="w-full h-full object-cover" />
                   <div v-else class="w-full h-full flex items-center justify-center text-gray-400">
                     No Image
                   </div>
-                  <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
-                    <div class="text-center transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                      <svg class="w-12 h-12 text-white mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                  <div
+                    class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
+                    <div
+                      class="text-center transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                      <svg class="w-12 h-12 text-white mx-auto mb-2" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                       </svg>
                       <p class="text-white font-semibold text-sm">Click to view full size</p>
                     </div>
@@ -137,20 +139,18 @@
               </div>
 
               <div class="mt-5">
-                <label for="paymentMethod" class="block text-sm font-medium text-gray-700">Type of Payment: {{ typeOfPayment }}</label> 
-                <label for="paymentMethod" class="block text-sm font-medium text-gray-700">Payment Method: {{ paymentMethod }}</label>        
+                <label for="paymentMethod" class="block text-sm font-medium text-gray-700">Type of Payment: {{
+                  typeOfPayment }}</label>
+                <label for="paymentMethod" class="block text-sm font-medium text-gray-700">Payment Method: {{
+                  paymentMethod }}</label>
               </div>
-              
+
             </div>
 
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">Remarks (Optional)</label>
-              <textarea
-                v-model="remarks"
-                rows="4"
-                placeholder="Add your comments here..."
-                class="w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-2 focus:ring-[#217093]/20 outline-none transition-all p-4 resize-none"
-              ></textarea>
+              <textarea v-model="remarks" rows="4" placeholder="Add your comments here..."
+                class="w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-2 focus:ring-[#217093]/20 outline-none transition-all p-4 resize-none"></textarea>
             </div>
           </div>
         </div>
@@ -161,30 +161,34 @@
         <div class="flex flex-wrap justify-center gap-4">
 
           <div v-if="!isDownPayment()">
-            <button @click="submitVerificationOfPayment('Approved')" class="flex items-center gap-2 rounded-xl bg-gradient-to-r from-green-600 to-green-700 px-8 py-3 text-white font-semibold hover:from-green-700 hover:to-green-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+            <button @click="submitVerificationOfPayment('Approved')"
+              class="flex items-center gap-2 rounded-xl bg-gradient-to-r from-green-600 to-green-700 px-8 py-3 text-white font-semibold hover:from-green-700 hover:to-green-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
               </svg>
               Approve Payment
             </button>
           </div>
 
           <div v-else>
-            <button @click="submitVerificationOfPayment('Down Payment Approved')" class="flex items-center gap-2 rounded-xl bg-gradient-to-r from-green-600 to-green-700 px-8 py-3 text-white font-semibold hover:from-green-700 hover:to-green-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+            <button @click="submitVerificationOfPayment('Down Payment Approved')"
+              class="flex items-center gap-2 rounded-xl bg-gradient-to-r from-green-600 to-green-700 px-8 py-3 text-white font-semibold hover:from-green-700 hover:to-green-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
               </svg>
               Approve Down Payment
             </button>
           </div>
 
-          <button @click="submitVerificationOfPayment('Rejected')" class="flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-500 to-red-600 px-8 py-3 text-white font-semibold hover:from-red-600 hover:to-red-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+          <button @click="submitVerificationOfPayment('Rejected')"
+            class="flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-500 to-red-600 px-8 py-3 text-white font-semibold hover:from-red-600 hover:to-red-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
             Reject Payment
           </button>
-          <button @click="$emit('close')" class="flex items-center gap-2 rounded-xl bg-gray-600 px-8 py-3 text-white font-semibold hover:bg-gray-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+          <button @click="$emit('close')"
+            class="flex items-center gap-2 rounded-xl bg-gray-600 px-8 py-3 text-white font-semibold hover:bg-gray-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
             Cancel
           </button>
         </div>
@@ -193,115 +197,119 @@
   </div>
 
   <!-- Image Modal for Full Size View -->
-  <Transition
-    enter-active-class="transition-all duration-300 ease-out"
-    enter-from-class="opacity-0"
-    enter-to-class="opacity-100"
-    leave-active-class="transition-all duration-200 ease-in"
-    leave-from-class="opacity-100"
-    leave-to-class="opacity-0"
-  >
-    <div v-if="showImageModal" @click="closeImageModal" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/95 backdrop-blur-md p-4 cursor-zoom-out">
+  <Transition enter-active-class="transition-all duration-300 ease-out" enter-from-class="opacity-0"
+    enter-to-class="opacity-100" leave-active-class="transition-all duration-200 ease-in" leave-from-class="opacity-100"
+    leave-to-class="opacity-0">
+    <div v-if="showImageModal" @click="closeImageModal"
+      class="fixed inset-0 z-[60] flex items-center justify-center bg-black/95 backdrop-blur-md p-4 cursor-zoom-out">
       <!-- Close Button -->
-      <button 
-        @click="closeImageModal" 
+      <button @click="closeImageModal"
         class="absolute top-6 right-6 z-10 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white rounded-full p-3 transition-all duration-200 hover:scale-110 active:scale-95 group"
-        aria-label="Close"
-      >
+        aria-label="Close">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>
 
-      <!-- Info Badge -->
-      <div class="absolute top-6 left-6 bg-white/10 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 pointer-events-none">
+      <div
+        class="absolute top-6 left-6 bg-white/10 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 pointer-events-none">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
         </svg>
         Payment Proof
       </div>
-
-      <!-- Image Container with Animation -->
-      <Transition
-        enter-active-class="transition-all duration-300 ease-out"
-        enter-from-class="opacity-0 scale-95"
-        enter-to-class="opacity-100 scale-100"
-        leave-active-class="transition-all duration-200 ease-in"
-        leave-from-class="opacity-100 scale-100"
-        leave-to-class="opacity-0 scale-95"
-      >
-        <div v-if="showImageModal" @click.stop class="relative w-full max-w-7xl h-[90vh] flex items-center justify-center cursor-default">
-          <img 
-            src="https://i.ibb.co/0j9w1cC/sample-payment.png" 
-            alt="Payment Proof Full Size" 
-            class="w-full h-full object-contain rounded-2xl shadow-2xl"
-          />
-          
-          <!-- Download Button -->
-          <a 
-            href="https://i.ibb.co/0j9w1cC/sample-payment.png" 
-            download="payment-proof.png"
-            class="absolute bottom-6 right-6 bg-[#217093] hover:bg-[#2a8bb5] text-white rounded-xl px-5 py-3 font-semibold transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg flex items-center gap-2"
-          >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+      <Transition enter-active-class="transition-all duration-300 ease-out" enter-from-class="opacity-0"
+        enter-to-class="opacity-100" leave-active-class="transition-all duration-200 ease-in"
+        leave-from-class="opacity-100" leave-to-class="opacity-0">
+        <div v-if="showImageModal" @click="closeImageModal"
+          class="fixed inset-0 z-[60] flex items-center justify-center bg-black/95 backdrop-blur-md p-4 cursor-zoom-out">
+          <button @click="closeImageModal"
+            class="absolute top-6 right-6 z-10 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white rounded-full p-3 transition-all duration-200 hover:scale-110 active:scale-95 group"
+            aria-label="Close">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
             </svg>
-            Download
-          </a>
+          </button>
+          <div
+            class="absolute top-6 left-6 bg-white/10 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2 pointer-events-none">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Payment Proof
+          </div>
+          <Transition enter-active-class="transition-all duration-300 ease-out" enter-from-class="opacity-0 scale-95"
+            enter-to-class="opacity-100 scale-100" leave-active-class="transition-all duration-200 ease-in"
+            leave-from-class="opacity-100 scale-100" leave-to-class="opacity-0 scale-95">
+            <div v-if="showImageModal" @click.stop
+              class="relative w-full max-w-7xl h-[90vh] flex items-center justify-center cursor-default">
+              <img v-if="imagePreview" :src="imagePreview" alt="Payment Proof Full Size"
+                class="w-full h-full object-contain rounded-2xl shadow-2xl" />
+              <div v-else class="text-white text-center">
+                <svg class="w-16 h-16 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <p>No image available</p>
+              </div>
+              <a v-if="imagePreview" :href="imagePreview" download="payment-proof.png"
+                class="absolute bottom-6 right-6 bg-[#217093] hover:bg-[#2a8bb5] text-white rounded-xl px-5 py-3 font-semibold transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Download
+              </a>
+            </div>
+          </Transition>
+          <div
+            class="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-white/10 backdrop-blur-sm text-white/80 px-4 py-2 rounded-full text-xs pointer-events-none">
+            Click outside to close
+          </div>
         </div>
       </Transition>
-
-      <!-- Click outside hint -->
-      <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-white/10 backdrop-blur-sm text-white/80 px-4 py-2 rounded-full text-xs pointer-events-none">
+      <div
+        class="absolute bottom-8 left-1/2 transform -translate-x-1/2 bg-white/10 backdrop-blur-sm text-white/80 px-4 py-2 rounded-full text-xs pointer-events-none">
         Click outside to close
       </div>
     </div>
   </Transition>
 
   <!-- Reject Confirmation Modal -->
-  <Transition
-    enter-active-class="transition-all duration-300 ease-out"
-    enter-from-class="opacity-0"
-    enter-to-class="opacity-100"
-    leave-active-class="transition-all duration-200 ease-in"
-    leave-from-class="opacity-100"
-    leave-to-class="opacity-0"
-  >
-    <div v-if="showRejectModal" class="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <Transition
-        enter-active-class="transition-all duration-300 ease-out"
-        enter-from-class="opacity-0 scale-95 translate-y-4"
-        enter-to-class="opacity-100 scale-100 translate-y-0"
-        leave-active-class="transition-all duration-200 ease-in"
-        leave-from-class="opacity-100 scale-100 translate-y-0"
-        leave-to-class="opacity-0 scale-95 translate-y-4"
-      >
+  <Transition enter-active-class="transition-all duration-300 ease-out" enter-from-class="opacity-0"
+    enter-to-class="opacity-100" leave-active-class="transition-all duration-200 ease-in" leave-from-class="opacity-100"
+    leave-to-class="opacity-0">
+    <div v-if="showRejectModal"
+      class="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+      <Transition enter-active-class="transition-all duration-300 ease-out"
+        enter-from-class="opacity-0 scale-95 translate-y-4" enter-to-class="opacity-100 scale-100 translate-y-0"
+        leave-active-class="transition-all duration-200 ease-in" leave-from-class="opacity-100 scale-100 translate-y-0"
+        leave-to-class="opacity-0 scale-95 translate-y-4">
         <div v-if="showRejectModal" @click.stop class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
           <!-- Icon -->
           <div class="flex justify-center mb-4">
             <div class="bg-red-100 rounded-full p-3">
               <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
             </div>
           </div>
 
           <!-- Content -->
           <h3 class="text-xl font-bold text-gray-900 text-center mb-2">Reject Payment</h3>
-          <p class="text-gray-600 text-center mb-6">Are you sure you want to reject this payment? This action cannot be undone.</p>
+          <p class="text-gray-600 text-center mb-6">Are you sure you want to reject this payment? This action cannot be
+            undone.</p>
 
           <!-- Buttons -->
           <div class="flex gap-3">
-            <button 
-              @click="cancelReject"
-              class="flex-1 px-4 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"
-            >
+            <button @click="cancelReject"
+              class="flex-1 px-4 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold rounded-xl transition-all duration-200 hover:scale-105 active:scale-95">
               Cancel
             </button>
-            <button 
-              @click="confirmReject"
-              class="flex-1 px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-xl transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg"
-            >
+            <button @click="confirmReject"
+              class="flex-1 px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-xl transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg">
               Reject
             </button>
           </div>
@@ -345,9 +353,12 @@
           <div>
             <h3 class="font-bold text-gray-800 mb-3">Customer Information</h3>
             <div class="space-y-1 text-sm">
-              <p><span class="text-gray-600">Name:</span> <span class="font-medium">{{ receiptData.customerName }}</span></p>
-              <p><span class="text-gray-600">Email:</span> <span class="font-medium">{{ receiptData.customerEmail }}</span></p>
-              <p><span class="text-gray-600">Phone No:</span> <span class="font-medium">{{ receiptData.customerPhone }}</span></p>
+              <p><span class="text-gray-600">Name:</span> <span class="font-medium">{{ receiptData.customerName
+                  }}</span></p>
+              <p><span class="text-gray-600">Email:</span> <span class="font-medium">{{ receiptData.customerEmail
+                  }}</span></p>
+              <p><span class="text-gray-600">Phone No:</span> <span class="font-medium">{{ receiptData.customerPhone
+                  }}</span></p>
             </div>
           </div>
 
@@ -355,9 +366,12 @@
           <div>
             <h3 class="font-bold text-gray-800 mb-3">Payment Details</h3>
             <div class="space-y-1 text-sm">
-              <p><span class="text-gray-600">Payment Via:</span> <span class="font-medium">{{ receiptData.paymentVia }}</span></p>
-              <p><span class="text-gray-600">Quantity:</span> <span class="font-medium">{{ receiptData.quantity }}</span></p>
-              <p><span class="text-gray-600">Type of Payment:</span> <span class="font-medium">{{ receiptData.paymentType }}</span></p>
+              <p><span class="text-gray-600">Payment Via:</span> <span class="font-medium">{{ receiptData.paymentVia
+                  }}</span></p>
+              <p><span class="text-gray-600">Quantity:</span> <span class="font-medium">{{ receiptData.quantity
+                  }}</span></p>
+              <p><span class="text-gray-600">Type of Payment:</span> <span class="font-medium">{{
+                receiptData.paymentType }}</span></p>
             </div>
           </div>
         </div>
@@ -366,12 +380,18 @@
         <div class="mb-6">
           <h3 class="font-bold text-gray-800 mb-3">Booking Details</h3>
           <div class="space-y-1 text-sm">
-            <p><span class="text-gray-600">Tour Classification:</span> <span class="font-medium">{{ receiptData.tourClassification }}</span></p>
-            <p><span class="text-gray-600">Package:</span> <span class="font-medium">{{ receiptData.package }}</span></p>
-            <p><span class="text-gray-600">Duration:</span> <span class="font-medium">{{ receiptData.duration }}</span></p>
-            <p><span class="text-gray-600">Booking Type:</span> <span class="font-medium">{{ receiptData.bookingType }}</span></p>
-            <p><span class="text-gray-600">Destination:</span> <span class="font-medium">{{ receiptData.destination }}</span></p>
-            <p><span class="text-gray-600">Travel Date:</span> <span class="font-medium">{{ receiptData.travelDate }}</span></p>
+            <p><span class="text-gray-600">Tour Classification:</span> <span class="font-medium">{{
+              receiptData.tourClassification }}</span></p>
+            <p><span class="text-gray-600">Package:</span> <span class="font-medium">{{ receiptData.package }}</span>
+            </p>
+            <p><span class="text-gray-600">Duration:</span> <span class="font-medium">{{ receiptData.duration }}</span>
+            </p>
+            <p><span class="text-gray-600">Booking Type:</span> <span class="font-medium">{{ receiptData.bookingType
+                }}</span></p>
+            <p><span class="text-gray-600">Destination:</span> <span class="font-medium">{{ receiptData.destination
+                }}</span></p>
+            <p><span class="text-gray-600">Travel Date:</span> <span class="font-medium">{{ receiptData.travelDate
+                }}</span></p>
           </div>
         </div>
 
@@ -410,16 +430,19 @@
         <!-- Footer -->
         <div class="text-center text-sm text-gray-600">
           <p class="font-medium mb-1">Thank you for booking with JE Travel & Tours!</p>
-          <p>For more inquiries, contact us at <a href="mailto:contactus@jetravelandtours.com" class="text-blue-600 hover:underline">contactus@jetravelandtours.com</a></p>
+          <p>For more inquiries, contact us at <a href="mailto:contactus@jetravelandtours.com"
+              class="text-blue-600 hover:underline">contactus@jetravelandtours.com</a></p>
         </div>
       </div>
 
       <!-- Action Buttons -->
       <div id="receipt-buttons" class="flex justify-center gap-4 p-6 border-t bg-gray-50">
-        <button @click="closeReceipt" class="px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-semibold transition">
+        <button @click="closeReceipt"
+          class="px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-semibold transition">
           Close
         </button>
-        <button @click="downloadReceipt" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition">
+        <button @click="downloadReceipt"
+          class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition">
           Download Receipt
         </button>
       </div>
@@ -484,7 +507,6 @@ const fetchPaymentAndBooking = async (id) => {
 
     typeOfPayment.value = paymentData.value.payment_history.paymentType || '';
     paymentStatus.value = paymentData.value.payment_status || '';
-
     receiptData.value = {
       receiptNo: `2025-${paymentData.value?.payment_id || 'N/A'}`,
       date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
@@ -551,23 +573,23 @@ const isDownPayment = () => {
 
 const downloadReceipt = async () => {
   const receiptElement = document.getElementById('receipt-content');
-  
+
   if (!receiptElement) {
     alert('Receipt element not found');
     return;
   }
-  
+
   const buttons = document.getElementById('receipt-buttons');
   if (buttons) buttons.style.display = 'none';
-  
+
   const originalMaxHeight = receiptElement.style.maxHeight;
   const originalOverflow = receiptElement.style.overflow;
   receiptElement.style.maxHeight = 'none';
   receiptElement.style.overflow = 'visible';
-  
+
   try {
     await new Promise(resolve => setTimeout(resolve, 500));
-    
+
     const canvas = await html2canvas(receiptElement, {
       scale: 2.5,
       useCORS: false,
@@ -588,7 +610,7 @@ const downloadReceipt = async () => {
         return false;
       }
     });
-    
+
     const imgData = canvas.toDataURL('image/png', 1.0);
     const pdf = new jsPDF({
       orientation: 'portrait',
@@ -596,15 +618,15 @@ const downloadReceipt = async () => {
       format: 'a4',
       compress: true
     });
-    
+
     const pdfWidth = 210;
     const pdfHeight = 297;
     const imgWidth = pdfWidth - 20;
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
-    
+
     const xOffset = 10;
     const yOffset = 10;
-    
+
     if (imgHeight <= pdfHeight - 20) {
       pdf.addImage(imgData, 'PNG', xOffset, yOffset, imgWidth, imgHeight, undefined, 'FAST');
     } else {
@@ -613,7 +635,7 @@ const downloadReceipt = async () => {
       const centeredX = (pdfWidth - scaledWidth) / 2;
       pdf.addImage(imgData, 'PNG', centeredX, yOffset, scaledWidth, scaledHeight, undefined, 'FAST');
     }
-    
+
     pdf.save(`Payment_Receipt_${receiptData.value.receiptNo}.pdf`);
   } catch (error) {
     console.error('Error generating PDF:', error);
@@ -643,8 +665,6 @@ async function submitVerificationOfPayment($status) {
     toast.error('Something went wrong while submitting your payment.');
   }
 }
-
-
 
 onMounted(() => {
   if (props.payment?.id) {

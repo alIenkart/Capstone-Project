@@ -130,7 +130,7 @@
                   </span>
                 </td>
                 <td class="px-6 py-4 text-sm text-center">
-                  <button @click="openApprovalPaymentModal(p)"
+                  <button @click="openApprovalPaymentModal(payment)"
                     class="inline-flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-[#1E71B8] to-[#2a8bb5] hover:from-[#2a8bb5] hover:to-[#1E71B8] text-white rounded-lg font-medium transition-all shadow hover:shadow-lg transform hover:-translate-y-0.5">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -222,7 +222,7 @@ onBeforeUnmount(() => {
 const showApprovalPaymentModal = ref(false)
 const selectedPayment = ref(null)
 
-const openApprovalPaymentModal = (payment = null) => {
+const openApprovalPaymentModal = (payment) => {
   selectedPayment.value = payment
   showApprovalPaymentModal.value = true
 }
