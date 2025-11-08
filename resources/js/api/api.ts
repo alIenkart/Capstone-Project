@@ -122,4 +122,55 @@ export class api {
     deleteTravelBlog(id: number) {
         return plainInstance.delete(`/api/travel-blogs/${id}`);
     }
+
+    getAboutUs() {
+        return plainInstance.get("/api/about-us");
+    }
+
+    updateAboutUs(payload: object) {
+        return plainInstance.patch(`/api/about-us`, payload);
+    }
+
+    uploadAboutUsImage(file: File) {
+        const formData = new FormData();
+        formData.append('image', file);
+        
+        return plainInstance.post(`/api/about-us/upload-image`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+    }
+
+    getOurStory() {
+        return plainInstance.get("/api/our-story");
+    }
+
+    updateOurStory(payload: object) {
+        return plainInstance.patch(`/api/our-story`, payload);
+    }
+
+    uploadOurStoryImage(file: File) {
+        const formData = new FormData();
+        formData.append('image', file);
+        
+        return plainInstance.post(`/api/our-story/upload-image`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+    }
+
+    getAccreditations() {
+        return plainInstance.get("/api/accreditations");
+    }
+
+    uploadAccreditation(file: File) {
+        const formData = new FormData();
+        formData.append('image', file);
+        
+        return plainInstance.post(`/api/accreditations`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+    }
+
+    deleteAccreditation(id: number) {
+        return plainInstance.delete(`/api/accreditations/${id}`);
+    }
 }

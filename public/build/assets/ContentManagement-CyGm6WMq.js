@@ -1,1 +1,0 @@
-import e from"./AdminIndex-Dk116fLf.js";import{c as t,o as n}from"./app-Dp--WtE_.js";const r=Object.assign({layout:e},{__name:"ContentManagement",setup(a){return(o,c)=>(n(),t("h1",null," This is the content management page "))}});export{r as default};

@@ -11,6 +11,10 @@ use App\Http\Controllers\Api\InquiryController;
 use App\Http\Controllers\Api\FeedbackController;
 use App\Http\Controllers\Api\ContentController;
 use App\Http\Controllers\Api\TravelBlogController;
+use App\Http\Controllers\Api\AboutUsController;
+use App\Http\Controllers\Api\OurStoryController;
+use App\Http\Controllers\Api\AccreditationController;
+
 
 Route::middleware('api')->group(function () {
 
@@ -30,4 +34,14 @@ Route::middleware('api')->group(function () {
     // Travel Blogs
     Route::apiResource('travel-blogs', TravelBlogController::class);
     Route::post('travel-blogs/{travel_blog}/upload-image', [TravelBlogController::class, 'uploadImage']);
+
+    Route::get('about-us', [AboutUsController::class, 'index']);
+    Route::patch('about-us', [AboutUsController::class, 'update']);
+    Route::post('about-us/upload-image', [AboutUsController::class, 'uploadImage']);
+
+    Route::get('our-story', [OurStoryController::class, 'index']);
+    Route::patch('our-story', [OurStoryController::class, 'update']);
+    Route::post('our-story/upload-image', [OurStoryController::class, 'uploadImage']);
+
+    Route::apiResource('accreditations', AccreditationController::class, ['only' => ['index', 'store', 'destroy']]);
 });
