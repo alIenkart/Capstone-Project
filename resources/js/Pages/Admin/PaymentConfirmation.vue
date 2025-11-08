@@ -110,7 +110,7 @@
                 </td>
                 <td class="px-6 py-4 text-sm text-center">
                   <span class="text-green-700 px-3 py-1 text-xs font-medium bg-green-100 rounded-full">
-                    {{ payment.payment_history.paymentType}}
+                    {{ payment.payment_history?.paymentType}}
                   </span>
                 </td>
                 <td class="px-6 py-4 text-sm text-center">
@@ -262,7 +262,6 @@ const filteredPayments = computed(() => {
     result = result.filter(payment => payment.payment_status === statusFilter.value)
   }
 
-  console.log("🚀 ~ result:", result)
   return result;
 })
 

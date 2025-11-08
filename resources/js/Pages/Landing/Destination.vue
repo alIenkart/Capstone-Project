@@ -109,7 +109,7 @@ onMounted(() => {
         :key="pkg.id"
       >
         <img :src="'/storage/' + pkg.image_path" :alt="pkg.title" />
-        <div class="destination-meta">₱ {{ pkg.pax_rate }}</div>
+        <div class="destination-meta">₱ {{ pkg.pax_rate.toLocaleString() }}</div>
         <div class="destination-title">{{ pkg.destination }}</div>
         <div class="destination-days">
           <span>{{ pkg.tour_duration   }} Days</span>
