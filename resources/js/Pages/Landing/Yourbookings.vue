@@ -493,11 +493,9 @@ const closeReceiptModal = () => {
 
 onMounted(async () => {
   bookings.value = await fetchBookingsByUser(userId);
-  console.log('view bookings', bookings.value)
 
   if (filteredBookings.value.length) {
     payments.value = await fetchPaymentsByBookingId(filteredBookings.value[selectedBookingIndex.value].id);
-    console.log('view payment', payments.value)
   }
 });
 

@@ -228,7 +228,6 @@ const filteredData = computed(() => {
         }
     })
 
-    console.log("🚀 ~ enriched:", enriched)
     return enriched;
 })
 
@@ -237,7 +236,6 @@ const totalPages = computed(() => Math.ceil(filteredData.value.length / itemsPer
 const paginatedData = computed(() => {
     const start = (currentPage.value - 1) * itemsPerPage
     const end = start + itemsPerPage
-    console.log("🚀 ~ filteredData.value.slice(start, end):", filteredData.value.slice(start, end))
     return filteredData.value.slice(start, end)
 })
 

@@ -83,7 +83,8 @@
               </button>
 
               <div v-if="isEditingItinerary" class="relative group flex items-center gap-3">
-                <button @click="addNewDay" :disabled="editableItinerary.length >= booking.getHowManyDays" class="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl shadow-md
+                <button @click="addNewDay" :disabled="Object.keys(editableItinerary).length >= booking.getHowManyDays"
+                  class="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl shadow-md
                          bg-[#1E71B8] text-white transition-all duration-200
                          hover:bg-[#155E9C] disabled:bg-gray-300 disabled:text-gray-700 disabled:cursor-not-allowed">
                   <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
@@ -93,7 +94,7 @@
                   Add Day
                 </button>
 
-                <div v-if="editableItinerary.length >= booking.getHowManyDays" class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max bg-gray-800 text-white
+                <div v-if="Object.keys(editableItinerary).length >= booking.getHowManyDays" class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max bg-gray-800 text-white
                          text-xs px-3 py-1.5 rounded-lg shadow-lg opacity-0 pointer-events-none
                          group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
                   {{
@@ -237,7 +238,7 @@ const kidsPax = ref(0)
 const discountImages = ref([])
 const remarks = ref('')
 const isEditingItinerary = ref(false)
-const editableItinerary = ref([])
+const editableItinerary = ref({})
 
 const durationDays = computed(() => booking.getHowManyDays)
 
@@ -264,11 +265,11 @@ const isExclusiveTour = computed(() =>
 )
 
 const displayItinerary = computed(() => {
-  let itinerary = isEditingItinerary.value 
-    ? editableItinerary.value 
-    : (booking.customItinerary && Object.keys(booking.customItinerary).length > 0 
-        ? booking.customItinerary 
-        : booking.itinerary)
+  let itinerary = isEditingItinerary.value
+    ? editableItinerary.value
+    : (booking.customItinerary && Object.keys(booking.customItinerary).length > 0
+      ? booking.customItinerary
+      : booking.itinerary)
 
   if (itinerary && typeof itinerary === 'object' && !Array.isArray(itinerary)) {
     return Object.entries(itinerary)
@@ -296,7 +297,10 @@ const toggleCustomize = () => {
     toast.success('Customization saved successfully!')
     isEditingItinerary.value = false
   } else {
-    editableItinerary.value = JSON.parse(JSON.stringify(booking.itinerary || []))
+    const sourceItinerary = (booking.customItinerary && Object.keys(booking.customItinerary).length > 0)
+      ? booking.customItinerary
+      : booking.itinerary
+    editableItinerary.value = JSON.parse(JSON.stringify(sourceItinerary || {}))
     isEditingItinerary.value = true
   }
 }
@@ -416,7 +420,7 @@ const fetchSelectedPackage = async () => {
 
 onMounted(() => {
   fetchSelectedPackage()
-})
+});
 </script>
 
 <style>

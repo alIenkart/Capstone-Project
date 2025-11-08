@@ -254,25 +254,12 @@ async function postBooking() {
     return
   }
 
-  // ============ COMPREHENSIVE DEBUG ============
-  console.log('==========================================')
-  console.log('🔍 BOOKING DEBUG - START')
-  console.log('==========================================')
-  
-  console.log('📦 Full booking store object:', JSON.parse(JSON.stringify(booking.$state)))
-  console.log('📋 Itinerary specifically:', booking.itinerary)
-  console.log('📊 Itinerary type:', typeof booking.itinerary)
-  console.log('📏 Is Array?:', Array.isArray(booking.itinerary))
-  
-  // ============ CONVERT ITINERARY OBJECT TO ARRAY ============
   let itineraryArray = [];
   
   if (booking.itinerary && typeof booking.itinerary === 'object') {
     if (Array.isArray(booking.itinerary)) {
-      // Already an array
       itineraryArray = booking.itinerary;
     } else {
-      // Convert object to array
       itineraryArray = Object.entries(booking.itinerary).map(([key, content], index) => ({
         id: index + 1,
         day: key,
@@ -280,16 +267,8 @@ async function postBooking() {
       }));
     }
   }
-  
-  console.log('📝 Converted itinerary array:', JSON.stringify(itineraryArray, null, 2))
-  console.log('==========================================')
-  console.log('🔍 BOOKING DEBUG - END')
-  console.log('==========================================')
-  // ============ END DEBUG ============
 
-  // Check if itinerary is empty
   if (!itineraryArray || itineraryArray.length === 0) {
-    console.error('❌ CRITICAL: Itinerary is empty or invalid!')
     toast.error('Itinerary data is missing. Please go back and select a package again.')
     return
   }
@@ -322,7 +301,6 @@ async function postBooking() {
   
   // Use the converted array
   const itineraryString = JSON.stringify(itineraryArray);
-  console.log('📤 Sending itinerary as:', itineraryString);
   formData.append('itinerary', itineraryString);
 
   formData.append('adults_quantity', booking.adultsQuantity);
@@ -351,14 +329,12 @@ async function postBooking() {
   }
 
   try {
-    const response = await service.createBooking(formData)
-    console.log('✅ Booking response:', response.data)
-    
+    await service.createBooking(formData)
     await new Promise(resolve => setTimeout(resolve, 500))
     isLoading.value = false
     showSuccessModal.value = true
   } catch (error) {
-    console.error('❌ Error saving booking:', error)
+    console.error('Error saving booking:', error)
     console.error('Error response:', error.response?.data)
     isLoading.value = false
     toast.error('Failed to create booking. Please try again.')
