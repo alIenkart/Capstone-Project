@@ -63,7 +63,7 @@ class NotificationService
         $title = 'Your Booking is Confirmed';
         $message = "Your booking for {$packageName} - {$duration} Day/s on {$travelDate} has been confirmed. " .
             "Please proceed with the payment of {$amount} using the QR code provided in the My Bookings page. " .
-            "Make sure to upload your payment receipt for verification. Thank you. (Booking ID: {$bookingId})";
+            "Make sure to upload your payment receipt for verification. Thank you.";
 
         return Notification::create([
             'user_id' => $booking->customer_id,
@@ -91,7 +91,7 @@ class NotificationService
             $message .= "Reason: {$rejectionCategory}. ";
         }
 
-        $message .= "Please check your email for more details or contact us. Thank you. (Booking ID: {$bookingId})";
+        $message .= "Please check your email for more details or contact us. Thank you.";
 
         return Notification::create([
             'user_id' => $booking->customer_id,
