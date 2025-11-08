@@ -113,20 +113,51 @@
                 </svg>
                 <h3 class="font-bold text-gray-800">Payment Proof</h3>
               </div>
+
+              <div v-if="paymentHistory.length > 1" class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Select Payment Date</label>
+                <select
+                  v-model="selectedPaymentIndex"
+                  class="w-full border border-gray-300 rounded-lg p-2 text-gray-700"
+                >
+                  <option
+                    v-for="(payment, index) in paymentHistory"
+                    :key="index"
+                    :value="index"
+                  >
+                    {{ payment.paymentDate }}
+                  </option>
+                </select>
+              </div>
+
+              <!-- Payment Info -->
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Proof of Payment</label>
-                <div @click="openImageModal"
-                  class="relative group rounded-xl overflow-hidden border-2 border-gray-300 bg-gray-50 aspect-video cursor-pointer">
-                  <img v-if="imagePreview" :src="imagePreview" alt="Payment Proof" class="w-full h-full object-cover" />
+                <div
+                  @click="openImageModal"
+                  class="relative group rounded-xl overflow-hidden border-2 border-gray-300 bg-gray-50 aspect-video cursor-pointer"
+                >
+                  <img
+                    v-if="currentPayment?.proofOfPayment"
+                    :src="currentPayment.proofOfPayment"
+                    alt="Payment Proof"
+                    class="w-full h-full object-cover"
+                  />
                   <div v-else class="w-full h-full flex items-center justify-center text-gray-400">
                     No Image
                   </div>
                   <div
-                    class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
+                    class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center"
+                  >
                     <div
-                      class="text-center transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                      <svg class="w-12 h-12 text-white mx-auto mb-2" fill="none" stroke="currentColor"
-                        viewBox="0 0 24 24">
+                      class="text-center transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300"
+                    >
+                      <svg
+                        class="w-12 h-12 text-white mx-auto mb-2"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -139,12 +170,16 @@
               </div>
 
               <div class="mt-5">
-                <label for="paymentMethod" class="block text-sm font-medium text-gray-700">Type of Payment: {{
-                  typeOfPayment }}</label>
-                <label for="paymentMethod" class="block text-sm font-medium text-gray-700">Payment Method: {{
-                  paymentMethod }}</label>
+                <label class="block text-sm font-medium text-gray-700">
+                  Type of Payment: {{ currentPayment?.paymentType }}
+                </label>
+                <label class="block text-sm font-medium text-gray-700">
+                  Mode Of Payment: {{ currentPayment?.modeOfPayment }}
+                </label>
+                <label class="block text-sm font-medium text-gray-700">
+                  Remaining Balance: {{ currentPayment?.remainingBalance }}
+                </label>
               </div>
-
             </div>
 
             <div>
@@ -476,7 +511,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { useToast } from 'vue-toastification'
@@ -499,6 +534,10 @@ const imagePreview = ref(null)
 const toast = useToast();
 let typeOfPayment = ref('');
 let paymentStatus = ref('');
+const paymentHistory = ref([]);
+const selectedPaymentIndex = ref(0);
+const currentPayment = computed(() => paymentHistory.value[selectedPaymentIndex.value]);
+
 
 const fetchPaymentAndBooking = async (id) => {
   try {
@@ -531,7 +570,7 @@ const fetchPaymentAndBooking = async (id) => {
         total_price: data.booking?.total_price || 0
       }
     };
-
+    paymentHistory.value = data.payment_history || [];
     typeOfPayment.value = paymentData.value.type_of_payment || '';
     paymentStatus.value = paymentData.value.payment_status || '';
     receiptData.value = {
