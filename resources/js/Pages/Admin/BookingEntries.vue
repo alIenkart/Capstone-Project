@@ -106,20 +106,20 @@
                     #{{ entry.id }}
                   </span>
                 </td>
-                <td class="px-6 py-4 text-sm text-gray-700 text-center">{{ entry.package_id }}</td>
+                <td class="px-6 py-4 text-sm font-medium text-gray-700 text-center">{{ entry.package_id }}</td>
                 <td class="px-6 py-4 text-sm font-medium text-gray-900 text-center">{{ entry.customer_name }}</td>
                 <td class="px-6 py-4 text-sm text-center">
                   <span :class="{
-                    'bg-green-100 text-green-700': entry.status === 'Approved',
-                    'bg-yellow-100 text-yellow-700': entry.status === 'Pending',
-                    'bg-red-100 text-red-700': entry.status === 'Rejected',
-                    'bg-gray-100 text-gray-700': !['Approved', 'Pending', 'Rejected'].includes(entry.status)
+                    'font-medium bg-green-100 text-green-700': entry.status === 'Approved',
+                    'font-medium bg-yellow-100 text-yellow-700': entry.status === 'Pending',
+                    'font-medium bg-red-100 text-red-700': entry.status === 'Rejected',
+                    'font-medium bg-gray-100 text-gray-700': !['Approved', 'Pending', 'Rejected'].includes(entry.status)
                   }" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold">
                     {{ entry.status }}
                   </span>
                 </td>
-                <td class="px-6 py-4 text-sm text-gray-700 text-center">{{ entry.total_quantity }}</td>
-                <td class="px-6 py-4 text-sm text-center">
+                <td class="px-6 py-4 text-sm font-medium text-gray-700 text-center">{{ entry.total_quantity }}</td>
+                <td class="px-6 py-4 text-sm font-medium text-center">
                   <span v-if="entry.discount_images" class="inline-flex items-center gap-1 text-green-600 font-medium">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -129,12 +129,12 @@
                   </span>
                   <span v-else class="text-gray-500 font-medium">No</span>
                 </td>
-                <td class="px-6 py-4 text-sm text-gray-700 text-center">
+                <td class="px-6 py-4 text-sm font-medium text-gray-700 text-center">
                   {{ new Date(entry.created_at).toLocaleDateString('en-US', {
                     month: 'short', day: 'numeric', year: 'numeric'
                   }) }}
                 </td>
-                <td class="px-6 py-4 text-sm font-semibold text-gray-900 text-center">₱{{
+                <td class="px-6 py-4 text-sm font-semibold text-gray-700 text-center">₱{{
                   formatNumber(entry.total_price) }}</td>
                 <td class="px-6 py-4 text-sm text-center">
                   <button @click="openUpdateEntryModal(entry)"

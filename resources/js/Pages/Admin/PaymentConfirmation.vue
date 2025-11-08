@@ -93,44 +93,40 @@
                   </div>
                 </td>
               </tr>
-              <tr v-for="p in filteredPayments" :key="p.payment_id" class="hover:bg-blue-50/50 transition-colors">
+              <tr v-for="payment in filteredPayments" :key="payment.payment_id" class="hover:bg-blue-50/50 transition-colors">
                 <td class="px-6 py-4 text-sm font-medium text-gray-900 text-center">
                   <span
                     class="inline-flex items-center px-2.5 py-1 rounded-lg bg-blue-100 text-[#1E71B8] font-semibold">
-                    #{{ p.id }}
+                    #{{ payment.id }}
                   </span>
                 </td>
                 <td class="px-6 py-4 text-sm text-center">
-                  <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-gray-100 text-gray-700 font-medium">
-                    #{{ p.booking_id }}
+                  <span class="inline-flex items-center px-2.5 py-1 text-gray-700 font-medium">
+                    {{ payment.booking_id }}
                   </span>
                 </td>
-                <td class="px-6 py-4 text-sm font-medium text-gray-900 text-center">
-                  {{ p.booking?.customer_name || 'N/A' }}
+                <td class="px-6 py-4 text-sm font-medium text-gray-700 text-center">
+                  {{ payment.booking?.customer_name || 'N/A' }}
                 </td>
                 <td class="px-6 py-4 text-sm text-center">
-                  <span class="text-gray-700">
-                    {{ p.payment_entry }}
+                  <span class="text-green-700 px-3 py-1 text-xs font-medium bg-green-100 rounded-full">
+                    {{ payment.payment_history.paymentType}}
                   </span>
                 </td>
                 <td class="px-6 py-4 text-sm text-center">
                   <span :class="{
-                    'bg-green-100 text-green-700': p.payment_status === 'Approved',
-                    'bg-yellow-100 text-yellow-700': p.payment_status === 'Pending',
-                    'bg-red-100 text-red-700': p.payment_status === 'Rejected',
-                    'bg-gray-100 text-gray-700': !['Approved', 'Pending', 'Rejected'].includes(p.payment_status)
-                  }" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold">
-                    {{ p.payment_status }}
+                    'bg-green-100 text-green-700': payment.payment_status === 'Approved',
+                    'bg-yellow-100 text-yellow-700': payment.payment_status === 'Under Review',
+                    'bg-red-100 text-red-700': payment.payment_status === 'Rejected',
+                    'bg-gray-100 text-gray-700': !['Approved', 'Pending', 'Rejected'].includes(payment.payment_status)
+                  }" class="inline-flex items-center px-3 py-1 rounded-full text-xs text-gray-700 font-medium">
+                    {{ payment.payment_status }}
                   </span>
                 </td>
                 <td class="px-6 py-4 text-sm text-center">
                   <span
-                    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-purple-100 text-purple-700 font-medium">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                    </svg>
-                    {{ p.payment_method }}
+                    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-100 text-blue-700 font-medium">
+                    {{ payment.mode_of_payment }}
                   </span>
                 </td>
                 <td class="px-6 py-4 text-sm text-center">
@@ -247,12 +243,12 @@ const filteredPayments = computed(() => {
 
   if (searchQuery.value.trim()) {
     const query = searchQuery.value.toLowerCase().trim()
-    result = result.filter(p => {
-      const paymentId = p.id?.toString().toLowerCase() || ''
-      const bookingId = p.booking_id?.toString().toLowerCase() || ''
-      const customerName = p.booking?.customer_name?.toLowerCase() || ''
-      const paymentEntry = p.payment_entry?.toLowerCase() || ''
-      const paymentMethod = p.payment_method?.toLowerCase() || ''
+    result = result.filter(payment => {
+      const paymentId = payment.id?.toString().toLowerCase() || ''
+      const bookingId = payment.booking_id?.toString().toLowerCase() || ''
+      const customerName = payment.booking?.customer_name?.toLowerCase() || ''
+      const paymentEntry = payment.payment_entry?.toLowerCase() || ''
+      const paymentMethod = payment.payment_method?.toLowerCase() || ''
 
       return paymentId.includes(query) ||
         bookingId.includes(query) ||
@@ -263,10 +259,11 @@ const filteredPayments = computed(() => {
   }
 
   if (statusFilter.value !== 'All Status') {
-    result = result.filter(p => p.payment_status === statusFilter.value)
+    result = result.filter(payment => payment.payment_status === statusFilter.value)
   }
 
-  return result
+  console.log("🚀 ~ result:", result)
+  return result;
 })
 
 const resetFilters = () => {

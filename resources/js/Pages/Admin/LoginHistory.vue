@@ -70,15 +70,15 @@
                         <tbody class="divide-y divide-gray-100">
                             <tr v-for="row in paginatedData" :key="row.id"
                                 class="hover:bg-blue-50/50 transition-colors">
-                                <td class="px-6 py-4 text-sm font-semibold text-gray-900 text-center">
+                                <td class="px-6 py-4 text-sm font-medium text-gray-700 text-center">
                                     {{ row.firstName }}
                                 </td>
-                                <td class="px-6 py-4 text-sm font-semibold text-gray-900 text-center">
+                                <td class="px-6 py-4 text-sm font-medium text-gray-700 text-center">
                                     {{ row.lastName }}
                                 </td>
-                                <td class="px-6 py-4 text-sm text-gray-700 text-center">{{ row.email }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-700 text-center">{{ row.contact }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-700 text-center">
+                                <td class="px-6 py-4 text-sm font-medium text-gray-700 text-center">{{ row.email }}</td>
+                                <td class="px-6 py-4 text-sm font-medium text-gray-700 text-center">{{ row.contact }}</td>
+                                <td class="px-6 py-4 text-sm font-medium text-gray-700 text-center">
                                     <span
                                         class="inline-flex items-center px-2.5 py-1 rounded-lg bg-blue-100 text-[#1E71B8] font-medium text-xs">
                                         {{ row.loginTime }}

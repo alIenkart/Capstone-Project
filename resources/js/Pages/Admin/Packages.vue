@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 p-8">
-    <div class="max-w-[1800px] mx-auto">
+    <div class="max-w-[1600px] mx-auto">
       <div class="bg-white rounded-2xl shadow-lg p-6 mb-6">
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div class="relative flex-1 max-w-md">
@@ -14,7 +14,7 @@
           </div>
 
           <div class="flex items-center gap-3 flex-wrap">
-            <div class="relative">
+            <div class="relative" data-filter-container>
               <button @click="handleFilterClick('status')"
                 class="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 min-w-[180px]">
                 <span class="font-semibold text-gray-800">
@@ -46,7 +46,7 @@
               </div>
             </div>
 
-            <div class="relative">
+            <div class="relative" data-filter-container>
               <button @click="handleFilterClick('bookingType')"
                 class="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 min-w-[180px]">
                 <span class="font-semibold text-gray-800">
@@ -78,7 +78,7 @@
               </div>
             </div>
 
-            <div class="relative">
+            <div class="relative" data-filter-container>
               <button @click="handleFilterClick('region')"
                 class="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 min-w-[180px]">
                 <span class="font-semibold text-gray-800">
@@ -163,29 +163,25 @@
                     #{{ packageItem.id }}
                   </span>
                 </td>
-                <td class="px-6 py-4 text-sm font-semibold text-gray-900 whitespace-nowrap text-center">
+                <td class="px-6 py-4 text-sm text-gray-700 font-medium text-center">
                   {{ packageItem.package_name }}
                 </td>
-                <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap text-center">
-                  <span class="inline-flex items-center gap-1.5">
+                <td class="px-6 py-4 text-sm text-gray-700 text-center">
+                  <span class="inline-flex items-center gap-1.5 font-medium">
                     {{ packageItem.destination }}
                   </span>
                 </td>
-                <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap text-center">
-                  <span class="px-2.5 py-1 rounded-lg bg-purple-100 text-purple-700 font-medium">
+                <td class="px-6 py-4 text-sm text-gray-700 text-center">
+                  <span class="px-2.5 py-1 rounded-lg font-medium">
                     {{ packageItem.region }}
                   </span>
                 </td>
-                <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap text-center">
-                  <span class="inline-flex items-center gap-1.5">
-                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
+                <td class="px-6 py-4 text-sm text-gray-700 text-center">
+                  <span class="inline-flex items-center gap-1.5 font-medium">
                     {{ packageItem.capacity }}
                   </span>
                 </td>
-                <td class="px-6 py-4 text-sm whitespace-nowrap text-center">
+                <td class="px-6 py-4 text-sm text-center">
                   <span :class="{
                     'bg-blue-100 text-blue-700': !packageItem.joint_booking,
                     'bg-indigo-100 text-indigo-700': packageItem.joint_booking
@@ -193,30 +189,26 @@
                     {{ packageItem.joint_booking ? 'Joint' : 'Exclusive' }}
                   </span>
                 </td>
-                <td class="px-6 py-4 text-sm text-gray-700 whitespace-nowrap text-center">
-                  <span class="inline-flex items-center gap-1.5">
-                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                <td class="px-6 py-4 text-sm text-gray-700 text-center">
+                  <span class="inline-flex items-center gap-1.5 font-medium">
                     {{ packageItem.tour_duration }}
                   </span>
                 </td>
-                <td class="px-6 py-4 text-sm whitespace-nowrap text-center">
+                <td class="px-6 py-4 text-sm text-center">
                   <span :class="{
                     'bg-green-100 text-green-700': packageItem.status === 'active',
                     'bg-gray-100 text-gray-700': packageItem.status === 'inactive'
-                  }" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold">
+                  }" class="inline-flex items-center text-gray-700 px-3 py-1 rounded-full text-xs font-medium">
                     {{ _.startCase(packageItem.status) }}
                   </span>
                 </td>
-                <td class="px-6 py-4 text-sm font-semibold text-gray-900 whitespace-nowrap text-center">
+                <td class="px-6 py-4 text-sm font-medium text-gray-700 text-center">
                   ₱{{ Number(packageItem.pax_rate).toLocaleString() }}
                 </td>
-                <td class="px-6 py-4 text-sm font-semibold text-gray-900 whitespace-nowrap text-center">
+                <td class="px-6 py-4 text-sm font-medium text-gray-700 text-center">
                   ₱{{ Number(packageItem.kids_pax_rate).toLocaleString() }}
                 </td>
-                <td class="px-6 py-4 text-sm whitespace-nowrap text-center">
+                <td class="px-6 py-4 text-sm text-center">
                   <button @click="openEditModal(packageItem.id)"
                     class="p-2 hover:bg-[#1E71B8] hover:text-white rounded-lg transition-all group" title="Edit">
                     <svg class="w-5 h-5 text-[#1E71B8] group-hover:text-white transition-colors" fill="none"
@@ -273,7 +265,6 @@
     </div>
 
     <NewPackageModal :show="showModal" @close="showModal = false" @save="handleSavePackage" />
-
     <EditPackageModal :show="showEditModal" :packageId="selectedPackageId"
       @close="showEditModal = false; selectedPackageId = null" @saved="handlePackageUpdated" />
   </div>
@@ -284,7 +275,7 @@ import AdminIndex from './AdminIndex.vue'
 import NewPackageModal from '@/Pages/Admin/components/NewPackageModal.vue'
 import EditPackageModal from '@/Pages/Admin/components/EditPackageModal.vue'
 import { ref, onMounted, computed, watch } from 'vue'
-import _ from 'lodash';
+import _ from 'lodash'
 import axios from 'axios'
 
 defineOptions({ layout: AdminIndex })
@@ -306,6 +297,9 @@ const isRegionFilterOpen = ref(false)
 const currentPage = ref(1)
 const itemsPerPage = ref(10)
 
+const statusOptions = ['', 'active', 'inactive']
+const bookingTypeOptions = ['', 'exclusive', 'joint']
+
 const hasActiveFilters = computed(() => {
   return searchQuery.value !== '' || selectedStatus.value !== '' || selectedBookingType.value !== '' || selectedRegion.value !== ''
 })
@@ -326,10 +320,7 @@ const filteredPackages = computed(() => {
       const region = pkg.region?.toLowerCase() || ''
       const id = pkg.id?.toString() || ''
 
-      return packageName.includes(query) ||
-        destination.includes(query) ||
-        region.includes(query) ||
-        id.includes(query)
+      return packageName.includes(query) || destination.includes(query) || region.includes(query) || id.includes(query)
     })
   }
 
@@ -439,6 +430,21 @@ const closeAllFilters = () => {
   isRegionFilterOpen.value = false
 }
 
+const handleStatusSelect = (option) => {
+  selectedStatus.value = option
+  isStatusFilterOpen.value = false
+}
+
+const handleBookingTypeSelect = (option) => {
+  selectedBookingType.value = option
+  isBookingTypeFilterOpen.value = false
+}
+
+const handleRegionSelect = (region) => {
+  selectedRegion.value = region
+  isRegionFilterOpen.value = false
+}
+
 const handleFilterClick = (filterType) => {
   if (filterType === 'status') {
     isStatusFilterOpen.value = !isStatusFilterOpen.value
@@ -459,13 +465,9 @@ watch([searchQuery, selectedStatus, selectedBookingType, selectedRegion], () => 
   currentPage.value = 1
 })
 
-const activePackages = computed(() => packages.value.filter(p => p.status === 'Active').length)
-const inactivePackages = computed(() => packages.value.filter(p => p.status === 'Inactive').length)
-
 onMounted(() => {
   fetchPackages()
 
-  // Close all filters when clicking outside
   document.addEventListener('click', (e) => {
     if (!e.target.closest('.relative')) {
       closeAllFilters()
