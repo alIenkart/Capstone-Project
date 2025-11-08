@@ -110,7 +110,7 @@
                 </td>
                 <td class="px-6 py-4 text-sm text-center">
                   <span class="text-green-700 px-3 py-1 text-xs font-medium bg-green-100 rounded-full">
-                    {{ payment.payment_history?.paymentType}}
+                    {{ payment.type_of_payment }}
                   </span>
                 </td>
                 <td class="px-6 py-4 text-sm text-center">

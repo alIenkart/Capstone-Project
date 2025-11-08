@@ -176,7 +176,7 @@
                 'bg-yellow-400 text-white': paymentStatus === 'Pending',
                 'bg-green-400 text-white': paymentStatus === 'Approved',
                 'bg-blue-400 text-white': paymentStatus === 'Down Payment Approved',
-                'bg-red-400 text-white': paymentStatus === 'Unpaid' || paymentStatus === 'Rejected',
+                'bg-red-400 text-white': paymentStatus === 'Rejected',
               }">
                 {{ paymentStatus }}
               </span>
@@ -194,8 +194,7 @@
               <div class="w-full lg:w-2/3 flex flex-col gap-5 justify-start">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
-                    <label class="block mb-3 text-gray-700 font-semibold text-sm tracking-wide" for="modeOfPayment">Mode
-                      of Payment</label>
+                    <label class="block mb-3 text-gray-700 font-semibold text-sm tracking-wide" for="modeOfPayment">Mode of Payment</label>
                     <div class="relative w-64 mode-payment-dropdown">
                       <button @click="toggleModeDropdown"
                         class="w-full flex justify-between items-center px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl shadow-sm text-gray-800 font-medium hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all">
@@ -221,16 +220,6 @@
                       of Payment</label>
                     <div class="relative w-64 type-payment-dropdown">
 
-                      <div v-if="isDownPaymentApproved()">
-                        <label class="block mt-4 mb-3 text-gray-700 font-semibold text-s tracking-wide"
-                          for="paymentType">
-                          <div class="bg-gray-100 border border-gray-300 rounded-md px-3 py-2 w-64">
-                            {{ typeOfPayment }}
-                          </div>
-                        </label>
-                      </div>
-
-                      <div v-else>
                         <button @click="toggleTypeDropdown"
                           class="w-full flex justify-between items-center px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl shadow-sm text-gray-800 font-medium hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all">
                           {{ selectedPaymentType }}
@@ -240,7 +229,6 @@
                             <path d="M19 9l-7 7-7-7"></path>
                           </svg>
                         </button>
-                      </div>
 
                       <div v-if="dropdownOpenTypePayment"
                         class="absolute z-10 w-full mt-1 bg-white border-2 border-gray-200 rounded-xl shadow-lg overflow-hidden">
@@ -344,37 +332,47 @@
 
             <div class="flex justify-center w-full">
               <div class="flex flex-col items-center gap-4 mt-8 mb-2 relative group w-full max-w-xs">
+
+                <div v-if="paymentStatus === 'Under Review' || isBookingStatusPending()" class="flex justify-center mt-4">
+                  <div class="bg-yellow-50 border border-yellow-300 text-yellow-700 px-6 py-3 rounded-lg shadow-sm text-center max-w-md">
+                    <div v-if="isBookingStatusPending && !paymentStatus">
+                      <span class="font-medium block">⏳ Booking Under Review</span>
+                    </div>
+                    <div v-else>
+                      <span class="font-medium block">⏳ Payment Under Review</span>
+                    </div>
+
+                  </div>
+                </div>
+
                 <button
-                  v-if="filteredBookings[selectedBookingIndex]?.status === 'Approved' && (paymentStatus === 'Pending' || paymentStatus === 'Unpaid')"
+                  v-if="filteredBookings[selectedBookingIndex]?.status === 'Approved' && (paymentStatus === 'Pending')"
                   :disabled="!selectedFile" @click="submitProofOfPayment()"
                   class="w-full bg-[#1E71B8] hover:bg-[#155a8a] focus:ring-2 focus:ring-[#52c2f8] transition shadow-lg text-white px-8 py-3 rounded-xl font-bold text-lg focus:outline-none active:scale-95 duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
                   Send For Approval
                 </button>
 
-                <button v-if="paymentStatus === 'Approved'" @click="submitPayment"
+                <button
+                  v-if="paymentStatus === 'Down Payment Approved' && !isFullyPaid()"
+                  :disabled="!selectedFile" @click="submitProofOfPayment()"
                   class="w-full bg-[#1E71B8] hover:bg-[#155a8a] focus:ring-2 focus:ring-[#52c2f8] transition shadow-lg text-white px-8 py-3 rounded-xl font-bold text-lg focus:outline-none active:scale-95 duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
-                  View Receipt
+                  Complete Down Payment
                 </button>
 
-                <button v-if="filteredBookings[selectedBookingIndex]?.status === 'Pending' || isPaymentApproved()"
+                <button v-if="paymentStatus === 'Under Review' && isBookingStatusPending()"
                   @click="submitPayment" :disabled="filteredBookings[selectedBookingIndex]?.status === 'Pending'"
                   class="w-full bg-[#1E71B8] hover:bg-[#155a8a] focus:ring-2 focus:ring-[#52c2f8] transition shadow-lg text-white px-8 py-3 rounded-xl font-bold text-lg focus:outline-none active:scale-95 duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
                   Submit
                 </button>
 
-                <span v-if="filteredBookings[selectedBookingIndex]?.status === 'Pending'"
-                  class="absolute -top-10 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-sm rounded-md px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
-                  Wait for the booking status to be set to approved.
-                </span>
-
-                <span v-else-if="!selectedFile"
-                  class="absolute -top-10 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-sm rounded-md px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
-                  Please upload the receipt.
-                </span>
-
-                <button v-if="paymentStatus === 'Pending' || paymentStatus === 'Unpaid'"
+                <button v-if="paymentStatus === 'Pending'"
                   class="w-full bg-white hover:bg-red-50 text-red-500 border border-red-400 px-8 py-3 rounded-xl font-bold text-lg transition shadow-md focus:outline-none focus:ring-2 focus:ring-red-100 active:scale-95 duration-150">
                   Cancel Booking
+                </button>
+
+                <button v-if="isFullyPaid()" @click="viewReceipt"
+                  class="w-full bg-[#1E71B8] hover:bg-[#155a8a] focus:ring-2 focus:ring-[#52c2f8] transition shadow-lg text-white px-8 py-3 rounded-xl font-bold text-lg focus:outline-none active:scale-95 duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
+                  View Receipt
                 </button>
               </div>
             </div>
@@ -458,20 +456,13 @@ const uniqueStatuses = computed(() => {
   return ['All', ...Array.from(statuses)];
 });
 
-const imagePreview = ref(null)
-
 const onFileChange = (event) => {
   const file = event.target.files[0];
   selectedFile.value = file;
   previewUrl.value = file ? URL.createObjectURL(file) : null;
 }
 
-const removeFile = () => {
-  selectedFile.value = null;
-  previewUrl.value = null;
-}
-
-const submitPayment = () => {
+const viewReceipt = () => {
   const currentBooking = filteredBookings.value[selectedBookingIndex.value];
   const currentPayment = payments.value.find(p => p.booking_id === currentBooking.id);
 
@@ -509,7 +500,19 @@ const submitPayment = () => {
   };
 
   showReceiptModal.value = true;
-}
+};
+
+const submitPayment = () => {
+  const currentBooking = filteredBookings.value[selectedBookingIndex.value];
+  if (!currentBooking) {
+    toast.error('No booking selected.');
+    return;
+  }
+
+  // Example logic to handle payment submission
+  // (You can replace this with your API call or form submit)
+  toast.success('Payment submitted successfully!');
+};
 
 const closeReceiptModal = () => {
   showReceiptModal.value = false;
@@ -536,10 +539,10 @@ watch(selectedStatusFilter, () => {
 });
 
 const paymentStatus = computed(() => {
-  if (!payments.value.length || !filteredBookings.value.length) return 'Unpaid';
+  if (!payments.value.length || !filteredBookings.value.length);
   const currentBookingId = filteredBookings.value[selectedBookingIndex.value].id;
   const currentPayment = payments.value.find(p => p.booking_id === currentBookingId);
-  return currentPayment ? currentPayment.payment_status : 'Unpaid';
+  return currentPayment ? currentPayment.payment_status : null;
 });
 
 const typeOfPayment = computed(() => {
@@ -564,25 +567,29 @@ async function submitProofOfPayment() {
 
   const total = Number(currentBooking.total_price);
   const paidAmount =
-    selectedPaymentType.value === 'full'
+    selectedPaymentType.value === 'Full Payment'
       ? total
       : Number(formData.value.downPaymentAmount);
   const remaining = Math.max(total - paidAmount, 0);
 
   const payment_history = {
-    paymentType: selectedPaymentType.value === 'full' ? 'Full Payment' : 'Down Payment',
-    fullPaymentAmount: selectedPaymentType.value === 'full' ? total : 0,
-    downPaymentAmount: selectedPaymentType.value === 'down' ? paidAmount : 0,
+    paymentType: selectedPaymentType.value,
+    fullPaymentAmount: selectedPaymentType.value === 'Full Payment' ? total : 0,
+    downPaymentAmount: selectedPaymentType.value === 'Down Payment' ? paidAmount : 0,
     remainingBalance: remaining,
     paymentDate: new Date().toISOString().split('T')[0],
     proofOfPayment: selectedFile.value ? selectedFile.value.name : null,
   };
+
+  console.log(payment_history.remainingBalance)
 
   const data = new FormData();
   data.append('proof_of_payment', selectedFile.value);
   data.append('payment_history', JSON.stringify(payment_history));
   data.append('mode_of_payment', selectedModeOfPayment.value);
   data.append('payment_status', 'Under Review');
+  data.append('total_price', payment_history.remainingBalance);
+  data.append('type_of_payment', selectedPaymentType.value);
 
   try {
     const response = await axios.post(
@@ -635,12 +642,25 @@ const handleClickOutside = (event) => {
   }
 }
 
-const isPaymentApproved = () => {
-  return paymentStatus.value === 'Approved' || paymentStatus.value === 'Down Payment Approved';
+const isFullyPaid = () => {
+  if (!payments.value.length || !filteredBookings.value.length) return '';
+
+  const currentBookingId = filteredBookings.value[selectedBookingIndex.value].id;
+  const currentPayment = payments.value.find(p => p.booking_id === currentBookingId);
+
+  return currentPayment?.is_fully_paid ?? '';
 };
 
 const isDownPaymentApproved = () => {
   return paymentStatus.value === 'Down Payment Approved';
+};
+
+const isBookingStatusPending = () => {
+  const currentBooking = filteredBookings.value[selectedBookingIndex.value];
+
+  if (!currentBooking) return false;
+
+  return currentBooking.status === 'Pending';
 };
 
 onMounted(() => {

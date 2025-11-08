@@ -34,6 +34,9 @@ class PaymentController extends Controller
             'payment_history' => 'nullable|json',
             'payment_status' => 'nullable|string',
             'mode_of_payment' => 'nullable|string',
+            'total_price' => 'nullable|numeric',
+            'is_fully_paid' => 'nullable|boolean',
+            'type_of_payment' => 'nullable|string',
             'remarks' => 'nullable|string',
         ]);
 
@@ -47,12 +50,25 @@ class PaymentController extends Controller
 
         if ($request->hasFile('proof_of_payment')) {
             $filePath = $request->file('proof_of_payment')->store('receipt', 'public');
-            $payment->proof_of_payment = json_encode([$filePath]);
+
+            $existingProofs = $payment->proof_of_payment ? json_decode($payment->proof_of_payment, true) : [];
+            $existingProofs[] = $filePath;
+
+            $payment->proof_of_payment = json_encode($existingProofs);
         }
 
         if ($request->has('payment_history')) {
-            $paymentHistory = json_decode($request->payment_history, true);
-            $payment->payment_history = $paymentHistory;
+            $newHistory = json_decode($request->payment_history, true);
+
+            $existingHistory = $payment->payment_history 
+                ? $payment->payment_history 
+                : [];
+
+            if (!is_array($existingHistory)) $existingHistory = [];
+
+            $existingHistory[] = $newHistory;
+
+            $payment->payment_history = $existingHistory;
         }
 
         if ($request->has('payment_status')) {
@@ -65,6 +81,18 @@ class PaymentController extends Controller
 
         if ($request->has('remarks')) {
             $payment->remarks = $request->remarks;
+        }
+
+        if ($request->has('total_price')) {
+            $payment->total_price = $request->total_price;
+        }
+
+        if ($request->has('is_fully_paid')) {
+            $payment->is_fully_paid = $request->is_fully_paid;
+        }
+
+        if ($request->has('type_of_payment')) {
+            $payment->type_of_payment = $request->type_of_payment;
         }
 
         $payment->save();

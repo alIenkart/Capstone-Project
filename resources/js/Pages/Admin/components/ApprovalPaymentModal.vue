@@ -152,15 +152,38 @@
               <textarea v-model="remarks" rows="4" placeholder="Add your comments here..."
                 class="w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-2 focus:ring-[#217093]/20 outline-none transition-all p-4 resize-none"></textarea>
             </div>
+
+            <div v-if="isDownPayment()">
+              <div class="flex items-center mb-4">
+                <input id="fullyVerified" type="checkbox" v-model="isFullyPaid"
+                  class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                <label for="fullyVerified" class="ml-2 block text-sm text-gray-700">
+                  I acknowledge that the amount has been fully paid.
+                </label>
+              </div>
+            </div>
+
+
+
           </div>
         </div>
       </div>
 
       <!-- Footer Actions -->
+      <div v-if="isPaymentPending()">
+        <div class="bg-gray-50 px-8 py-6 border-t border-gray-200">
+          <div class="flex flex-wrap justify-center gap-4">
+            ⚠️ No payment has been submitted yet by the user.
+          </div>
+        </div>
+      </div>
+
+      <div v-if="!isPaymentComplete()">
       <div class="bg-gray-50 px-8 py-6 border-t border-gray-200">
         <div class="flex flex-wrap justify-center gap-4">
 
-          <div v-if="!isDownPayment()">
+
+          <div v-if =!isDownPayment()>
             <button @click="submitVerificationOfPayment('Approved')"
               class="flex items-center gap-2 rounded-xl bg-gradient-to-r from-green-600 to-green-700 px-8 py-3 text-white font-semibold hover:from-green-700 hover:to-green-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -169,7 +192,7 @@
               Approve Payment
             </button>
           </div>
-
+      
           <div v-else>
             <button @click="submitVerificationOfPayment('Down Payment Approved')"
               class="flex items-center gap-2 rounded-xl bg-gradient-to-r from-green-600 to-green-700 px-8 py-3 text-white font-semibold hover:from-green-700 hover:to-green-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
@@ -179,6 +202,7 @@
               Approve Down Payment
             </button>
           </div>
+      
 
           <button @click="submitVerificationOfPayment('Rejected')"
             class="flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-500 to-red-600 px-8 py-3 text-white font-semibold hover:from-red-600 hover:to-red-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
@@ -193,7 +217,8 @@
           </button>
         </div>
       </div>
-    </div>
+      </div>
+  </div>
   </div>
 
   <!-- Image Modal for Full Size View -->
@@ -464,6 +489,7 @@ const props = defineProps({
 
 const showReceipt = ref(false);
 const remarks = ref('');
+const isFullyPaid = ref(null);
 const paymentMethod = ref('GCash');
 const showImageModal = ref(false);
 const showRejectModal = ref(false);
@@ -491,6 +517,7 @@ const fetchPaymentAndBooking = async (id) => {
       payment_status: data.payment_status || '',
       created_at: data.created_at || null,
       updated_at: data.updated_at || null,
+      type_of_payment: data.type_of_payment || '',
       booking: {
         customer_name: data.booking?.customer_name || '',
         customer_email: data.booking?.customer_email || '',
@@ -505,7 +532,7 @@ const fetchPaymentAndBooking = async (id) => {
       }
     };
 
-    typeOfPayment.value = paymentData.value.payment_history.paymentType || '';
+    typeOfPayment.value = paymentData.value.type_of_payment || '';
     paymentStatus.value = paymentData.value.payment_status || '';
     receiptData.value = {
       receiptNo: `2025-${paymentData.value?.payment_id || 'N/A'}`,
@@ -570,6 +597,14 @@ const closeImageModal = () => {
 const isDownPayment = () => {
   return typeOfPayment.value === "Down Payment";
 };
+
+const isPaymentComplete = () => {
+  return paymentStatus.value === "Approved" || paymentStatus.value === "Pending";
+}
+
+const isPaymentPending = () => {
+  return paymentStatus.value === "Pending";
+}
 
 const downloadReceipt = async () => {
   const receiptElement = document.getElementById('receipt-content');
@@ -648,9 +683,14 @@ const downloadReceipt = async () => {
 };
 
 async function submitVerificationOfPayment($status) {
+  if (!isDownPayment()) {
+    isFullyPaid.value = true;
+  }
+
   const data = new FormData();
   data.append('remarks', remarks.value || '');
   data.append('payment_status', $status);
+  data.append('is_fully_paid', isFullyPaid.value ? 1 : 0);
 
   try {
     const response = await axios.post(

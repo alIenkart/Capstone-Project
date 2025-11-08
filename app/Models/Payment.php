@@ -17,7 +17,8 @@ class Payment extends Model
         'payment_history',
         'payment_status',
         'remarks',
-        'proof_of_payment'
+        'proof_of_payment',
+        'type_of_payment'
     ];
 
     protected $casts = [
