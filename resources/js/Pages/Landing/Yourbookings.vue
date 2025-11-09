@@ -374,6 +374,11 @@
                   class="w-full bg-[#1E71B8] hover:bg-[#155a8a] focus:ring-2 focus:ring-[#52c2f8] transition shadow-lg text-white px-8 py-3 rounded-xl font-bold text-lg focus:outline-none active:scale-95 duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
                   View Receipt
                 </button>
+
+                <button v-if="filteredBookings[selectedBookingIndex]?.rejected_at" @click="showRejectionModal = true"
+                  class="w-full bg-[#1E71B8] hover:bg-[#155a8a] focus:ring-2 focus:ring-[#52c2f8] transition shadow-lg text-white px-8 py-3 rounded-xl font-bold text-lg focus:outline-none active:scale-95 duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
+                  View Rejection Reason
+                </button>
               </div>
             </div>
 
@@ -382,6 +387,65 @@
         <div v-else class="flex items-center justify-center h-96 text-gray-400 text-lg">
           No bookings found.
         </div>
+
+
+      <Transition enter-active-class="transition-all duration-300 ease-out" enter-from-class="opacity-0 scale-95"
+        enter-to-class="opacity-100 scale-100" leave-active-class="transition-all duration-200 ease-in"
+        leave-from-class="opacity-100 scale-100" leave-to-class="opacity-0 scale-95">
+          <div v-if="showRejectionModal" class="fixed inset-0 z-[70] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+              <!-- Header -->
+              <div class="bg-gradient-to-r from-red-500 to-red-600 px-6 py-6">
+                <div class="flex items-center gap-3">
+                  <div class="p-3 bg-white/20 rounded-lg">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 9v2m0 4v2m0 0v2m0-6v-2m0 0v-2" />
+                    </svg>
+                  </div>
+                  <h3 class="text-xl font-bold text-white">Booking Rejected</h3>
+                </div>
+              </div>
+
+              <!-- Body -->
+              <div class="px-6 py-6 space-y-4">
+                <div class="block text-sm font-semibold text-slate-700 mb-3 text-right">
+                  {{ filteredBookings[selectedBookingIndex]?.rejected_at
+                      ? new Date(filteredBookings[selectedBookingIndex].rejected_at)
+                          .toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '' 
+                  }}                
+                </div>
+
+                <div>
+                  <label class="block text-sm font-semibold text-slate-700 mb-3">
+                    Rejection Category <span class="text-red-500"></span>
+                  </label>   
+                  <div class="block text-sm font-semibold text-slate-700 mb-1 pl-4">
+                    - {{ filteredBookings[selectedBookingIndex]?.rejection_category }}
+                  </div>
+                </div>
+
+                <hr>
+                <label class="block text-sm font-semibold text-slate-700">
+                    Reason: <span class="text-red-500"></span>
+                  </label>  
+                <textarea class="w-full rounded-xl border-2 border-gray-300 p-3 text-sm text-slate-700 resize-none bg-gray-100"
+                  :value="filteredBookings[selectedBookingIndex]?.rejection_reason" rows="4" readonly>
+                </textarea>
+
+              <!-- Footer -->
+              <div class="bg-slate-50 py-4 border-t border-slate-200 flex justify-end">
+                <button type="button" @click="showRejectionModal = false"
+                  class="rounded-lg px-6 py-2.5 text-sm font-semibold bg-slate-200 text-slate-800 hover:bg-slate-300 transition-all">
+                  Close
+                </button>
+              </div>
+              </div>
+            </div>
+          </div>
+    </Transition>
+
+
       </main>
     </div>
   </div>
@@ -413,6 +477,7 @@ const selectedStatusFilter = ref('All');
 const isFilterOpen = ref(false);
 const dropdownOpenModePayment = ref(false)
 const dropdownOpenTypePayment = ref(false)
+const showRejectionModal = ref(false)
 
 const modeOfPaymentOptions = [
   { label: 'GCASH', value: 'GCASH' },
@@ -520,6 +585,7 @@ const closeReceiptModal = () => {
 
 onMounted(async () => {
   bookings.value = await fetchBookingsByUser(userId);
+  console.log('Fetched payments for booking ID:', bookings);
 
   if (filteredBookings.value.length) {
     payments.value = await fetchPaymentsByBookingId(filteredBookings.value[selectedBookingIndex.value].id);
@@ -581,8 +647,6 @@ async function submitProofOfPayment() {
     proofOfPayment: selectedFile.value ? selectedFile.value.name : null,
     modeOfPayment: selectedModeOfPayment.value,
   };
-
-  console.log(payment_history.remainingBalance)
 
   const data = new FormData();
   data.append('proof_of_payment', selectedFile.value);
@@ -652,9 +716,6 @@ const isFullyPaid = () => {
   return currentPayment?.is_fully_paid ?? '';
 };
 
-const isDownPaymentApproved = () => {
-  return paymentStatus.value === 'Down Payment Approved';
-};
 
 const isBookingStatusPending = () => {
   const currentBooking = filteredBookings.value[selectedBookingIndex.value];
