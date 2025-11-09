@@ -18,7 +18,10 @@ class Payment extends Model
         'payment_status',
         'remarks',
         'proof_of_payment',
-        'type_of_payment'
+        'type_of_payment',
+        'rejection_category',
+        'rejection_reason',
+        'rejected_at',
     ];
 
     protected $casts = [

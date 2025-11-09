@@ -12,8 +12,14 @@ class Receipt extends Model
         'receipt_date',
         'total_amount',
         'signature_path',
+        'booking_id'
     ];
 
+    public function booking()
+    {
+        return $this->belongsTo(Booking::class, 'booking_id');
+    }
+    
     public function payment()
     {
         return $this->belongsTo(Payment::class);

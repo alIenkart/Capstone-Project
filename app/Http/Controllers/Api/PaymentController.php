@@ -38,6 +38,8 @@ class PaymentController extends Controller
             'is_fully_paid' => 'nullable|boolean',
             'type_of_payment' => 'nullable|string',
             'remarks' => 'nullable|string',
+            'rejection_category' => 'nullable|string|required_if:payment_status,Rejected',
+            'rejection_reason' => 'nullable|string|required_if:payment_status,Rejected',
         ]);
 
         $payment = Payment::firstOrCreate(
@@ -97,6 +99,13 @@ class PaymentController extends Controller
 
         if ($request->has('type_of_payment')) {
             $payment->type_of_payment = $request->type_of_payment;
+        }
+
+        if ($request->payment_status === 'Rejected') {
+            $payment->is_fully_paid = false;
+            $payment->rejection_category = $request->rejection_category;
+            $payment->rejection_reason = $request->rejection_reason;
+            $payment->rejected_at = now();
         }
 
         $payment->save();

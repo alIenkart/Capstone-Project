@@ -237,7 +237,7 @@
         </div>
       </div>
 
-      <div v-if="!isPaymentComplete()">
+      <div v-if="!isPaymentComplete() && !isPaymentRejected()">
       <div class="bg-gray-50 px-8 py-6 border-t border-gray-200">
         <div class="flex flex-wrap justify-center gap-4">
 
@@ -262,8 +262,7 @@
             </button>
           </div>
       
-
-          <button @click="submitVerificationOfPayment('Rejected')"
+          <button @click="showRejectionModal = true"
             class="flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-500 to-red-600 px-8 py-3 text-white font-semibold hover:from-red-600 hover:to-red-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -277,8 +276,31 @@
         </div>
       </div>
       </div>
+
+      <div v-else-if="isPaymentRejected()">
+        <div class="bg-gray-50 px-8 py-6 border-t border-gray-200">
+          <div class="flex flex-wrap justify-center gap-4">
+            <button 
+              @click="showRejectionModalDetail = true"
+                class="flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-3 text-white font-semibold hover:from-blue-700 hover:to-green-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                View Rejected Reason
+            </button>
+          </div>
+        </div>
+      </div>
   </div>
   </div>
+
+  <RejectionModal
+    :reason="rejectionReason"
+    :category="rejectionCategory"
+    :date="rejectionDate"
+    :visible="showRejectionModalDetail"
+    @close="showRejectionModalDetail = false"
+  />
 
   <!-- Image Modal for Full Size View -->
   <Transition enter-active-class="transition-all duration-300 ease-out" enter-from-class="opacity-0"
@@ -364,43 +386,63 @@
   <Transition enter-active-class="transition-all duration-300 ease-out" enter-from-class="opacity-0"
     enter-to-class="opacity-100" leave-active-class="transition-all duration-200 ease-in" leave-from-class="opacity-100"
     leave-to-class="opacity-0">
-    <div v-if="showRejectModal"
-      class="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <Transition enter-active-class="transition-all duration-300 ease-out"
-        enter-from-class="opacity-0 scale-95 translate-y-4" enter-to-class="opacity-100 scale-100 translate-y-0"
-        leave-active-class="transition-all duration-200 ease-in" leave-from-class="opacity-100 scale-100 translate-y-0"
-        leave-to-class="opacity-0 scale-95 translate-y-4">
-        <div v-if="showRejectModal" @click.stop class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
-          <!-- Icon -->
-          <div class="flex justify-center mb-4">
-            <div class="bg-red-100 rounded-full p-3">
-              <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-            </div>
+  <div v-if="showRejectionModal"
+    class="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+    
+    <Transition enter-active-class="transition-all duration-300 ease-out"
+      enter-from-class="opacity-0 scale-95 translate-y-4" enter-to-class="opacity-100 scale-100 translate-y-0"
+      leave-active-class="transition-all duration-200 ease-in" leave-from-class="opacity-100 scale-100 translate-y-0"
+      leave-to-class="opacity-0 scale-95 translate-y-4">
+      
+      <div v-if="showRejectionModal" @click.stop class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
+        
+        <!-- Icon -->
+        <div class="flex justify-center mb-4">
+          <div class="bg-red-100 rounded-full p-3">
+            <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- Title -->
+        <h3 class="text-xl font-bold text-gray-900 text-center mb-2">Reject Payment</h3>
+        <p class="text-gray-600 text-center mb-6">
+          Please provide the reason and category for rejecting this payment.
+        </p>
+
+        <!-- Form -->
+        <form @submit.prevent="confirmReject" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Rejection Category <span class="text-red-500">*</span></label>
+            <input v-model="rejectionCategory" type="text" placeholder="Enter category"
+              class="w-full rounded-xl border-2 border-gray-300 focus:border-red-500 focus:ring-1 focus:ring-red-500 px-4 py-2 outline-none" required>
           </div>
 
-          <!-- Content -->
-          <h3 class="text-xl font-bold text-gray-900 text-center mb-2">Reject Payment</h3>
-          <p class="text-gray-600 text-center mb-6">Are you sure you want to reject this payment? This action cannot be
-            undone.</p>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Rejection Reason <span class="text-red-500">*</span></label>
+            <textarea v-model="rejectionReason" rows="4" placeholder="Enter reason"
+              class="w-full rounded-xl border-2 border-gray-300 focus:border-red-500 focus:ring-1 focus:ring-red-500 px-4 py-2 outline-none resize-none" required></textarea>
+          </div>
 
           <!-- Buttons -->
-          <div class="flex gap-3">
-            <button @click="cancelReject"
+          <div class="flex gap-3 mt-4">
+            <button type="button" @click="cancelReject"
               class="flex-1 px-4 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold rounded-xl transition-all duration-200 hover:scale-105 active:scale-95">
               Cancel
             </button>
-            <button @click="confirmReject"
+            <button @click="submitVerificationOfPayment('Rejected')"
               class="flex-1 px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-xl transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg">
               Reject
             </button>
           </div>
-        </div>
-      </Transition>
-    </div>
-  </Transition>
+        </form>
+
+      </div>
+    </Transition>
+  </div>
+</Transition>
 
   <!-- Official Payment Receipt Modal -->
   <div v-if="showReceipt" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
@@ -539,6 +581,7 @@ import { ref, onMounted, computed } from 'vue';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { useToast } from 'vue-toastification'
+import RejectionModal from './PaymentRejectionDetail.vue';
 
 const emit = defineEmits(['close']);
 
@@ -551,13 +594,17 @@ const remarks = ref('');
 const isFullyPaid = ref(null);
 const paymentMethod = ref('GCash');
 const showImageModal = ref(false);
-const showRejectModal = ref(false);
+const showRejectionModal = ref(false);
+const showRejectionModalDetail = ref(false);
 const paymentData = ref({});
 const receiptData = ref({});
 const imagePreview = ref(null)
 const toast = useToast();
 let typeOfPayment = ref('');
 let paymentStatus = ref('');
+const rejectionDate = ref(null);
+const rejectionCategory = ref(null);
+const rejectionReason = ref(null);
 const paymentHistory = ref([]);
 const selectedPaymentIndex = ref(0);
 const currentPayment = computed(() => paymentHistory.value[selectedPaymentIndex.value]);
@@ -584,6 +631,9 @@ const fetchPaymentAndBooking = async (id) => {
       created_at: data.created_at || null,
       updated_at: data.updated_at || null,
       type_of_payment: data.type_of_payment || '',
+      rejection_reason: data.rejection_reason || '',
+      rejection_category: data.rejection_category || '',
+      rejected_at: data.rejected_at || '',
       booking: {
         customer_name: data.booking?.customer_name || '',
         customer_email: data.booking?.customer_email || '',
@@ -600,6 +650,10 @@ const fetchPaymentAndBooking = async (id) => {
     paymentHistory.value = data.payment_history || [];
     typeOfPayment.value = paymentData.value.type_of_payment || '';
     paymentStatus.value = paymentData.value.payment_status || '';
+    rejectionDate.value = paymentData.value.rejected_at || '',
+    rejectionCategory.value = paymentData.value.rejection_category || '',
+    rejectionReason.value = paymentData.value.rejection_reason || '';
+
     receiptData.value = {
       receiptNo: `2025-${paymentData.value?.payment_id || 'N/A'}`,
       date: new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
@@ -635,17 +689,13 @@ const approvePayment = () => {
   showReceipt.value = true;
 };
 
-const rejectPayment = () => {
-  showRejectModal.value = true;
-};
-
 const confirmReject = () => {
-  showRejectModal.value = false;
+  showRejectionModal.value = false;
   emit('close');
 };
 
 const cancelReject = () => {
-  showRejectModal.value = false;
+  showRejectionModal.value = false;
 };
 
 const closeReceipt = () => {
@@ -666,6 +716,10 @@ const isDownPayment = () => {
 
 const isPaymentComplete = () => {
   return paymentStatus.value === "Approved" || paymentStatus.value === "Pending";
+}
+
+const isPaymentRejected = () => {
+  return paymentStatus.value === "Rejected";
 }
 
 const isPaymentPending = () => {
@@ -757,6 +811,11 @@ async function submitVerificationOfPayment($status) {
   data.append('remarks', remarks.value || '');
   data.append('payment_status', $status);
   data.append('is_fully_paid', isFullyPaid.value ? 1 : 0);
+
+  if ($status === 'Rejected') {
+    data.append('rejection_category', rejectionCategory.value);
+    data.append('rejection_reason', rejectionReason.value);
+  }
 
   try {
     const response = await axios.post(

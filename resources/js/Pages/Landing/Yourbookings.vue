@@ -375,7 +375,7 @@
                   View Receipt
                 </button>
 
-                <button v-if="filteredBookings[selectedBookingIndex]?.rejected_at" @click="showRejectionModal = true"
+                <button v-if="filteredBookings[selectedBookingIndex]?.rejected_at || isPaymentRejected()" @click="showRejectionModal = true"
                   class="w-full bg-[#1E71B8] hover:bg-[#155a8a] focus:ring-2 focus:ring-[#52c2f8] transition shadow-lg text-white px-8 py-3 rounded-xl font-bold text-lg focus:outline-none active:scale-95 duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
                   View Rejection Reason
                 </button>
@@ -446,6 +446,14 @@
     </Transition>
 
 
+    <RejectionModal
+      :reason="rejectionReason"
+      :category="rejectionCategory"
+      :date="rejectionDate"
+      :visible="showRejectionModal"
+      @close="showRejectionModal = false"
+    />
+
       </main>
     </div>
   </div>
@@ -459,6 +467,7 @@ import { onMounted, onBeforeUnmount, ref, watch, computed, nextTick } from 'vue'
 import { usePage } from '@inertiajs/vue3';
 import { toCamelCase } from '@/helper/helper'
 import { useToast } from 'vue-toastification'
+import RejectionModal from '../Admin/components/PaymentRejectionDetail.vue';
 
 const user = usePage().props.auth.user;
 const toast = useToast();
@@ -478,6 +487,9 @@ const isFilterOpen = ref(false);
 const dropdownOpenModePayment = ref(false)
 const dropdownOpenTypePayment = ref(false)
 const showRejectionModal = ref(false)
+const rejectionDate = ref(null);
+const rejectionCategory = ref(null);
+const rejectionReason = ref(null);
 
 const modeOfPaymentOptions = [
   { label: 'GCASH', value: 'GCASH' },
@@ -581,6 +593,21 @@ const submitPayment = () => {
 
 const closeReceiptModal = () => {
   showReceiptModal.value = false;
+}
+
+const isPaymentRejected = () => {
+  if (!payments.value.length || !filteredBookings.value.length) return '';
+
+  const currentBookingId = filteredBookings.value[selectedBookingIndex.value].id;
+  const currentPayment = payments.value.find(p => p.booking_id === currentBookingId);
+
+  if(currentPayment?.rejected_at){
+    rejectionDate.value = currentPayment?.rejected_at;
+    rejectionCategory.value = currentPayment?.rejection_category ;
+    rejectionReason.value = currentPayment?.rejection_reason ;
+  }
+  
+  return currentPayment?.rejected_at;
 }
 
 onMounted(async () => {
