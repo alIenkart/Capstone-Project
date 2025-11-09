@@ -297,7 +297,7 @@ const isRegionFilterOpen = ref(false)
 const currentPage = ref(1)
 const itemsPerPage = ref(10)
 
-const statusOptions = ['', 'active', 'inactive']
+const statusOptions = ['', 'Active', 'Inactive']
 const bookingTypeOptions = ['', 'exclusive', 'joint']
 
 const hasActiveFilters = computed(() => {

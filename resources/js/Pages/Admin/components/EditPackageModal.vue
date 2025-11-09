@@ -127,12 +127,10 @@
                                     </div>
 
                                     <div class="space-y-4">
-                                        <MultiSelectDropdown
-                                        label="Tour Classification"
-                                        :options="['Land Travel', 'Water Adventure', 'Air Travel']"
-                                        v-model="formData.tour_classification"
-                                        placeholder="Select Classification"
-                                        />
+                                        <MultiSelectDropdown label="Tour Classification"
+                                            :options="['Land Travel', 'Water Adventure', 'Air Travel']"
+                                            v-model="formData.tour_classification"
+                                            placeholder="Select Classification" />
                                     </div>
 
                                 </div>
@@ -178,6 +176,120 @@
                                             <input type="number" id="discountedRate" v-model="formData.discounted_rate"
                                                 class="w-full rounded-xl border-2 border-slate-200 focus:border-[#217093] focus:ring-4 focus:ring-[#217093]/10 pl-9 pr-4 py-3 text-sm font-bold outline-none transition-all"
                                                 placeholder="0.00" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div
+                                class="bg-white rounded-2xl p-6 border border-slate-200 shadow-md hover:shadow-xl transition-all">
+                                <div class="flex items-center gap-3 mb-5">
+                                    <h4 class="text-xl font-bold text-slate-800">Package Settings</h4>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                                    <div>
+                                        <label for="maxOccupancy"
+                                            class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Maximum
+                                            Occupancy</label>
+                                        <input type="number" id="maxOccupancy" v-model.number="formData.capacity"
+                                            class="w-full rounded-xl border-2 border-slate-200 focus:border-[#217093] focus:ring-4 focus:ring-[#217093]/10 px-4 py-3 text-sm font-medium outline-none transition-all"
+                                            placeholder="0" min="0" />
+                                    </div>
+
+                                    <div class="relative" ref="bookingTypeDropdown">
+                                        <label for="bookingType"
+                                            class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Booking
+                                            Type</label>
+                                        <button type="button" @click="isBookingTypeOpen = !isBookingTypeOpen"
+                                            class="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200">
+                                            <span class="font-semibold text-gray-800">
+                                                {{ formData.joint_booking ? 'Joint' : 'Exclusive' }}
+                                            </span>
+                                            <svg
+                                                :class="['w-5 h-5 text-blue-600 transition-transform duration-300', isBookingTypeOpen ? 'rotate-180' : '']"
+                                                fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                                            </svg>
+                                        </button>
+
+                                        <div v-if="isBookingTypeOpen"
+                                            class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10 overflow-hidden">
+                                            <div @click="handleBookingTypeSelect(false)" :class="[
+                                                'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
+                                                !formData.joint_booking ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                                            ]">
+                                                <span :class="['font-medium', !formData.joint_booking ? 'text-blue-700' : 'text-gray-700']">
+                                                    Exclusive
+                                                </span>
+                                                <svg v-if="!formData.joint_booking" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor"
+                                                    viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd"
+                                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                        clip-rule="evenodd"></path>
+                                                </svg>
+                                            </div>
+                                            <div @click="handleBookingTypeSelect(true)" :class="[
+                                                'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 last:border-b-0 hover:bg-blue-50',
+                                                formData.joint_booking ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                                            ]">
+                                                <span :class="['font-medium', formData.joint_booking ? 'text-blue-700' : 'text-gray-700']">
+                                                    Joint
+                                                </span>
+                                                <svg v-if="formData.joint_booking" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor"
+                                                    viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd"
+                                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                        clip-rule="evenodd"></path>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="relative" ref="statusDropdown">
+                                        <label for="status"
+                                            class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Status</label>
+                                        <button type="button" @click="isStatusOpen = !isStatusOpen"
+                                            class="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200">
+                                            <span class="font-semibold text-gray-800">
+                                                {{ formData.status === 'active' ? 'Active' : 'Inactive' }}
+                                            </span>
+                                            <svg
+                                                :class="['w-5 h-5 text-blue-600 transition-transform duration-300', isStatusOpen ? 'rotate-180' : '']"
+                                                fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                                            </svg>
+                                        </button>
+
+                                        <div v-if="isStatusOpen"
+                                            class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10 overflow-hidden">
+                                            <div @click="handleStatusSelect('active')" :class="[
+                                                'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
+                                                formData.status === 'active' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                                            ]">
+                                                <span :class="['font-medium', formData.status === 'active' ? 'text-blue-700' : 'text-gray-700']">
+                                                    Active
+                                                </span>
+                                                <svg v-if="formData.status === 'active'" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor"
+                                                    viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd"
+                                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                        clip-rule="evenodd"></path>
+                                                </svg>
+                                            </div>
+                                            <div @click="handleStatusSelect('inactive')" :class="[
+                                                'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 last:border-b-0 hover:bg-blue-50',
+                                                formData.status === 'inactive' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                                            ]">
+                                                <span :class="['font-medium', formData.status === 'inactive' ? 'text-blue-700' : 'text-gray-700']">
+                                                    Inactive
+                                                </span>
+                                                <svg v-if="formData.status === 'inactive'" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor"
+                                                    viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd"
+                                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                                        clip-rule="evenodd"></path>
+                                                </svg>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -292,7 +404,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import axios from 'axios'
 import { useToast } from 'vue-toastification'
 import MultiSelectDropdown from '@/components/MultiSelectDropdown.vue'
@@ -326,14 +438,19 @@ const formData = ref({
 })
 
 const itineraryDays = ref([{ id: 1, content: '' }])
-const showDeleteConfirmationModal = ref(false)
 const imagePreview = ref(null)
+const isBookingTypeOpen = ref(false)
+const isStatusOpen = ref(false)
+const bookingTypeDropdown = ref(null)
+const statusDropdown = ref(null)
+
 watch([() => props.show, () => props.packageId], ([newShow, newPackageId]) => {
     if (newShow && newPackageId !== null) {
         fetchPackage(newPackageId)
     } else if (!newShow) {
         resetForm()
-        showDeleteConfirmationModal.value = false
+        isBookingTypeOpen.value = false
+        isStatusOpen.value = false
     }
 })
 
@@ -360,13 +477,13 @@ const fetchPackage = async (id) => {
             discounted_rate: packageData.discounted_rate || 0,
             tour_classification: packageData.tour_classification || []
         }
-        
+
         const apiItinerary = typeof packageData.itinerary === 'string'
             ? JSON.parse(packageData.itinerary) : packageData.itinerary || {}
-        
+
         itineraryDays.value = Object.keys(apiItinerary).map((key, index) => ({
             id: index + 1,
-            number_of_day: index + 1, 
+            number_of_day: index + 1,
             content: apiItinerary[key]
         }))
         imagePreview.value = formData.value.image_path ? `/storage/${formData.value.image_path}` : null
@@ -409,7 +526,6 @@ const updatePackage = async () => {
                 data.append(`tour_classification[${index}]`, item);
             });
 
-
             response = await axios.post(`/api/packages/${formData.value.id}?_method=PUT`, data, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             })
@@ -430,7 +546,6 @@ const updatePackage = async () => {
                 kids_pax_rate: formData.value.kids_pax_rate || 0,
                 discounted_rate: parseFloat(formData.value.discounted_rate) || 0,
                 tour_classification: formData.value.tour_classification
-
             }
             response = await axios.put(`/api/packages/${formData.value.id}`, payload)
         }
@@ -439,7 +554,7 @@ const updatePackage = async () => {
         emit('saved', response.data.data)
         closeModal()
     } catch (error) {
-        toast.error('Error updating package',)
+        toast.error('Error updating package')
     }
 }
 
@@ -459,6 +574,7 @@ const resetForm = () => {
         joint_booking: false,
         status: 'active',
         pax_rate: 0,
+        kids_pax_rate: 0,
         discounted_rate: 0,
         tour_classification: []
     }
@@ -469,6 +585,16 @@ const handleImageUpload = (event) => {
     const file = event.target.files[0]
     formData.value.image = file
     imagePreview.value = file ? URL.createObjectURL(file) : (formData.value.image_path ? `/storage/${formData.value.image_path}` : null)
+}
+
+const handleBookingTypeSelect = (value) => {
+    formData.value.joint_booking = value
+    isBookingTypeOpen.value = false
+}
+
+const handleStatusSelect = (value) => {
+    formData.value.status = value
+    isStatusOpen.value = false
 }
 
 const removeItineraryDay = (dayId) => {
@@ -488,4 +614,15 @@ const addItineraryDay = () => {
     const newDayNumber = itineraryDays.value.length + 1
     itineraryDays.value.push({ id: newDayNumber, content: '' })
 }
+
+onMounted(() => {
+    document.addEventListener('click', (e) => {
+        if (bookingTypeDropdown.value && !bookingTypeDropdown.value.contains(e.target)) {
+            isBookingTypeOpen.value = false
+        }
+        if (statusDropdown.value && !statusDropdown.value.contains(e.target)) {
+            isStatusOpen.value = false
+        }
+    })
+});
 </script>
