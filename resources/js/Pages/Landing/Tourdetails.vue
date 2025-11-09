@@ -109,7 +109,7 @@
                 <div>
                   <span class="font-bold text-xl">From</span><br>
                   <span class="currency-badge" aria-hidden="true">₱</span>
-                  <span class="font-semibold text-lg"> {{ selectedPackage?.pax_rate.toLocaleString() }} / per pax</span>
+                  <span class="font-semibold text-lg"> {{ selectedPackage?.pax_rate?.toLocaleString() }} / per pax</span>
                 </div>
                 <span
                   class="bg-[#73BE5D] px-4 py-5 rounded-lg text-white font-bold text-right text-xl text-base leading-tight"
@@ -135,7 +135,7 @@
                   class="w-full h-full bg-gray-200 rounded-xl mb-2 flex items-center justify-center object-cover overflow-hidden">
                   <img :src="'/storage/' + pkg.image_path" :alt="pkg.destination" />
                 </div>
-                <div class="font-semibold text-[#1E71B8] w-full text-left">₱ {{ pkg.pax_rate.toLocaleString() }}</div>
+                <div class="font-semibold text-[#1E71B8] w-full text-left">₱ {{ pkg.pax_rate?.toLocaleString() }}</div>
                 <div class="text-[#1E71B8] flex items-center gap-1 w-full justify-start text-left">
                   <svg width="16" height="16" fill="none" stroke="#1E71B8" stroke-width="2" viewBox="0 0 24 24">
                     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />

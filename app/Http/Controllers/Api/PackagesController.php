@@ -110,7 +110,7 @@ class PackagesController extends Controller
             'destination' => 'sometimes|required|string|max:255',
             'region' => 'sometimes|nullable|string|max:255',
             'description' => 'sometimes|required|string',
-            'tour_duration' => 'sometimes|required|string|max:255',
+            'tour_duration' => 'sometimes|required|int|max:255',
             'itinerary' => 'required|array',
             'itinerary.*' => 'required|string',
             'terms_condition' => 'sometimes|required|string',
