@@ -81,26 +81,50 @@
                   <div class="text-gray-600 text-xs">Destination</div>
                   <div class="font-semibold text-gray-800">{{ receiptData.destination }}</div>
                 </div>
-                <div>
+                <!-- <div>
                   <div class="text-gray-600 text-xs">Discount Applied</div>
                   <div class="font-semibold text-green-600">Yes</div>
-                </div>
+                </div> -->
               </div>
             </div>
 
             <div class="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 border border-emerald-200">
               <h3 class="font-bold text-gray-800 mb-3">Payment Summary</h3>
+              <div v-if="paymentHistory.some(p => p.paymentType === 'Full Payment')">
               <div class="space-y-2">
                 <div class="flex justify-between text-sm">
-                  <span class="text-gray-600">Total Price:</span>
-                  <span class="font-semibold text-gray-800">₱ {{ receiptData.totalAmount }}</span>
+                  <span class="text-gray-600">Paid Amount:</span>
+                  <span class="font-semibold text-gray-800">₱ {{ currentPayment?.fullPaymentAmount }}</span>
                 </div>
                 <div class="flex justify-between text-lg font-bold pt-2 border-t border-emerald-200">
-                  <span class="text-gray-800">Amount Paid:</span>
-                  <span class="text-[#217093]">₱ {{ receiptData.amountPaid }}</span>
+                  <span class="text-gray-800">Total Amount Paid:</span>
+                  <span class="text-[#217093]">₱ {{ currentPayment?.fullPaymentAmount }}</span>
                 </div>
               </div>
             </div>
+
+            <div v-else>
+              <div class="space-y-2">
+                <div class="flex justify-between text-sm">
+                  <span class="text-gray-600">Paid Amount:</span>
+
+                  <div class="text-right">
+                    <div v-for="(p, index) in paymentHistory" 
+                      :key="index" class="font-semibold text-gray-800">
+                      ₱ {{ p.downPaymentAmount.toLocaleString() }}
+                    </div>
+                  </div>
+                </div>
+                <div class="flex justify-between text-lg font-bold pt-2 border-t border-emerald-200">
+                  <span class="text-gray-800">Total Amount Paid:</span>
+                  <span class="text-[#217093]">                      
+                    ₱ {{ totalDownPayment.toLocaleString() }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
           </div>
 
           <!-- Right: Payment Proof -->
@@ -177,7 +201,7 @@
                   Mode Of Payment: {{ currentPayment?.modeOfPayment }}
                 </label>
                 <label class="block text-sm font-medium text-gray-700">
-                  Remaining Balance: {{ currentPayment?.remainingBalance }}
+                  Remaining Balance: ₱{{ currentPayment?.remainingBalance }}
                 </label>
               </div>
             </div>
@@ -537,6 +561,9 @@ let paymentStatus = ref('');
 const paymentHistory = ref([]);
 const selectedPaymentIndex = ref(0);
 const currentPayment = computed(() => paymentHistory.value[selectedPaymentIndex.value]);
+const totalDownPayment = computed(() =>
+  paymentHistory.value.reduce((sum, payment) => sum + (payment.downPaymentAmount || 0), 0)
+);
 
 
 const fetchPaymentAndBooking = async (id) => {
