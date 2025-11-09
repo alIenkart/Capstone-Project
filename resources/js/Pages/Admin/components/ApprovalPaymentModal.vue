@@ -155,15 +155,15 @@
               </div>
 
               <!-- Payment Info -->
-              <div>
+              <div v-for="(image, index) in receiptImages" :key="index">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Proof of Payment</label>
                 <div
-                  @click="openImageModal"
+                  @click="openImageModal(image)"
                   class="relative group rounded-xl overflow-hidden border-2 border-gray-300 bg-gray-50 aspect-video cursor-pointer"
                 >
                   <img
                     v-if="currentPayment?.proofOfPayment"
-                    :src="currentPayment.proofOfPayment"
+                    :src="`/storage/${image}`"
                     alt="Payment Proof"
                     class="w-full h-full object-cover"
                   />
@@ -801,6 +801,24 @@ const downloadReceipt = async () => {
     if (buttons) buttons.style.display = 'flex';
   }
 };
+
+const receiptImages = computed(() => {
+  if (!paymentData.value.image_path) return [];
+
+  if (typeof paymentData.value.image_path === 'string') {
+    try {
+      const parsed = JSON.parse(paymentData.value.image_path);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      console.error(e);
+      return [];
+    }
+  }
+
+  return Array.isArray(props.booking.discount_images)
+    ? props.booking.discount_images.slice(0, 4)
+    : []
+})
 
 async function submitVerificationOfPayment($status) {
   if (!isDownPayment()) {
