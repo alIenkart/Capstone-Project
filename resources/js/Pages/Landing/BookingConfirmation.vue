@@ -96,19 +96,19 @@
           <hr class="border-[#73BE5D] mb-4" />
           <div class="font-bold text-white text-lg mb-2">{{ booking.packageDestination }}</div>
           <div class="text-white mb-4">
-            <div>Tour Type: <span class="text-white">{{ booking.tourType }}</span></div>
+            <div>Tour Type: <span class="text-white font-medium">{{ booking.tourType }}</span></div>
           </div>
           <div class="text-white mb-4">
-            <div>Duration: <span class="text-white">{{ booking.duration }} Day<span v-if="durationDays !== 1">s</span></span></div>
+            <div>Duration: <span class="text-white font-medium">{{ booking.duration }} Day<span v-if="durationDays !== 1">s</span></span></div>
           </div>
           <div class="text-white mb-4">
-            <div>Starting Date: <span class="text-white">{{ booking.startDate }}</span></div>
+            <div>Starting Date: <span class="text-white font-medium">{{ booking.startDate }}</span></div>
           </div>
           <div class="text-white mb-4">
             <div class="mb-1">Travellers</div>
             <div class="flex justify-between">
-              <span>Adults Rate ₱ {{ booking.adultRate }} x ({{ booking.adultsQuantity }})</span>
-              <span>₱ {{ booking.adultTotalAmount }}</span>
+              <span class="font-medium">Adults Rate ₱ {{ booking.adultRate }} x ({{ booking.adultsQuantity }})</span>
+              <span class="font-medium">₱ {{ booking.adultTotalAmount }}</span>
             </div>
             <div class="flex justify-between">
               <span>Kids Rate ₱ {{ booking.kidsRate }} x ({{ booking.kidsQuantity }})</span>

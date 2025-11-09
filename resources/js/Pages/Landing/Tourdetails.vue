@@ -109,7 +109,7 @@
                 <div>
                   <span class="font-bold text-xl">From</span><br>
                   <span class="currency-badge" aria-hidden="true">₱</span>
-                  <span class="font-semibold text-lg"> {{ selectedPackage?.pax_rate }} / per pax</span>
+                  <span class="font-semibold text-lg"> {{ selectedPackage?.pax_rate.toLocaleString() }} / per pax</span>
                 </div>
                 <span
                   class="bg-[#73BE5D] px-4 py-5 rounded-lg text-white font-bold text-right text-xl text-base leading-tight"
