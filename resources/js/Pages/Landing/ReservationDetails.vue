@@ -759,11 +759,25 @@ const postPackage = () => {
 const fetchSelectedPackage = async () => {
   try {
     const response = await service.getPackage(id.value);
-    selectedPackage.value = response.data.data;
+    const data = response.data.data;
+
+    if (data.itinerary && typeof data.itinerary === "string") {
+      try {
+        data.itinerary = JSON.parse(data.itinerary);
+      } catch (e) {
+        console.error("Failed to parse itinerary:", e);
+      }
+    }
+
+    selectedPackage.value = data;
+
+    booking.setItinerary(data.itinerary);
+
   } catch (error) {
     console.error("Error fetching selectedPackage:", error);
   }
 };
+
 
 onMounted(() => {
   fetchSelectedPackage();
