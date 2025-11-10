@@ -487,7 +487,7 @@
               Price
             </p>
             <p class="text-lg font-bold text-[#73BE5D] mt-1">
-              ₱ {{ tooltipData.price }}
+              {{ tooltipData.price?.toLocaleString() }}
             </p>
           </div>
         </div>
@@ -587,7 +587,7 @@ const generatePackageDates = () => {
           : status === "full"
           ? "Slots Full"
           : "Available",
-      price: `₱ ${pkg.pax_rate}`,
+      price: `₱ ${pkg.pax_rate.toLocaleString()}`,
     };
 
     currentDay++;
