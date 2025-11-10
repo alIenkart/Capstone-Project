@@ -50,6 +50,7 @@
       </div>
     </div>
   </section>
+
   <section class="max-w-7xl mx-auto px-6 lg:px-8 py-12 lg:py-20 bg-gradient-to-br from-gray-50 via-white to-blue-50">
     <div v-if="ourStory" class="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16 items-center">
       <div class="space-y-8">
@@ -74,7 +75,7 @@
       <div
         class="rounded-3xl overflow-hidden shadow-2xl ring-1 ring-gray-200/60 bg-white justify-self-center md:justify-self-end order-1 md:order-2 group">
         <img :src="`/storage/${ourStory.image}`" :alt="ourStory.name"
-          class="w-72 h-72 md:w-[380px] md:h-[380px] object-cover group-hover:scale-110 transition-transform duration-500"
+          class="w-full sm:w-72 md:w-96 h-auto md:h-96 object-cover group-hover:scale-110 transition-transform duration-500"
           loading="lazy" />
       </div>
     </div>
@@ -91,11 +92,11 @@
       </div>
 
       <div v-if="accreditation"
-        class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 md:gap-8 justify-items-center">
+        class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
         <div v-for="item in accreditation" :key="item.id"
-          class="flex items-center justify-center rounded-2xl border border-gray-200/60 bg-white shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105 h-64 w-64 overflow-hidden group">
+          class="flex items-center justify-center rounded-2xl border border-gray-200/60 bg-white shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105 aspect-square overflow-hidden group">
           <img :src="`/storage/${item.image}`" :alt="`Accreditation ${item.id}`"
-            class="h-full w-full object-contain p-4 group-hover:scale-110 transition-transform duration-500"
+            class="h-full w-full object-contain p-3 sm:p-4 group-hover:scale-110 transition-transform duration-500"
             loading="lazy" />
         </div>
       </div>

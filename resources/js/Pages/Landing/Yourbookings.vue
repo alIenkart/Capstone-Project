@@ -5,15 +5,13 @@
       :receiptData="receiptData"
       @close="closeReceiptModal"
     />
-    <div class="w-full bg-[#1E71B8] py-4 px-8 shadow-sm">
-      <h2 class="text-white text-3xl font-bold tracking-tight">My Bookings</h2>
+    <div class="w-full bg-[#1E71B8] py-4 px-4 sm:px-8 shadow-sm">
+      <h2 class="text-white text-2xl sm:text-3xl font-bold tracking-tight">My Bookings</h2>
     </div>
-    <div class="flex w-full h-[calc(100vh-72px)]">
-      <aside class="w-80 bg-white border-r border-gray-100 h-full py-8 px-4">
-        <div class="mb-8 px-2">
-          <h3
-            class="text-gray-900 text-sm font-semibold uppercase tracking-wider mb-4"
-          >
+    <div class="flex flex-col lg:flex-row w-full lg:h-[calc(100vh-72px)]">
+      <aside class="w-full lg:w-80 bg-white border-b lg:border-b-0 lg:border-r border-gray-100 lg:h-full py-6 lg:py-8 px-4 lg:px-4">
+        <div class="mb-6 lg:mb-8 px-2">
+          <h3 class="text-gray-900 text-sm font-semibold uppercase tracking-wider mb-4">
             Filter Bookings
           </h3>
           <div class="relative">
@@ -73,11 +71,6 @@
                     : '',
                 ]"
               >
-                <span v-if="status === 'All'" class="text-lg"></span>
-                <span v-else-if="status === 'Approved'" class="text-lg"></span>
-                <span v-else-if="status === 'Pending'" class="text-lg"></span>
-                <span v-else-if="status === 'Rejected'" class="text-lg"></span>
-
                 <span
                   :class="[
                     'font-medium',
@@ -111,7 +104,7 @@
         </h3>
         <div
           class="flex flex-col gap-2 overflow-y-auto"
-          style="max-height: 70vh"
+          :style="{ maxHeight: 'calc(100vh - 300px)' }"
         >
           <div
             v-if="filteredBookings.length"
@@ -125,17 +118,17 @@
                 : 'hover:bg-gray-50 border-transparent',
             ]"
           >
-            <div class="flex-grow">
-              <div class="font-semibold tracking-tight truncate">
+            <div class="flex-grow min-w-0">
+              <div class="font-semibold tracking-tight truncate text-sm sm:text-base">
                 {{ booking.package_destination }} Tour
               </div>
-              <div class="flex items-center gap-2 text-xs text-gray-500 mt-1">
+              <div class="flex flex-wrap items-center gap-2 text-xs text-gray-500 mt-1">
                 <span class="flex items-center gap-1 font-medium text-gray-700">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                     fill="currentColor"
-                    class="w-4 h-4"
+                    class="w-3 h-3"
                   >
                     <path
                       d="M12.75 12.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM7.5 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM8.25 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM9.75 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM10.5 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM12.75 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM14.25 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM15 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM16.5 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM15 12.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM16.5 13.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
@@ -149,7 +142,7 @@
                   {{
                     new Date(booking.start_date).toLocaleDateString("en-PH", {
                       year: "numeric",
-                      month: "long",
+                      month: "short",
                       day: "numeric",
                     })
                   }}
@@ -159,7 +152,7 @@
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                     fill="currentColor"
-                    class="w-4 h-4"
+                    class="w-3 h-3"
                   >
                     <path
                       d="M4.5 6.375a4.125 4.125 0 1 1 8.25 0 4.125 4.125 0 0 1-8.25 0ZM14.25 8.625a3.375 3.375 0 1 1 6.75 0 3.375 3.375 0 0 1-6.75 0ZM1.5 19.125a7.125 7.125 0 0 1 14.25 0v.003l-.001.119a.75.75 0 0 1-.363.63 13.067 13.067 0 0 1-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 0 1-.364-.63l-.001-.122ZM17.25 19.128l-.001.144a2.25 2.25 0 0 1-.233.96 10.088 10.088 0 0 0 5.06-1.01.75.75 0 0 0 .42-.643 4.875 4.875 0 0 0-6.957-4.611 8.586 8.586 0 0 1 1.71 5.157v.003Z"
@@ -168,7 +161,7 @@
                   {{ booking.total_quantity }}
                 </span>
               </div>
-              <div class="flex items-center gap-2 mt-1">
+              <div class="flex items-center gap-2 mt-2 flex-wrap">
                 <span
                   class="rounded px-2 py-0.5 text-xs font-semibold transition"
                   :class="{
@@ -187,42 +180,43 @@
                 >
               </div>
             </div>
-            <span class="font-mono text-xs text-blue-500"
+            <span class="font-mono text-xs text-blue-500 flex-shrink-0"
               >B{{ String(booking.id).padStart(5, "0") }}</span
             >
           </div>
           <div
             v-else
-            class="flex items-center justify-center h-96 text-gray-400 text-lg"
+            class="flex items-center justify-center py-12 text-gray-400 text-base"
           >
             No bookings found.
           </div>
         </div>
       </aside>
-      <main class="flex-1 flex justify-center items-start py-10 overflow-auto">
+
+      <main class="flex-1 flex justify-center items-start py-6 lg:py-10 overflow-auto px-4 sm:px-6 lg:px-0">
         <div
           v-if="filteredBookings.length"
-          class="bg-white rounded-3xl shadow-lg w-full max-w-5xl px-8 py-6"
+          class="bg-white rounded-2xl lg:rounded-3xl shadow-lg w-full max-w-5xl px-4 sm:px-6 lg:px-8 py-6"
         >
           <div
-            class="flex flex-col md:flex-row justify-between items-start md:items-center mb-7 border-b pb-5 border-gray-100"
+            class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 lg:mb-7 border-b pb-4 lg:pb-5 border-gray-100"
           >
-            <div>
+            <div class="w-full">
               <div
-                class="text-2xl md:text-3xl font-bold text-gray-800 mb-2 leading-tight"
+                class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800 mb-2 leading-tight"
               >
                 {{
                   filteredBookings[selectedBookingIndex].package_destination
                 }}
                 Tour
               </div>
-              <div class="flex flex-wrap gap-4 mb-1 text-gray-500">
-                <div class="flex items-center gap-1 text-base font-normal">
+              <div class="flex flex-wrap gap-2 sm:gap-4 mb-2 text-gray-500 text-sm">
+                <div class="flex items-center gap-1 font-normal">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                     fill="currentColor"
-                    class="w-5 h-5"
+                    class="w-4 h-4"
                   >
                     <path
                       d="M12.75 12.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM7.5 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM8.25 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM9.75 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM10.5 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM12.75 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM14.25 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM15 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM16.5 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM15 12.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM16.5 13.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
@@ -233,14 +227,13 @@
                       clip-rule="evenodd"
                     />
                   </svg>
-
                   <span class="font-medium text-gray-700">
                     {{
                       new Date(
                         filteredBookings[selectedBookingIndex].start_date
                       ).toLocaleDateString("en-PH", {
                         year: "numeric",
-                        month: "long",
+                        month: "short",
                         day: "numeric",
                       })
                     }}
@@ -250,7 +243,7 @@
                         filteredBookings[selectedBookingIndex].end_date
                       ).toLocaleDateString("en-PH", {
                         year: "numeric",
-                        month: "long",
+                        month: "short",
                         day: "numeric",
                       })
                     }}
@@ -261,7 +254,7 @@
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                     fill="currentColor"
-                    class="w-5 h-5"
+                    class="w-4 h-4"
                   >
                     <path
                       d="M4.5 6.375a4.125 4.125 0 1 1 8.25 0 4.125 4.125 0 0 1-8.25 0ZM14.25 8.625a3.375 3.375 0 1 1 6.75 0 3.375 3.375 0 0 1-6.75 0ZM1.5 19.125a7.125 7.125 0 0 1 14.25 0v.003l-.001.119a.75.75 0 0 1-.363.63 13.067 13.067 0 0 1-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 0 1-.364-.63l-.001-.122ZM17.25 19.128l-.001.144a2.25 2.25 0 0 1-.233.96 10.088 10.088 0 0 0 5.06-1.01.75.75 0 0 0 .42-.643 4.875 4.875 0 0 0-6.957-4.611 8.586 8.586 0 0 1 1.71 5.157v.003Z"
@@ -269,20 +262,22 @@
                   </svg>
                   {{ filteredBookings[selectedBookingIndex].total_quantity }}
                 </div>
-                <div class="font-normal">
+              </div>
+              <div class="flex flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm font-normal">
+                <div>
                   Booking Type:
                   <span class="font-medium text-gray-700">{{
                     filteredBookings[selectedBookingIndex].tour_type
                   }}</span>
                 </div>
-                <div class="font-normal">
+                <div>
                   Booked:
                   <span class="font-medium text-gray-700">{{
                     new Date(
                       filteredBookings[selectedBookingIndex].created_at
                     ).toLocaleDateString("en-PH", {
                       year: "numeric",
-                      month: "long",
+                      month: "short",
                       day: "numeric",
                     })
                   }}</span>
@@ -290,7 +285,7 @@
               </div>
             </div>
             <span
-              class="text-base font-mono text-blue-500 font-semibold mt-3 md:mt-0"
+              class="text-sm font-mono text-blue-500 font-semibold mt-3 lg:mt-0"
               >B{{
                 String(filteredBookings[selectedBookingIndex].id).padStart(
                   5,
@@ -299,15 +294,16 @@
               }}</span
             >
           </div>
+
           <div
-            class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-3 mb-7"
+            class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-8 mb-6 lg:mb-7"
           >
             <div class="flex flex-col">
-              <span class="text-gray-500 text-sm font-normal"
+              <span class="text-gray-500 text-xs sm:text-sm font-normal"
                 >Booking Status</span
               >
               <span
-                class="text-sm px-3 py-1 rounded-full font-semibold w-fit mt-1 transition-all"
+                class="text-xs sm:text-sm px-2 sm:px-3 py-1 rounded-full font-semibold w-fit mt-1 transition-all"
                 :class="[
                   filteredBookings[selectedBookingIndex].status === 'Approved'
                     ? 'bg-green-400 text-white'
@@ -320,14 +316,14 @@
               </span>
             </div>
             <div class="flex flex-col">
-              <span class="text-gray-500 text-sm font-normal">Guests</span>
-              <span class="font-medium text-gray-800 mt-1 mx-5">{{
+              <span class="text-gray-500 text-xs sm:text-sm font-normal">Guests</span>
+              <span class="font-medium text-gray-800 mt-1">{{
                 filteredBookings[selectedBookingIndex].total_quantity
               }}</span>
             </div>
             <div class="flex flex-col">
-              <span class="text-gray-500 text-sm font-normal">Total Due</span>
-              <span class="text-lg font-bold text-green-600 mt-1">
+              <span class="text-gray-500 text-xs sm:text-sm font-normal">Total Due</span>
+              <span class="text-base sm:text-lg font-bold text-green-600 mt-1">
                 ₱{{
                   Number(
                     filteredBookings[selectedBookingIndex].total_price
@@ -336,11 +332,11 @@
               </span>
             </div>
             <div class="flex flex-col">
-              <span class="text-gray-500 text-sm font-normal"
+              <span class="text-gray-500 text-xs sm:text-sm font-normal"
                 >Payment Status</span
               >
               <span
-                class="text-sm px-3 py-1 rounded-full font-semibold w-fit mt-1 transition-all"
+                class="text-xs sm:text-sm px-2 sm:px-3 py-1 rounded-full font-semibold w-fit mt-1 transition-all"
                 :class="{
                   'bg-yellow-400 text-white': paymentStatus === 'Pending',
                   'bg-green-400 text-white': paymentStatus === 'Approved',
@@ -353,40 +349,42 @@
               </span>
             </div>
           </div>
+
           <div
             v-if="filteredBookings[selectedBookingIndex].remarks"
             class="mb-6"
           >
-            <span class="text-gray-500 block mb-1 text-sm font-normal"
+            <span class="text-gray-500 block mb-2 text-xs sm:text-sm font-normal"
               >Remarks</span
             >
             <span
-              class="bg-gray-50 rounded px-4 py-2 text-gray-700 text-sm font-medium"
+              class="bg-gray-50 rounded px-3 sm:px-4 py-2 text-gray-700 text-xs sm:text-sm font-medium inline-block"
             >
               {{ _.startCase(filteredBookings[selectedBookingIndex].remarks) }}
             </span>
           </div>
+
           <div class="mt-6 mb-2 border-t border-gray-200 pt-6">
-            <h4 class="font-semibold text-lg text-gray-700 mb-4 text-center">
+            <h4 class="font-semibold text-base sm:text-lg text-gray-700 mb-4 text-center">
               Payment
             </h4>
-            <div class="flex flex-col lg:flex-row gap-8 items-start mb-6">
-              <div class="w-full lg:w-2/3 flex flex-col gap-5 justify-start">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start mb-6">
+              <div class="w-full lg:w-2/3 flex flex-col gap-4 lg:gap-5 justify-start">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <div>
                     <label
-                      class="block mb-3 text-gray-700 font-semibold text-sm tracking-wide"
+                      class="block mb-2 sm:mb-3 text-gray-700 font-semibold text-xs sm:text-sm tracking-wide"
                       for="modeOfPayment"
                       >Mode of Payment</label
                     >
-                    <div class="relative w-64 mode-payment-dropdown">
+                    <div class="relative mode-payment-dropdown">
                       <button
                         @click="toggleModeDropdown"
-                        class="w-full flex justify-between items-center px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl shadow-sm text-gray-800 font-medium hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all"
+                        class="w-full flex justify-between items-center px-3 sm:px-4 py-2 sm:py-3.5 bg-white border-2 border-gray-200 rounded-xl shadow-sm text-gray-800 font-medium text-sm sm:text-base hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all"
                       >
                         {{ selectedModeOfPayment }}
                         <svg
-                          class="w-5 h-5 text-gray-500 transition-transform duration-200"
+                          class="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 transition-transform duration-200"
                           :class="{ 'rotate-180': dropdownOpenModePayment }"
                           fill="none"
                           stroke="currentColor"
@@ -404,7 +402,7 @@
                           v-for="option in modeOfPaymentOptions"
                           :key="option.value"
                           @click="selectOptionModePayment(option)"
-                          class="px-4 py-3 cursor-pointer hover:bg-blue-100 hover:text-blue-700 transition-colors"
+                          class="px-4 py-2 sm:py-3 cursor-pointer hover:bg-blue-100 hover:text-blue-700 transition-colors text-sm sm:text-base"
                         >
                           {{ option.label }}
                         </div>
@@ -413,18 +411,18 @@
                   </div>
                   <div>
                     <label
-                      class="block mb-3 text-gray-700 font-semibold text-sm tracking-wide"
+                      class="block mb-2 sm:mb-3 text-gray-700 font-semibold text-xs sm:text-sm tracking-wide"
                       for="paymentType"
                       >Type of Payment</label
                     >
-                    <div class="relative w-64 type-payment-dropdown">
+                    <div class="relative type-payment-dropdown">
                       <button
                         @click="toggleTypeDropdown"
-                        class="w-full flex justify-between items-center px-4 py-3.5 bg-white border-2 border-gray-200 rounded-xl shadow-sm text-gray-800 font-medium hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all"
+                        class="w-full flex justify-between items-center px-3 sm:px-4 py-2 sm:py-3.5 bg-white border-2 border-gray-200 rounded-xl shadow-sm text-gray-800 font-medium text-sm sm:text-base hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-all"
                       >
                         {{ selectedPaymentType }}
                         <svg
-                          class="w-5 h-5 text-gray-500 transition-transform duration-200"
+                          class="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 transition-transform duration-200"
                           :class="{ 'rotate-180': dropdownOpenTypePayment }"
                           fill="none"
                           stroke="currentColor"
@@ -443,7 +441,7 @@
                           v-for="option in paymentTypeOptions"
                           :key="option.value"
                           @click="selectOptionTypePayment(option)"
-                          class="px-4 py-3 cursor-pointer hover:bg-blue-100 hover:text-blue-700 transition-colors"
+                          class="px-4 py-2 sm:py-3 cursor-pointer hover:bg-blue-100 hover:text-blue-700 transition-colors text-sm sm:text-base"
                         >
                           {{ option.label }}
                         </div>
@@ -454,13 +452,13 @@
 
                 <div
                   v-if="selectedPaymentType === 'Full Payment'"
-                  class="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-5 shadow-sm"
+                  class="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-3 sm:p-5 shadow-sm"
                 >
-                  <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                      <div class="bg-green-100 p-2.5 rounded-lg">
+                  <div class="flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-2 sm:gap-3">
+                      <div class="bg-green-100 p-2 sm:p-2.5 rounded-lg flex-shrink-0">
                         <svg
-                          class="w-6 h-6 text-green-600"
+                          class="w-5 h-5 sm:w-6 sm:h-6 text-green-600"
                           fill="none"
                           stroke="currentColor"
                           stroke-width="2"
@@ -472,10 +470,10 @@
                         </svg>
                       </div>
                       <div>
-                        <span class="text-gray-600 text-sm font-normal block"
+                        <span class="text-gray-600 text-xs sm:text-sm font-normal block"
                           >Amount to Pay</span
                         >
-                        <span class="text-2xl font-bold text-green-700">
+                        <span class="text-lg sm:text-2xl font-bold text-green-700">
                           ₱{{
                             Number(
                               filteredBookings[selectedBookingIndex]
@@ -486,7 +484,7 @@
                       </div>
                     </div>
                     <div
-                      class="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold"
+                      class="bg-green-500 text-white px-2 sm:px-3 py-1 rounded-full text-xs font-bold flex-shrink-0"
                     >
                       FULL
                     </div>
@@ -498,14 +496,14 @@
                   class="space-y-3"
                 >
                   <div
-                    class="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-4 shadow-sm"
+                    class="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-3 sm:p-4 shadow-sm"
                   >
                     <label
-                      class="flex items-center gap-2 text-gray-700 font-semibold text-sm mb-3"
+                      class="flex items-center gap-2 text-gray-700 font-semibold text-xs sm:text-sm mb-2 sm:mb-3"
                       for="downPaymentAmount"
                     >
                       <svg
-                        class="w-5 h-5 text-blue-600"
+                        class="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 flex-shrink-0"
                         fill="none"
                         stroke="currentColor"
                         stroke-width="2"
@@ -519,7 +517,7 @@
                     </label>
                     <div class="relative">
                       <span
-                        class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold text-lg"
+                        class="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold text-base sm:text-lg"
                         >₱</span
                       >
                       <input
@@ -527,12 +525,12 @@
                         v-model.number="formData.downPaymentAmount"
                         type="number"
                         min="0"
-                        class="w-full rounded-xl border-2 border-gray-200 pl-10 pr-4 py-3.5 bg-white text-gray-800 font-semibold text-lg focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 hover:border-blue-300 hover:shadow-md shadow-sm"
+                        class="w-full rounded-xl border-2 border-gray-200 pl-8 sm:pl-10 pr-3 sm:pr-4 py-2 sm:py-3.5 bg-white text-gray-800 font-semibold text-base sm:text-lg focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 hover:border-blue-300 hover:shadow-md shadow-sm"
                         placeholder="0.00"
                       />
                     </div>
                   </div>
-                  <div class="flex items-center justify-between text-sm px-2">
+                  <div class="flex items-center justify-between text-xs sm:text-sm px-2">
                     <span class="text-gray-600 font-normal">Total Amount:</span>
                     <span class="font-semibold text-gray-800"
                       >₱{{
@@ -546,14 +544,14 @@
                 </div>
 
                 <div>
-                  <label class="block mb-2 text-gray-700 font-semibold text-sm"
+                  <label class="block mb-2 text-gray-700 font-semibold text-xs sm:text-sm"
                     >Upload Payment Receipt:</label
                   >
-                  <div class="flex items-center gap-4 mb-4 flex-wrap">
+                  <div class="flex items-center gap-3 sm:gap-4 mb-4 flex-wrap">
                     <label
                       v-if="!selectedFile"
                       :class="[
-                        'flex items-center px-4 py-2 rounded-lg border shadow-sm transition',
+                        'flex items-center px-3 sm:px-4 py-2 rounded-lg border shadow-sm transition text-xs sm:text-sm',
                         filteredBookings[selectedBookingIndex]?.status ===
                           'Pending' ||
                         filteredBookings[selectedBookingIndex]?.status ===
@@ -564,7 +562,7 @@
                       ]"
                     >
                       <svg
-                        class="w-6 h-6 mr-2"
+                        class="w-5 h-5 sm:w-6 sm:h-6 mr-2"
                         fill="none"
                         stroke="currentColor"
                         stroke-width="2"
@@ -592,7 +590,7 @@
                     <div
                       v-else
                       :class="[
-                        'flex items-center bg-white px-3 py-2 rounded shadow border',
+                        'flex items-center bg-white px-2 sm:px-3 py-2 rounded shadow border',
                         paymentStatus === 'Under Review'
                           ? 'cursor-not-allowed opacity-60'
                           : 'cursor-pointer',
@@ -606,7 +604,7 @@
                       <img
                         :src="previewUrl"
                         alt="Preview"
-                        class="w-20 h-20 rounded object-cover border"
+                        class="w-16 h-16 sm:w-20 sm:h-20 rounded object-cover border"
                       />
                       <input
                         ref="fileInput"
@@ -630,21 +628,21 @@
                 class="w-full lg:w-1/3 flex flex-col justify-center items-center h-fit"
               >
                 <div
-                  class="font-semibold text-gray-800 text-center text-lg mb-1"
+                  class="font-semibold text-gray-800 text-center text-base sm:text-lg"
                 >
                   Dorie Magjobos
                 </div>
                 <div
-                  class="text-gray-500 text-center text-base font-normal mb-3"
+                  class="text-gray-500 text-center text-sm sm:text-base font-normal mb-3"
                 >
                   xxxx xxx 1200
                 </div>
                 <img
                   src="/storage/qr-payment/qr.png"
                   alt="QR Payment"
-                  class="w-48 h-48 bg-white border-2 border-gray-200 rounded-lg object-contain mb-2 shadow-sm flex-shrink-0"
+                  class="w-36 h-36 sm:w-48 sm:h-48 bg-white border-2 border-gray-200 rounded-lg object-contain mb-2 shadow-sm flex-shrink-0"
                 />
-                <div class="text-sm text-gray-500 mt-2 text-center font-normal">
+                <div class="text-xs sm:text-sm text-gray-500 mt-2 text-center font-normal">
                   Scan this QR code to pay
                 </div>
               </div>
@@ -652,16 +650,16 @@
 
             <div class="flex justify-center w-full">
               <div
-                class="flex flex-col items-center gap-4 mt-8 mb-2 relative group w-full max-w-xs"
+                class="flex flex-col items-center gap-3 sm:gap-4 mt-6 sm:mt-8 mb-2 relative group w-full max-w-xs"
               >
                 <div
                   v-if="
                     paymentStatus === 'Under Review' || isBookingStatusPending()
                   "
-                  class="flex justify-center mt-4"
+                  class="flex justify-center w-full"
                 >
                   <div
-                    class="bg-yellow-50 border border-yellow-300 text-yellow-700 px-6 py-3 rounded-lg shadow-sm text-center max-w-md"
+                    class="bg-yellow-50 border border-yellow-300 text-yellow-700 px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-sm text-center w-full text-xs sm:text-sm"
                   >
                     <div v-if="isBookingStatusPending && !paymentStatus">
                       <span class="font-semibold block"
@@ -683,7 +681,7 @@
                   "
                   :disabled="!selectedFile"
                   @click="submitProofOfPayment()"
-                  class="w-full bg-[#1E71B8] hover:bg-[#155a8a] focus:ring-2 focus:ring-[#52c2f8] transition shadow-lg text-white px-8 py-3 rounded-xl font-semibold text-lg focus:outline-none active:scale-95 duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="w-full bg-[#1E71B8] hover:bg-[#155a8a] focus:ring-2 focus:ring-[#52c2f8] transition shadow-lg text-white px-6 sm:px-8 py-2 sm:py-3 rounded-xl font-semibold text-sm sm:text-lg focus:outline-none active:scale-95 duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Send For Approval
                 </button>
@@ -694,7 +692,7 @@
                   "
                   :disabled="!selectedFile"
                   @click="submitProofOfPayment()"
-                  class="w-full bg-[#1E71B8] hover:bg-[#155a8a] focus:ring-2 focus:ring-[#52c2f8] transition shadow-lg text-white px-8 py-3 rounded-xl font-semibold text-lg focus:outline-none active:scale-95 duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="w-full bg-[#1E71B8] hover:bg-[#155a8a] focus:ring-2 focus:ring-[#52c2f8] transition shadow-lg text-white px-6 sm:px-8 py-2 sm:py-3 rounded-xl font-semibold text-sm sm:text-lg focus:outline-none active:scale-95 duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Complete Down Payment
                 </button>
@@ -707,7 +705,7 @@
                   :disabled="
                     filteredBookings[selectedBookingIndex]?.status === 'Pending'
                   "
-                  class="w-full bg-[#1E71B8] hover:bg-[#155a8a] focus:ring-2 focus:ring-[#52c2f8] transition shadow-lg text-white px-8 py-3 rounded-xl font-semibold text-lg focus:outline-none active:scale-95 duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="w-full bg-[#1E71B8] hover:bg-[#155a8a] focus:ring-2 focus:ring-[#52c2f8] transition shadow-lg text-white px-6 sm:px-8 py-2 sm:py-3 rounded-xl font-semibold text-sm sm:text-lg focus:outline-none active:scale-95 duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Submit
                 </button>
@@ -718,7 +716,7 @@
                     !filteredBookings[selectedBookingIndex]?.rejected_at &&
                     !isPaymentRejected()
                   "
-                  class="w-full bg-white hover:bg-red-50 text-red-500 border border-red-400 px-8 py-3 rounded-xl font-semibold text-lg transition shadow-md focus:outline-none focus:ring-2 focus:ring-red-100 active:scale-95 duration-150"
+                  class="w-full bg-white hover:bg-red-50 text-red-500 border border-red-400 px-6 sm:px-8 py-2 sm:py-3 rounded-xl font-semibold text-sm sm:text-lg transition shadow-md focus:outline-none focus:ring-2 focus:ring-red-100 active:scale-95 duration-150"
                 >
                   Cancel Booking
                 </button>
@@ -726,7 +724,7 @@
                 <button
                   v-if="isFullyPaid()"
                   @click="viewReceipt"
-                  class="w-full bg-[#1E71B8] hover:bg-[#155a8a] focus:ring-2 focus:ring-[#52c2f8] transition shadow-lg text-white px-8 py-3 rounded-xl font-semibold text-lg focus:outline-none active:scale-95 duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="w-full bg-[#1E71B8] hover:bg-[#155a8a] focus:ring-2 focus:ring-[#52c2f8] transition shadow-lg text-white px-6 sm:px-8 py-2 sm:py-3 rounded-xl font-semibold text-sm sm:text-lg focus:outline-none active:scale-95 duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   View Receipt
                 </button>
@@ -737,7 +735,7 @@
                     (isPaymentRejected() || isBookingRejected())
                   "
                   @click="showRejectionModal = true"
-                  class="w-full bg-[#1E71B8] hover:bg-[#155a8a] focus:ring-2 focus:ring-[#52c2f8] transition shadow-lg text-white px-8 py-3 rounded-xl font-semibold text-lg focus:outline-none active:scale-95 duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+                  class="w-full bg-[#1E71B8] hover:bg-[#155a8a] focus:ring-2 focus:ring-[#52c2f8] transition shadow-lg text-white px-6 sm:px-8 py-2 sm:py-3 rounded-xl font-semibold text-sm sm:text-lg focus:outline-none active:scale-95 duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   View Rejection Reason
                 </button>
@@ -747,7 +745,7 @@
         </div>
         <div
           v-else
-          class="flex items-center justify-center h-96 text-gray-400 text-lg"
+          class="flex items-center justify-center h-96 text-gray-400 text-base sm:text-lg"
         >
           No bookings found.
         </div>
@@ -767,12 +765,11 @@
             <div
               class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
             >
-              <!-- Header -->
-              <div class="bg-gradient-to-r from-red-500 to-red-600 px-6 py-6">
+              <div class="bg-gradient-to-r from-red-500 to-red-600 px-4 sm:px-6 py-4 sm:py-6">
                 <div class="flex items-center gap-3">
-                  <div class="p-3 bg-white/20 rounded-lg">
+                  <div class="p-2 sm:p-3 bg-white/20 rounded-lg">
                     <svg
-                      class="w-6 h-6 text-white"
+                      class="w-5 h-5 sm:w-6 sm:h-6 text-white"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -785,14 +782,13 @@
                       />
                     </svg>
                   </div>
-                  <h3 class="text-xl font-bold text-white">Booking Rejected</h3>
+                  <h3 class="text-lg sm:text-xl font-bold text-white">Booking Rejected</h3>
                 </div>
               </div>
 
-              <!-- Body -->
-              <div class="px-6 py-6 space-y-4">
+              <div class="px-4 sm:px-6 py-4 sm:py-6 space-y-4">
                 <div
-                  class="block text-sm font-semibold text-slate-700 mb-3 text-right"
+                  class="block text-xs sm:text-sm font-semibold text-slate-700 mb-3 text-right"
                 >
                   {{
                     filteredBookings[selectedBookingIndex]?.rejected_at
@@ -809,12 +805,12 @@
 
                 <div>
                   <label
-                    class="block text-sm font-semibold text-slate-700 mb-3"
+                    class="block text-xs sm:text-sm font-semibold text-slate-700 mb-3"
                   >
-                    Rejection Category <span class="text-red-500"></span>
+                    Rejection Category
                   </label>
                   <div
-                    class="block text-sm font-normal text-slate-700 mb-1 pl-4"
+                    class="block text-xs sm:text-sm font-normal text-slate-700 mb-1 pl-4"
                   >
                     -
                     {{
@@ -824,11 +820,11 @@
                 </div>
 
                 <hr />
-                <label class="block text-sm font-semibold text-slate-700">
-                  Reason: <span class="text-red-500"></span>
+                <label class="block text-xs sm:text-sm font-semibold text-slate-700">
+                  Reason:
                 </label>
                 <textarea
-                  class="w-full rounded-xl border-2 border-gray-300 p-3 text-sm text-slate-700 resize-none bg-gray-100 font-normal"
+                  class="w-full rounded-xl border-2 border-gray-300 p-2 sm:p-3 text-xs sm:text-sm text-slate-700 resize-none bg-gray-100 font-normal"
                   :value="
                     filteredBookings[selectedBookingIndex]?.rejection_reason
                   "
@@ -837,14 +833,13 @@
                 >
                 </textarea>
 
-                <!-- Footer -->
                 <div
-                  class="bg-slate-50 py-4 border-t border-slate-200 flex justify-end"
+                  class="bg-slate-50 py-3 sm:py-4 border-t border-slate-200 flex justify-end px-4 sm:px-6 -mx-4 sm:-mx-6 -mb-4 sm:-mb-6"
                 >
                   <button
                     type="button"
                     @click="showRejectionModal = false"
-                    class="rounded-lg px-6 py-2.5 text-sm font-semibold bg-slate-200 text-slate-800 hover:bg-slate-300 transition-all"
+                    class="rounded-lg px-4 sm:px-6 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold bg-slate-200 text-slate-800 hover:bg-slate-300 transition-all"
                   >
                     Close
                   </button>
@@ -1019,8 +1014,6 @@ const submitPayment = () => {
     return;
   }
 
-  // Example logic to handle payment submission
-  // (You can replace this with your API call or form submit)
   toast.success("Payment submitted successfully!");
 };
 

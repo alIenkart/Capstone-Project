@@ -1,14 +1,47 @@
 <template>
   <div class="min-h-screen flex flex-col">
     <nav class="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-md backdrop-blur-sm bg-opacity-95">
-      <div class="flex items-center justify-between px-8 md:px-16 h-24 gap-12">
-        <div class="flex-shrink-0">
+      <div class="flex items-center justify-between px-6 md:px-16 h-20 gap-12">
+        <div class="hidden lg:block flex-shrink-0">
           <img
             src="/storage/logo/Logo.png"
             alt="JE Travel & Tours"
             class="h-12 hover:opacity-80 transition-opacity duration-300"
           />
         </div>
+
+        <button
+          @click="showMobileMenu = !showMobileMenu"
+          class="lg:hidden p-2 text-[#008DDA] hover:bg-blue-50 rounded-lg transition-all duration-300"
+        >
+          <svg
+            v-if="!showMobileMenu"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            class="transition-transform duration-300"
+          >
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+          <svg
+            v-else
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            class="transition-transform duration-300"
+          >
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
 
         <div class="hidden lg:flex items-center gap-16 flex-1 justify-center">
           <Link
@@ -48,7 +81,7 @@
           </Link>
         </div>
 
-        <div v-if="user" class="flex items-center gap-6 md:gap-8">
+        <div v-if="user" class="hidden lg:flex items-center gap-6 md:gap-8">
           <div class="relative" ref="notificationRef">
             <button
               @click="toggleNotifications"
@@ -85,9 +118,7 @@
                 v-if="showNotifications"
                 class="absolute right-0 mt-3 w-full md:w-96 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden"
               >
-                <div
-                  class="bg-gradient-to-r from-[#1E71B8] to-[#008DDA] px-6 py-4 flex items-center justify-between"
-                >
+                <div class="bg-gradient-to-r from-[#1E71B8] to-[#008DDA] px-6 py-4 flex items-center justify-between">
                   <h3 class="text-white font-bold text-lg">Notifications</h3>
                   <button
                     @click="showNotifications = false"
@@ -113,9 +144,7 @@
                           {{ notif.title }}
                         </h4>
                         <div class="flex items-center gap-2 ml-2">
-                          <span
-                            class="text-xs font-mono bg-gradient-to-r from-[#008DDA] to-[#1E71B8] text-white px-2 py-1 rounded-full"
-                          >
+                          <span class="text-xs font-mono bg-gradient-to-r from-[#008DDA] to-[#1E71B8] text-white px-2 py-1 rounded-full">
                             B{{ String(notif.booking_id).padStart(5, "0") }}
                           </span>
                           <div
@@ -149,9 +178,7 @@
                   </div>
                 </div>
 
-                <div
-                  class="bg-gradient-to-r from-blue-50 to-transparent px-6 py-3 text-center border-t border-gray-100"
-                >
+                <div class="bg-gradient-to-r from-blue-50 to-transparent px-6 py-3 text-center border-t border-gray-100">
                   <button
                     @click="markAllAsRead"
                     class="text-[#008DDA] text-sm font-semibold hover:text-[#1E71B8] transition-all duration-300"
@@ -168,14 +195,7 @@
               @click="showDropdown = !showDropdown"
               class="p-2 text-[#008DDA] hover:bg-blue-50 rounded-full transition-all duration-300 border-2 border-[#008DDA] hover:shadow-md hover:border-[#73BE5D]"
             >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
               </svg>
@@ -257,6 +277,35 @@
           </div>
         </div>
 
+        <div v-if="user" class="lg:hidden flex items-center gap-3">
+          <button
+            @click="toggleNotifications"
+            class="relative p-2 text-[#008DDA] hover:bg-blue-50 rounded-full transition-all duration-300"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+              <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+            </svg>
+            <span
+              v-if="unreadCount > 0"
+              class="absolute top-0 right-0 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center shadow-lg text-xs"
+            >
+              {{ unreadCount }}
+            </span>
+          </button>
+
+          <button
+            @click="showMobileUserMenu = !showMobileUserMenu"
+            class="p-2 text-[#008DDA] hover:bg-blue-50 rounded-full transition-all duration-300 border-2 border-[#008DDA]"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Mobile Login Link -->
         <div v-else class="flex items-center group cursor-pointer">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -270,15 +319,159 @@
               clip-rule="evenodd"
             />
           </svg>
-
-          <Link
-            href="/login"
-            class="text-sm md:text-base font-semibold text-[#008DDA] transition-all duration-300 group-hover:text-[#73BE5D] ml-2"
-          >
+          <Link href="/login" class="text-xs sm:text-sm md:text-base font-semibold text-[#008DDA] transition-all duration-300 group-hover:text-[#73BE5D] ml-2">
             Login
           </Link>
         </div>
       </div>
+
+      <!-- Mobile Navigation Menu -->
+      <transition
+        enter-active-class="transition ease-out duration-200"
+        enter-from-class="opacity-0 -translate-y-2"
+        enter-to-class="opacity-100 translate-y-0"
+        leave-active-class="transition ease-in duration-150"
+        leave-from-class="opacity-100 translate-y-0"
+        leave-to-class="opacity-0 -translate-y-2"
+      >
+        <div v-if="showMobileMenu" class="lg:hidden border-t border-gray-200 bg-gradient-to-b from-blue-50 to-white">
+          <div class="px-6 py-4 space-y-3">
+            <Link href="/" class="block px-4 py-3 text-[#008DDA] font-semibold hover:bg-blue-100 rounded-lg transition-all duration-300" @click="showMobileMenu = false">
+              Home
+            </Link>
+            <Link href="/destination" class="block px-4 py-3 text-[#008DDA] font-semibold hover:bg-blue-100 rounded-lg transition-all duration-300" @click="showMobileMenu = false">
+              Destinations
+            </Link>
+            <Link href="/blogs" class="block px-4 py-3 text-[#008DDA] font-semibold hover:bg-blue-100 rounded-lg transition-all duration-300" @click="showMobileMenu = false">
+              Travel Blogs
+            </Link>
+            <Link href="/aboutus" class="block px-4 py-3 text-[#008DDA] font-semibold hover:bg-blue-100 rounded-lg transition-all duration-300" @click="showMobileMenu = false">
+              About Us
+            </Link>
+            <Link href="/contactus" class="block px-4 py-3 text-[#008DDA] font-semibold hover:bg-blue-100 rounded-lg transition-all duration-300" @click="showMobileMenu = false">
+              Contact Us
+            </Link>
+          </div>
+        </div>
+      </transition>
+
+      <!-- Mobile User Menu Dropdown -->
+      <transition
+        enter-active-class="transition ease-out duration-200"
+        enter-from-class="opacity-0 -translate-y-2"
+        enter-to-class="opacity-100 translate-y-0"
+        leave-active-class="transition ease-in duration-150"
+        leave-from-class="opacity-100 translate-y-0"
+        leave-to-class="opacity-0 -translate-y-2"
+      >
+        <div v-if="showMobileUserMenu && user" class="lg:hidden border-t border-gray-200 bg-gradient-to-b from-blue-50 to-white">
+          <div class="px-6 py-4 space-y-3">
+            <Link
+              href="/profile"
+              class="flex items-center gap-3 px-4 py-3 text-[#008DDA] font-semibold hover:bg-blue-100 rounded-lg transition-all duration-300"
+              @click="showMobileUserMenu = false"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              Profile
+            </Link>
+            <Link
+              href="/yourbookings"
+              class="flex items-center gap-3 px-4 py-3 text-[#008DDA] font-semibold hover:bg-blue-100 rounded-lg transition-all duration-300"
+              @click="showMobileUserMenu = false"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+              </svg>
+              Your Bookings
+            </Link>
+            <Link
+              :href="route('logout')"
+              method="post"
+              as="button"
+              class="w-full flex items-center gap-3 px-4 py-3 text-red-600 font-semibold hover:bg-red-50 rounded-lg transition-all duration-300"
+              @click="showMobileUserMenu = false"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+              Logout
+            </Link>
+          </div>
+        </div>
+      </transition>
+
+      <!-- Notifications Dropdown for Mobile -->
+      <transition
+        enter-active-class="transition ease-out duration-200"
+        enter-from-class="opacity-0 -translate-y-2"
+        enter-to-class="opacity-100 translate-y-0"
+        leave-active-class="transition ease-in duration-150"
+        leave-from-class="opacity-100 translate-y-0"
+        leave-to-class="opacity-0 -translate-y-2"
+      >
+        <div
+          v-if="showNotifications && user"
+          class="lg:hidden border-t border-gray-200 bg-white max-h-96 overflow-y-auto"
+        >
+          <div class="bg-gradient-to-r from-[#1E71B8] to-[#008DDA] px-6 py-4 flex items-center justify-between sticky top-0">
+            <h3 class="text-white font-bold text-lg">Notifications</h3>
+            <button
+              @click="showNotifications = false"
+              class="text-white hover:bg-white/20 p-1 rounded-full transition-all duration-300"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <div v-if="notifications.length > 0" class="divide-y divide-gray-100">
+            <div
+              v-for="notif in notifications"
+              :key="notif.id"
+              @click="markAsRead(notif.id)"
+              class="p-4 hover:bg-gradient-to-r hover:from-blue-50 hover:to-transparent transition-all duration-300 cursor-pointer border-l-4 border-transparent hover:border-[#008DDA]"
+              :class="notif.is_read ? 'bg-white' : 'bg-blue-50'"
+            >
+              <div class="flex items-start justify-between mb-2">
+                <h4 class="font-bold text-gray-900 text-sm flex-1">{{ notif.title }}</h4>
+                <div class="flex items-center gap-2 ml-2">
+                  <span class="text-xs font-mono bg-gradient-to-r from-[#008DDA] to-[#1E71B8] text-white px-2 py-1 rounded-full">
+                    B{{ String(notif.booking_id).padStart(5, "0") }}
+                  </span>
+                  <div v-if="!notif.is_read" class="w-3 h-3 rounded-full bg-gradient-to-r from-red-500 to-red-600 shadow-lg"></div>
+                </div>
+              </div>
+              <p class="text-gray-700 text-sm leading-relaxed mb-2">{{ notif.message }}</p>
+              <p class="text-gray-500 text-xs">{{ formatNotificationDate(notif.created_at) }}</p>
+            </div>
+          </div>
+          <div v-else class="px-6 py-12 text-center">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mx-auto text-gray-300 mb-2">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+              <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+            </svg>
+            <p class="text-gray-500 text-sm font-medium">No notifications yet</p>
+          </div>
+
+          <div class="bg-gradient-to-r from-blue-50 to-transparent px-6 py-3 text-center border-t border-gray-100 sticky bottom-0">
+            <button
+              @click="markAllAsRead"
+              class="text-[#008DDA] text-sm font-semibold hover:text-[#1E71B8] transition-all duration-300"
+            >
+              Mark All as Read
+            </button>
+          </div>
+        </div>
+      </transition>
     </nav>
 
     <main class="flex-1 bg-white">
@@ -294,6 +487,8 @@ import { api } from "@/api/api";
 
 const showDropdown = ref(false);
 const showNotifications = ref(false);
+const showMobileMenu = ref(false);
+const showMobileUserMenu = ref(false);
 const page = usePage();
 const user = computed(() => page.props.auth?.user);
 const dropdownRef = ref(null);
@@ -338,6 +533,7 @@ const loadUnreadCount = async () => {
 
 const toggleNotifications = async () => {
   showNotifications.value = !showNotifications.value;
+  showMobileUserMenu.value = false;
   if (showNotifications.value) {
     await loadNotifications();
   }
@@ -418,5 +614,7 @@ onUnmounted(() => {
 router.on("navigate", () => {
   showDropdown.value = false;
   showNotifications.value = false;
+  showMobileMenu.value = false;
+  showMobileUserMenu.value = false;
 });
 </script>
