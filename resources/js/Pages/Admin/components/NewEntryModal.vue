@@ -1426,15 +1426,27 @@ const calendarDays = computed(() => {
 });
 
 const parseItineraryToDays = (itineraryString) => {
+  if (typeof itineraryString === "string") {
+    try {
+      const parsed = JSON.parse(itineraryString);
+      if (typeof parsed === "object" && parsed !== null) {
+        itineraryString = parsed;
+      }
+    } catch {
+    }
+  }
+
   if (typeof itineraryString === "object" && itineraryString !== null) {
     return Object.entries(itineraryString).map(([key, value], index) => ({
       id: index + 1,
       content: value || "",
     }));
   }
+
   if (typeof itineraryString !== "string" || itineraryString.trim() === "") {
     return [{ id: 1, content: "" }];
   }
+
   const dayPattern = /Day\s+\d+:/gi;
   const dayMatches = [...itineraryString.matchAll(dayPattern)];
   if (dayMatches.length > 0) {
@@ -1452,6 +1464,7 @@ const parseItineraryToDays = (itineraryString) => {
     });
     return days;
   }
+
   const daySections = itineraryString
     .split("\n\n")
     .filter((section) => section.trim() !== "");
@@ -1461,8 +1474,10 @@ const parseItineraryToDays = (itineraryString) => {
       content: section.replace(/^Day\s+\d+:\s*/i, "").trim(),
     }));
   }
+
   return [{ id: 1, content: itineraryString.trim() }];
 };
+
 
 const itineraryDays = computed(() => {
   return customItinerary.value?.length
