@@ -9,13 +9,13 @@
   >
     <div
       v-if="visible"
-      class="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 backdrop-blur-md p-4"
+      class="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 backdrop-blur-md p-4 sm:p-6"
     >
       <div
-        class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-100"
+        class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-100 mx-auto"
       >
         <div
-          class="relative px-8 py-8 bg-gradient-to-br from-red-500 to-red-600 border-b border-red-600"
+          class="relative px-5 py-6 sm:px-8 sm:py-8 bg-gradient-to-br from-red-500 to-red-600 border-b border-red-600"
         >
           <div class="flex items-start gap-4">
             <div class="flex-shrink-0 p-3 bg-white/20 rounded-xl">
@@ -41,7 +41,7 @@
             </div>
           </div>
         </div>
-        <div class="px-8 py-8 space-y-6">
+        <div class="px-5 py-6 sm:px-8 sm:py-8 space-y-6">
           <div>
             <label
               class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2"
@@ -69,7 +69,7 @@
           </div>
         </div>
         <div
-          class="bg-slate-50/50 py-5 border-t border-slate-100 flex justify-end px-8 gap-3"
+          class="bg-slate-50/50 py-5 border-t border-slate-100 flex flex-col sm:flex-row sm:justify-end px-5 sm:px-8 gap-3"
         >
           <button
             type="button"

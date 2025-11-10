@@ -1,9 +1,12 @@
 <template>
   <!-- Payment Approval Modal -->
-  <div v-if="!showReceipt" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-    <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden">
+  <div
+    v-if="!showReceipt"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6"
+  >
+    <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden mx-auto">
       <!-- Header -->
-      <div class="bg-gradient-to-r from-[#217093] to-[#2a8bb5] px-8 py-6 relative">
+      <div class="bg-gradient-to-r from-[#217093] to-[#2a8bb5] px-5 py-5 sm:px-8 sm:py-6 relative">
         <h2 class="text-2xl font-bold text-white">Payment Approval</h2>
         <p class="text-white/80 text-sm mt-1">
           Review and process payment submission
@@ -18,8 +21,8 @@
       </div>
 
       <!-- Content -->
-      <div class="px-8 py-6 max-h-[calc(100vh-16rem)] overflow-y-auto">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div class="px-5 py-6 sm:px-8 max-h-[calc(100vh-16rem)] overflow-y-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
           <!-- Left: Booking Details -->
           <div class="space-y-6">
             <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 border border-gray-200">
@@ -31,19 +34,19 @@
                 <h3 class="font-bold text-gray-800">Customer Information</h3>
               </div>
               <div class="space-y-2 text-sm">
-                <div class="flex justify-between">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2">
                   <span class="text-gray-600">Name:</span>
                   <span class="font-semibold text-gray-800">{{
                     receiptData.customerName
                     }}</span>
                 </div>
-                <div class="flex justify-between">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2">
                   <span class="text-gray-600">Email:</span>
                   <span class="font-semibold text-gray-800">{{
                     receiptData.customerEmail
                     }}</span>
                 </div>
-                <div class="flex justify-between">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2">
                   <span class="text-gray-600">Phone:</span>
                   <span class="font-semibold text-gray-800">{{
                     receiptData.customerPhone
@@ -60,7 +63,7 @@
                 </svg>
                 <h3 class="font-bold text-gray-800">Booking Details</h3>
               </div>
-              <div class="grid grid-cols-2 gap-3 text-sm">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
                 <div>
                   <div class="text-gray-600 text-xs">Booking Date</div>
                   <div class="font-semibold text-gray-800">March 26, 2024</div>
@@ -114,11 +117,13 @@
                 paymentHistory.some((p) => p.paymentType === 'Full Payment')
               ">
                 <div class="space-y-2">
-                  <div class="flex justify-between text-sm">
+                  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2 text-sm">
                     <span class="text-gray-600">Paid Amount:</span>
                     <span class="font-semibold text-gray-800">₱ {{ currentPayment?.fullPaymentAmount }}</span>
                   </div>
-                  <div class="flex justify-between text-lg font-bold pt-2 border-t border-emerald-200">
+                  <div
+                    class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2 text-lg font-bold pt-2 border-t border-emerald-200"
+                  >
                     <span class="text-gray-800">Total Amount Paid:</span>
                     <span class="text-[#217093]">₱ {{ currentPayment?.fullPaymentAmount }}</span>
                   </div>
@@ -127,7 +132,7 @@
 
               <div v-else>
                 <div class="space-y-2">
-                  <div class="flex justify-between text-sm">
+                  <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-2 text-sm">
                     <span class="text-gray-600">Paid Amount:</span>
 
                     <div class="text-right">
@@ -136,7 +141,9 @@
                       </div>
                     </div>
                   </div>
-                  <div class="flex justify-between text-lg font-bold pt-2 border-t border-emerald-200">
+                  <div
+                    class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2 text-lg font-bold pt-2 border-t border-emerald-200"
+                  >
                     <span class="text-gray-800">Total Amount Paid:</span>
                     <span class="text-[#217093]">
                       ₱ {{ totalDownPayment.toLocaleString() }}
@@ -406,11 +413,19 @@
 
           <form @submit.prevent="confirmReject" class="space-y-4">
             <div class="relative">
-              <button type="button" @click="showCategoryDropdown = !showCategoryDropdown"
-                class="w-full flex justify-between items-center rounded-xl border-2 border-gray-300 focus:border-red-500 focus:ring-1 focus:ring-red-500 px-4 py-2 outline-none text-gray-700 transition-all">
+              <button
+                type="button"
+                @click="showCategoryDropdown = !showCategoryDropdown"
+                class="w-full flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center rounded-xl border-2 border-gray-300 focus:border-red-500 focus:ring-1 focus:ring-red-500 px-4 py-2 outline-none text-gray-700 transition-all text-left sm:text-base"
+              >
                 <span>{{ rejectionCategory || 'Select Rejection Category' }}</span>
-                <svg class="w-5 h-5 text-gray-500 transition-transform" :class="{ 'rotate-180': showCategoryDropdown }"
-                  fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg
+                  class="w-5 h-5 text-gray-500 transition-transform sm:ml-2 self-start sm:self-center"
+                  :class="{ 'rotate-180': showCategoryDropdown }"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
@@ -439,13 +454,18 @@
             </div>
 
             <!-- Buttons -->
-            <div class="flex gap-3 mt-4">
-              <button type="button" @click="cancelReject"
-                class="flex-1 px-4 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold rounded-xl transition-all duration-200 hover:scale-105 active:scale-95">
+            <div class="flex flex-col sm:flex-row gap-3 mt-4">
+              <button
+                type="button"
+                @click="cancelReject"
+                class="flex-1 px-4 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"
+              >
                 Cancel
               </button>
-              <button @click="submitVerificationOfPayment('Rejected')"
-                class="flex-1 px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-xl transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg">
+              <button
+                @click="submitVerificationOfPayment('Rejected')"
+                class="flex-1 px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-xl transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg"
+              >
                 Reject
               </button>
             </div>
@@ -456,10 +476,16 @@
   </Transition>
 
   <!-- Official Payment Receipt Modal -->
-  <div v-if="showReceipt" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-    <div id="receipt-content" class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+  <div
+    v-if="showReceipt"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 sm:p-6"
+  >
+    <div
+      id="receipt-content"
+      class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto mx-auto"
+    >
       <!-- Header with Logo -->
-      <div class="flex items-center justify-between p-6 border-b">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-5 sm:p-6 border-b">
         <div class="flex items-center gap-3">
           <img src="/storage/logo/Logo.png" alt="JE Travel & Tours" class="w-16 h-16 object-contain" />
           <div>
@@ -477,8 +503,8 @@
       </div>
 
       <!-- Receipt Content -->
-      <div class="p-8">
-        <div class="text-center mb-6">
+      <div class="p-5 sm:p-8">
+        <div class="text-center mb-6 space-y-1">
           <h2 class="text-2xl font-bold text-gray-800 mb-1">
             OFFICIAL PAYMENT RECEIPT
           </h2>
@@ -567,15 +593,15 @@
         <!-- Total Amount -->
         <div class="bg-gray-50 rounded-lg p-4 mb-6">
           <div class="space-y-2 text-sm">
-            <div class="flex justify-between">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2">
               <span class="font-bold text-gray-800">Total Amount:</span>
               <span class="font-bold text-gray-800">₱ {{ receiptData.totalAmount }}</span>
             </div>
-            <div class="flex justify-between">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2">
               <span class="font-bold text-gray-800">Amount Paid:</span>
               <span class="font-bold text-green-600">₱ {{ receiptData.amountPaid }}</span>
             </div>
-            <div class="flex justify-between">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2">
               <span class="font-bold text-gray-800">Remaining Balance:</span>
               <span class="font-bold text-red-600">₱ {{ receiptData.remainingBalance }}</span>
             </div>

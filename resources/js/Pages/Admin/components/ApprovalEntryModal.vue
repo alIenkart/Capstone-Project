@@ -1,9 +1,9 @@
 <template>
   <div
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 p-4 sm:p-6"
   >
     <div
-      class="relative bg-white rounded-2xl border-2 border-gray-300 shadow-2xl w-full max-w-3xl px-8 py-8"
+      class="relative bg-white rounded-2xl border-2 border-gray-300 shadow-2xl w-full max-w-3xl px-5 py-6 sm:px-8 sm:py-8 mx-auto"
     >
       <!-- Close button -->
       <button
@@ -14,7 +14,7 @@
         ×
       </button>
       <h2 class="text-center text-lg font-bold mb-6">Booking Approval</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
         <!-- Left: Booking Details -->
         <div>
           <div class="font-semibold mb-2">Booking Details:</div>
@@ -49,7 +49,7 @@
             <label for="idType" class="font-medium">ID Type:</label>
             <select
               id="idType"
-              class="ml-2 rounded-xl border-2 border-gray-300 px-2 py-1 focus:border-[#217093] focus:ring-[#217093]"
+              class="mt-2 md:mt-0 md:ml-2 rounded-xl border-2 border-gray-300 px-3 py-2 focus:border-[#217093] focus:ring-[#217093] w-full md:w-auto"
             >
               <option>Senior</option>
               <option>Student</option>
@@ -59,15 +59,15 @@
           <div class="mb-4">
             <div class="font-medium mb-1">Preview:</div>
             <div
-              class="flex items-center justify-center border-2 border-gray-300 rounded-xl bg-gray-100 p-2 w-64 h-32"
+              class="relative flex items-center justify-center border-2 border-gray-300 rounded-xl bg-gray-100 p-2 w-full max-w-xs sm:max-w-sm h-40 sm:h-44 mx-auto md:mx-0"
             >
               <img
                 src="https://i.ibb.co/7QpKsCX/sample-id.png"
                 alt="ID Preview"
-                class="h-full object-contain"
+                class="h-full w-full object-contain"
               />
               <div
-                class="absolute flex flex-col items-center justify-center w-64 h-32 bg-black bg-opacity-30 text-white text-sm font-semibold"
+                class="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-30 text-white text-sm font-semibold"
               >
                 <svg
                   class="mx-auto mb-1"
@@ -96,19 +96,19 @@
         </div>
       </div>
       <!-- Action Buttons -->
-      <div class="flex justify-center gap-6 mt-8">
+      <div class="flex flex-col sm:flex-row justify-center gap-3 sm:gap-6 mt-8">
         <button
-          class="rounded-xl bg-green-600 px-8 py-2 text-white font-semibold hover:bg-green-700 transition"
+          class="rounded-xl bg-green-600 px-6 sm:px-8 py-2 text-white font-semibold hover:bg-green-700 transition w-full sm:w-auto"
         >
           Approve Booking
         </button>
         <button
-          class="rounded-xl bg-red-500 px-8 py-2 text-white font-semibold hover:bg-red-600 transition"
+          class="rounded-xl bg-red-500 px-6 sm:px-8 py-2 text-white font-semibold hover:bg-red-600 transition w-full sm:w-auto"
         >
           Reject Booking
         </button>
         <button
-          class="rounded-xl bg-[#217093] px-8 py-2 text-white font-semibold hover:bg-[#14516b] transition"
+          class="rounded-xl bg-[#217093] px-6 sm:px-8 py-2 text-white font-semibold hover:bg-[#14516b] transition w-full sm:w-auto"
         >
           Cancel
         </button>

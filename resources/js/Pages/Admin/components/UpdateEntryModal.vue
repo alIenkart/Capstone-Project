@@ -5,9 +5,9 @@
       @click="$emit('close')"
     ></div>
 
-    <div class="flex min-h-full items-center justify-center p-4">
+    <div class="flex min-h-full items-center justify-center p-4 sm:p-6">
       <div
-        class="relative transform overflow-hidden rounded-2xl bg-white shadow-2xl transition-all sm:my-8 w-full max-w-7xl"
+        class="relative transform overflow-hidden rounded-2xl bg-white shadow-2xl transition-all sm:my-8 w-full max-w-7xl mx-auto"
       >
         <button
           type="button"
@@ -29,8 +29,8 @@
           </svg>
         </button>
 
-        <div class="bg-gradient-to-r from-[#217093] to-[#2a8bb5] px-8 py-8">
-          <div class="flex items-start justify-between">
+        <div class="bg-gradient-to-r from-[#217093] to-[#2a8bb5] px-5 py-6 sm:px-8 sm:py-8">
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <h3 class="text-3xl font-bold text-white tracking-tight">
                 Booking Details
@@ -43,9 +43,9 @@
         </div>
 
         <div
-          class="px-8 py-8 max-h-[calc(100vh-280px)] overflow-y-auto bg-gradient-to-br from-slate-50 to-white"
+          class="px-5 py-6 sm:px-8 sm:py-8 max-h-[calc(100vh-280px)] overflow-y-auto bg-gradient-to-br from-slate-50 to-white"
         >
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 lg:gap-6">
             <div class="lg:col-span-2 space-y-6">
               <div
                 class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow"
@@ -488,11 +488,11 @@
             </div>
           </div>
         </div>
-        <div class="bg-white px-8 py-5 border-t border-slate-200">
-          <div class="flex justify-end gap-3">
+        <div class="bg-white px-5 sm:px-8 py-5 border-t border-slate-200">
+          <div class="flex flex-col sm:flex-row sm:justify-end gap-3">
             <button
               type="button"
-              class="flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold bg-gray-600 text-white hover:bg-gray-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              class="flex items-center justify-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold bg-gray-600 text-white hover:bg-gray-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 w-full sm:w-auto"
               @click="$emit('close')"
             >
               Cancel
@@ -503,7 +503,7 @@
                 @click="showRejectionModal = true"
                 :disabled="isApprovedOrRejected"
                 :class="[
-                  'flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold text-white shadow-lg transition-all',
+                  'flex items-center justify-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold text-white shadow-lg transition-all w-full sm:w-auto',
                   isApprovedOrRejected
                     ? 'bg-gray-400 cursor-not-allowed opacity-60'
                     : 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 hover:shadow-xl transform hover:-translate-y-0.5',
@@ -540,7 +540,7 @@
                 @click="submitStatus('Approved')"
                 :disabled="isApprovedOrRejected"
                 :class="[
-                  'flex items-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold text-white shadow-lg transition-all',
+                  'flex items-center justify-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold text-white shadow-lg transition-all w-full sm:w-auto',
                   isApprovedOrRejected
                     ? 'bg-gray-400 cursor-not-allowed opacity-60'
                     : 'bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 hover:shadow-xl transform hover:-translate-y-0.5',

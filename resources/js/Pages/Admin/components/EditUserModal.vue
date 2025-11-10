@@ -1,12 +1,12 @@
 <template>
   <div
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 sm:p-6"
   >
     <div
-      class="relative bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden"
+      class="relative bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden mx-auto"
     >
       <!-- Header -->
-      <div class="bg-[#1E71B8] px-8 py-6">
+      <div class="bg-[#1E71B8] px-5 py-5 sm:px-8 sm:py-6">
         <button
           class="absolute top-7 right-6 text-white/80 hover:text-white transition-colors"
           @click="$emit('close')"
@@ -30,7 +30,7 @@
       </div>
 
       <!-- Content -->
-      <div class="px-8 py-6 space-y-6">
+      <div class="px-5 py-6 sm:px-8 space-y-6">
         <!-- Name Fields -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -85,7 +85,7 @@
 
         <!-- Email Verified Status -->
         <div
-          class="flex items-center justify-between p-4 bg-gray-50 rounded-xl"
+          class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-gray-50 rounded-xl"
         >
           <span class="text-sm font-semibold text-gray-700"
             >Email Verified</span
@@ -118,10 +118,10 @@
       </div>
 
       <!-- Footer Actions -->
-      <div class="px-8 py-6 bg-gray-50 flex justify-end gap-3">
+      <div class="px-5 py-6 sm:px-8 bg-gray-50 flex flex-col sm:flex-row sm:justify-end gap-3">
         <button
           @click="$emit('close')"
-          class="px-6 py-3 rounded-xl font-semibold text-gray-700 bg-white border-2 border-gray-200 hover:bg-gray-50 transition-all"
+          class="px-6 py-3 rounded-xl font-semibold text-gray-700 bg-white border-2 border-gray-200 hover:bg-gray-50 transition-all w-full sm:w-auto text-center"
         >
           Cancel
         </button>
@@ -129,7 +129,7 @@
           @click="updateUser"
           :disabled="!hasChanges || isLoading"
           :class="[
-            'px-6 py-3 rounded-xl font-semibold text-white transition-all',
+            'px-6 py-3 rounded-xl font-semibold text-white transition-all w-full sm:w-auto text-center',
             hasChanges && !isLoading
               ? 'bg-[#1E71B8] hover:shadow-lg hover:scale-105 cursor-pointer'
               : 'bg-gray-300 cursor-not-allowed opacity-60',

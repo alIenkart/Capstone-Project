@@ -4,9 +4,9 @@
       class="fixed inset-0 bg-black/70 backdrop-blur-md transition-opacity"
       @click="closeModal"
     ></div>
-    <div class="flex min-h-full items-center justify-center p-4">
+    <div class="flex min-h-full items-center justify-center p-4 sm:p-6">
       <div
-        class="relative transform overflow-hidden rounded-2xl bg-white shadow-2xl transition-all sm:my-8 w-full max-w-7xl"
+        class="relative transform overflow-hidden rounded-2xl bg-white shadow-2xl transition-all sm:my-8 w-full max-w-7xl mx-auto"
       >
         <button
           type="button"
@@ -28,7 +28,7 @@
           </svg>
         </button>
 
-        <div class="bg-gradient-to-r from-[#217093] to-[#2a8bb5] px-8 py-8">
+        <div class="bg-gradient-to-r from-[#217093] to-[#2a8bb5] px-5 py-6 sm:px-8 sm:py-8">
           <h3 class="text-3xl font-bold text-white tracking-tight">
             New Package
           </h3>
@@ -39,9 +39,9 @@
 
         <form
           @submit.prevent="savePackage"
-          class="px-8 py-8 max-h-[calc(100vh-280px)] overflow-y-auto bg-gradient-to-br from-slate-50 to-white"
+          class="px-5 py-6 sm:px-8 sm:py-8 max-h-[calc(100vh-280px)] overflow-y-auto bg-gradient-to-br from-slate-50 to-white"
         >
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 lg:gap-6">
             <div class="space-y-6">
               <div
                 class="bg-white rounded-2xl p-6 border border-slate-200 shadow-md hover:shadow-xl transition-all"
@@ -657,12 +657,12 @@
         </form>
 
         <div
-          class="bg-gradient-to-r from-slate-50 to-white px-8 py-6 border-t-2 border-slate-200"
+          class="bg-gradient-to-r from-slate-50 to-white px-5 sm:px-8 py-6 border-t-2 border-slate-200"
         >
-          <div class="flex justify-end gap-3">
+          <div class="flex flex-col sm:flex-row sm:justify-end gap-3">
             <button
               type="button"
-              class="flex items-center gap-2 rounded-xl px-7 py-3 text-sm font-bold bg-slate-600 text-white hover:bg-slate-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0"
+              class="flex items-center justify-center gap-2 rounded-xl px-6 sm:px-7 py-3 text-sm font-bold bg-slate-600 text-white hover:bg-slate-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0 w-full sm:w-auto"
               @click="closeModal"
             >
               <svg
@@ -683,7 +683,7 @@
             <button
               type="submit"
               @click="savePackage"
-              class="flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#217093] to-[#2a8bb5] hover:from-[#1a5a7a] hover:to-[#217093] px-7 py-3 text-sm font-bold text-white shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+              class="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#217093] to-[#2a8bb5] hover:from-[#1a5a7a] hover:to-[#217093] px-6 sm:px-7 py-3 text-sm font-bold text-white shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 active:translate-y-0 w-full sm:w-auto"
             >
               <svg
                 class="w-5 h-5"

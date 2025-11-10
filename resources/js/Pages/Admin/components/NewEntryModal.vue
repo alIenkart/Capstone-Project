@@ -1,7 +1,10 @@
 <template>
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn">
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn px-2 sm:px-4"
+  >
     <div
-      class="relative bg-white rounded-3xl shadow-2xl w-full max-w-6xl mx-4 max-h-[95vh] overflow-hidden flex flex-col animate-slideUp">
+      class="relative bg-white rounded-3xl shadow-2xl w-full max-w-6xl mx-auto max-h-[95vh] overflow-hidden flex flex-col animate-slideUp"
+    >
       <button
         class="absolute top-6 right-6 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-red-500 hover:text-white transition-all duration-300 hover:rotate-90"
         @click="$emit('close')" aria-label="Close">
@@ -10,13 +13,13 @@
         </svg>
       </button>
 
-      <div class="px-8 pt-8 pb-6">
+      <div class="px-4 py-6 sm:px-8 sm:pt-8 sm:pb-6">
         <h2
           class="text-center text-2xl font-bold bg-gradient-to-r from-[#1E71B8] to-[#73BE5D] bg-clip-text text-transparent mb-8">
           {{ stepTitles[currentStep] }}
         </h2>
 
-        <div class="flex items-center gap-3 mb-8 justify-center">
+        <div class="flex flex-wrap items-center gap-3 sm:gap-4 mb-6 sm:mb-8 justify-center">
           <div v-for="(title, index) in stepTitles" :key="index" class="flex items-center gap-3">
             <div class="relative">
               <div :class="[
@@ -42,8 +45,8 @@
         </div>
       </div>
 
-      <div class="flex-1 overflow-y-auto px-8 pb-8">
-        <div v-if="currentStep === 0" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div class="flex-1 overflow-y-auto px-4 pb-6 sm:px-8 sm:pb-8">
+        <div v-if="currentStep === 0" class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
           <div class="space-y-6">
             <div class="group">
               <label class="block font-semibold mb-3 text-[#1E71B8] text-sm uppercase tracking-wide">Customer
@@ -162,7 +165,7 @@
         </div>
 
         <div v-if="currentStep === 1" class="w-full">
-          <div class="mb-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="mb-8 grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
             <div class="relative z-50" ref="typeDropdownRef">
               <label class="block text-[#1E71B8] mb-3 font-semibold text-sm uppercase tracking-wide">Tour Type</label>
               <button type="button"
@@ -238,8 +241,8 @@
             </div>
           </div>
 
-          <div class="flex flex-col lg:flex-row gap-8">
-            <div class="lg:w-48 flex-shrink-0">
+          <div class="flex flex-col lg:flex-row gap-6 lg:gap-8">
+            <div class="w-full lg:w-48 flex-shrink-0">
               <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 shadow-sm">
                 <h3 class="text-sm font-bold text-[#1E71B8] mb-4 uppercase tracking-wide">
                   Legends
@@ -310,7 +313,7 @@
                   </div>
                 </div>
 
-                <div class="flex items-center justify-between mb-6">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 mb-6">
                   <button @click="prevMonth"
                     class="w-10 h-10 rounded-xl border-2 text-[#1E71B8] border-[#1E71B8] hover:bg-[#1E71B8] hover:text-white transition-all duration-300 font-bold flex items-center justify-center hover:scale-110">
                     ‹
@@ -324,7 +327,7 @@
                   </button>
                 </div>
 
-                <div class="grid grid-cols-7 gap-2 text-center text-sm font-bold text-[#1E71B8] mb-4">
+                <div class="grid grid-cols-7 gap-1 sm:gap-2 text-center text-xs sm:text-sm font-bold text-[#1E71B8] mb-4">
                   <div>Sun</div>
                   <div>Mon</div>
                   <div>Tue</div>
@@ -334,7 +337,7 @@
                   <div>Sat</div>
                 </div>
 
-                <div class="grid grid-cols-7 gap-2 relative" ref="calendarWrapperRef">
+                <div class="grid grid-cols-7 gap-1 sm:gap-2 relative" ref="calendarWrapperRef">
                   <div v-for="(cell, i) in calendarDays" :key="i"
                     class="h-16 rounded-xl flex items-center justify-center select-none text-sm font-semibold transition-all duration-300 relative overflow-hidden"
                     :class="{
@@ -381,7 +384,7 @@
                       left: '50%',
                       top: '50%',
                       transform: 'translate(-50%, -50%)',
-                      width: '380px',
+                      width: 'min(90vw, 380px)',
                       maxHeight: '90vh',
                       border: '1px solid rgba(30, 113, 184, 0.1)',
                       overflowY: 'auto',
@@ -654,7 +657,7 @@
                   : itineraryDays" :key="day.id"
                   class="w-full rounded-2xl bg-gradient-to-br from-white to-[#f9fcff] border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300">
                   <div
-                    class="px-6 py-4 border-b border-gray-100 bg-[#f8fbff] rounded-t-2xl flex justify-between items-center">
+                    class="px-6 py-4 border-b border-gray-100 bg-[#f8fbff] rounded-t-2xl flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
                     <h3 class="text-lg font-semibold text-[#1E71B8] tracking-wide">
                       Day {{ day.id }}
                     </h3>
@@ -741,11 +744,11 @@
                 <div class="text-white/80 text-sm font-semibold uppercase tracking-wide mb-2">
                   Travellers Breakdown
                 </div>
-                <div class="flex justify-between items-center text-white/90">
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-white/90 gap-2">
                   <span class="text-sm">Adult ₱{{ selectedPackageData.pax_rate }} × {{ pax }}</span>
                   <span class="font-bold text-lg">₱{{ adultTotalAmount }}</span>
                 </div>
-                <div class="flex justify-between items-center text-white/90">
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center text-white/90 gap-2">
                   <span class="text-sm">Kids ₱{{ selectedPackageData.kids_pax_rate }} ×
                     {{ kidsPax }}</span>
                   <span class="font-bold text-lg">₱{{ kidsTotalAmount }}</span>
@@ -755,7 +758,7 @@
               <div class="h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
 
               <div
-                class="flex justify-between items-center bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20">
+                class="flex flex-col sm:flex-row sm:justify-between sm:items-center bg-white/10 backdrop-blur-sm rounded-2xl p-4 border border-white/20 gap-3">
                 <span class="text-white font-bold text-xl">Total Amount</span>
                 <span class="text-white font-bold text-3xl">₱{{ totalAmount }}</span>
               </div>
@@ -780,9 +783,9 @@
         </div>
       </div>
 
-      <div class="px-8 pb-8 flex justify-between items-center border-t border-gray-100 pt-6">
+      <div class="px-4 sm:px-8 pb-6 sm:pb-8 flex flex-col sm:flex-row justify-between items-center border-t border-gray-100 pt-6 gap-3 sm:gap-0">
         <button v-if="currentStep > 0" @click="prevStep"
-          class="px-8 py-3 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 rounded-2xl font-semibold hover:from-gray-200 hover:to-gray-300 transition-all duration-300 hover:shadow-lg hover:scale-105 active:scale-95 flex items-center gap-2">
+          class="w-full sm:w-auto px-6 sm:px-8 py-3 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 rounded-2xl font-semibold hover:from-gray-200 hover:to-gray-300 transition-all duration-300 hover:shadow-lg hover:scale-105 active:scale-95 flex items-center justify-center gap-2">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
           </svg>
@@ -790,7 +793,7 @@
         </button>
         <div v-else></div>
         <button v-if="currentStep < 2" @click="nextStep"
-          class="px-8 py-3 bg-gradient-to-r from-[#1E71B8] to-[#2980c9] text-white rounded-2xl font-semibold hover:from-[#2980c9] hover:to-[#1E71B8] transition-all duration-300 hover:shadow-lg hover:scale-105 active:scale-95 flex items-center gap-2">
+          class="w-full sm:w-auto px-6 sm:px-8 py-3 bg-gradient-to-r from-[#1E71B8] to-[#2980c9] text-white rounded-2xl font-semibold hover:from-[#2980c9] hover:to-[#1E71B8] transition-all duration-300 hover:shadow-lg hover:scale-105 active:scale-95 flex items-center justify-center gap-2">
           Next
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
