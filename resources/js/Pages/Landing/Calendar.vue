@@ -317,10 +317,9 @@
                       !cell.isPast &&
                       !cell.isInRange &&
                       !cell.isOutOfRange,
-                    'cursor-pointer bg-white border-2 border-[#1E71B8] hover:bg-blue-50':
-                      tourType !== 'Joiners' &&
+                    'cursor-pointer bg-white border-2 border-[#302e2e] hover:bg-blue-50':
+                      tourType === 'Exclusive' &&
                       cell.day &&
-                      !selectedDate &&
                       !cell.isPast &&
                       !cell.isOutOfRange &&
                       cell.status === 'available',
@@ -523,7 +522,6 @@ defineOptions({ layout: LandingIndex });
 const emit = defineEmits(["next"]);
 const booking = storeBooking();
 const selectedDate = ref("");
-const selectedEndDate = ref("");
 const selectedend_date = ref("");
 const currentDate = new Date();
 const currentMonthIndex = ref(currentDate.getMonth());
@@ -773,7 +771,7 @@ const selectTourType = (t) => {
         return `${y}-${m}-${d}`;
       };
       selectedDate.value = parseISODate(booking.start_date);
-      selectedend_date.value = parseISODate(booking.start_date);
+      selectedend_date.value = parseISODate(booking.end_date);
     } else {
       selectedDate.value = "";
       selectedend_date.value = "";
@@ -912,7 +910,7 @@ const handleDateClick = (event, cell) => {
   }
 
   if (tourType.value === "Exclusive") {
-    if (!selectedDate.value || selectedend_date.value) {
+    if (!selectedDate.value || (selectedDate.value && selectedend_date.value)) {
       selectedDate.value = cell.dateKey;
       selectedend_date.value = "";
     } else {
@@ -988,21 +986,16 @@ onMounted(() => {
 
   generatePackageDates();
 
-  if (booking.start_date && booking.end_date) {
+  if (tourType.value === "Joiners" && booking.start_date && booking.end_date) {
     const start_dateFormatted = booking.start_date.split("T")[0];
     const end_dateFormatted = booking.end_date.split("T")[0];
 
-    if (tourType.value === "Joiners") {
-      selectedDate.value = start_dateFormatted;
-      selectedend_date.value = end_dateFormatted;
+    selectedDate.value = start_dateFormatted;
+    selectedend_date.value = end_dateFormatted;
 
-      const [year, month] = start_dateFormatted.split("-").map(Number);
-      currentMonthIndex.value = month - 1;
-      currentYear.value = year;
-    } else {
-      selectedDate.value = start_dateFormatted;
-      selectedend_date.value = end_dateFormatted;
-    }
+    const [year, month] = start_dateFormatted.split("-").map(Number);
+    currentMonthIndex.value = month - 1;
+    currentYear.value = year;
   } else {
     selectedDate.value = "";
     selectedend_date.value = "";
