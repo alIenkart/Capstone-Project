@@ -1032,7 +1032,6 @@ watch(
   () => selectedPackageData.value.itinerary,
   (newItinerary) => {
     editableItinerary.value = parseItineraryToDays(newItinerary || "");
-    console.log("🚀 ~ editableItinerary.value:", editableItinerary.value)
   },
   { immediate: true }
 );
@@ -1373,7 +1372,6 @@ async function submitBooking() {
       discount_images: discountImages.value,
       itinerary: itinerary || null,
     };
-    console.log("🚀 ~ submitBooking ~ payload:", payload)
 
     await service.createBooking(payload);
     emit("booking-created");
