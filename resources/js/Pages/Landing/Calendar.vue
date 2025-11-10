@@ -1,165 +1,187 @@
 <template>
-  <div class="w-full min-h-screen flex flex-col items-center bg-[#fcfcfc] py-8">
-    <div class="flex items-center gap-2 mb-8 mt-2 w-full max-w-5xl justify-center">
+  <div class="w-full min-h-screen bg-gradient-to-br from-[#f8fafc] to-[#f1f5f9] py-8">
+    <div class="flex items-center gap-2 mb-12 mt-2 w-full max-w-6xl justify-center mx-auto px-4">
       <div class="flex items-center gap-1">
-        <span class="w-4 h-4 rounded-full border-2 border-[#1E71B8] flex items-center justify-center">
+        <span class="w-4 h-4 rounded-full border-2 border-[#1E71B8] bg-[#1E71B8] flex items-center justify-center">
+          <span class="w-4 h-4 rounded-full border-2 border-[#1E71B8] flex items-center justify-center">
           <span class="w-2 h-2 rounded-full bg-[#1E71B8]"></span>
         </span>
-        <span class="ml-1 text-[#1E71B8] font-semibold text-base">Availability</span>
+        </span>
+        <span class="ml-1 text-[#1E71B8] font-semibold text-sm md:text-base">Availability</span>
       </div>
-      <span class="w-16 h-0.5 bg-[#1E71B8] mx-2"></span>
+      <span class="w-8 md:w-16 h-0.5 bg-gradient-to-r from-[#1E71B8] to-[#155E9C] mx-2"></span>
       <div class="flex items-center gap-1">
-        <span class="w-4 h-4 rounded-full border-2 border-[#1E71B8] flex items-center justify-center"></span>
-        <span class="ml-1 text-[#1E71B8] font-semibold text-base">Reservation Details</span>
+        <span class="w-4 h-4 rounded-full border-2 border-gray-300 flex items-center justify-center"></span>
+        <span class="ml-1 text-gray-400 font-semibold text-sm md:text-base">Reservation Details</span>
       </div>
-      <span class="w-16 h-0.5 bg-[#1E71B8] mx-2"></span>
+      <span class="w-8 md:w-16 h-0.5 bg-gray-300 mx-2"></span>
       <div class="flex items-center gap-1">
-        <span class="w-4 h-4 rounded-full border-2 border-[#1E71B8] flex items-center justify-center"></span>
-        <span class="ml-1 text-[#1E71B8] font-semibold text-base">Confirmation</span>
+        <span class="w-4 h-4 rounded-full border-2 border-gray-300 flex items-center justify-center"></span>
+        <span class="ml-1 text-gray-400 font-semibold text-sm md:text-base">Confirmation</span>
       </div>
     </div>
-    <div class="flex flex-row w-full max-w-[1400px] justify-center flex-1 items-start">
-      <div
-        class="flex flex-col items-start mt-4 min-w-[160px] bg-white rounded-xl p-4 shadow-lg border border-gray-100 mx-2">
-        <span class="text-lg text-[#1E71B8] mb-2 ml-0 uppercase">Legends</span>
-        <div class="flex items-center gap-2 mb-2">
-          <span class="inline-block w-3 h-3 rounded-full bg-[#737373]"></span>
-          <span class="text-base text-[#737373]">Closed</span>
-        </div>
-        <div class="flex items-center gap-2 mb-2">
-          <span class="inline-block w-3 h-3 rounded-full bg-[#302e2e]"></span>
-          <span class="text-base text-[#302e2e]">Available</span>
-        </div>
-        <div class="flex items-center gap-2 mb-2">
-          <span class="inline-block w-3 h-3 rounded-full bg-[#2f5f98]"></span>
-          <span class="text-base text-[#2f5f98]">Slots Full</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="inline-block w-3 h-3 rounded-full bg-[#45a834]"></span>
-          <span class="text-base text-[#45a834]">Accepting Joiners</span>
+
+    <div class="flex flex-col lg:flex-row w-full max-w-7xl justify-center gap-6 mx-auto px-4">
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-md p-6 lg:min-w-[200px] h-fit">
+        <h3 class="text-lg text-[#1E71B8] font-bold mb-4 uppercase">Legends</h3>
+        <div class="space-y-3">
+          <div class="flex items-center gap-3">
+            <span class="w-4 h-4 rounded-full bg-[#737373] flex-shrink-0"></span>
+            <span class="text-sm text-[#737373] font-medium">Closed</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="w-4 h-4 rounded-full bg-[#302e2e] flex-shrink-0"></span>
+            <span class="text-sm text-[#302e2e] font-medium">Available</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="w-4 h-4 rounded-full bg-[#2f5f98] flex-shrink-0"></span>
+            <span class="text-sm text-[#2f5f98] font-medium">Slots Full</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="w-4 h-4 rounded-full bg-[#45a834] flex-shrink-0"></span>
+            <span class="text-sm text-[#45a834] font-medium">Accepting Joiners</span>
+          </div>
         </div>
       </div>
+
       <div class="flex-1 flex flex-col items-center">
-        <div class="w-full max-w-[1600px]">
-          <div class="w-full bg-white rounded-xl flex items-center justify-center"
-            style="height:650px; border-radius: 16px; border: 1px solid #eee;">
-            <div class="w-full px-6 py-6">
-              <div class="flex flex-col gap-4">
-                <div class="flex flex-col sm:flex-row gap-4 items-stretch sm:items-end">
-                  <div class="flex-1 relative" ref="typeDropdownRef">
-                    <label class="text-[#1E71B8] mb-1 font-semibold block">Tour Type</label>
-                    <button type="button"
-                      class="w-full border border-[#1E71B8] rounded-xl px-4 py-3 bg-white text-left text-[#1E71B8] flex items-center justify-between"
-                      @click="isTypeOpen = !isTypeOpen; isClassOpen = false">
-                      <span>{{ tourType }}</span>
-                      <span class="ml-3 inline-flex items-center">
-                        <svg v-if="!isTypeOpen" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                          viewBox="0 0 24 24" fill="none" stroke="#1E71B8" stroke-width="2" stroke-linecap="round"
-                          stroke-linejoin="round">
-                          <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                        <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                          fill="none" stroke="#1E71B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                          <polyline points="18 15 12 9 6 15"></polyline>
-                        </svg>
-                      </span>
-                    </button>
-                    <div v-if="isTypeOpen" class="dropdown-menu" style="position:absolute; width:100%; top: 100%;">
-                      <a v-for="t in tourTypes" :key="t" href="#" class="dropdown-item"
-                        :class="{ 'bg-[#eee] text-[#73BE5D]': t === tourType }" @click.prevent="selectTourType(t)">{{ t
-                        }}</a>
-                    </div>
-                  </div>
-                  <div class="flex-1 relative" ref="classDropdownRef">
-                    <label class="text-[#1E71B8] mb-1 font-semibold block">Tour Classification</label>
-                    <button type="button"
-                      class="w-full border border-[#1E71B8] rounded-xl px-4 py-3 bg-white text-left text-[#1E71B8] flex items-center justify-between"
-                      @click="isClassOpen = !isClassOpen; isTypeOpen = false">
-                      <span>{{ tourClassification }}</span>
-                      <span class="ml-3 inline-flex items-center">
-                        <svg v-if="!isClassOpen" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                          viewBox="0 0 24 24" fill="none" stroke="#1E71B8" stroke-width="2" stroke-linecap="round"
-                          stroke-linejoin="round">
-                          <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                        <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                          fill="none" stroke="#1E71B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                          <polyline points="18 15 12 9 6 15"></polyline>
-                        </svg>
-                      </span>
-                    </button>
-                    <div v-if="isClassOpen" class="dropdown-menu" style="position:absolute; width:100%; top: 100%;">
-                      <a v-for="c in tourClassifications" :key="c" href="#" class="dropdown-item"
-                        :class="{ 'bg-[#eee] text-[#73BE5D]': c === tourClassification }"
-                        @click.prevent="selectTourClassification(c)">{{ c }}</a>
-                    </div>
+        <div class="w-full bg-white rounded-2xl border border-gray-200 shadow-md p-6 md:p-8">
+          <div class="flex flex-col gap-6">
+            <div class="flex flex-col sm:flex-row gap-4">
+              <div class="flex-1 relative" ref="typeDropdownRef">
+                <label class="text-[#1E71B8] mb-2 font-bold text-sm uppercase tracking-wide block">Tour Type</label>
+                <button type="button"
+                  class="w-full border-2 border-[#1E71B8] rounded-xl px-4 py-3 bg-white text-left text-[#1E71B8] font-semibold flex items-center justify-between transition-all duration-300 hover:bg-blue-50"
+                  @click="isTypeOpen = !isTypeOpen; isClassOpen = false">
+                  <span>{{ tourType }}</span>
+                  <span class="ml-3 inline-flex items-center">
+                    <svg v-if="!isTypeOpen" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                      viewBox="0 0 24 24" fill="none" stroke="#1E71B8" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                      fill="none" stroke="#1E71B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="18 15 12 9 6 15"></polyline>
+                    </svg>
+                  </span>
+                </button>
+                <div v-if="isTypeOpen" class="dropdown-menu-wrapper">
+                  <div class="dropdown-menu">
+                    <a v-for="t in tourTypes" :key="t" href="#" class="dropdown-item"
+                      :class="{ 'bg-blue-100 text-[#73BE5D] font-semibold': t === tourType }" @click.prevent="selectTourType(t)">{{ t }}</a>
                   </div>
                 </div>
+              </div>
 
-                <div v-if="tourType === 'Exclusive'" class="text-sm text-[#1E71B8] bg-blue-50 p-3 rounded-lg">
-                  <strong>Select date range:</strong> Click start date, then click end date to complete your selection.
+              <div class="flex-1 relative" ref="classDropdownRef">
+                <label class="text-[#1E71B8] mb-2 font-bold text-sm uppercase tracking-wide block">Tour Classification</label>
+                <button type="button"
+                  class="w-full border-2 border-[#1E71B8] rounded-xl px-4 py-3 bg-white text-left text-[#1E71B8] font-semibold flex items-center justify-between transition-all duration-300 hover:bg-blue-50"
+                  @click="isClassOpen = !isClassOpen; isTypeOpen = false">
+                  <span>{{ tourClassification }}</span>
+                  <span class="ml-3 inline-flex items-center">
+                    <svg v-if="!isClassOpen" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                      viewBox="0 0 24 24" fill="none" stroke="#1E71B8" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                      fill="none" stroke="#1E71B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <polyline points="18 15 12 9 6 15"></polyline>
+                    </svg>
+                  </span>
+                </button>
+                <div v-if="isClassOpen" class="dropdown-menu-wrapper">
+                  <div class="dropdown-menu">
+                    <a v-for="c in tourClassifications" :key="c" href="#" class="dropdown-item"
+                      :class="{ 'bg-blue-100 text-[#73BE5D] font-semibold': c === tourClassification }"
+                      @click.prevent="selectTourClassification(c)">{{ c }}</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div v-if="tourType === 'Exclusive'" class="bg-gradient-to-r from-blue-50 to-blue-100 border border-[#1E71B8] p-4 rounded-xl flex items-start gap-3">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 text-[#1E71B8] flex-shrink-0">
+                <path d="M12 11.993a.75.75 0 0 0-.75.75v.006c0 .414.336.75.75.75h.006a.75.75 0 0 0 .75-.75v-.006a.75.75 0 0 0-.75-.75H12ZM12 16.494a.75.75 0 0 0-.75.75v.005c0 .414.335.75.75.75h.005a.75.75 0 0 0 .75-.75v-.005a.75.75 0 0 0-.75-.75H12ZM8.999 17.244a.75.75 0 0 1 .75-.75h.006a.75.75 0 0 1 .75.75v.006a.75.75 0 0 1-.75.75h-.006a.75.75 0 0 1-.75-.75v-.006ZM7.499 16.494a.75.75 0 0 0-.75.75v.005c0 .414.336.75.75.75h.005a.75.75 0 0 0 .75-.75v-.005a.75.75 0 0 0-.75-.75H7.5ZM13.499 14.997a.75.75 0 0 1 .75-.75h.006a.75.75 0 0 1 .75.75v.005a.75.75 0 0 1-.75.75h-.006a.75.75 0 0 1-.75-.75v-.005ZM14.25 16.494a.75.75 0 0 0-.75.75v.006c0 .414.335.75.75.75h.005a.75.75 0 0 0 .75-.75v-.006a.75.75 0 0 0-.75-.75h-.005ZM15.75 14.995a.75.75 0 0 1 .75-.75h.005a.75.75 0 0 1 .75.75v.006a.75.75 0 0 1-.75.75H16.5a.75.75 0 0 1-.75-.75v-.006ZM13.498 12.743a.75.75 0 0 1 .75-.75h2.25a.75.75 0 1 1 0 1.5h-2.25a.75.75 0 0 1-.75-.75ZM6.748 14.993a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1-.75-.75Z" />
+                <path fill-rule="evenodd" d="M18 2.993a.75.75 0 0 0-1.5 0v1.5h-9V2.994a.75.75 0 1 0-1.5 0v1.497h-.752a3 3 0 0 0-3 3v11.252a3 3 0 0 0 3 3h13.5a3 3 0 0 0 3-3V7.492a3 3 0 0 0-3-3H18V2.993ZM3.748 18.743v-7.5a1.5 1.5 0 0 1 1.5-1.5h13.5a1.5 1.5 0 0 1 1.5 1.5v7.5a1.5 1.5 0 0 1-1.5 1.5h-13.5a1.5 1.5 0 0 1-1.5-1.5Z" clip-rule="evenodd" />
+              </svg>
+              <p class="text-[#1E71B8] font-semibold text-sm mt-0.5">
+                Select date range: Click start date, then click end date to complete your selection.
+              </p>
+            </div>
+
+            <div class="mt-2">
+              <div class="flex items-center justify-between mb-6">
+                <button @click="prevMonth"
+                  class="px-4 py-2.5 rounded-lg border-2 border-[#1E71B8] text-[#1E71B8] font-bold transition-all duration-300 hover:bg-[#1E71B8] hover:text-white active:scale-95">
+                  ‹
+                </button>
+                <div class="text-2xl font-bold text-[#1E71B8] uppercase tracking-wide">{{ monthName }} {{ currentYear }}</div>
+                <button @click="nextMonth"
+                  class="px-4 py-2.5 rounded-lg border-2 border-[#1E71B8] text-[#1E71B8] font-bold transition-all duration-300 hover:bg-[#1E71B8] hover:text-white active:scale-95">
+                  ›
+                </button>
+              </div>
+
+              <div class="grid grid-cols-7 gap-2 text-center mb-4">
+                <div class="text-[#1E71B8] font-bold text-sm">Sun</div>
+                <div class="text-[#1E71B8] font-bold text-sm">Mon</div>
+                <div class="text-[#1E71B8] font-bold text-sm">Tue</div>
+                <div class="text-[#1E71B8] font-bold text-sm">Wed</div>
+                <div class="text-[#1E71B8] font-bold text-sm">Thu</div>
+                <div class="text-[#1E71B8] font-bold text-sm">Fri</div>
+                <div class="text-[#1E71B8] font-bold text-sm">Sat</div>
+              </div>
+
+              <div class="grid grid-cols-7 gap-3" ref="calendarWrapperRef" style="position: relative;">
+                <div v-for="(cell, i) in days" :key="i"
+                  class="h-14 rounded-lg flex items-center justify-center select-none font-semibold text-sm transition-all duration-300" :class="{
+                    'bg-gradient-to-br from-[#73BE5D] to-[#5ca348] text-white shadow-md': cell.isInRange && !cell.isPast && !cell.isOutOfRange,
+                    'bg-gray-100 text-gray-400 cursor-not-allowed': !cell.day || cell.isPast || cell.isOutOfRange,
+                    'bg-gray-300 text-gray-700 cursor-pointer hover:bg-gray-400': cell.day && cell.status === 'closed' && !cell.isPast && !cell.isInRange && !cell.isOutOfRange,
+                    'bg-gradient-to-br from-[#45a834] to-[#3a8a2a] text-white cursor-pointer shadow-md hover:shadow-lg': cell.day && cell.status === 'accepting' && !cell.isPast && !cell.isInRange && !cell.isOutOfRange,
+                    'bg-gradient-to-br from-[#2f5f98] to-[#1e3f68] text-white cursor-pointer shadow-md hover:shadow-lg': cell.day && cell.status === 'full' && !cell.isPast && !cell.isInRange && !cell.isOutOfRange,
+                    'cursor-pointer bg-white border-2 border-[#1E71B8] hover:bg-blue-50': cell.day && !selectedDate && !cell.isPast && !cell.isOutOfRange && cell.status === 'available',
+                    'opacity-50': (cell.isPast && cell.day) || cell.isOutOfRange,
+                  }" @click="handleDateClick($event, cell)">
+                  <span v-if="cell.day">{{ cell.day }}</span>
                 </div>
 
-                <div class="mt-4">
-                  <div class="flex items-center justify-between mb-4">
-                    <button @click="prevMonth"
-                      class="px-3 py-2 rounded-lg border text-[#1E71B8] border-[#1E71B8] hover:bg-[#1E71B8] hover:text-[#ffffff]">‹</button>
-                    <div class="text-xl font-bold text-[#1E71B8] uppercase">{{ monthName }} {{ currentYear }}</div>
-                    <button @click="nextMonth"
-                      class="px-3 py-2 rounded-lg border text-[#1E71B8] border-[#1E71B8] hover:bg-[#1E71B8] hover:text-[#ffffff]">›</button>
-                  </div>
-
-                  <div class="grid grid-cols-7 gap-2 text-center text-base text-semibold text-[#1E71B8]">
-                    <div>Sun</div>
-                    <div>Mon</div>
-                    <div>Tue</div>
-                    <div>Wed</div>
-                    <div>Thu</div>
-                    <div>Fri</div>
-                    <div>Sat</div>
-                  </div>
-
-                  <div class="grid grid-cols-7 gap-2" ref="calendarWrapperRef" style="position: relative;">
-                    <div v-for="(cell, i) in days" :key="i"
-                      class="h-16 rounded-lg flex items-center justify-center select-none" :class="{
-                        'bg-[#73BE5D] text-[#000000]': cell.isInRange && !cell.isPast,
-                        'bg-gray-100 text-gray-400 cursor-not-allowed': !cell.day || cell.isPast,
-                        'bg-[#d9d9d9] text-black cursor-pointer': cell.day && cell.status === 'closed' && !cell.isPast && !cell.isInRange,
-                        'bg-[#45a834] text-white cursor-pointer': cell.day && cell.status === 'accepting' && !cell.isPast && !cell.isInRange,
-                        'bg-[#2f5f98] text-white cursor-pointer': cell.day && cell.status === 'full' && !cell.isPast && !cell.isInRange,
-                        'cursor-pointer': cell.day && !cell.isPast,
-                        'hover:bg-[#73BE5D]': cell.day && !selectedDate && !cell.isPast,
-                        'opacity-40': cell.isPast && cell.day,
-                      }" @click="handleDateClick($event, cell)">
-                      <span v-if="cell.day">{{ cell.day }}</span>
+                <div v-if="isTooltipOpen" ref="tooltipRef"
+                  class="rounded-xl border-2 border-[#1E71B8] shadow-lg bg-white z-50"
+                  :style="{ position: 'absolute', left: tooltipX + 'px', top: tooltipY + 'px', width: '360px' }"
+                  @click.stop>
+                  <div class="px-5 pt-5 pb-4">
+                    <div class="flex items-start justify-between mb-3">
+                      <div class="text-[#1E71B8] font-bold text-lg">{{ tooltipData.title }}</div>
+                      <button class="text-[#1E71B8] font-bold text-xl hover:text-red-500 transition-colors" @click="closeTooltip">×</button>
                     </div>
-                    <div v-if="isTooltipOpen" ref="tooltipRef"
-                      class="rounded-xl border border-[#1E71B8] shadow-md bg-white"
-                      :style="{ position: 'absolute', left: tooltipX + 'px', top: tooltipY + 'px', width: '340px' }"
-                      @click.stop>
-                      <div class="px-4 pt-4 pb-3">
-                        <div class="flex items-start justify-between mb-2">
-                          <div class="text-[#1E71B8] font-semibold">{{ tooltipData.title }}</div>
-                          <button class="text-[#1E71B8] font-bold" @click="closeTooltip">X</button>
-                        </div>
-                        <div class="h-0.5 w-full bg-[#73BE5D] mb-3"></div>
-                        <div class="text-sm">
-                          <div class="mb-1"><span class="font-semibold text-[#1E71B8]">Date:</span> {{ tooltipData.date
-                            }}</div>
-                          <div class="mb-1"><span class="font-semibold text-[#1E71B8]">Slots Booked:</span> {{
-                            tooltipData.slotsBooked }} / {{ tooltipData.slotsTotal }}</div>
-                          <div class="mb-1"><span class="font-semibold text-[#1E71B8]">Status:</span> {{
-                            tooltipData.status }}</div>
-                          <div class="mb-3"><span class="font-semibold text-[#1E71B8]">Price:</span> {{
-                            tooltipData.price }}</div>
-                          <div v-if="tourType === 'Joiners' && tourDuration > 1" class="mb-3 text-xs text-[#1E71B8]">
-                            Duration: {{ tourDuration }} days
-                          </div>
-                          <div v-if="tourType === 'Exclusive' && selectedDate && selectedEndDate"
-                            class="mb-3 text-xs text-[#1E71B8]">
-                            Selected: {{ formatHuman(selectedDate) }} - {{ formatHuman(selectedEndDate) }}
-                          </div>
-                        </div>
+                    <div class="h-1 w-full bg-gradient-to-r from-[#1E71B8] to-[#73BE5D] mb-4 rounded-full"></div>
+                    <div class="space-y-2 text-sm">
+                      <div class="flex justify-between">
+                        <span class="font-semibold text-[#1E71B8]">Date:</span>
+                        <span class="text-gray-700">{{ tooltipData.date }}</span>
+                      </div>
+                      <div class="flex justify-between">
+                        <span class="font-semibold text-[#1E71B8]">Slots Booked:</span>
+                        <span class="text-gray-700">{{ tooltipData.slotsBooked }} / {{ tooltipData.slotsTotal }}</span>
+                      </div>
+                      <div class="flex justify-between">
+                        <span class="font-semibold text-[#1E71B8]">Status:</span>
+                        <span class="text-gray-700 font-medium">{{ tooltipData.status }}</span>
+                      </div>
+                      <div class="flex justify-between">
+                        <span class="font-semibold text-[#1E71B8]">Price:</span>
+                        <span class="text-[#73BE5D] font-bold">{{ tooltipData.price }}</span>
+                      </div>
+                      <div v-if="tourType === 'Joiners' && tourDuration > 1" class="pt-2 border-t border-gray-200 text-xs text-[#1E71B8]">
+                        Duration: {{ tourDuration }} days
+                      </div>
+                      <div v-if="tourType === 'Exclusive' && selectedDate && selectedend_date"
+                        class="pt-2 border-t border-gray-200 text-xs text-[#1E71B8]">
+                        Selected: {{ formatHuman(selectedDate) }} - {{ formatHuman(selectedend_date) }}
                       </div>
                     </div>
                   </div>
@@ -170,9 +192,8 @@
         </div>
 
         <button @click="postDate"
-          class="mt-8 mb-0 px-16 py-4 bg-[#1E71B8] text-white font-semibold rounded-xl shadow hover:bg-[#73BE5D] transition text-lg"
-          style="min-width:200px;">
-          Next
+          class="mt-8 px-8 py-3 bg-gradient-to-r from-[#1E71B8] to-[#155E9C] text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 active:scale-95 text-lg">
+          Next →
         </button>
       </div>
     </div>
@@ -184,12 +205,13 @@ import { storeBooking } from '../../state/storeBooking'
 import { ref, onMounted, onBeforeUnmount, computed, watch } from 'vue'
 import LandingIndex from './LandingIndex.vue'
 import { useToast } from 'vue-toastification'
+
 defineOptions({ layout: LandingIndex })
 
 const emit = defineEmits(['next'])
 const booking = storeBooking()
 const selectedDate = ref('')
-const selectedEndDate = ref('')
+const selectedend_date = ref('')
 const currentDate = new Date()
 const currentMonthIndex = ref(currentDate.getMonth())
 const currentYear = ref(currentDate.getFullYear())
@@ -197,7 +219,7 @@ const currentYear = ref(currentDate.getFullYear())
 const tourType = ref('Joiners')
 const tourTypes = ['Joiners', 'Exclusive']
 const tourClassification = ref('')
-const tourClassifications = ref(null);
+const tourClassifications = ref(null)
 const isTypeOpen = ref(false)
 const isClassOpen = ref(false)
 const typeDropdownRef = ref(null)
@@ -212,9 +234,9 @@ const availabilityByDate = ref({
 })
 
 const tourInfoByDate = ref({
-  '2025-09-23': { title: 'Baguio Tour', slotsBooked: 4, slotsTotal: 10, status: 'Accepting Joiners', price: 'P XXXX' },
-  '2025-09-24': { title: 'Boracay Tour', slotsBooked: 10, slotsTotal: 10, status: 'Slots Full', price: 'P XXXX' },
-  '2025-09-25': { title: 'La Union Tour', slotsBooked: 0, slotsTotal: 10, status: 'Closed', price: 'P XXXX' },
+  '2025-09-23': { title: 'Baguio Tour', slotsBooked: 4, slotsTotal: 10, status: 'Accepting Joiners', price: '₱ 2,500' },
+  '2025-09-24': { title: 'Boracay Tour', slotsBooked: 10, slotsTotal: 10, status: 'Slots Full', price: '₱ 3,000' },
+  '2025-09-25': { title: 'La Union Tour', slotsBooked: 0, slotsTotal: 10, status: 'Closed', price: '₱ 2,800' },
 })
 
 const isTooltipOpen = ref(false)
@@ -231,15 +253,31 @@ const tourDuration = computed(() => {
   return duration ? parseInt(duration) : 1
 })
 
+const isWithinBookingRange = (dateKey) => {
+  if (tourType.value !== 'Joiners' || !booking.start_date || !booking.end_date) {
+    return true
+  }
+
+  const current = new Date(dateKey)
+  const start = new Date(booking.start_date)
+  const end = new Date(booking.end_date)
+
+  current.setHours(0, 0, 0, 0)
+  start.setHours(0, 0, 0, 0)
+  end.setHours(0, 0, 0, 0)
+
+  return current >= start && current <= end
+}
+
 const isDateInRange = (dateKey) => {
   if (!selectedDate.value) return false
 
   if (tourType.value === 'Exclusive') {
-    if (!selectedEndDate.value) return dateKey === selectedDate.value
+    if (!selectedend_date.value) return dateKey === selectedDate.value
 
     const current = new Date(dateKey)
     const start = new Date(selectedDate.value)
-    const end = new Date(selectedEndDate.value)
+    const end = new Date(selectedend_date.value)
 
     return current >= start && current <= end
   } else {
@@ -247,10 +285,10 @@ const isDateInRange = (dateKey) => {
     const current = new Date(dateKey)
     const duration = tourDuration.value
 
-    const endDate = new Date(selected)
-    endDate.setDate(endDate.getDate() + duration - 1)
+    const end_date = new Date(selected)
+    end_date.setDate(end_date.getDate() + duration - 1)
 
-    return current >= selected && current <= endDate
+    return current >= selected && current <= end_date
   }
 }
 
@@ -261,23 +299,25 @@ const days = computed(() => {
 
   const grid = []
   for (let i = 0; i < startWeekday; i++) {
-    grid.push({ day: null, dateKey: null, status: null, isPast: false, isInRange: false })
+    grid.push({ day: null, dateKey: null, status: null, isPast: false, isInRange: false, isOutOfRange: false })
   }
   for (let d = 1; d <= daysInMonth; d++) {
     const key = formatYmd(currentYear.value, currentMonthIndex.value, d)
     const isPast = isPastDate(currentYear.value, currentMonthIndex.value, d)
     const inRange = isDateInRange(key)
+    const outOfRange = tourType.value === 'Joiners' && !isWithinBookingRange(key)
 
     grid.push({
       day: d,
       dateKey: key,
       status: availabilityByDate.value[key] || 'available',
       isPast: isPast,
-      isInRange: inRange
+      isInRange: inRange,
+      isOutOfRange: outOfRange
     })
   }
   while (grid.length % 7 !== 0) {
-    grid.push({ day: null, dateKey: null, status: null, isPast: false, isInRange: false })
+    grid.push({ day: null, dateKey: null, status: null, isPast: false, isInRange: false, isOutOfRange: false })
   }
   return grid
 })
@@ -297,8 +337,21 @@ const formatHuman = (ymd) => {
 const selectTourType = (t) => {
   tourType.value = t
   isTypeOpen.value = false
-  selectedDate.value = ''
-  selectedEndDate.value = ''
+  
+  if (booking.start_date && booking.end_date && t === 'Joiners') {
+    const parseISODate = (isoString) => {
+      const date = new Date(isoString)
+      const y = date.getFullYear()
+      const m = String(date.getMonth() + 1).padStart(2, '0')
+      const d = String(date.getDate()).padStart(2, '0')
+      return `${y}-${m}-${d}`
+    }
+    selectedDate.value = parseISODate(booking.start_date)
+    selectedend_date.value = ''
+  } else {
+    selectedDate.value = ''
+    selectedend_date.value = ''
+  }
 }
 
 const selectTourClassification = (c) => {
@@ -331,7 +384,7 @@ const showTooltip = (event, dateKey) => {
     slotsBooked: info ? info.slotsBooked : 0,
     slotsTotal: info ? info.slotsTotal : 0,
     status: info ? info.status : 'Available',
-    price: info ? info.price : 'P -',
+    price: info ? info.price : '₱ -',
   }
 
   const wrapper = calendarWrapperRef.value
@@ -339,8 +392,8 @@ const showTooltip = (event, dateKey) => {
     const rect = wrapper.getBoundingClientRect()
     const clickX = event.clientX - rect.left
     const clickY = event.clientY - rect.top
-    tooltipX.value = Math.max(8, Math.min(clickX, rect.width - 360))
-    tooltipY.value = Math.max(8, Math.min(clickY, rect.height - 220))
+    tooltipX.value = Math.max(8, Math.min(clickX, rect.width - 380))
+    tooltipY.value = Math.max(8, Math.min(clickY, rect.height - 240))
   } else {
     tooltipX.value = 12
     tooltipY.value = 12
@@ -384,23 +437,23 @@ const nextMonth = () => {
 }
 
 const handleDateClick = (event, cell) => {
-  if (!cell.day || cell.isPast) {
+  if (!cell.day || cell.isPast || cell.isOutOfRange) {
     return
   }
 
   if (tourType.value === 'Exclusive') {
-    if (!selectedDate.value || selectedEndDate.value) {
+    if (!selectedDate.value || selectedend_date.value) {
       selectedDate.value = cell.dateKey
-      selectedEndDate.value = ''
+      selectedend_date.value = ''
     } else {
       const start = new Date(selectedDate.value)
       const end = new Date(cell.dateKey)
 
       if (end < start) {
-        selectedEndDate.value = selectedDate.value
+        selectedend_date.value = selectedDate.value
         selectedDate.value = cell.dateKey
       } else {
-        selectedEndDate.value = cell.dateKey
+        selectedend_date.value = cell.dateKey
       }
       showTooltip(event, cell.dateKey)
     }
@@ -410,7 +463,7 @@ const handleDateClick = (event, cell) => {
   }
 }
 
-const toast = useToast();
+const toast = useToast()
 
 const postDate = () => {
   if (!selectedDate.value) {
@@ -418,18 +471,18 @@ const postDate = () => {
     return
   }
 
-  if (tourType.value === 'Exclusive' && !selectedEndDate.value) {
+  if (tourType.value === 'Exclusive' && !selectedend_date.value) {
     toast.warning('Please select an end date for your exclusive tour.')
     return
   }
 
-  booking.reset();
+  booking.reset()
   booking.tourType = tourType.value
   booking.tourClassification = tourClassification.value
 
-  let endDate = selectedDate.value
+  let end_date = selectedDate.value
   if (tourType.value === 'Exclusive') {
-    endDate = selectedEndDate.value
+    end_date = selectedend_date.value
   } else {
     const start = new Date(selectedDate.value)
     const duration = tourDuration.value
@@ -439,61 +492,97 @@ const postDate = () => {
     const y = end.getFullYear()
     const m = String(end.getMonth() + 1).padStart(2, '0')
     const d = String(end.getDate()).padStart(2, '0')
-    endDate = `${y}-${m}-${d}`
+    end_date = `${y}-${m}-${d}`
   }
 
   booking.setCalendar({
-    startDate: selectedDate.value,
-    endDate: endDate,
+    start_date: selectedDate.value,
+    end_date: end_date,
   })
 
-  booking.setTourType(booking.tourType);
-  booking.setTourClassification(booking.tourClassification);
+  booking.setTourType(booking.tourType)
+  booking.setTourClassification(booking.tourClassification)
   emit('next')
 }
 
 onMounted(() => {
-  selectedDate.value = booking.startDate || '';
-  selectedEndDate.value = booking.endDate || '';
-  tourClassifications.value = booking.selectedPackage.tour_classification;
-  tourClassification.value = booking.selectedPackage.tour_classification[0];
+  tourClassifications.value = booking.selectedPackage.tour_classification
+  tourClassification.value = booking.selectedPackage.tour_classification[0]
+
+  if (booking.start_date && booking.end_date) {
+    const parseISODate = (isoString) => {
+      const date = new Date(isoString)
+      const y = date.getUTCFullYear()
+      const m = String(date.getUTCMonth() + 1).padStart(2, '0')
+      const d = String(date.getUTCDate()).padStart(2, '0')
+      return `${y}-${m}-${d}`
+    }
+
+    const start_dateFormatted = parseISODate(booking.start_date)
+    const end_dateFormatted = parseISODate(booking.end_date)
+
+    if (tourType.value === 'Joiners') {
+      selectedDate.value = start_dateFormatted
+      selectedend_date.value = ''
+      
+      const start_date = new Date(start_dateFormatted)
+      currentMonthIndex.value = start_date.getMonth()
+      currentYear.value = start_date.getFullYear()
+    } else {
+      selectedDate.value = start_dateFormatted
+      selectedend_date.value = end_dateFormatted
+    }
+  } else {
+    selectedDate.value = ''
+    selectedend_date.value = ''
+  }
 
   document.addEventListener('click', handleClickOutside)
-});
+})
 
 onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside)
-})
+});
 </script>
 
-<style>
-.dropdown-menu {
+<style scoped>
+.dropdown-menu-wrapper {
   position: absolute;
-  top: 60px;
+  top: 100%;
+  left: 0;
   right: 0;
+  z-index: 50;
+  margin-top: 8px;
+}
+
+.dropdown-menu {
+  position: relative;
   background: #fff;
-  border: 1px solid #eee;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
-  border-radius: 8px;
-  min-width: 180px;
-  z-index: 100;
-  padding: 12px 0;
+  border: 2px solid #1E71B8;
+  box-shadow: 0 8px 24px rgba(30, 113, 184, 0.15);
+  border-radius: 12px;
+  min-width: 100%;
+  padding: 8px 0;
   display: flex;
   flex-direction: column;
   gap: 0;
 }
+
 .dropdown-item {
   display: block;
-  padding: 12px 24px;
-  color: #008DDA;
+  padding: 12px 20px;
+  color: #1E71B8;
   text-align: left;
   text-decoration: none;
-  font-size: 15px;
-  transition: background 0.2s, color 0.2s;
-  border-radius: 0;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
+
 .dropdown-item:hover {
-  background: #eeece9;
+  background: #f0f9ff;
   color: #73BE5D;
+  padding-left: 24px;
 }
 </style>

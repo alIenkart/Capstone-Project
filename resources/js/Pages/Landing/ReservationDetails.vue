@@ -1,135 +1,162 @@
 <template>
-  <div class="w-full min-h-screen flex flex-col items-center bg-[#fcfcfc] py-8">
-    <div class="flex items-center gap-2 mb-16 mt-2 w-full max-w-5xl justify-center">
+  <div class="w-full min-h-screen bg-gradient-to-br from-[#f8fafc] to-[#f1f5f9] py-8">
+    <div class="flex items-center gap-2 mb-16 mt-2 w-full max-w-6xl justify-center mx-auto px-4">
       <div class="flex items-center gap-1">
         <span class="w-4 h-4 rounded-full border-2 border-[#008DDA] bg-[#008DDA] flex items-center justify-center">
           <svg class="w-2 h-2 text-white" fill="currentColor" viewBox="0 0 16 16">
             <circle cx="8" cy="8" r="8" />
           </svg>
         </span>
-        <span class="ml-1 text-[#008DDA] font-semibold text-base">Availability</span>
+        <span class="ml-1 text-[#008DDA] font-semibold text-sm md:text-base">Availability</span>
       </div>
-      <span class="w-16 h-0.5 bg-[#008DDA] mx-2"></span>
+      <span class="w-8 md:w-16 h-0.5 bg-gradient-to-r from-[#008DDA] to-[#1E71B8] mx-2"></span>
       <div class="flex items-center gap-1">
-        <span class="w-4 h-4 rounded-full border-2 border-[#008DDA] flex items-center justify-center">
-          <span class="w-2 h-2 rounded-full bg-[#008DDA]"></span>
+        <span class="w-4 h-4 rounded-full border-2 border-[#008DDA] bg-[#008DDA] flex items-center justify-center">
+          <span class="w-2 h-2 rounded-full"></span>
         </span>
-        <span class="ml-1 text-[#008DDA] font-semibold text-base border-b-2 border-[#008DDA] pb-0.5">
+        <span class="ml-1 text-[#008DDA] font-semibold text-sm md:text-base border-b-2 border-[#008DDA]">
           Reservation Details
         </span>
       </div>
-      <span class="w-16 h-0.5 bg-[#008DDA] mx-2"></span>
+      <span class="w-8 md:w-16 h-0.5 bg-gray-300 mx-2"></span>
       <div class="flex items-center gap-1">
-        <span class="w-4 h-4 rounded-full border-2 border-[#008DDA] flex items-center justify-center"></span>
-        <span class="ml-1 text-[#008DDA] font-semibold text-base">Confirmation</span>
+        <span class="w-4 h-4 rounded-full border-2 border-gray-300 flex items-center justify-center"></span>
+        <span class="ml-1 text-gray-400 font-semibold text-sm md:text-base">Confirmation</span>
       </div>
     </div>
 
-    <div class="flex flex-row w-full max-w-6xl justify-center gap-8">
+    <div class="flex flex-col lg:flex-row w-full max-w-7xl justify-center gap-8 mx-auto px-4">
       <div class="flex-1">
-        <div class="flex justify-start mb-4">
+        <div class="flex justify-start mb-6">
           <button @click="emit('back')"
-            class="w-24 rounded-full py-2 font-bold text-lg transition bg-[#1E71B8] text-white hover:bg-[#73BE5D]">
-            Back
+            class="px-6 py-2.5 rounded-lg font-semibold text-sm transition-all duration-300 bg-white text-[#1E71B8] border border-[#1E71B8] hover:bg-[#1E71B8] hover:text-white shadow-md hover:shadow-lg">
+            ← Back
           </button>
         </div>
 
-        <div class="flex w-full mb-2">
-          <div class="flex-1 font-semibold text-[#1E71B8]">Travellers</div>
-          <div class="flex-1 font-semibold text-[#1E71B8] text-center">Rate</div>
-          <div class="flex-1 font-semibold text-[#1E71B8] text-right">Quantity</div>
-        </div>
+        <div class="mb-8">
+          <h2 class="text-2xl md:text-3xl font-bold text-[#1E71B8] mb-6 flex items-center gap-2">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 12H9m4 0a4 4 0 110-8 4 4 0 010 8zm6 0a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            </svg>
+            Travelers
+          </h2>
 
-        <p class="message">*Age around 13 and above</p>
-        <div class="w-full flex items-center bg-[#1E71B8] rounded-xl px-6 py-5 mb-6">
-          <div class="flex-1 text-white font-medium text-lg">Adults</div>
-          <div class="flex-1 text-white font-medium text-lg text-center">₱ {{ selectedPackage.pax_rate }}</div>
-          <div class="flex-1 flex items-center justify-end gap-2">
-            <button @click="pax > 0 && pax--"
-              class="w-8 h-8 rounded-full bg-white text-[#1E71B8] font-bold text-lg flex items-center justify-center border border-[#1E71B8] hover:bg-[#ffe5d0]">-</button>
-            <input type="text" :value="pax"
-              class="w-14 h-8 rounded-lg text-center border border-[#1E71B8] bg-white text-[#1E71B8] font-semibold"
-              readonly>
-            <button @click="pax++"
-              class="w-8 h-8 rounded-full bg-white text-[#1E71B8] font-bold text-lg flex items-center justify-center border border-[#1E71B8] hover:bg-[#ffe5d0]">+</button>
+          <div class="bg-white rounded-2xl border border-gray-200 shadow-md hover:shadow-lg transition-all duration-300 p-6 mb-5">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
+              <div>
+                <h3 class="text-xl font-bold text-[#1E71B8]">Adults</h3>
+                <p class="text-xs text-gray-500 mt-1">*Age 13 and above</p>
+              </div>
+            </div>
+            
+            <div class="flex items-center justify-between gap-3 bg-gray-50 rounded-lg p-4">
+              <div class="bg-gradient-to-r from-[#1E71B8] to-[#155E9C] rounded-lg px-4 py-2 text-white font-semibold text-lg">
+                ₱{{ selectedPackage.pax_rate?.toLocaleString() }}
+              </div>
+              <div class="flex items-center gap-3">
+                <button @click="pax > 0 && pax--"
+                  class="w-10 h-10 rounded-full bg-[#1E71B8] text-white font-bold text-lg flex items-center justify-center transition-all duration-300 hover:bg-[#155E9C] active:scale-95">−</button>
+                <input type="text" :value="pax"
+                  class="w-16 h-10 rounded-lg text-center border-2 border-[#1E71B8] bg-white text-[#1E71B8] font-bold text-lg"
+                  readonly>
+                <button @click="pax++"
+                  class="w-10 h-10 rounded-full bg-[#1E71B8] text-white font-bold text-lg flex items-center justify-center transition-all duration-300 hover:bg-[#155E9C] active:scale-95">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl border border-gray-200 shadow-md hover:shadow-lg transition-all duration-300 p-6">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-4">
+              <div>
+                <h3 class="text-xl font-bold text-[#1E71B8]">Kids</h3>
+                <p class="text-xs text-gray-500 mt-1">*Age 2-12 years old</p>
+              </div>
+            </div>
+            
+            <div class="flex items-center justify-between gap-3 bg-gray-50 rounded-lg p-4">
+              <div class="bg-gradient-to-r from-[#1E71B8] to-[#155E9C] rounded-lg px-4 py-2 text-white font-semibold text-lg">
+                ₱{{ selectedPackage.kids_pax_rate?.toLocaleString() }}
+              </div>
+              <div class="flex items-center gap-3">
+                <button @click="kidsPax > 0 && kidsPax--"
+                  class="w-10 h-10 rounded-full bg-[#1E71B8] text-white font-bold text-lg flex items-center justify-center transition-all duration-300 hover:bg-[#155E9C] active:scale-95">−</button>
+                <input type="text" :value="kidsPax"
+                  class="w-16 h-10 rounded-lg text-center border-2 border-[#1E71B8] bg-white text-[#1E71B8] font-bold text-lg"
+                  readonly>
+                <button @click="kidsPax++"
+                  class="w-10 h-10 rounded-full bg-[#1E71B8] text-white font-bold text-lg flex items-center justify-center transition-all duration-300 hover:bg-[#155E9C] active:scale-95">+</button>
+              </div>
+            </div>
           </div>
         </div>
 
-        <p class="message">*Age around 2-12</p>
-        <div class="w-full flex items-center bg-[#1E71B8] rounded-xl px-6 py-5 mb-6">
-          <div class="flex-1 text-white font-medium text-lg">Kids</div>
-          <div class="flex-1 text-white font-medium text-lg text-center">₱ {{ selectedPackage.kids_pax_rate }}</div>
-          <div class="flex-1 flex items-center justify-end gap-2">
-            <button @click="kidsPax > 0 && kidsPax--"
-              class="w-8 h-8 rounded-full bg-white text-[#1E71B8] font-bold text-lg flex items-center justify-center border border-[#1E71B8] hover:bg-[#ffe5d0]">-</button>
-            <input type="text" :value="kidsPax"
-              class="w-14 h-8 rounded-lg text-center border border-[#1E71B8] bg-white text-[#1E71B8] font-semibold"
-              readonly>
-            <button @click="kidsPax++"
-              class="w-8 h-8 rounded-full bg-white text-[#1E71B8] font-bold text-lg flex items-center justify-center border border-[#1E71B8] hover:bg-[#ffe5d0]">+</button>
-          </div>
-        </div>
+        <div class="mb-8">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
+            <h2 class="text-2xl md:text-3xl font-bold text-[#1E71B8] flex items-center gap-2">
+              <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+              Itinerary
+            </h2>
 
-        <div class="mt-10">
-          <div class="flex w-full mb-6 items-center justify-between">
-            <h2 class="text-2xl font-bold text-[#1E71B8] tracking-tight">Itinerary</h2>
-
-            <div v-if="isExclusiveTour" class="flex items-center gap-3">
+            <div v-if="isExclusiveTour" class="flex flex-wrap items-center gap-3">
               <button @click="toggleCustomize"
-                class="px-5 py-2.5 rounded-xl text-white font-medium transition-all duration-300" :class="isEditingItinerary
-                  ? 'bg-[#73BE5D] hover:bg-[#5AA449]'
-                  : 'bg-[#1E71B8] hover:bg-[#155E9C]'">
-                {{ isEditingItinerary ? 'Save Customization' : 'Customize' }}
+                class="px-5 py-2.5 rounded-lg text-white font-semibold transition-all duration-300 shadow-md hover:shadow-lg" 
+                :class="isEditingItinerary
+                  ? 'bg-gradient-to-r from-[#73BE5D] to-[#5ca348] hover:shadow-xl'
+                  : 'bg-gradient-to-r from-[#1E71B8] to-[#155E9C] hover:shadow-xl'">
+                {{ isEditingItinerary ? '✓ Save' : '✎ Customize' }}
               </button>
 
-              <div v-if="isEditingItinerary" class="relative group flex items-center gap-3">
+              <div v-if="isEditingItinerary" class="relative group">
                 <button @click="addNewDay" :disabled="Object.keys(editableItinerary).length >= booking.getHowManyDays"
-                  class="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-xl shadow-md
-                         bg-[#1E71B8] text-white transition-all duration-200
-                         hover:bg-[#155E9C] disabled:bg-gray-300 disabled:text-gray-700 disabled:cursor-not-allowed">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor" stroke-width="2">
+                  class="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-lg shadow-md
+                         bg-gradient-to-r from-[#1E71B8] to-[#155E9C] text-white transition-all duration-300
+                         hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                   </svg>
                   Add Day
                 </button>
 
-                <div v-if="Object.keys(editableItinerary).length >= booking.getHowManyDays" class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max bg-gray-800 text-white
-                         text-xs px-3 py-1.5 rounded-lg shadow-lg opacity-0 pointer-events-none
-                         group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
-                  {{
-                    booking.getHowManyDays === 0
-                      ? 'Please select your start and end dates first.'
-                      : 'You\'ve reached the maximum number of days allowed by your booking.'
-                  }}
+                <div v-if="Object.keys(editableItinerary).length >= booking.getHowManyDays" class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max bg-gray-900 text-white
+                         text-xs px-3 py-2 rounded-lg shadow-lg opacity-0 pointer-events-none
+                         group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap z-10">
+                  You've reached the maximum number of days.
                 </div>
               </div>
             </div>
           </div>
 
           <div v-if="displayItinerary.length === 0"
-            class="w-full rounded-2xl border border-gray-200 bg-white p-6 text-center text-gray-500 italic shadow-sm">
-            No itinerary available yet.
+            class="w-full rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 p-8 text-center">
+            <svg class="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            <p class="text-gray-500 text-lg">No itinerary available yet.</p>
           </div>
 
-          <div v-else class="grid gap-6">
+          <div v-else class="grid gap-4">
             <div v-for="(item, index) in displayItinerary" :key="item.dayNumber"
-              class="w-full rounded-2xl bg-gradient-to-br from-white to-[#f9fcff] border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300">
-              <div
-                class="px-6 py-4 border-b border-gray-100 bg-[#f8fbff] rounded-t-2xl flex justify-between items-center">
-                <h3 class="text-lg font-semibold text-[#1E71B8] tracking-wide">Day {{ item.dayNumber }}</h3>
+              class="bg-white rounded-2xl border border-gray-200 shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden">
+              
+              <div class="px-6 py-4 bg-gradient-to-r from-[#1E71B8] to-[#155E9C] flex justify-between items-center">
+                <h3 class="text-lg font-bold text-white tracking-wide flex items-center gap-2">
+                  Day {{ item.dayNumber }}
+                </h3>
                 <button v-if="isEditingItinerary" @click="removeDay(item.dayNumber)"
-                  class="text-red-500 hover:text-red-600 w-6 h-6 text-sm font-semibold flex items-center gap-1 transition">
-                  <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  class="text-white hover:text-red-200 transition-colors duration-300">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
                 </button>
               </div>
-              <div class="px-6 py-5 text-gray-700 leading-relaxed whitespace-pre-wrap text-[15px]">
+
+              <div class="px-6 py-5 text-gray-700 leading-relaxed text-[15px]">
                 <template v-if="isEditingItinerary">
-                  <textarea v-model="editableItinerary[`day_${item.dayNumber}`]" rows="5"
-                    class="w-full p-3 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1E71B8]"></textarea>
+                  <textarea v-model="editableItinerary[`day_${item.dayNumber}`]" rows="4"
+                    class="w-full p-4 border-2 border-gray-200 rounded-lg text-gray-700 font-medium resize-none focus:outline-none focus:border-[#1E71B8] focus:ring-2 focus:ring-[#1E71B8] focus:ring-opacity-20 transition-all duration-300"></textarea>
                 </template>
                 <template v-else>
                   {{ item.content }}
@@ -140,76 +167,117 @@
         </div>
       </div>
 
-      <div class="w-full max-w-sm flex flex-col gap-4">
-        <div class="bg-white rounded-xl p-6 border border-gray-200">
-          <div class="text-[#1E71B8] font-semibold text-sm mb-2">Discount ID Image</div>
-          <div class="space-y-2">
-            <div v-if="discountImages.length > 0" class="mb-2">
+      <div class="w-full lg:w-96 flex flex-col gap-5">
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-md p-6">
+          <h3 class="text-[#1E71B8] font-bold text-lg mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-5"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 3h6v6M10 14l6-6"></path>
+            </svg>
+            Discount ID
+          </h3>
+
+          <div class="space-y-3">
+            <div v-if="discountImages.length > 0" class="space-y-2">
               <div v-for="image in discountImages" :key="image.id" class="relative group">
                 <img :src="image.preview" :alt="image.name"
-                  class="w-full h-28 object-cover rounded-lg border border-gray-300" />
+                  class="w-full h-32 object-cover rounded-lg border-2 border-gray-200 shadow-sm" />
                 <button @click="removeImage(image.id)"
-                  class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  ×
+                  class="absolute -top-2 -right-2 w-7 h-7 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-red-600 shadow-lg">
+                  ✕
                 </button>
               </div>
             </div>
+
             <button @click="triggerFileInput" :disabled="discountImages.length >= 1"
-              class="w-full py-2 px-3 bg-[#1E71B8] bg-opacity-10 text-[#1E71B8] text-sm rounded-lg border border-[#1E71B8] border-dashed hover:bg-opacity-20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+              class="w-full py-3 px-4 rounded-lg border-2 border-dashed transition-all duration-300" 
+              :class="discountImages.length >= 1 
+                ? 'bg-gray-50 border-gray-300 text-gray-400 cursor-not-allowed' 
+                : 'bg-blue-50 border-[#1E71B8] text-[#1E71B8] hover:bg-blue-100'">
               <div class="flex items-center justify-center gap-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
-                <span>{{ discountImages.length >= 1 ? 'Only 1 image allowed' : 'Upload ID' }}</span>
+                <span class="font-semibold">{{ discountImages.length >= 1 ? '✓ Uploaded' : 'Upload ID' }}</span>
               </div>
             </button>
             <input id="discount-image-upload" type="file" accept="image/*" @change="handleImageUpload" class="hidden" />
+            <p class="text-gray-500 text-xs text-center">*One valid ID upload allowed</p>
           </div>
-          <p class="text-gray-500 text-xs mt-2">* Only one valid Discount ID upload allowed</p>
         </div>
 
-        <div class="bg-white rounded-xl p-6 border border-gray-200">
-          <div class="text-[#1E71B8] font-semibold text-sm mb-2">Remarks</div>
-          <textarea v-model="remarks" placeholder="*Extra baggage, include infants etc."
-            class="w-full h-20 px-3 py-2 bg-gray-50 text-gray-800 placeholder-gray-500 rounded-lg border border-gray-300 resize-none focus:outline-none focus:ring-2 focus:ring-[#1E71B8] focus:border-[#1E71B8]"></textarea>
+        <div class="bg-white rounded-2xl border border-gray-200 shadow-md p-6">
+          <h3 class="text-[#1E71B8] font-bold text-lg mb-4 flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+            </svg>
+            Remarks
+          </h3>
+          <textarea v-model="remarks" placeholder="Extra baggage, include infants, etc..."
+            class="w-full h-24 px-4 py-3 bg-gray-50 text-gray-800 placeholder-gray-400 rounded-lg border-2 border-gray-200 resize-none focus:outline-none focus:border-[#1E71B8] focus:ring-2 focus:ring-[#1E71B8] focus:ring-opacity-20 transition-all duration-300 font-medium"></textarea>
         </div>
 
-        <div class="bg-[#1E71B8] rounded-xl p-8 flex flex-col justify-between min-h-[350px]">
-          <div>
-            <div class="font-bold text-white text-lg mb-2">{{ selectedPackage.destination }}</div>
-            <div class="text-white mb-4">
-              <div>Tour Type: <span class="text-white font-medium">{{ booking.tourType }}</span></div>
+        <div class="bg-gradient-to-br from-[#1E71B8] to-[#155E9C] rounded-2xl p-6 shadow-lg text-white overflow-hidden relative">
+          <div class="absolute -top-12 -right-12 w-32 h-32 bg-white opacity-10 rounded-full"></div>
+          <div class="absolute -bottom-8 -left-8 w-24 h-24 bg-[#73BE5D] opacity-10 rounded-full"></div>
+          
+          <div class="relative z-10">
+            <div class="mb-5 pb-5 border-b border-white border-opacity-20">
+              <p class="text-white text-opacity-70 text-xs uppercase tracking-widest font-semibold mb-1">Destination</p>
+              <h2 class="text-2xl font-bold">{{ selectedPackage.destination }}</h2>
             </div>
-            <div class="text-white mb-4">
-              <div>Duration: <span class="text-white font-medium">{{ durationDays }} Day<span
-                    v-if="durationDays !== 1">s</span></span>
+
+            <div class="space-y-4 mb-6">
+              <div class="flex items-center justify-between bg-white bg-opacity-10 rounded-lg p-3">
+                <span class="text-white text-opacity-80 text-sm">Tour Type</span>
+                <span class="font-semibold">{{ booking.tourType }}</span>
+              </div>
+
+              <div class="flex items-center justify-between bg-white bg-opacity-10 rounded-lg p-3">
+                <span class="text-white text-opacity-80 text-sm">Duration</span>
+                <span class="font-semibold">{{ durationDays }} Day<span v-if="durationDays !== 1">s</span></span>
+              </div>
+
+              <div class="bg-white bg-opacity-10 rounded-lg p-3 space-y-2 text-sm">
+                <div class="flex items-center justify-between">
+                  <span class="text-white text-opacity-80">Start Date</span>
+                  <span class="font-semibold">{{ formatDate(booking.startDate) }}</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-white text-opacity-80">End Date</span>
+                  <span class="font-semibold">{{ formatDate(booking.endDate) }}</span>
+                </div>
               </div>
             </div>
-            <div class="text-white mb-4">
-              <div>Starting Date: <span class="text-white font-medium">{{ booking.startDate }}</span></div>
-            </div>
-            <div class="text-white mb-4">
-              <div class="mb-1">Travellers</div>
+
+            <div class="h-px bg-gradient-to-r from-transparent via-[#73BE5D] to-transparent mb-4"></div>
+
+            <div class="space-y-3 mb-5 text-sm">
               <div class="flex justify-between">
-                <span class="font-medium">Adult Rate ₱ {{ selectedPackage.pax_rate }} x ({{ pax }})</span>
-                <span class="font-medium">₱ {{ adultTotalAmount }}</span>
+                <span class="text-white text-opacity-80">Adults × {{ pax }}</span>
+                <span class="font-semibold">₱{{ adultTotalAmount.toLocaleString() }}</span>
               </div>
               <div class="flex justify-between">
-                <span>Kids Rate ₱ {{ selectedPackage.kids_pax_rate }} x ({{ kidsPax }})</span>
-                <span>₱ {{ kidsTotalAmount }}</span>
+                <span class="text-white text-opacity-80">Kids × {{ kidsPax }}</span>
+                <span class="font-semibold">₱{{ kidsTotalAmount.toLocaleString() }}</span>
+              </div>
+
+              <div class="h-px bg-white bg-opacity-20"></div>
+
+              <div class="flex justify-between items-center text-lg">
+                <span class="font-bold">Total</span>
+                <span class="text-[#73BE5D] font-bold text-2xl">₱{{ totalAmountWithDiscount.toLocaleString() }}</span>
               </div>
             </div>
-            <hr class="border-[#73BE5D] my-4" />
-            <div class="flex justify-between items-center font-bold text-white text-lg mt-4">
-              <span>Total :</span>
-              <span>₱ {{ totalAmountWithDiscount }}</span>
-            </div>
+
+            <button @click="postPackage" :disabled="(pax + kidsPax) === 0 || (isExclusiveTour && isEditingItinerary)"
+              class="w-full py-3 px-4 rounded-lg font-bold text-[#1E71B8] text-lg transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+              :class="(pax + kidsPax) === 0 || (isExclusiveTour && isEditingItinerary)
+                ? 'bg-gray-300'
+                : 'bg-[#73BE5D] hover:bg-[#5ca348] active:scale-95'">
+              Proceed to Payment
+            </button>
           </div>
-          <button @click="postPackage" :disabled="(pax + kidsPax) === 0 || (isExclusiveTour && isEditingItinerary)"
-            class="w-full rounded-full py-3 font-bold text-lg transition bg-[#73BE5D] text-white hover:bg-[#6aae56] mt-2 disabled:bg-gray-400 disabled:cursor-not-allowed">
-            Proceed
-          </button>
         </div>
       </div>
     </div>
@@ -289,6 +357,16 @@ const displayItinerary = computed(() => {
 
   return Array.isArray(itinerary) ? itinerary : []
 })
+
+const formatDate = (dateString) => {
+  if (!dateString) return 'N/A'
+  const date = new Date(dateString)
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  });
+}
 
 const toggleCustomize = () => {
   if (!isExclusiveTour.value) return
@@ -423,9 +501,30 @@ onMounted(() => {
 });
 </script>
 
-<style>
-.message {
-  color: #6B7899;
-  font-size: 0.8rem;
+<style scoped>
+button {
+  transition: all 0.3s ease;
+}
+
+input, textarea {
+  transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1E71B8;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #155E9C;
 }
 </style>

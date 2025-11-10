@@ -382,11 +382,18 @@ const handleBookNow = () => {
     console.error('No package selected');
     return;
   }
+
+  const date = [
+    { startDate: selectedPackage.value.start_date },
+    { endDate: selectedPackage.value.end_date }
+  ];
+
   booking.setPackageId(selectedPackage.value?.id);
   booking.setPackageDestination(selectedPackage.value?.destination);
   booking.setDuration(selectedPackage.value?.tour_duration);
   booking.setAdultRate(selectedPackage.value?.pax_rate);
   booking.setItinerary(selectedPackage.value?.itinerary)
+  booking.setDate(date);
   
   if (selectedPackage.value.kids_rate) {
     booking.setKidsRate(selectedPackage.value?.kids_rate);

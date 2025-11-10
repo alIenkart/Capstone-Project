@@ -27,7 +27,9 @@ export const storeBooking = defineStore('booking', {
     remarks: '',
     selectedPackage: null,
     customItinerary: [],
-    itinerary: []
+    itinerary: [],
+    start_date: '',
+    end_date: '',
   }),
 
   getters: {
@@ -64,9 +66,20 @@ export const storeBooking = defineStore('booking', {
   },
 
   actions: {
-    setCalendar({ startDate, endDate }) {
-      this.startDate = startDate
-      this.endDate = endDate
+    setCalendar({ start_date, end_date }) {
+      this.startDate = start_date
+      this.endDate = end_date
+      
+      const startDate = new Date(start_date)
+      const endDate = new Date(end_date)
+      
+      startDate.setHours(0, 0, 0, 0)
+      endDate.setHours(0, 0, 0, 0)
+      
+      const diffMs = endDate - startDate
+      const calculatedDays = Math.floor(diffMs / (1000 * 60 * 60 * 24)) + 1
+      
+      this.duration = calculatedDays > 0 ? calculatedDays : 0
     },
     setPackageId(id) {
       this.packageId = id
@@ -150,6 +163,11 @@ export const storeBooking = defineStore('booking', {
     
     setItinerary(itinerary) {
       this.itinerary = itinerary
+    },
+
+    setDate(date) {
+      this.start_date = date[0].startDate;
+      this.end_date = date[1].endDate;
     },
 
     reset() {
