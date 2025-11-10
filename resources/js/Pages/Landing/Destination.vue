@@ -68,7 +68,7 @@ const selectRegion = (region) => {
 const fetchPackages = async () => {
   try {
     const response = await service.getPackages();
-    packages.value = response.data.data;
+    packages.value = response.data.data.filter(pkg => pkg.status === "active");
   } catch (error) {
     console.error("Error fetching packages:", error);
   }
