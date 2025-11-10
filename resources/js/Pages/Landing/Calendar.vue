@@ -536,9 +536,6 @@ const generatePackageDates = () => {
   const startDateStr = pkg.start_date.split("T")[0];
   const endDateStr = pkg.end_date.split("T")[0];
 
-  console.log("Start Date String:", startDateStr);
-  console.log("End Date String:", endDateStr);
-
   const [sy, sm, sd] = startDateStr.split("-").map(Number);
   const [ey, em, ed] = endDateStr.split("-").map(Number);
 
@@ -560,8 +557,6 @@ const generatePackageDates = () => {
     const m = String(currentMonth).padStart(2, "0");
     const d = String(currentDay).padStart(2, "0");
     const dateKey = `${currentYear}-${m}-${d}`;
-
-    console.log("Generated Date:", dateKey);
 
     const booked = Math.floor(Math.random() * (pkg.capacity + 1));
     let status = "available";
