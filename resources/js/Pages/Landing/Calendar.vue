@@ -1,247 +1,143 @@
 <template>
-  <div
-    class="w-full min-h-screen bg-gradient-to-br from-[#f8fafc] to-[#f1f5f9] py-8"
-  >
-    <div
-      class="flex items-center gap-2 mb-12 mt-2 w-full max-w-6xl justify-center mx-auto px-4"
-    >
+  <div class="w-full min-h-screen bg-gradient-to-br from-[#f8fafc] to-[#f1f5f9] py-8">
+    <div class="flex items-center gap-2 mb-12 mt-2 w-full max-w-6xl justify-center mx-auto px-4">
       <div class="flex items-center gap-1">
-        <span
-          class="w-4 h-4 rounded-full border-2 border-[#1E71B8] bg-[#1E71B8] flex items-center justify-center"
-        >
-          <span
-            class="w-4 h-4 rounded-full border-2 border-[#1E71B8] flex items-center justify-center"
-          >
+        <span class="w-4 h-4 rounded-full border-2 border-[#1E71B8] bg-[#1E71B8] flex items-center justify-center">
+          <span class="w-4 h-4 rounded-full border-2 border-[#1E71B8] flex items-center justify-center">
             <span class="w-2 h-2 rounded-full bg-[#1E71B8]"></span>
           </span>
         </span>
-        <span class="ml-1 text-[#1E71B8] font-semibold text-sm md:text-base"
-          >Availability</span
-        >
+        <span class="ml-1 text-[#1E71B8] font-semibold text-sm md:text-base">Availability</span>
       </div>
-      <span
-        class="w-8 md:w-16 h-0.5 bg-gradient-to-r from-[#1E71B8] to-[#155E9C] mx-2"
-      ></span>
+      <span class="w-8 md:w-16 h-0.5 bg-gradient-to-r from-[#1E71B8] to-[#155E9C] mx-2"></span>
       <div class="flex items-center gap-1">
-        <span
-          class="w-4 h-4 rounded-full border-2 border-gray-300 flex items-center justify-center"
-        ></span>
-        <span class="ml-1 text-gray-400 font-semibold text-sm md:text-base"
-          >Reservation Details</span
-        >
+        <span class="w-4 h-4 rounded-full border-2 border-gray-300 flex items-center justify-center"></span>
+        <span class="ml-1 text-gray-400 font-semibold text-sm md:text-base">Reservation Details</span>
       </div>
       <span class="w-8 md:w-16 h-0.5 bg-gray-300 mx-2"></span>
       <div class="flex items-center gap-1">
-        <span
-          class="w-4 h-4 rounded-full border-2 border-gray-300 flex items-center justify-center"
-        ></span>
-        <span class="ml-1 text-gray-400 font-semibold text-sm md:text-base"
-          >Confirmation</span
-        >
+        <span class="w-4 h-4 rounded-full border-2 border-gray-300 flex items-center justify-center"></span>
+        <span class="ml-1 text-gray-400 font-semibold text-sm md:text-base">Confirmation</span>
       </div>
     </div>
 
-    <div
-      class="flex flex-col lg:flex-row w-full max-w-7xl justify-center gap-6 mx-auto px-4"
-    >
-      <div
-        class="bg-white rounded-2xl border border-gray-200 shadow-md p-6 lg:min-w-[200px] h-fit"
-      >
+    <div class="flex flex-col lg:flex-row w-full max-w-7xl justify-center gap-6 mx-auto px-4">
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-md p-6 lg:min-w-[200px] h-fit">
         <h3 class="text-lg text-[#1E71B8] font-bold mb-4 uppercase">Legends</h3>
         <div class="space-y-3">
           <div class="flex items-center gap-3">
-            <span
-              class="w-4 h-4 rounded-full bg-[#737373] flex-shrink-0"
-            ></span>
+            <span class="w-4 h-4 rounded-full bg-[#737373] flex-shrink-0"></span>
             <span class="text-sm text-[#737373] font-medium">Closed</span>
           </div>
           <div class="flex items-center gap-3">
-            <span
-              class="w-4 h-4 rounded-full bg-[#302e2e] flex-shrink-0"
-            ></span>
+            <span class="w-4 h-4 rounded-full bg-[#302e2e] flex-shrink-0"></span>
             <span class="text-sm text-[#302e2e] font-medium">Available</span>
           </div>
           <div class="flex items-center gap-3">
-            <span
-              class="w-4 h-4 rounded-full bg-[#2f5f98] flex-shrink-0"
-            ></span>
+            <span class="w-4 h-4 rounded-full bg-[#2f5f98] flex-shrink-0"></span>
             <span class="text-sm text-[#2f5f98] font-medium">Slots Full</span>
           </div>
           <div class="flex items-center gap-3">
-            <span
-              class="w-4 h-4 rounded-full bg-[#45a834] flex-shrink-0"
-            ></span>
-            <span class="text-sm text-[#45a834] font-medium"
-              >Accepting Joiners</span
-            >
+            <span class="w-4 h-4 rounded-full bg-[#45a834] flex-shrink-0"></span>
+            <span class="text-sm text-[#45a834] font-medium">Accepting Joiners</span>
           </div>
         </div>
       </div>
 
       <div class="flex-1 flex flex-col items-center">
-        <div
-          class="w-full bg-white rounded-2xl border border-gray-200 shadow-md p-6 md:p-8"
-        >
+        <div class="w-full bg-white rounded-2xl border border-gray-200 shadow-md p-6 md:p-8">
           <div class="flex flex-col gap-6">
             <div class="flex flex-col sm:flex-row gap-4">
               <div class="flex-1 relative" ref="typeDropdownRef">
-                <label
-                  class="text-[#1E71B8] mb-2 font-bold text-sm uppercase tracking-wide block"
-                  >Tour Type</label
-                >
-                <button
-                  type="button"
+                <label class="text-[#1E71B8] mb-2 font-bold text-sm uppercase tracking-wide block">Tour Type</label>
+                <button type="button"
                   class="w-full border-2 border-[#1E71B8] rounded-xl px-4 py-3 bg-white text-left text-[#1E71B8] font-semibold flex items-center justify-between transition-all duration-300 hover:bg-blue-50"
                   @click="
                     isTypeOpen = !isTypeOpen;
-                    isClassOpen = false;
-                  "
-                >
+                  isClassOpen = false;
+                  ">
                   <span>{{ tourType }}</span>
                   <span class="ml-3 inline-flex items-center">
-                    <svg
-                      v-if="!isTypeOpen"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#1E71B8"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
+                    <svg v-if="!isTypeOpen" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                      viewBox="0 0 24 24" fill="none" stroke="#1E71B8" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
                       <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
-                    <svg
-                      v-else
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#1E71B8"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                      fill="none" stroke="#1E71B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <polyline points="18 15 12 9 6 15"></polyline>
                     </svg>
                   </span>
                 </button>
                 <div v-if="isTypeOpen" class="dropdown-menu-wrapper">
                   <div class="dropdown-menu">
-                    <a
-                      v-for="t in tourTypes"
-                      :key="t"
-                      href="#"
-                      class="dropdown-item"
-                      :class="{
-                        'bg-blue-100 text-[#73BE5D] font-semibold':
-                          t === tourType,
-                      }"
-                      @click.prevent="selectTourType(t)"
-                      >{{ t }}</a
-                    >
+                    <a v-for="t in tourTypes" :key="t" href="#" class="dropdown-item" :class="{
+                      'bg-blue-100 text-[#73BE5D] font-semibold':
+                        t === tourType,
+                    }" @click.prevent="selectTourType(t)">{{ t }}</a>
                   </div>
                 </div>
               </div>
 
               <div class="flex-1 relative" ref="classDropdownRef">
-                <label
-                  class="text-[#1E71B8] mb-2 font-bold text-sm uppercase tracking-wide block"
-                  >Tour Classification</label
-                >
-                <button
-                  type="button"
+                <label class="text-[#1E71B8] mb-2 font-bold text-sm uppercase tracking-wide block">Tour
+                  Classification</label>
+                <button type="button"
                   class="w-full border-2 border-[#1E71B8] rounded-xl px-4 py-3 bg-white text-left text-[#1E71B8] font-semibold flex items-center justify-between transition-all duration-300 hover:bg-blue-50"
                   @click="
                     isClassOpen = !isClassOpen;
-                    isTypeOpen = false;
-                  "
-                >
+                  isTypeOpen = false;
+                  ">
                   <span>{{ tourClassification }}</span>
                   <span class="ml-3 inline-flex items-center">
-                    <svg
-                      v-if="!isClassOpen"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#1E71B8"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
+                    <svg v-if="!isClassOpen" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                      viewBox="0 0 24 24" fill="none" stroke="#1E71B8" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
                       <polyline points="6 9 12 15 18 9"></polyline>
                     </svg>
-                    <svg
-                      v-else
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#1E71B8"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                      fill="none" stroke="#1E71B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                       <polyline points="18 15 12 9 6 15"></polyline>
                     </svg>
                   </span>
                 </button>
                 <div v-if="isClassOpen" class="dropdown-menu-wrapper">
                   <div class="dropdown-menu">
-                    <a
-                      v-for="c in tourClassifications"
-                      :key="c"
-                      href="#"
-                      class="dropdown-item"
-                      :class="{
-                        'bg-blue-100 text-[#73BE5D] font-semibold':
-                          c === tourClassification,
-                      }"
-                      @click.prevent="selectTourClassification(c)"
-                      >{{ c }}</a
-                    >
+                    <a v-for="c in tourClassifications" :key="c" href="#" class="dropdown-item" :class="{
+                      'bg-blue-100 text-[#73BE5D] font-semibold':
+                        c === tourClassification,
+                    }" @click.prevent="selectTourClassification(c)">{{ c }}</a>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div v-if="tourType === 'Joiners'" class="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-[#1E71B8] p-4 rounded-xl">
+            <div v-if="tourType === 'Joiners'"
+              class="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-[#1E71B8] p-4 rounded-xl">
               <div class="flex items-start gap-3">
                 <svg class="w-5 h-5 text-[#1E71B8] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                  <path fill-rule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                    clip-rule="evenodd"></path>
                 </svg>
                 <div>
-                <p class="text-sm font-semibold text-[#1E71B8] mb-1">Click on dates to view availability details</p>
-                <p class="text-xs text-gray-600">
-                    Tour dates are fixed from <strong>{{ formatHuman(selectedDate) }}</strong> to <strong>{{ formatHuman(selectedend_date) }}</strong>
-                    </p>
-                  </div>
+                  <p class="text-sm font-semibold text-[#1E71B8] mb-1">Click on dates to view availability details</p>
+                  <p class="text-xs text-gray-600">
+                    Tour dates are fixed from <strong>{{ formatHuman(selectedDate) }}</strong> to <strong>{{
+                      formatHuman(selectedend_date) }}</strong>
+                  </p>
                 </div>
               </div>
-            <div
-              v-if="tourType === 'Exclusive'"
-              class="bg-gradient-to-r from-blue-50 to-blue-100 border border-[#1E71B8] p-4 rounded-xl flex items-start gap-3"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                class="w-6 h-6 text-[#1E71B8] flex-shrink-0"
-              >
+            </div>
+            <div v-if="tourType === 'Exclusive'"
+              class="bg-gradient-to-r from-blue-50 to-blue-100 border border-[#1E71B8] p-4 rounded-xl flex items-start gap-3">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                class="w-6 h-6 text-[#1E71B8] flex-shrink-0">
                 <path
-                  d="M12 11.993a.75.75 0 0 0-.75.75v.006c0 .414.336.75.75.75h.006a.75.75 0 0 0 .75-.75v-.006a.75.75 0 0 0-.75-.75H12ZM12 16.494a.75.75 0 0 0-.75.75v.005c0 .414.335.75.75.75h.005a.75.75 0 0 0 .75-.75v-.005a.75.75 0 0 0-.75-.75H12ZM8.999 17.244a.75.75 0 0 1 .75-.75h.006a.75.75 0 0 1 .75.75v.006a.75.75 0 0 1-.75.75h-.006a.75.75 0 0 1-.75-.75v-.006ZM7.499 16.494a.75.75 0 0 0-.75.75v.005c0 .414.336.75.75.75h.005a.75.75 0 0 0 .75-.75v-.005a.75.75 0 0 0-.75-.75H7.5ZM13.499 14.997a.75.75 0 0 1 .75-.75h.006a.75.75 0 0 1 .75.75v.005a.75.75 0 0 1-.75.75h-.006a.75.75 0 0 1-.75-.75v-.005ZM14.25 16.494a.75.75 0 0 0-.75.75v.006c0 .414.335.75.75.75h.005a.75.75 0 0 0 .75-.75v-.006a.75.75 0 0 0-.75-.75h-.005ZM15.75 14.995a.75.75 0 0 1 .75-.75h.005a.75.75 0 0 1 .75.75v.006a.75.75 0 0 1-.75.75H16.5a.75.75 0 0 1-.75-.75v-.006ZM13.498 12.743a.75.75 0 0 1 .75-.75h2.25a.75.75 0 1 1 0 1.5h-2.25a.75.75 0 0 1-.75-.75ZM6.748 14.993a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1-.75-.75Z"
-                />
-                <path
-                  fill-rule="evenodd"
+                  d="M12 11.993a.75.75 0 0 0-.75.75v.006c0 .414.336.75.75.75h.006a.75.75 0 0 0 .75-.75v-.006a.75.75 0 0 0-.75-.75H12ZM12 16.494a.75.75 0 0 0-.75.75v.005c0 .414.335.75.75.75h.005a.75.75 0 0 0 .75-.75v-.005a.75.75 0 0 0-.75-.75H12ZM8.999 17.244a.75.75 0 0 1 .75-.75h.006a.75.75 0 0 1 .75.75v.006a.75.75 0 0 1-.75.75h-.006a.75.75 0 0 1-.75-.75v-.006ZM7.499 16.494a.75.75 0 0 0-.75.75v.005c0 .414.336.75.75.75h.005a.75.75 0 0 0 .75-.75v-.005a.75.75 0 0 0-.75-.75H7.5ZM13.499 14.997a.75.75 0 0 1 .75-.75h.006a.75.75 0 0 1 .75.75v.005a.75.75 0 0 1-.75.75h-.006a.75.75 0 0 1-.75-.75v-.005ZM14.25 16.494a.75.75 0 0 0-.75.75v.006c0 .414.335.75.75.75h.005a.75.75 0 0 0 .75-.75v-.006a.75.75 0 0 0-.75-.75h-.005ZM15.75 14.995a.75.75 0 0 1 .75-.75h.005a.75.75 0 0 1 .75.75v.006a.75.75 0 0 1-.75.75H16.5a.75.75 0 0 1-.75-.75v-.006ZM13.498 12.743a.75.75 0 0 1 .75-.75h2.25a.75.75 0 1 1 0 1.5h-2.25a.75.75 0 0 1-.75-.75ZM6.748 14.993a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1-.75-.75Z" />
+                <path fill-rule="evenodd"
                   d="M18 2.993a.75.75 0 0 0-1.5 0v1.5h-9V2.994a.75.75 0 1 0-1.5 0v1.497h-.752a3 3 0 0 0-3 3v11.252a3 3 0 0 0 3 3h13.5a3 3 0 0 0 3-3V7.492a3 3 0 0 0-3-3H18V2.993ZM3.748 18.743v-7.5a1.5 1.5 0 0 1 1.5-1.5h13.5a1.5 1.5 0 0 1 1.5 1.5v7.5a1.5 1.5 0 0 1-1.5 1.5h-13.5a1.5 1.5 0 0 1-1.5-1.5Z"
-                  clip-rule="evenodd"
-                />
+                  clip-rule="evenodd" />
               </svg>
               <p class="text-[#1E71B8] font-semibold text-sm mt-0.5">
                 Select date range: Click start date, then click end date to
@@ -251,21 +147,15 @@
 
             <div class="mt-2">
               <div class="flex items-center justify-between mb-6">
-                <button
-                  @click="prevMonth"
-                  class="px-4 py-2.5 rounded-lg border-2 border-[#1E71B8] text-[#1E71B8] font-bold transition-all duration-300 hover:bg-[#1E71B8] hover:text-white active:scale-95"
-                >
+                <button @click="prevMonth"
+                  class="px-4 py-2.5 rounded-lg border-2 border-[#1E71B8] text-[#1E71B8] font-bold transition-all duration-300 hover:bg-[#1E71B8] hover:text-white active:scale-95">
                   ‹
                 </button>
-                <div
-                  class="text-2xl font-bold text-[#1E71B8] uppercase tracking-wide"
-                >
+                <div class="text-2xl font-bold text-[#1E71B8] uppercase tracking-wide">
                   {{ monthName }} {{ currentYear }}
                 </div>
-                <button
-                  @click="nextMonth"
-                  class="px-4 py-2.5 rounded-lg border-2 border-[#1E71B8] text-[#1E71B8] font-bold transition-all duration-300 hover:bg-[#1E71B8] hover:text-white active:scale-95"
-                >
+                <button @click="nextMonth"
+                  class="px-4 py-2.5 rounded-lg border-2 border-[#1E71B8] text-[#1E71B8] font-bold transition-all duration-300 hover:bg-[#1E71B8] hover:text-white active:scale-95">
                   ›
                 </button>
               </div>
@@ -280,145 +170,107 @@
                 <div class="text-[#1E71B8] font-bold text-sm">Sat</div>
               </div>
 
-              <div
-                class="grid grid-cols-7 gap-3"
-                ref="calendarWrapperRef"
-                style="position: relative"
-              >
-                <div
-                  v-for="(cell, i) in days"
-                  :key="i"
+              <!-- Replace the calendar grid div section with this: -->
+
+              <div class="grid grid-cols-7 gap-3" ref="calendarWrapperRef" style="position: relative">
+                <div v-for="(cell, i) in days" :key="i"
                   class="h-14 rounded-lg flex items-center justify-center select-none font-semibold text-sm transition-all duration-300"
                   :class="{
-                    'bg-gradient-to-br from-[#73BE5D] to-[#5ca348] text-white shadow-md':
-                      cell.isInRange && !cell.isPast && !cell.isOutOfRange,
                     'bg-gray-100 text-gray-400 cursor-not-allowed':
                       !cell.day || cell.isPast || cell.isOutOfRange,
+
                     'bg-gray-300 text-gray-700 cursor-not-allowed':
-                      tourType === 'Joiners' && cell.day,
+                      tourType === 'Joiners' && cell.day && !cell.isPast && !cell.isOutOfRange,
+
                     'bg-gray-300 text-gray-700 cursor-pointer hover:bg-gray-400':
-                      tourType !== 'Joiners' &&
+                      tourType === 'Exclusive' &&
                       cell.day &&
                       cell.status === 'closed' &&
                       !cell.isPast &&
-                      !cell.isInRange &&
-                      !cell.isOutOfRange,
+                      !cell.isOutOfRange &&
+                      !cell.isInRange,
+
                     'bg-gradient-to-br from-[#45a834] to-[#3a8a2a] text-white cursor-pointer shadow-md hover:shadow-lg':
-                      tourType !== 'Joiners' &&
+                      tourType === 'Exclusive' &&
                       cell.day &&
                       cell.status === 'accepting' &&
                       !cell.isPast &&
-                      !cell.isInRange &&
-                      !cell.isOutOfRange,
+                      !cell.isOutOfRange &&
+                      !cell.isInRange,
+
                     'bg-gradient-to-br from-[#2f5f98] to-[#1e3f68] text-white cursor-pointer shadow-md hover:shadow-lg':
-                      tourType !== 'Joiners' &&
+                      tourType === 'Exclusive' &&
                       cell.day &&
                       cell.status === 'full' &&
                       !cell.isPast &&
-                      !cell.isInRange &&
-                      !cell.isOutOfRange,
+                      !cell.isOutOfRange &&
+                      !cell.isInRange,
+
                     'cursor-pointer bg-white border-2 border-[#302e2e] hover:bg-blue-50':
                       tourType === 'Exclusive' &&
                       cell.day &&
                       !cell.isPast &&
                       !cell.isOutOfRange &&
-                      cell.status === 'available',
+                      cell.status === 'available' &&
+                      !cell.isInRange,
+
+                    'bg-gradient-to-br from-[#73BE5D] to-[#5ca348] text-white shadow-md':
+                      cell.isInRange && !cell.isPast && !cell.isOutOfRange,
+
                     'opacity-50':
                       (cell.isPast && cell.day) || cell.isOutOfRange,
-                  }"
-                  @click="handleDateClick($event, cell)"
-                >
+                  }" @click="handleDateClick($event, cell)">
                   <span v-if="cell.day">{{ cell.day }}</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <button
-          @click="postDate"
-          class="mt-8 px-8 py-3 bg-gradient-to-r from-[#1E71B8] to-[#155E9C] text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 active:scale-95 text-lg"
-        >
+        <button @click="postDate"
+          class="mt-8 px-8 py-3 bg-gradient-to-r from-[#1E71B8] to-[#155E9C] text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 active:scale-95 text-lg">
           Next →
         </button>
       </div>
     </div>
-    <div
-      v-if="isTooltipOpen"
-      class="fixed inset-0 z-40 bg-black/30"
-      @click="isTooltipOpen = false"
-    ></div>
-    <div
-      v-if="isTooltipOpen"
-      ref="tooltipRef"
-      class="rounded-2xl shadow-2xl bg-white z-50 overflow-hidden"
-      :style="{
-        position: 'fixed',
-        left: '50%',
-        top: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: '380px',
-        maxHeight: '90vh',
-        border: '1px solid rgba(30, 113, 184, 0.1)',
-        overflowY: 'auto',
-      }"
-    >
-      <div
-        class="h-24 bg-gradient-to-br from-[#1E71B8] to-[#155E9C] relative overflow-hidden"
-      >
+    <div v-if="isTooltipOpen" class="fixed inset-0 z-40 bg-black/30" @click="isTooltipOpen = false"></div>
+    <div v-if="isTooltipOpen" ref="tooltipRef" class="rounded-2xl shadow-2xl bg-white z-50 overflow-hidden" :style="{
+      position: 'fixed',
+      left: '50%',
+      top: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: '380px',
+      maxHeight: '90vh',
+      border: '1px solid rgba(30, 113, 184, 0.1)',
+      overflowY: 'auto',
+    }">
+      <div class="h-24 bg-gradient-to-br from-[#1E71B8] to-[#155E9C] relative overflow-hidden">
         <div class="absolute inset-0 opacity-10">
-          <svg
-            class="w-full h-full"
-            viewBox="0 0 100 100"
-            preserveAspectRatio="none"
-          >
+          <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
             <defs>
-              <pattern
-                id="pattern"
-                x="0"
-                y="0"
-                width="20"
-                height="20"
-                patternUnits="userSpaceOnUse"
-              >
+              <pattern id="pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
                 <circle cx="10" cy="10" r="1" fill="white" />
               </pattern>
             </defs>
             <rect width="100" height="100" fill="url(#pattern)" />
           </svg>
         </div>
-        <button
-          type="button"
-          @click.stop="isTooltipOpen = false"
+        <button type="button" @click.stop="isTooltipOpen = false"
           class="absolute top-3 right-3 z-50 w-8 h-8 rounded-full bg-white/30 hover:bg-white/50 transition-all duration-200 flex items-center justify-center group"
-          style="pointer-events: auto"
-        >
-          <svg
-            class="w-5 h-5 text-white group-hover:scale-110 transition-transform"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"
-            />
+          style="pointer-events: auto">
+          <svg class="w-5 h-5 text-white group-hover:scale-110 transition-transform" fill="none" stroke="currentColor"
+            viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
         <div class="relative pt-6 px-6">
           <h3 class="text-white font-bold text-xl">{{ tooltipData.title }}</h3>
-          <div
-            class="w-12 h-1 bg-gradient-to-r from-[#73BE5D] to-transparent rounded-full mt-2"
-          ></div>
+          <div class="w-12 h-1 bg-gradient-to-r from-[#73BE5D] to-transparent rounded-full mt-2"></div>
         </div>
       </div>
       <div class="px-6 py-6 space-y-4">
         <div class="flex items-start gap-3 pb-4 border-b border-gray-100">
           <div class="flex-1">
-            <p
-              class="text-xs font-semibold text-gray-500 uppercase tracking-wide"
-            >
+            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">
               Date
             </p>
             <p class="text-sm text-gray-800 font-medium mt-1">
@@ -428,52 +280,40 @@
         </div>
         <div class="flex items-start gap-3 pb-4 border-b border-gray-100">
           <div class="flex-1">
-            <p
-              class="text-xs font-semibold text-gray-500 uppercase tracking-wide"
-            >
+            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">
               Slots Booked
             </p>
             <div class="flex items-center gap-2 mt-1">
               <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-                <div
-                  class="h-full bg-gradient-to-r from-[#73BE5D] to-[#5ca348] transition-all"
-                  :style="{
-                    width:
-                      tooltipData.slotsTotal > 0
-                        ? (tooltipData.slotsBooked / tooltipData.slotsTotal) *
-                            100 +
-                          '%'
-                        : '0%',
-                  }"
-                ></div>
+                <div class="h-full bg-gradient-to-r from-[#73BE5D] to-[#5ca348] transition-all" :style="{
+                  width:
+                    tooltipData.slotsTotal > 0
+                      ? (tooltipData.slotsBooked / tooltipData.slotsTotal) *
+                      100 +
+                      '%'
+                      : '0%',
+                }"></div>
               </div>
-              <span class="text-sm font-semibold text-gray-700"
-                >{{ tooltipData.slotsBooked }}/{{
-                  tooltipData.slotsTotal
-                }}</span
-              >
+              <span class="text-sm font-semibold text-gray-700">{{ tooltipData.slotsBooked }}/{{
+                tooltipData.slotsTotal
+                }}</span>
             </div>
           </div>
         </div>
         <div class="flex items-start gap-3 pb-4 border-b border-gray-100">
           <div class="flex-1">
-            <p
-              class="text-xs font-semibold text-gray-500 uppercase tracking-wide"
-            >
+            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">
               Status
             </p>
             <div class="flex items-center gap-2 mt-1">
-              <span
-                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold"
-                :class="{
-                  'bg-green-100 text-green-800':
-                    tooltipData.status === 'Available' ||
-                    tooltipData.status === 'Accepting Joiners',
-                  'bg-red-100 text-red-800':
-                    tooltipData.status === 'Slots Full',
-                  'bg-gray-100 text-gray-800': tooltipData.status === 'Closed',
-                }"
-              >
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold" :class="{
+                'bg-green-100 text-green-800':
+                  tooltipData.status === 'Available' ||
+                  tooltipData.status === 'Accepting Joiners',
+                'bg-red-100 text-red-800':
+                  tooltipData.status === 'Slots Full',
+                'bg-gray-100 text-gray-800': tooltipData.status === 'Closed',
+              }">
                 {{ tooltipData.status }}
               </span>
             </div>
@@ -481,9 +321,7 @@
         </div>
         <div class="flex items-start gap-3 pb-4">
           <div class="flex-1">
-            <p
-              class="text-xs font-semibold text-gray-500 uppercase tracking-wide"
-            >
+            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">
               Price
             </p>
             <p class="text-lg font-bold text-[#73BE5D] mt-1">
@@ -491,14 +329,10 @@
             </p>
           </div>
         </div>
-        <div
-          v-if="tourType === 'Joiners'"
-          class="flex items-start gap-3 pt-2 bg-blue-50 -mx-6 -mb-6 px-6 py-4 rounded-b-2xl border-t border-blue-100"
-        >
+        <div v-if="tourType === 'Joiners'"
+          class="flex items-start gap-3 pt-2 bg-blue-50 -mx-6 -mb-6 px-6 py-4 rounded-b-2xl border-t border-blue-100">
           <div>
-            <p
-              class="text-xs font-semibold text-[#1E71B8] uppercase tracking-wide"
-            >
+            <p class="text-xs font-semibold text-[#1E71B8] uppercase tracking-wide">
               Tour Duration
             </p>
             <p class="text-sm font-semibold text-[#1E71B8] mt-1">
@@ -520,6 +354,7 @@ import { useToast } from "vue-toastification";
 defineOptions({ layout: LandingIndex });
 
 const emit = defineEmits(["next"]);
+const toast = useToast();
 const booking = storeBooking();
 const selectedDate = ref("");
 const selectedend_date = ref("");
@@ -542,8 +377,11 @@ const availabilityByDate = ref({});
 const tourInfoByDate = ref({});
 
 const generatePackageDates = () => {
+  if (tourType.value === "Joiners") return;
   const pkg = booking.selectedPackage;
-  if (!pkg || !pkg.start_date || !pkg.end_date) return;
+  if (!pkg || !pkg.start_date || !pkg.end_date) {
+    return;
+  }
 
   const startDateStr = pkg.start_date.split("T")[0];
   const endDateStr = pkg.end_date.split("T")[0];
@@ -559,6 +397,11 @@ const generatePackageDates = () => {
   const endMonth = em;
   const endYear = ey;
 
+  const seededRandom = (seed) => {
+    const x = Math.sin(seed) * 10000;
+    return x - Math.floor(x);
+  };
+
   while (
     currentYear < endYear ||
     (currentYear === endYear && currentMonth < endMonth) ||
@@ -570,8 +413,13 @@ const generatePackageDates = () => {
     const d = String(currentDay).padStart(2, "0");
     const dateKey = `${currentYear}-${m}-${d}`;
 
-    const booked = Math.floor(Math.random() * (pkg.capacity + 1));
     let status = "available";
+    let booked = 0;
+
+    const dateSeed = parseInt(dateKey.replace(/-/g, ""));
+    const randomValue = seededRandom(dateSeed);
+    booked = Math.floor(randomValue * (pkg.capacity + 1));
+
     if (booked === 0) status = "accepting";
     if (booked >= pkg.capacity) status = "full";
 
@@ -585,8 +433,8 @@ const generatePackageDates = () => {
         status === "accepting"
           ? "Accepting Joiners"
           : status === "full"
-          ? "Slots Full"
-          : "Available",
+            ? "Slots Full"
+            : "Available",
       price: `₱ ${pkg.pax_rate.toLocaleString()}`,
     };
 
@@ -758,6 +606,9 @@ const formatHuman = (ymd) => {
 };
 
 const selectTourType = (t) => {
+  selectedDate.value = "";
+  selectedend_date.value = "";
+
   tourType.value = t;
   isTypeOpen.value = false;
 
@@ -772,13 +623,7 @@ const selectTourType = (t) => {
       };
       selectedDate.value = parseISODate(booking.start_date);
       selectedend_date.value = parseISODate(booking.end_date);
-    } else {
-      selectedDate.value = "";
-      selectedend_date.value = "";
     }
-  } else if (t === "Exclusive") {
-    selectedDate.value = "";
-    selectedend_date.value = "";
   }
 };
 
@@ -926,8 +771,6 @@ const handleDateClick = (event, cell) => {
     }
   }
 };
-
-const toast = useToast();
 
 const postDate = () => {
   if (!selectedDate.value) {
