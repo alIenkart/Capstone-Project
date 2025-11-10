@@ -938,7 +938,7 @@ const savePackage = async () => {
   try {
     const response = await axios.post("/api/packages", data, {
       headers: {
-        "Content-Type": "multipart/form-data",
+        "Content-Type": "application/form-data",
       },
     });
     toast.success("Package created successfully!");

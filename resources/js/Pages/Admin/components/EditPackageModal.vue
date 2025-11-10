@@ -977,7 +977,7 @@ const updatePackage = async () => {
         `/api/packages/${formData.value.id}?_method=PUT`,
         data,
         {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: { "Content-Type": "application/form-data" },
         }
       );
     } else {
