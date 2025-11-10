@@ -27,7 +27,7 @@ class PaymentController extends Controller
     }
 
     // Modified to accept booking_id instead of payment_id
-    public function update(Request $request, $bookingId)
+    public function update(Request $request, $id)
     {
         $request->validate([
             'proof_of_payment' => 'nullable|file|mimes:jpg,jpeg,png,pdf',
@@ -42,13 +42,23 @@ class PaymentController extends Controller
             'rejection_reason' => 'nullable|string|required_if:payment_status,Rejected',
         ]);
 
-        $payment = Payment::firstOrCreate(
-            ['booking_id' => $bookingId],
-            [
-                'payment_status' => 'Pending',
-                'total_price' => 0,
-            ]
-        );
+        if ($request->input('type') === 'payment_submission') {
+            $payment = Payment::firstOrCreate(
+                ['booking_id' => $id],
+                [
+                    'payment_status' => 'Pending',
+                    'total_price' => 0,
+                ]
+            );
+        } else {
+            $payment = Payment::where('id', $id)->first();
+    
+            if (!$payment) {
+                return response()->json([
+                    'message' => 'Payment not found.',
+                ], 404);
+            }
+        }  
 
         if ($request->hasFile('proof_of_payment')) {
             $filePath = $request->file('proof_of_payment')->store('receipt', 'public');

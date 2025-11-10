@@ -921,6 +921,7 @@ async function submitVerificationOfPayment($status) {
   const data = new FormData();
   data.append("remarks", remarks.value || "");
   data.append("payment_status", $status);
+  data.append("type", "payment_approval");
   data.append("is_fully_paid", isFullyPaid.value ? 1 : 0);
 
   if ($status === "Rejected") {
@@ -930,7 +931,7 @@ async function submitVerificationOfPayment($status) {
 
   try {
     const response = await axios.post(
-      `/api/payments/${props.payment.id}?_method=PUT`,
+      `/api/payments/${paymentData.value.booking_id}?_method=PUT`,
       data
     );
 

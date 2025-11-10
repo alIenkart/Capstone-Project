@@ -1153,6 +1153,7 @@ async function submitProofOfPayment() {
   data.append("payment_status", "Under Review");
   data.append("total_price", payment_history.remainingBalance);
   data.append("type_of_payment", selectedPaymentType.value);
+  data.append("type", "payment_submission");
 
   try {
     const response = await axios.post(
