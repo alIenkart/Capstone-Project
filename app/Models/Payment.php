@@ -35,11 +35,7 @@ class Payment extends Model
 
     public static function createFromBooking($booking)
     {
-        if (!$booking || !$booking->id) {
-            throw new \Exception('Booking does not exist. Cannot create payment.');
-        }
-
-        return $booking->payment()->updateOrCreate(
+        return self::updateOrCreate(
             ['booking_id' => $booking->id],
             [
                 'total_price' => $booking->total_price,
