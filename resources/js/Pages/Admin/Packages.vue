@@ -209,14 +209,24 @@
                   ₱{{ Number(packageItem.kids_pax_rate).toLocaleString() }}
                 </td>
                 <td class="px-6 py-4 text-sm text-center">
-                  <button @click="openEditModal(packageItem.id)"
-                    class="p-2 hover:bg-[#1E71B8] hover:text-white rounded-lg transition-all group" title="Edit">
-                    <svg class="w-5 h-5 text-[#1E71B8] group-hover:text-white transition-colors" fill="none"
-                      stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                  </button>
+                  <div class="flex items-center justify-center gap-2">
+                    <button @click="openEditModal(packageItem.id)"
+                      class="p-2 hover:bg-[#1E71B8] hover:text-white rounded-lg transition-all group" title="Edit">
+                      <svg class="w-5 h-5 text-[#1E71B8] group-hover:text-white transition-colors" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                    </button>
+                    <button @click="openDeleteConfirm(packageItem.id)"
+                      class="p-2 hover:bg-red-500 hover:text-white rounded-lg transition-all group" title="Delete">
+                      <svg class="w-5 h-5 text-red-500 group-hover:text-white transition-colors" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -267,6 +277,39 @@
     <NewPackageModal :show="showModal" @close="showModal = false" @save="handleSavePackage" />
     <EditPackageModal :show="showEditModal" :packageId="selectedPackageId"
       @close="showEditModal = false; selectedPackageId = null" @saved="handlePackageUpdated" />
+
+    <div v-if="showDeleteConfirm" class="fixed inset-0 z-50 overflow-y-auto">
+      <div class="fixed inset-0 bg-black/70 backdrop-blur-md transition-opacity" @click="showDeleteConfirm = false"></div>
+      <div class="flex min-h-full items-center justify-center p-4">
+        <div class="relative transform overflow-hidden rounded-2xl bg-white shadow-2xl transition-all w-full max-w-md">
+          <div class="bg-gradient-to-r from-red-500 to-red-600 px-8 py-6">
+            <h3 class="text-2xl font-bold text-white">Delete Package</h3>
+          </div>
+
+          <div class="px-8 py-6">
+            <p class="text-gray-700 mb-2">Are you sure you want to delete this package?</p>
+            <p class="text-gray-500 text-sm">This action cannot be undone.</p>
+          </div>
+
+          <div class="bg-gradient-to-r from-gray-50 to-white px-8 py-6 border-t-2 border-gray-200">
+            <div class="flex justify-end gap-3">
+              <button type="button" @click="showDeleteConfirm = false"
+                class="flex items-center gap-2 rounded-xl px-7 py-3 text-sm font-bold bg-gray-600 text-white hover:bg-gray-700 transition-all shadow-lg hover:shadow-xl">
+                Cancel
+              </button>
+              <button type="button" @click="confirmDelete"
+                class="flex items-center gap-2 rounded-xl px-7 py-3 text-sm font-bold bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:shadow-xl transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -277,12 +320,16 @@ import EditPackageModal from '@/Pages/Admin/components/EditPackageModal.vue'
 import { ref, onMounted, computed, watch } from 'vue'
 import _ from 'lodash'
 import axios from 'axios'
+import { useToast } from 'vue-toastification'
 
 defineOptions({ layout: AdminIndex })
 
+const toast = useToast()
 const showModal = ref(false)
 const showEditModal = ref(false)
+const showDeleteConfirm = ref(false)
 const selectedPackageId = ref(null)
+const packageToDelete = ref(null)
 const packages = ref([])
 
 const searchQuery = ref('')
@@ -395,6 +442,24 @@ const handlePackageUpdated = (updatedPackage) => {
   fetchPackages()
 }
 
+const openDeleteConfirm = (packageId) => {
+  packageToDelete.value = packageId
+  showDeleteConfirm.value = true
+}
+
+const confirmDelete = async () => {
+  try {
+    await axios.delete(`/api/packages/${packageToDelete.value}`)
+    toast.success('Package deleted successfully!')
+    showDeleteConfirm.value = false
+    packageToDelete.value = null
+    fetchPackages()
+  } catch (error) {
+    console.error('Error deleting package:', error)
+    toast.error('Error deleting package')
+  }
+}
+
 const fetchPackages = async () => {
   try {
     const response = await axios.get('/api/packages')
@@ -473,5 +538,5 @@ onMounted(() => {
       closeAllFilters()
     }
   })
-})
+});
 </script>

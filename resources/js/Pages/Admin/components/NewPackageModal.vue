@@ -85,14 +85,13 @@
                                             placeholder="e.g., Paradise Island Getaway" required />
                                     </div>
 
-                                    <div>
-                                        <label for="duration"
-                                            class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Duration
-                                            (Days)</label>
-                                        <input type="number" id="duration" v-model="formData.duration"
-                                            class="w-full rounded-xl border-2 border-slate-200 focus:border-[#217093] focus:ring-4 focus:ring-[#217093]/10 px-4 py-3 text-sm font-medium outline-none transition-all"
-                                            placeholder="0" />
-                                    </div>
+                                    <DateRangePicker
+                                        v-model:modelValueStart="formData.startDate"
+                                        v-model:modelValueEnd="formData.endDate"
+                                        @update:modelValueStart="onStartDateChange"
+                                        @update:modelValueEnd="onEndDateChange"
+                                    />
+
                                     <div>
                                         <label for="destination"
                                             class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Destination</label>
@@ -100,42 +99,68 @@
                                             class="w-full rounded-xl border-2 border-slate-200 focus:border-[#217093] focus:ring-4 focus:ring-[#217093]/10 px-4 py-3 text-sm font-medium outline-none transition-all"
                                             placeholder="e.g., Boracay" />
                                     </div>
+                                    
                                     <div class="md:col-span-2">
                                         <label for="region"
                                             class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Region</label>
-                                        <select id="region" v-model="formData.region"
-                                            class="w-full rounded-xl border-2 border-slate-200 focus:border-[#217093] focus:ring-4 focus:ring-[#217093]/10 px-4 py-3 text-sm font-medium outline-none transition-all">
-                                            <option value="">Select region</option>
-                                            <option value="National Capital Region (NCR)">National Capital Region (NCR)
-                                            </option>
-                                            <option value="Cordillera Administrative Region (CAR)">Cordillera
-                                                Administrative Region (CAR)
-                                            </option>
-                                            <option value="Region I: Ilocos Region">Region I: Ilocos Region</option>
-                                            <option value="Region II: Cagayan Valley">Region II: Cagayan Valley</option>
-                                            <option value="Region III: Central Luzon">Region III: Central Luzon</option>
-                                            <option value="Region IV-A: Calabarzon (CALaBarzon)">Region IV-A: Calabarzon
-                                                (CALABARZON)</option>
-                                            <option value="Region IV-B: Mimaropa (MIMAROPA)">Region IV-B: Mimaropa
-                                                (MIMAROPA)</option>
-                                            <option value="Region V: Bicol Region">Region V: Bicol Region</option>
-                                            <option value="Region VI: Western Visayas">Region VI: Western Visayas
-                                            </option>
-                                            <option value="Region VII: Central Visayas">Region VII: Central Visayas
-                                            </option>
-                                            <option value="Region VIII: Eastern Visayas">Region VIII: Eastern Visayas
-                                            </option>
-                                            <option value="Region IX: Zamboanga Peninsula">Region IX: Zamboanga
-                                                Peninsula</option>
-                                            <option value="Region X: Northern Mindanao">Region X: Northern Mindanao
-                                            </option>
-                                            <option value="Region XI: Davao Region">Region XI: Davao Region</option>
-                                            <option value="Region XII: SOCCSKSARGEN">Region XII: SOCCSKSARGEN</option>
-                                            <option value="Region XIII: Caraga">Region XIII: Caraga</option>
-                                            <option value="BARMM: Bangsamoro Autonomous Region in Muslim Mindanao">
-                                                BARMM: Bangsamoro Autonomous
-                                                Region in Muslim Mindanao</option>
-                                        </select>
+                                        
+                                        <div class="relative" ref="regionDropdown">
+                                            <button
+                                                type="button"
+                                                @click="isRegionFilterOpen = !isRegionFilterOpen"
+                                                class="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200"
+                                            >
+                                                <span class="font-semibold text-gray-800">
+                                                    {{ formData.region === '' ? 'Select region' : formData.region }}
+                                                </span>
+                                                <svg
+                                                    :class="['w-5 h-5 text-blue-600 transition-transform duration-300', isRegionFilterOpen ? 'rotate-180' : '']"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    stroke-width="2"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                                                </svg>
+                                            </button>
+
+                                            <div
+                                                v-if="isRegionFilterOpen"
+                                                class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10 overflow-hidden max-h-96 overflow-y-auto"
+                                            >
+                                                <div
+                                                    @click="handleRegionSelect('')"
+                                                    :class="[
+                                                        'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 sticky top-0 bg-white hover:bg-blue-50',
+                                                        formData.region === '' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                                                    ]"
+                                                >
+                                                    <span :class="['font-medium', formData.region === '' ? 'text-blue-700' : 'text-gray-700']">
+                                                        All Regions
+                                                    </span>
+                                                    <svg v-if="formData.region === ''" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                </div>
+
+                                                <div
+                                                    v-for="region in regionOptions"
+                                                    :key="region"
+                                                    @click="handleRegionSelect(region)"
+                                                    :class="[
+                                                        'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
+                                                        formData.region === region ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                                                    ]"
+                                                >
+                                                    <span :class="['font-medium', formData.region === region ? 'text-blue-700' : 'text-gray-700']">
+                                                        {{ region }}
+                                                    </span>
+                                                    <svg v-if="formData.region === region" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <div class="space-y-4">
@@ -186,11 +211,12 @@
                                             class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Discounted
                                             Rate</label>
                                         <div class="relative">
-                                            <span
-                                                class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-lg">₱</span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-slate-400">
+                                                <path fill-rule="evenodd" d="M11.99 2.243a4.49 4.49 0 0 0-3.398 1.55 4.49 4.49 0 0 0-3.497 1.306 4.491 4.491 0 0 0-1.307 3.498 4.491 4.491 0 0 0-1.548 3.397c0 1.357.6 2.573 1.548 3.397a4.491 4.491 0 0 0 1.307 3.498 4.49 4.49 0 0 0 3.498 1.307 4.49 4.49 0 0 0 3.397 1.549 4.49 4.49 0 0 0 3.397-1.549 4.49 4.49 0 0 0 3.497-1.307 4.491 4.491 0 0 0 1.306-3.497 4.491 4.491 0 0 0 1.55-3.398c0-1.357-.601-2.573-1.549-3.397a4.491 4.491 0 0 0-1.307-3.498 4.49 4.49 0 0 0-3.498-1.307 4.49 4.49 0 0 0-3.396-1.549Zm3.53 7.28a.75.75 0 0 0-1.06-1.06l-6 6a.75.75 0 1 0 1.06 1.06l6-6Zm-5.78-.905a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25Zm4.5 4.5a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25Z" clip-rule="evenodd" />
+                                            </svg>
                                             <input type="number" id="discountedRate" v-model="formData.discountedRate"
                                                 class="w-full rounded-xl border-2 border-emerald-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 pl-9 pr-4 py-3 text-sm font-bold outline-none transition-all"
-                                                placeholder="0.00" />
+                                                placeholder="0" />
                                         </div>
                                     </div>
                                 </div>
@@ -201,7 +227,7 @@
                                 <div class="flex items-center gap-3 mb-5">
                                     <h4 class="text-xl font-bold text-slate-800">Package Settings</h4>
                                 </div>
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                                     <div>
                                         <label for="maxOccupancy"
                                             class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Maximum
@@ -209,55 +235,6 @@
                                         <input type="number" id="maxOccupancy" v-model="formData.maxOccupancy"
                                             class="w-full rounded-xl border-2 border-slate-200 focus:border-[#217093] focus:ring-4 focus:ring-[#217093]/10 px-4 py-3 text-sm font-medium outline-none transition-all"
                                             placeholder="0" />
-                                    </div>
-
-                                    <div class="relative" ref="bookingTypeDropdown">
-                                        <label for="bookingType"
-                                            class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Booking
-                                            Type</label>
-                                        <button type="button" @click="isBookingTypeOpen = !isBookingTypeOpen"
-                                            class="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200">
-                                            <span class="font-semibold text-gray-800">
-                                                {{ formData.bookingType === 'Joint' ? 'Joint' : 'Exclusive' }}
-                                            </span>
-                                            <svg
-                                                :class="['w-5 h-5 text-blue-600 transition-transform duration-300', isBookingTypeOpen ? 'rotate-180' : '']"
-                                                fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                                <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-                                            </svg>
-                                        </button>
-
-                                        <div v-if="isBookingTypeOpen"
-                                            class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10 overflow-hidden">
-                                            <div @click="handleBookingTypeSelect('Exclusive')" :class="[
-                                                'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 hover:bg-blue-50',
-                                                formData.bookingType === 'Exclusive' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
-                                            ]">
-                                                <span :class="['font-medium', formData.bookingType === 'Exclusive' ? 'text-blue-700' : 'text-gray-700']">
-                                                    Exclusive
-                                                </span>
-                                                <svg v-if="formData.bookingType === 'Exclusive'" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor"
-                                                    viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd"
-                                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                                        clip-rule="evenodd"></path>
-                                                </svg>
-                                            </div>
-                                            <div @click="handleBookingTypeSelect('Joint')" :class="[
-                                                'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 last:border-b-0 hover:bg-blue-50',
-                                                formData.bookingType === 'Joint' ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
-                                            ]">
-                                                <span :class="['font-medium', formData.bookingType === 'Joint' ? 'text-blue-700' : 'text-gray-700']">
-                                                    Joint
-                                                </span>
-                                                <svg v-if="formData.bookingType === 'Joint'" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor"
-                                                    viewBox="0 0 20 20">
-                                                    <path fill-rule="evenodd"
-                                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                                        clip-rule="evenodd"></path>
-                                                </svg>
-                                            </div>
-                                        </div>
                                     </div>
 
                                     <div class="relative" ref="statusDropdown">
@@ -328,7 +305,7 @@
                                         <h4 class="text-xl font-bold text-slate-800">Itinerary*</h4>
                                     </div>
                                     <div class="text-sm font-semibold text-blue-600 bg-blue-100 px-3 py-1 rounded-full">
-                                        {{ itineraryDays.length }} {{ itineraryDays.length === 1 ? 'Day' : 'Days' }}
+                                        {{ itineraryDays.length }} / {{ maxItineraryDays }} {{ itineraryDays.length === 1 ? 'Day' : 'Days' }}
                                     </div>
                                 </div>
                                 <div class="space-y-4">
@@ -357,7 +334,21 @@
                                         </div>
                                     </TransitionGroup>
 
-                                    <button type="button" @click="addItineraryDay"
+                                    <div v-if="isAddDayButtonDisabled" class="group relative">
+                                        <button type="button" disabled
+                                            class="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-gradient-to-r from-slate-300 to-slate-400 text-white text-sm font-bold rounded-xl cursor-not-allowed opacity-60 shadow-lg">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                            </svg>
+                                            Add Another Day
+                                        </button>
+                                        <div class="opacity-0 group-hover:opacity-100 absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-slate-800 text-white text-xs rounded-lg whitespace-nowrap transition-opacity z-10 pointer-events-none">
+                                            Maximum {{ maxItineraryDays }} days reached
+                                        </div>
+                                    </div>
+
+                                    <button v-else type="button" @click="addItineraryDay"
                                         class="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-sm font-bold rounded-xl hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -418,10 +409,11 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, onMounted, computed } from 'vue'
 import axios from 'axios'
 import { useToast } from 'vue-toastification'
 import MultiSelectDropdown from '@/components/MultiSelectDropdown.vue'
+import DateRangePicker from './Analytics/DateRangePicker.vue'
 
 const props = defineProps({
     show: {
@@ -436,7 +428,8 @@ const emit = defineEmits(['close', 'save'])
 const formData = ref({
     image: null,
     name: '',
-    duration: '',
+    startDate: '',
+    endDate: '',
     destination: '',
     region: '',
     description: '',
@@ -446,7 +439,6 @@ const formData = ref({
     basePrice: '',
     kidsBasePrice: '',
     maxOccupancy: '',
-    bookingType: 'Exclusive',
     status: 'Active',
     discountedRate: '',
     tourClassification: []
@@ -457,17 +449,57 @@ const itineraryDays = ref([
 ])
 
 const imagePreview = ref(null)
-const isBookingTypeOpen = ref(false)
 const isStatusOpen = ref(false)
-const bookingTypeDropdown = ref(null)
+const isRegionFilterOpen = ref(false)
 const statusDropdown = ref(null)
+const regionDropdown = ref(null)
+
+const regionOptions = ref([
+    'National Capital Region (NCR)',
+    'Cordillera Administrative Region (CAR)',
+    'Region I: Ilocos Region',
+    'Region II: Cagayan Valley',
+    'Region III: Central Luzon',
+    'Region IV-A: Calabarzon (CALABARZON)',
+    'Region IV-B: Mimaropa (MIMAROPA)',
+    'Region V: Bicol Region',
+    'Region VI: Western Visayas',
+    'Region VII: Central Visayas',
+    'Region VIII: Eastern Visayas',
+    'Region IX: Zamboanga Peninsula',
+    'Region X: Northern Mindanao',
+    'Region XI: Davao Region',
+    'Region XII: SOCCSKSARGEN',
+    'Region XIII: Caraga',
+    'BARMM: Bangsamoro Autonomous Region in Muslim Mindanao'
+])
+
+const maxItineraryDays = computed(() => {
+    if (formData.value.startDate && formData.value.endDate) {
+        const startParts = formData.value.startDate.split('-')
+        const endParts = formData.value.endDate.split('-')
+        
+        const start = new Date(parseInt(startParts[0]), parseInt(startParts[1]) - 1, parseInt(startParts[2]))
+        const end = new Date(parseInt(endParts[0]), parseInt(endParts[1]) - 1, parseInt(endParts[2]))
+        
+        const oneDay = 1000 * 60 * 60 * 24
+        const diffDays = Math.floor((end - start) / oneDay) + 1
+        return diffDays > 0 ? diffDays : 0
+    }
+    return 0
+})
+
+const isAddDayButtonDisabled = computed(() => {
+    return itineraryDays.value.length >= maxItineraryDays.value && maxItineraryDays.value > 0
+})
 
 watch(() => props.show, (newValue) => {
     if (newValue) {
         formData.value = {
             image: null,
             name: '',
-            duration: '',
+            startDate: '',
+            endDate: '',
             destination: '',
             region: '',
             description: '',
@@ -478,14 +510,13 @@ watch(() => props.show, (newValue) => {
             basePrice: '',
             kidsBasePrice: '',
             maxOccupancy: '',
-            bookingType: 'Exclusive',
             status: 'Active',
             discountedRate: ''
         }
         itineraryDays.value = [{ id: 1, content: '' }]
         imagePreview.value = null
-        isBookingTypeOpen.value = false
         isStatusOpen.value = false
+        isRegionFilterOpen.value = false
     }
 })
 
@@ -493,9 +524,45 @@ const closeModal = () => {
     emit('close')
 }
 
+const onStartDateChange = () => {
+    adjustItineraryDays()
+}
+
+const onEndDateChange = () => {
+    adjustItineraryDays()
+}
+
+const adjustItineraryDays = () => {
+    const currentDays = itineraryDays.value.length
+    const maxDays = maxItineraryDays.value
+
+    if (maxDays > 0 && currentDays > maxDays) {
+        itineraryDays.value = itineraryDays.value.slice(0, maxDays)
+        itineraryDays.value.forEach((day, index) => {
+            day.id = index + 1
+        })
+        toast.warning(`Itinerary reduced to ${maxDays} days based on your date range.`)
+    }
+}
+
 const savePackage = async () => {
-    if (!formData.value.name || !formData.value.basePrice) {
-        toast.error('Please fill in Package Name and Base Price.')
+    if (!formData.value.name || !formData.value.basePrice || !formData.value.startDate || !formData.value.endDate) {
+        toast.error('Please fill in Package Name, Base Price, Start Date, and End Date.')
+        return
+    }
+
+    const startDate = new Date(formData.value.startDate)
+    const endDate = new Date(formData.value.endDate)
+
+    if (startDate > endDate) {
+        toast.error('Start Date must be before End Date.')
+        return
+    }
+
+    const duration = calculateDuration()
+
+    if (duration <= 0) {
+        toast.error('Please select a valid date range.')
         return
     }
 
@@ -504,14 +571,15 @@ const savePackage = async () => {
         data.append('image', formData.value.image)
     }
     data.append('package_name', formData.value.name)
-    data.append('tour_duration', formData.value.duration ? formData.value.duration.toString() : '0')
+    data.append('start_date', formData.value.startDate)
+    data.append('end_date', formData.value.endDate)
+    data.append('tour_duration', duration.toString())
     data.append('destination', formData.value.destination)
     data.append('region', formData.value.region || '')
     data.append('description', formData.value.description || '')
     data.append('terms_condition', formData.value.termsCondition || '')
     data.append('exclusions', formData.value.exclusions || '')
     data.append('capacity', formData.value.maxOccupancy ? parseInt(formData.value.maxOccupancy) : 0)
-    data.append('joint_booking', formData.value.bookingType === 'Joint' ? 'true' : 'false')
     data.append('status', formData.value.status.toLowerCase())
     data.append('pax_rate', formData.value.basePrice ? parseFloat(formData.value.basePrice) : 0)
     data.append('kids_pax_rate', formData.value.kidsBasePrice ? parseFloat(formData.value.kidsBasePrice) : '')
@@ -557,9 +625,22 @@ const handleImageUpload = (event) => {
     }
 }
 
-const handleBookingTypeSelect = (value) => {
-    formData.value.bookingType = value
-    isBookingTypeOpen.value = false
+const calculateDuration = () => {
+    if (formData.value.startDate && formData.value.endDate) {
+        const startParts = formData.value.startDate.split('-')
+        const endParts = formData.value.endDate.split('-')
+        
+        const start = new Date(parseInt(startParts[0]), parseInt(startParts[1]) - 1, parseInt(startParts[2]))
+        const end = new Date(parseInt(endParts[0]), parseInt(endParts[1]) - 1, parseInt(endParts[2]))
+        
+        const oneDay = 1000 * 60 * 60 * 24
+        const timeDiff = end - start
+        
+        const diffDays = Math.floor(timeDiff / oneDay) + 1
+        
+        return diffDays > 0 ? diffDays : 0
+    }
+    return 0
 }
 
 const handleStatusSelect = (value) => {
@@ -567,7 +648,17 @@ const handleStatusSelect = (value) => {
     isStatusOpen.value = false
 }
 
+const handleRegionSelect = (region) => {
+    formData.value.region = region
+    isRegionFilterOpen.value = false
+}
+
 const addItineraryDay = () => {
+    if (isAddDayButtonDisabled.value) {
+        toast.error(`Maximum ${maxItineraryDays.value} days allowed for this date range.`)
+        return
+    }
+
     const newDayNumber = itineraryDays.value.length + 1
     itineraryDays.value.push({ id: newDayNumber, content: '' })
 }
@@ -587,14 +678,14 @@ const removeItineraryDay = (dayId) => {
 
 onMounted(() => {
     document.addEventListener('click', (e) => {
-        if (bookingTypeDropdown.value && !bookingTypeDropdown.value.contains(e.target)) {
-            isBookingTypeOpen.value = false
-        }
         if (statusDropdown.value && !statusDropdown.value.contains(e.target)) {
             isStatusOpen.value = false
         }
+        if (regionDropdown.value && !regionDropdown.value.contains(e.target)) {
+            isRegionFilterOpen.value = false
+        }
     })
-})
+});
 </script>
 
 <style scoped>

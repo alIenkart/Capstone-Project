@@ -17,6 +17,8 @@ class Packages extends Model
         'destination',
         'region',
         'description',
+        'start_date',
+        'end_date',
         'tour_duration',
         'image_path',
         'itinerary',
@@ -24,7 +26,6 @@ class Packages extends Model
         'exclusions',
         'package_name',
         'capacity',
-        'joint_booking',
         'status',
         'pax_rate',
         'kids_pax_rate',
@@ -32,9 +33,11 @@ class Packages extends Model
         'time_stamp',
         'tour_classification',
     ];
-
+    
     protected $casts = [
         'itinerary' => 'array',
         'tour_classification' => 'array',
+        'start_date' => 'date',
+        'end_date' => 'date',
     ];
 }

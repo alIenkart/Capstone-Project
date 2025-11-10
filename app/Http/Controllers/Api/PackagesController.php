@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Packages;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class PackagesController extends Controller
 {
@@ -24,10 +25,9 @@ class PackagesController extends Controller
      */
     public function store(Request $request)
     {
-        // Convert joint_booking to boolean if sent as string
-        $request->merge([
-            'joint_booking' => filter_var($request->input('joint_booking'), FILTER_VALIDATE_BOOLEAN)
-        ]);
+        \Log::info('=== STORE PACKAGE ===');
+        \Log::info('Start Date from Request:', ['start_date' => $request->input('start_date')]);
+        \Log::info('End Date from Request:', ['end_date' => $request->input('end_date')]);
 
         $itinerary = json_decode($request->input('itinerary'), true);
         $request->merge(['itinerary' => $itinerary]);
@@ -40,13 +40,13 @@ class PackagesController extends Controller
             'destination' => 'required|string|max:255',
             'region' => 'nullable|string|max:255',
             'description' => 'required|string',
-            'tour_duration' => 'required|string|max:255',
+            'start_date' => 'required|date_format:Y-m-d',
+            'end_date' => 'required|date_format:Y-m-d|after_or_equal:start_date',
             'itinerary' => 'required|array',
             'itinerary.*' => 'required|string',
             'terms_condition' => 'required|string',
             'exclusions' => 'required|string',
             'capacity' => 'required|integer|min:1',
-            'joint_booking' => 'required|boolean',
             'status' => 'required|in:active,inactive',
             'pax_rate' => 'required|numeric|min:0',
             'kids_pax_rate' => 'nullable|numeric|min:0',
@@ -62,18 +62,45 @@ class PackagesController extends Controller
 
         $data = $request->all();
 
-        $itinerary = $request->input('itinerary'); 
+        try {
+            $startDate = Carbon::createFromFormat('Y-m-d', $request->input('start_date'));
+            $endDate = Carbon::createFromFormat('Y-m-d', $request->input('end_date'));
+            
+            \Log::info('Parsed Dates:', [
+                'start_date' => $startDate->toDateString(),
+                'end_date' => $endDate->toDateString(),
+            ]);
+            
+            $duration = abs($endDate->diffInDays($startDate)) + 1;
+            
+            \Log::info('Duration Calculation:', [
+                'start_date_timestamp' => $startDate->timestamp,
+                'end_date_timestamp' => $endDate->timestamp,
+                'diff_in_days' => abs($endDate->diffInDays($startDate)),
+                'final_duration' => $duration,
+            ]);
+
+            $data['tour_duration'] = $duration;
+        } catch (\Exception $e) {
+            \Log::error('Date Parsing Error:', ['error' => $e->getMessage()]);
+            return response()->json(['error' => 'Invalid date format'], 422);
+        }
+
+        $itinerary = $request->input('itinerary');
         $data['itinerary'] = json_encode($itinerary);
 
-        // Handle image upload
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('packages', 'public');
             $data['image_path'] = $imagePath;
         } else {
-            $data['image_path'] = 'default.jpg'; // or your default image path
+            $data['image_path'] = 'default.jpg';
         }
 
+        \Log::info('Data Before Create:', ['tour_duration' => $data['tour_duration']]);
+
         $package = Packages::create($data);
+
+        \Log::info('Data After Create:', ['tour_duration' => $package->tour_duration]);
 
         return response()->json(['data' => $package, 'message' => 'Package created successfully'], 201);
     }
@@ -94,15 +121,14 @@ class PackagesController extends Controller
     {
         $package = Packages::findOrFail($id);
 
-        // Convert joint_booking to boolean if sent as string
-        $request->merge([
-            'joint_booking' => filter_var($request->input('joint_booking'), FILTER_VALIDATE_BOOLEAN)
-        ]);
+        \Log::info('=== UPDATE PACKAGE ===');
+        \Log::info('Start Date from Request:', ['start_date' => $request->input('start_date')]);
+        \Log::info('End Date from Request:', ['end_date' => $request->input('end_date')]);
 
         $itinerary = json_decode($request->input('itinerary'), true);
         $request->merge(['itinerary' => $itinerary]);
 
-        $tour_classification = $request->input('tour_classification', []); 
+        $tour_classification = $request->input('tour_classification', []);
         $request->merge(['tour_classification' => $tour_classification]);
         
         $validator = Validator::make($request->all(), [
@@ -110,13 +136,13 @@ class PackagesController extends Controller
             'destination' => 'sometimes|required|string|max:255',
             'region' => 'sometimes|nullable|string|max:255',
             'description' => 'sometimes|required|string',
-            'tour_duration' => 'sometimes|required|int|max:255',
+            'start_date' => 'sometimes|required|date_format:Y-m-d',
+            'end_date' => 'sometimes|required|date_format:Y-m-d|after_or_equal:start_date',
             'itinerary' => 'required|array',
             'itinerary.*' => 'required|string',
             'terms_condition' => 'sometimes|required|string',
             'exclusions' => 'sometimes|required|string',
             'capacity' => 'sometimes|required|integer|min:1',
-            'joint_booking' => 'sometimes|required|boolean',
             'status' => 'sometimes|required|in:active,inactive',
             'pax_rate' => 'sometimes|required|numeric|min:0',
             'kids_pax_rate' => 'sometimes|nullable|numeric|min:0',
@@ -132,8 +158,25 @@ class PackagesController extends Controller
 
         $data = $request->all();
 
+        if ($request->has('start_date') && $request->has('end_date')) {
+            try {
+                $startDate = Carbon::createFromFormat('Y-m-d', $request->input('start_date'));
+                $endDate = Carbon::createFromFormat('Y-m-d', $request->input('end_date'));
+                
+                $duration = abs($endDate->diffInDays($startDate)) + 1;
+                
+                \Log::info('Duration Calculation:', [
+                    'final_duration' => $duration,
+                ]);
+                
+                $data['tour_duration'] = $duration;
+            } catch (\Exception $e) {
+                \Log::error('Date Parsing Error:', ['error' => $e->getMessage()]);
+                return response()->json(['error' => 'Invalid date format'], 422);
+            }
+        }
+
         if ($request->hasFile('image')) {
-            // Delete old image if exists and not default
             if ($package->image_path && $package->image_path !== 'default.jpg') {
                 Storage::disk('public')->delete($package->image_path);
             }
@@ -154,7 +197,6 @@ class PackagesController extends Controller
     {
         $package = Packages::findOrFail($id);
         
-        // Delete image if exists
         if ($package->image_path) {
             Storage::disk('public')->delete($package->image_path);
         }
