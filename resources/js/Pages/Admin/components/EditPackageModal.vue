@@ -293,7 +293,7 @@
                                         <h4 class="text-xl font-bold text-slate-800">Itinerary*</h4>
                                     </div>
                                     <div class="text-sm font-semibold text-blue-600 bg-blue-100 px-3 py-1 rounded-full">
-                                        Day {{ itineraryDays.length }}
+                                        Day {{ itineraryDays.length }} / Day {{ maxItineraryDays }}
                                     </div>
                                 </div>
                                 <div class="space-y-4">
@@ -322,7 +322,22 @@
                                         </div>
                                     </TransitionGroup>
 
-                                    <button type="button" @click="addItineraryDay"
+                                    <div v-if="isAddDayButtonDisabled" class="group relative">
+                                        <button type="button" disabled
+                                            class="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-gradient-to-r from-slate-300 to-slate-400 text-white text-sm font-bold rounded-xl cursor-not-allowed opacity-60 shadow-lg">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                            </svg>
+                                            Add Another Day
+                                        </button>
+                                        <div class="opacity-0 group-hover:opacity-100 absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-slate-800 text-white text-xs rounded-lg whitespace-nowrap transition-opacity z-10 pointer-events-none">
+                                            <span v-if="!formData.start_date || !formData.end_date">Please select start and end dates first</span>
+                                            <span v-else>Maximum {{ maxItineraryDays }} days reached</span>
+                                        </div>
+                                    </div>
+
+                                    <button v-else type="button" @click="addItineraryDay"
                                         class="w-full inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-sm font-bold rounded-xl hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -384,7 +399,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { ref, watch, onMounted, computed } from 'vue'
 import axios from 'axios'
 import { useToast } from 'vue-toastification'
 import MultiSelectDropdown from '@/components/MultiSelectDropdown.vue'
@@ -446,6 +461,27 @@ const regionOptions = ref([
     'BARMM: Bangsamoro Autonomous Region in Muslim Mindanao'
 ])
 
+// Computed property to calculate max itinerary days based on date range
+const maxItineraryDays = computed(() => {
+    if (formData.value.start_date && formData.value.end_date) {
+        const startParts = formData.value.start_date.split('-')
+        const endParts = formData.value.end_date.split('-')
+        
+        const start = new Date(parseInt(startParts[0]), parseInt(startParts[1]) - 1, parseInt(startParts[2]))
+        const end = new Date(parseInt(endParts[0]), parseInt(endParts[1]) - 1, parseInt(endParts[2]))
+        
+        const oneDay = 1000 * 60 * 60 * 24
+        const diffDays = Math.floor((end - start) / oneDay) + 1
+        return diffDays > 0 ? diffDays : 0
+    }
+    return 0
+})
+
+// Computed property to check if add day button should be disabled
+const isAddDayButtonDisabled = computed(() => {
+    return itineraryDays.value.length >= maxItineraryDays.value && maxItineraryDays.value > 0 || !formData.value.start_date || !formData.value.end_date
+})
+
 watch([() => props.show, () => props.packageId], ([newShow, newPackageId]) => {
     if (newShow && newPackageId !== null) {
         fetchPackage(newPackageId)
@@ -454,6 +490,10 @@ watch([() => props.show, () => props.packageId], ([newShow, newPackageId]) => {
         isStatusOpen.value = false
         isRegionFilterOpen.value = false
     }
+})
+
+watch([() => formData.value.start_date, () => formData.value.end_date], () => {
+    adjustItineraryDays()
 })
 
 const fetchPackage = async (id) => {
@@ -518,6 +558,19 @@ const calculateDuration = () => {
         return diffDays
     }
     return 0
+}
+
+const adjustItineraryDays = () => {
+    const currentDays = itineraryDays.value.length
+    const maxDays = maxItineraryDays.value
+
+    if (maxDays > 0 && currentDays > maxDays) {
+        itineraryDays.value = itineraryDays.value.slice(0, maxDays)
+        itineraryDays.value.forEach((day, index) => {
+            day.id = index + 1
+        })
+        toast.warning(`Itinerary reduced to ${maxDays} days based on your date range.`)
+    }
 }
 
 const updatePackage = async () => {
@@ -649,6 +702,16 @@ const removeItineraryDay = (dayId) => {
 }
 
 const addItineraryDay = () => {
+    if (!formData.value.start_date || !formData.value.end_date) {
+        toast.error('Please select start and end dates first.')
+        return
+    }
+
+    if (isAddDayButtonDisabled.value) {
+        toast.error(`Maximum ${maxItineraryDays.value} days allowed for this date range.`)
+        return
+    }
+
     const newDayNumber = itineraryDays.value.length + 1
     itineraryDays.value.push({ id: newDayNumber, content: '' })
 }

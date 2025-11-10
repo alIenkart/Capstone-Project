@@ -1,159 +1,216 @@
 <template>
-  <div class="bg-[#fcfcfc] min-h-screen w-full flex flex-col items-center">
-    <!-- Main Container -->
-    <div class="w-full max-w-[1400px] px-2 md:px-8 py-8 flex flex-col">
-      <!-- Tour Title -->
-      <h2 class="text-2xl font-bold text-[#1E71B8] mb-2">
-        {{ selectedPackage.destination || 'Loading destination...' }}
-      </h2>
-      <hr class="border-[#1E71B8] border-t-2 w-40 md:w-80 mb-6" />
+  <div class="bg-gradient-to-br from-[#f8fafc] to-[#f1f5f9] min-h-screen w-full flex flex-col items-center">
+    <div class="w-full max-w-7xl px-4 md:px-8 py-8 flex flex-col">
+      <div class="mb-8">
+        <h2 class="text-4xl font-bold text-[#1E71B8] mb-3">
+          {{ selectedPackage.destination || 'Loading destination...' }}
+        </h2>
+        <div class="h-1 w-32 bg-gradient-to-r from-[#1E71B8] to-[#73BE5D] rounded-full"></div>
+      </div>
 
-      <!-- Main Content Row -->
       <div class="flex flex-col lg:flex-row gap-8 w-full">
-        <!-- Left Side: Main Image, Description, Tabs, Terms -->
         <div class="flex-1 min-w-0 max-w-full">
-          <!-- Main Image -->
-          <div class="rounded-2xl overflow-hidden mb-6 bg-gray-200 flex items-center justify-center w-full">
+          <div class="rounded-2xl overflow-hidden mb-8 bg-gray-200 flex items-center justify-center w-full shadow-lg">
             <img :src="'/storage/' + selectedPackage.image_path" :alt="selectedPackage.destination"
               class="w-full h-auto object-contain" />
           </div>
-          <!-- Description -->
-          <h3 class="font-bold text-xl mb-2 text-[#222]">Description</h3>
-          <p class="text-base text-gray-800 mb-4">
-            {{ selectedPackage.description || 'Loading description...' }}
-          </p>
-          <!-- Tabs -->
-          <div class="tabs-row mb-4">
-            <button class="tab-btn" :class="{ 'tab-btn-active': activeTab === 'itinerary' }"
-              @click="setTab('itinerary')">
-              Itinerary
-            </button>
-            <button class="tab-btn" :class="{ 'tab-btn-active': activeTab === 'terms' }" @click="setTab('terms')">
-              Terms & Conditions
-            </button>
-            <button class="tab-btn" :class="{ 'tab-btn-active': activeTab === 'exclusions' }"
-              @click="setTab('exclusions')">
-              Exclusions
-            </button>
+
+          <div class="mb-8">
+            <h3 class="font-bold text-2xl mb-3 text-[#1E71B8] flex items-center gap-2">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              Description
+            </h3>
+            <p class="text-base text-gray-700 leading-relaxed bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+              {{ selectedPackage.description || 'Loading description...' }}
+            </p>
           </div>
 
-          <!-- Itinerary Content -->
-          <div v-if="activeTab === 'itinerary'" class="mb-8">
-            <h3 class="font-bold text-[#1E71B8] mb-2">Itinerary</h3>
-            <div class="text-base text-gray-800">
-              <!-- Display each day separately -->
-              <div v-for="day in parsedItinerary" :key="day.dayNumber"
-                class="mb-6 p-4 bg-gray-50 rounded-lg border-l-4 border-[#1E71B8]">
-                <h4 class="font-semibold text-lg text-[#1E71B8] mb-2">Day {{ day.dayNumber }}</h4>
-                <p class="whitespace-pre-line">{{ day.content }}</p>
-              </div>
-
-              <!-- Fallback if no days are parsed -->
-              <div v-if="parsedItinerary.length === 0" class="p-4 bg-gray-50 rounded-lg">
-                <p>{{ selectedPackage.itinerary }}</p>
-              </div>
+          <div class="bg-white rounded-2xl border border-gray-200 shadow-md overflow-hidden">
+            <div class="flex flex-wrap">
+              <button class="tab-btn" :class="{ 'tab-btn-active': activeTab === 'itinerary' }"
+                @click="setTab('itinerary')">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                Itinerary
+              </button>
+              <button class="tab-btn" :class="{ 'tab-btn-active': activeTab === 'terms' }" @click="setTab('terms')">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                  </path>
+                </svg>
+                Terms & Conditions
+              </button>
+              <button class="tab-btn" :class="{ 'tab-btn-active': activeTab === 'exclusions' }"
+                @click="setTab('exclusions')">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor" class="w-5 h-5 mr-2">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
+                </svg>
+                Exclusions
+              </button>
             </div>
-          </div>
 
-          <!-- Terms & Conditions Content -->
-          <div v-if="activeTab === 'terms'" class="mb-8">
-            <h3 class="font-bold text-[#1E71B8] mb-2">Terms & Conditions</h3>
-            <div class="text-base text-gray-800">
-              <p class="font-bold mb-4">
-                These Terms and Conditions govern the use of services provided by Traveller Laguna. By confirming
-                booking with our agency, customers must consider the terms outlined below.
-              </p>
+            <div class="p-6 md:p-8">
+              <div v-if="activeTab === 'itinerary'" class="animate-fade-in">
+                <h3 class="font-bold text-xl text-[#1E71B8] mb-6 flex items-center gap-2">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  </svg>
+                  Your Journey
+                </h3>
+                <div class="space-y-4">
+                  <div v-for="day in parsedItinerary" :key="day.dayNumber"
+                    class="bg-gradient-to-r from-blue-50 to-blue-100 p-5 rounded-xl border-l-4 border-[#1E71B8] shadow-sm hover:shadow-md transition-all duration-300">
+                    <h4 class="font-bold text-lg text-[#1E71B8] mb-3 flex items-center gap-2">
+                      Day {{ day.dayNumber }}
+                    </h4>
+                    <p class="text-gray-700 whitespace-pre-line leading-relaxed">{{ day.content }}</p>
+                  </div>
 
-              <!-- Numbered Terms and Conditions -->
-              <div class="space-y-4">
-                <div v-for="term in parsedTerms" :key="term.number" class="flex items-start gap-3">
-                  <span
-                    class="flex-shrink-0 w-6 h-6 bg-[#1E71B8] text-white rounded-full flex items-center justify-center text-sm font-semibold">
-                    {{ term.number }}
-                  </span>
-                  <div class="flex-1">
-                    <h4 v-if="term.title" class="font-semibold text-gray-800 mb-1">{{ term.title }}</h4>
-                    <p class="text-gray-700 whitespace-pre-line">{{ term.content }}</p>
+                  <div v-if="parsedItinerary.length === 0" class="p-5 bg-gray-50 rounded-xl border border-gray-200">
+                    <p class="text-gray-600">{{ selectedPackage.itinerary }}</p>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          <!-- Exclusions Content -->
-          <div v-if="activeTab === 'exclusions'" class="mb-8">
-            <h3 class="font-bold text-[#1E71B8] mb-2">Exclusions</h3>
-            <div class="text-base text-gray-800">
-              <!-- Numbered Exclusions -->
-              <div class="space-y-4">
-                <div v-for="exclusion in parsedExclusions" :key="exclusion.number" class="flex items-start gap-3">
-                  <span
-                    class="flex-shrink-0 w-6 h-6 bg-[#1E71B8] text-white rounded-full flex items-center justify-center text-sm font-semibold">
-                    {{ exclusion.number }}
-                  </span>
-                  <div class="flex-1">
-                    <h4 v-if="exclusion.title" class="font-semibold text-gray-800 mb-1">{{ exclusion.title }}</h4>
-                    <p class="text-gray-700 whitespace-pre-line">{{ exclusion.content }}</p>
+              <div v-if="activeTab === 'terms'" class="animate-fade-in">
+                <h3 class="font-bold text-xl text-[#1E71B8] mb-6 flex items-center gap-2">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                    </path>
+                  </svg>
+                  Terms & Conditions
+                </h3>
+                <div class="bg-blue-50 border border-blue-200 rounded-xl p-5 mb-6">
+                  <p class="font-semibold text-gray-800">
+                    These Terms and Conditions govern the use of services provided by Traveller Laguna. By confirming
+                    booking with our agency, customers must consider the terms outlined below.
+                  </p>
+                </div>
+
+                <div class="space-y-4">
+                  <div v-for="term in parsedTerms" :key="term.number"
+                    class="bg-white border border-gray-200 p-5 rounded-xl hover:shadow-md transition-all duration-300">
+                    <div class="flex items-start gap-4">
+                      <div class="flex-1">
+                        <h4 v-if="term.title" class="font-bold text-gray-800 mb-2">{{ term.title }}</h4>
+                        <p class="text-gray-700 whitespace-pre-line leading-relaxed">{{ term.content }}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div v-if="activeTab === 'exclusions'" class="animate-fade-in">
+                <h3 class="font-bold text-xl text-[#1E71B8] mb-6 flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
+                  </svg>
+                  Not Included
+                </h3>
+                <div class="space-y-4">
+                  <div v-for="exclusion in parsedExclusions" :key="exclusion.number"
+                    class="bg-white border border-gray-200 p-5 rounded-xl hover:shadow-md transition-all duration-300">
+                    <div class="flex items-start gap-4">
+                      <div class="flex-1">
+                        <h4 v-if="exclusion.title" class="font-bold text-gray-800 mb-2">{{ exclusion.title }}</h4>
+                        <p class="text-gray-700 whitespace-pre-line leading-relaxed">{{ exclusion.content }}</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <!-- Right Side: Booking Card + Related Trips -->
-        <div class="flex flex-col gap-8 w-full lg:w-[320px] xl:w-[350px] 2xl:w-[400px] min-w-[220px] max-w-[400px]">
-          <!-- Booking Card -->
-          <div class="rounded-2xl p-6 text-white shadow" style="background:#1E71B8;">
-            <div class="flex flex-col gap-2">
-              <div class="flex justify-between items-start">
-                <div>
-                  <span class="font-bold text-xl">From</span><br>
-                  <span class="currency-badge" aria-hidden="true">₱</span>
-                  <span class="font-semibold text-lg"> {{ selectedPackage?.pax_rate?.toLocaleString() }} / per pax</span>
+
+        <div class="flex flex-col gap-6 w-full lg:w-96 h-fit lg:sticky lg:top-10">
+          <div
+            class="bg-gradient-to-br from-[#1E71B8] to-[#155E9C] rounded-2xl p-6 shadow-lg text-white overflow-hidden relative">
+            <div class="absolute -top-12 -right-12 w-32 h-32 bg-white opacity-10 rounded-full"></div>
+            <div class="absolute -bottom-8 -left-8 w-24 h-24 bg-[#73BE5D] opacity-10 rounded-full"></div>
+
+            <div class="relative z-10">
+              <div class="mb-5 pb-5 border-b border-white border-opacity-20">
+                <p class="text-white text-opacity-70 text-xs uppercase tracking-widest font-semibold mb-2">Starting from
+                </p>
+                <div class="flex items-baseline gap-1">
+                  <span class="text-lg font-bold">₱</span>
+                  <span class="text-3xl font-bold">{{ selectedPackage?.pax_rate?.toLocaleString() }}</span>
+                  <span class="text-sm text-white text-opacity-80">/pax</span>
                 </div>
-                <span
-                  class="bg-[#73BE5D] px-4 py-5 rounded-lg text-white font-bold text-right text-xl text-base leading-tight"
-                  style="display:inline-block; ">
-                  <span class="text-lg font-bold">{{ selectedPackage.tour_duration }} Days</span>
-                </span>
               </div>
-              <hr class="border-[#73BE5D] my-4" />
+
+              <div class="mb-6">
+                <div class="bg-[#73BE5D] rounded-lg px-4 py-3 text-center">
+                  <p class="text-white text-opacity-80 text-xs uppercase tracking-wide mb-1">Duration</p>
+                  <p class="font-bold text-2xl text-white">{{ selectedPackage.tour_duration }} Days</p>
+                </div>
+              </div>
+
               <button v-if="selectedPackage.id" @click="handleBookNow"
-                class="w-full rounded-xl py-3 font-bold text-lg transition text-center"
-                style="background:#73BE5D; color:white; border: none; cursor: pointer;">
-                BOOK NOW!
+                class="w-full py-3 px-4 bg-white text-[#1E71B8] font-bold text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 active:scale-95">
+                BOOK NOW →
               </button>
             </div>
           </div>
 
-          <!-- Related Trips (a bit wider) -->
-          <div class="related-trip" v-for="pkg in relatedTrips" :key="pkg.id">
-            <div class="font-bold text-lg mb-2 text-[#222] text-center">Related Trips</div>
-            <div class="flex flex-col gap-6">
-              <div class="flex flex-col items-center bg-white rounded-xl shadow p-4 w-full max-w-[200px] mx-auto">
-                <div
-                  class="w-full h-full bg-gray-200 rounded-xl mb-2 flex items-center justify-center object-cover overflow-hidden">
-                  <img :src="'/storage/' + pkg.image_path" :alt="pkg.destination" />
+          <div v-if="relatedTrips.length > 0" class="bg-white rounded-2xl border border-gray-200 shadow-md p-6">
+            <h3 class="font-bold text-lg text-[#1E71B8] mb-4 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                <path fill-rule="evenodd"
+                  d="m11.54 22.351.07.04.028.016a.76.76 0 0 0 .723 0l.028-.015.071-.041a16.975 16.975 0 0 0 1.144-.742 19.58 19.58 0 0 0 2.683-2.282c1.944-1.99 3.963-4.98 3.963-8.827a8.25 8.25 0 0 0-16.5 0c0 3.846 2.02 6.837 3.963 8.827a19.58 19.58 0 0 0 2.682 2.282 16.975 16.975 0 0 0 1.145.742ZM12 13.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"
+                  clip-rule="evenodd" />
+              </svg>
+              Related Trips
+            </h3>
+
+            <div class="space-y-4">
+              <div v-for="pkg in relatedTrips" :key="pkg.id"
+                class="bg-gradient-to-br from-blue-50 to-gray-50 rounded-xl overflow-hidden border border-gray-200 hover:shadow-lg transition-all duration-300">
+                <div class="h-40 bg-gray-200 overflow-hidden flex items-center justify-center">
+                  <img :src="'/storage/' + pkg.image_path" :alt="pkg.destination"
+                    class="w-full h-full object-contain" />
                 </div>
-                <div class="font-semibold text-[#1E71B8] w-full text-left">₱ {{ pkg.pax_rate?.toLocaleString() }}</div>
-                <div class="text-[#1E71B8] flex items-center gap-1 w-full justify-start text-left">
-                  <svg width="16" height="16" fill="none" stroke="#1E71B8" stroke-width="2" viewBox="0 0 24 24">
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-                    <circle cx="12" cy="9" r="2.5" />
-                  </svg>
-                  {{ pkg.destination }}
+
+                <div class="p-4">
+                  <p class="font-bold text-[#1E71B8] text-lg mb-3">₱{{ pkg.pax_rate?.toLocaleString() }}</p>
+
+                  <div class="space-y-2 mb-4">
+                    <div class="flex items-center gap-2 text-gray-700">
+                      <svg class="w-4 h-4 text-[#1E71B8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                      </svg>
+                      <span class="text-sm font-medium">{{ pkg.destination }}</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-gray-700">
+                      <svg class="w-4 h-4 text-[#1E71B8]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                      </svg>
+                      <span class="text-sm font-medium">{{ pkg.tour_duration }} Days</span>
+                    </div>
+                  </div>
+
+                  <Link :href="route('tourdetails', { id: pkg.id })"
+                    class="w-full py-2 px-3 border-2 border-[#1E71B8] text-[#1E71B8] rounded-lg font-semibold hover:bg-[#1E71B8] hover:text-white transition-all duration-300 text-center text-sm block">
+                  View Details
+                  </Link>
                 </div>
-                <div class="text-[#1E71B8] flex items-center gap-1 w-full justify-start text-left">
-                  <svg width="16" height="16" fill="none" stroke="#1E71B8" stroke-width="2" viewBox="0 0 24 24">
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M12 6v6l4 2" />
-                  </svg>
-                  {{ pkg.tour_duration }} Days
-                </div>
-                <Link :href="route('tourdetails', { id: pkg.id })"
-                  class="mt-2 px-4 py-2 border border-[#1E71B8] text-[#1E71B8] rounded-full font-semibold hover:bg-[#1E71B8] hover:text-white transition text-center block">
-                View Details
-                </Link>
               </div>
             </div>
           </div>
@@ -161,212 +218,180 @@
       </div>
     </div>
   </div>
-
 </template>
 
 <script setup>
 import LandingIndex from './LandingIndex.vue'
-import { computed, ref, onMounted, toRaw } from 'vue';
-import { usePage, router } from '@inertiajs/vue3';
-import { api } from '../../api/api';
-import { Link } from '@inertiajs/vue3'
-import { storeBooking } from '@/state/storeBooking';
-import { cloneDeep } from 'lodash';
+import { computed, ref, onMounted } from 'vue'
+import { usePage, router, Link } from '@inertiajs/vue3'
+import { api } from '../../api/api'
+import { storeBooking } from '@/state/storeBooking'
+import { cloneDeep } from 'lodash'
 
 defineOptions({ layout: LandingIndex })
 
-const booking = storeBooking();
-const service = new api();
-const page = usePage();
-const id = computed(() => page.props.id);
+const booking = storeBooking()
+const service = new api()
+const page = usePage()
+const id = computed(() => page.props.id)
 
-const selectedPackage = ref({});
+const selectedPackage = ref({})
 const packages = ref([])
-const activeTab = ref('terms');
+const activeTab = ref('itinerary')
 
-// Add this computed property to parse itinerary into days
 const parsedItinerary = computed(() => {
   if (!selectedPackage.value.itinerary) {
-    return [];
+    return []
   }
 
-  const itineraryString = Object.values(selectedPackage.value.itinerary);
-
-  // Try to split by "Day X:" pattern first
-  // const dayPattern = /Day\s+\d+:/gi;
-  // const dayMatches = [...itineraryString.matchAll(dayPattern)];
+  const itineraryString = Object.values(selectedPackage.value.itinerary)
 
   if (itineraryString.length > 0) {
-    const days = [];
-    let lastIndex = 0;
+    const days = []
 
     Object.values(itineraryString).forEach((match, index) => {
-
       days.push({
         dayNumber: index + 1,
         content: match
-      });
-    });
+      })
+    })
 
-    return days;
+    return days
   }
 
-  // Fallback: try splitting by double newlines
-  const daySections = itineraryString.split('\n\n').filter(section => section.trim() !== '');
+  const daySections = itineraryString.split('\n\n').filter(section => section.trim() !== '')
   if (daySections.length > 1) {
     const days = daySections.map((section, index) => {
-      // Remove "Day X:" prefix if it exists
-      const content = section.replace(/^Day\s+\d+:\s*/i, '').trim();
+      const content = section.replace(/^Day\s+\d+:\s*/i, '').trim()
       return {
         dayNumber: index + 1,
         content: content
-      };
-    });
+      }
+    })
 
-    return days;
+    return days
   }
 
-  // If no structured days found, treat as single day
   return [{
     dayNumber: 1,
     content: itineraryString.trim()
-  }];
-});
+  }]
+})
 
-// Add computed property to parse terms and conditions into numbered sections
 const parsedTerms = computed(() => {
   if (!selectedPackage.value.terms_condition) {
-    return [];
+    return []
   }
 
-  const termsString = selectedPackage.value.terms_condition;
+  const termsString = selectedPackage.value.terms_condition
+  const lines = termsString.split('\n').filter(line => line.trim() !== '')
 
-  // Split by line breaks and filter out empty lines
-  const lines = termsString.split('\n').filter(line => line.trim() !== '');
-
-  const terms = [];
-  let currentTerm = null;
+  const terms = []
+  let currentTerm = null
 
   lines.forEach((line) => {
-    const trimmedLine = line.trim();
-
-    // Check if line starts with a number followed by a period or dot
-    const numberMatch = trimmedLine.match(/^(\d+)\.?\s*(.*)$/);
+    const trimmedLine = line.trim()
+    const numberMatch = trimmedLine.match(/^(\d+)\.?\s*(.*)$/)
 
     if (numberMatch) {
-      // If we have a previous term, save it
       if (currentTerm) {
-        terms.push(currentTerm);
+        terms.push(currentTerm)
       }
 
-      // Start a new term
-      const number = parseInt(numberMatch[1]);
-      const title = numberMatch[2].trim();
+      const number = parseInt(numberMatch[1])
+      const title = numberMatch[2].trim()
 
       currentTerm = {
         number: number,
         title: title,
         content: ''
-      };
+      }
     } else if (currentTerm) {
-      // This line belongs to the current term
       if (currentTerm.content) {
-        currentTerm.content += '\n' + trimmedLine;
+        currentTerm.content += '\n' + trimmedLine
       } else {
-        currentTerm.content = trimmedLine;
+        currentTerm.content = trimmedLine
       }
     } else {
-      // This line doesn't have a number and no current term, treat as standalone
       terms.push({
         number: terms.length + 1,
         title: '',
         content: trimmedLine
-      });
+      })
     }
-  });
+  })
 
-  // Don't forget to add the last term
   if (currentTerm) {
-    terms.push(currentTerm);
+    terms.push(currentTerm)
   }
 
-  return terms;
-});
+  return terms
+})
 
-// Add computed property to parse exclusions into numbered sections
 const parsedExclusions = computed(() => {
   if (!selectedPackage.value.exclusions) {
-    return [];
+    return []
   }
 
-  const exclusionsString = selectedPackage.value.exclusions;
+  const exclusionsString = selectedPackage.value.exclusions
+  const lines = exclusionsString.split('\n').filter(line => line.trim() !== '')
 
-  // Split by line breaks and filter out empty lines
-  const lines = exclusionsString.split('\n').filter(line => line.trim() !== '');
-
-  const exclusions = [];
-  let currentExclusion = null;
+  const exclusions = []
+  let currentExclusion = null
 
   lines.forEach((line) => {
-    const trimmedLine = line.trim();
-
-    // Check if line starts with a number followed by a period or dot
-    const numberMatch = trimmedLine.match(/^(\d+)\.?\s*(.*)$/);
+    const trimmedLine = line.trim()
+    const numberMatch = trimmedLine.match(/^(\d+)\.?\s*(.*)$/)
 
     if (numberMatch) {
-      // If we have a previous exclusion, save it
       if (currentExclusion) {
-        exclusions.push(currentExclusion);
+        exclusions.push(currentExclusion)
       }
 
-      // Start a new exclusion
-      const number = parseInt(numberMatch[1]);
-      const title = numberMatch[2].trim();
+      const number = parseInt(numberMatch[1])
+      const title = numberMatch[2].trim()
 
       currentExclusion = {
         number: number,
         title: title,
         content: ''
-      };
+      }
     } else if (currentExclusion) {
-      // This line belongs to the current exclusion
       if (currentExclusion.content) {
-        currentExclusion.content += '\n' + trimmedLine;
+        currentExclusion.content += '\n' + trimmedLine
       } else {
-        currentExclusion.content = trimmedLine;
+        currentExclusion.content = trimmedLine
       }
     } else {
-      // This line doesn't have a number and no current exclusion, treat as standalone
       exclusions.push({
         number: exclusions.length + 1,
         title: '',
         content: trimmedLine
-      });
+      })
     }
-  });
+  })
 
-  // Don't forget to add the last exclusion
   if (currentExclusion) {
-    exclusions.push(currentExclusion);
+    exclusions.push(currentExclusion)
   }
 
-  return exclusions;
-});
+  return exclusions
+})
 
 const fetchSelectedPackage = async () => {
   try {
-    const response = await service.getPackage(id.value);
-    selectedPackage.value = response.data.data;
+    const response = await service.getPackage(id.value)
+    selectedPackage.value = response.data.data
     const packageSelected = cloneDeep(selectedPackage.value)
     booking.setPackage(packageSelected)
   } catch (error) {
-    console.error('Error fetching selectedPackage:', error);
+    console.error('Error fetching selectedPackage:', error)
   }
-};
+}
 
 const fetchPackages = async () => {
   try {
-    const response = await service.getPackages();
+    const response = await service.getPackages()
     packages.value = response.data.data
   } catch (error) {
     console.error('Error fetching packages:', error)
@@ -374,36 +399,36 @@ const fetchPackages = async () => {
 }
 
 const setTab = (tab) => {
-  activeTab.value = tab;
+  activeTab.value = tab
 }
 
 const handleBookNow = () => {
   if (!selectedPackage.value || !selectedPackage.value.id) {
-    console.error('No package selected');
-    return;
+    console.error('No package selected')
+    return
   }
 
   const date = [
     { startDate: selectedPackage.value.start_date },
     { endDate: selectedPackage.value.end_date }
-  ];
+  ]
 
-  booking.setPackageId(selectedPackage.value?.id);
-  booking.setPackageDestination(selectedPackage.value?.destination);
-  booking.setDuration(selectedPackage.value?.tour_duration);
-  booking.setAdultRate(selectedPackage.value?.pax_rate);
+  booking.setPackageId(selectedPackage.value?.id)
+  booking.setPackageDestination(selectedPackage.value?.destination)
+  booking.setDuration(selectedPackage.value?.tour_duration)
+  booking.setAdultRate(selectedPackage.value?.pax_rate)
   booking.setItinerary(selectedPackage.value?.itinerary)
-  booking.setDate(date);
-  
+  booking.setDate(date)
+
   if (selectedPackage.value.kids_rate) {
-    booking.setKidsRate(selectedPackage.value?.kids_rate);
+    booking.setKidsRate(selectedPackage.value?.kids_rate)
   }
 
   if (selectedPackage.value.package_type) {
-    booking.setPackageType(selectedPackage.value?.package_type);
+    booking.setPackageType(selectedPackage.value?.package_type)
   }
 
-  router.visit(route('process-booking', selectedPackage.value?.id));
+  router.visit(route('process-booking', selectedPackage.value?.id))
 }
 
 const relatedTrips = computed(() => {
@@ -419,62 +444,79 @@ const relatedTrips = computed(() => {
 })
 
 onMounted(() => {
-  fetchSelectedPackage();
-  fetchPackages();
-});
+  fetchSelectedPackage()
+  fetchPackages()
+})
 </script>
 
 <style scoped>
-.tabs-row {
-  display: flex;
-  gap: 8px;
-}
-
 .tab-btn {
   flex: 1;
-  background: #1E71B8;
-  color: #fff;
-  font-weight: 600;
-  padding: 0.5rem 0;
-  border: 2px solid #1E71B8;
-  border-radius: 0;
-  transition: background 0.2s, color 0.2s;
-}
-
-.currency-badge {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  color: #fff;
-  font-size: 1.2rem;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: #f3f4f6;
+  color: #1E71B8;
+  font-weight: 600;
+  border: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
 
-.tab-btn:first-child {
-  border-radius: 8px 0 0 8px;
+.tab-btn:hover {
+  background: #e5e7eb;
+  color: #155E9C;
 }
 
-.tab-btn:last-child {
-  border-radius: 0 8px 8px 0;
-}
-
-.tab-btn:hover,
 .tab-btn.tab-btn-active {
-  background: #73BE5D;
-  border: 2px solid #73BE5D;
-  color: #fff;
+  background: linear-gradient(to right, #1E71B8, #155E9C);
+  color: white;
+  border-bottom: 3px solid #73BE5D;
 }
 
 @media (max-width: 1024px) {
-  .tabs-row {
-    flex-direction: column;
+  .tab-btn {
+    font-size: 0.875rem;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
 
-  .tab-btn:first-child,
-  .tab-btn:last-child {
-    border-radius: 8px;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+button {
+  transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1E71B8;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #155E9C;
 }
 </style>
