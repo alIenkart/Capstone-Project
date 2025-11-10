@@ -21,10 +21,10 @@
               placeholder="Search by name, price, or destination" v-model="searchQuery" />
           </div>
 
-          <div class="relative w-full md:w-auto">
+          <div class="relative w-full md:w-auto" ref="filterRef">
             <button
               class="w-full md:w-auto bg-white text-[#008DDA] border-2 border-[#008DDA] rounded-full px-6 py-3 font-semibold text-base hover:bg-[#008DDA] hover:text-white transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
-              @click="toggleFilter">
+              @click.stop="toggleFilter">
               <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2"
                 viewBox="0 0 24 24">
                 <path
@@ -33,7 +33,6 @@
               {{ selectedRegion || "Filter by Region" }}
             </button>
 
-            <!-- Filter Dropdown -->
             <transition enter-active-class="transition ease-out duration-100"
               enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100"
               leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100"
@@ -148,7 +147,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, onBeforeUnmount } from "vue";
 import LandingIndex from "./LandingIndex.vue";
 import axios from "axios";
 import { api } from "../../api/api";
@@ -161,6 +160,7 @@ const packages = ref([]);
 const showFilter = ref(false);
 const searchQuery = ref("");
 const selectedRegion = ref(null);
+const filterRef = ref(null);
 
 const toggleFilter = () => {
   showFilter.value = !showFilter.value;
@@ -218,7 +218,18 @@ const fetchPackages = async () => {
   }
 };
 
+const handleClickOutside = (event) => {
+  if (filterRef.value && !filterRef.value.contains(event.target)) {
+    showFilter.value = false;
+  }
+};
+
 onMounted(() => {
+  document.addEventListener("click", handleClickOutside);
   fetchPackages();
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("click", handleClickOutside);
 });
 </script>
