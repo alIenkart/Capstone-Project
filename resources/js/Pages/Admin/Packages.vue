@@ -340,6 +340,11 @@
                 >
                   Kids Price
                 </th>
+                <th 
+                  class="px-6 py-4 text-center text-sm font-semibold whitespace-nowrap"
+                >
+                  Status
+                </th>
                 <th
                   class="px-6 py-4 text-center text-sm font-semibold whitespace-nowrap"
                 >
@@ -421,6 +426,22 @@
                   class="px-6 py-4 text-sm font-medium text-gray-700 text-center"
                 >
                   ₱{{ Number(packageItem.kids_pax_rate).toLocaleString() }}
+                </td>
+                <td class="px-6 py-4 text-sm font-medium text-gray-700 text-center">
+                  <label class="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      :checked="packageItem.status === 'active'"
+                      @change="toggleStatus(packageItem)"
+                      class="sr-only peer"
+                    />
+                    <div
+                      class="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-green-500 transition-colors"
+                    ></div>
+                    <div
+                      class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5"
+                    ></div>
+                  </label>
                 </td>
                 <td class="px-6 py-4 text-sm text-center">
                   <div class="flex items-center justify-center gap-2">
@@ -780,6 +801,24 @@ const confirmDelete = async () => {
     toast.error("Error deleting package");
   }
 };
+
+const toggleStatus = async (packageItem) => {
+  try {
+    const newStatus = packageItem.status === 'active' ? 'inactive' : 'active'
+    packageItem.status = newStatus
+
+    await axios.patch(`/api/packages/${packageItem.id}/toggle-status`, {
+      status: newStatus
+    })
+
+    toast.success(`Package status has been successfully updated to ${newStatus}`)
+  } catch (error) {
+    toast.error('Failed to toggle status:', error)
+    packageItem.status = packageItem.status === 'active' ? 'inactive' : 'active'
+  }
+}
+
+
 
 const fetchPackages = async () => {
   try {

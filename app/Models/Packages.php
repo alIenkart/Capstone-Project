@@ -32,6 +32,7 @@ class Packages extends Model
         'discounted_rate',
         'time_stamp',
         'tour_classification',
+        'available_slot'
     ];
     
     protected $casts = [

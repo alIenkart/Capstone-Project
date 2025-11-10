@@ -205,4 +205,17 @@ class PackagesController extends Controller
 
         return response()->json(['message' => 'Package deleted successfully'], 200);
     }
+
+    public function toggleStatus($id)
+    {
+        $package = Packages::findOrFail($id);
+
+        $package->status = $package->status === 'active' ? 'inactive' : 'active';
+        $package->save();
+
+        return response()->json([
+            'data' => $package,
+            'message' => 'Status updated successfully',
+        ], 200);
+    }
 }
