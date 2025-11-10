@@ -53,16 +53,23 @@ class LoginRequest extends FormRequest
 
         $user = Auth::user();
 
-        // 🔸 Check if email is verified
         if (! $user->hasVerifiedEmail()) {
             Auth::logout();
 
-            // Send verification email
-            $user->sendEmailVerificationNotification();
-
-            throw ValidationException::withMessages([
-                'email' => 'Your email address is not verified. We’ve sent you a verification email.',
-            ]);
+            try {
+                $user->sendEmailVerificationNotification();
+                
+                throw ValidationException::withMessages([
+                    'email' => 'Your email address is not verified. We\'ve sent you a verification email.',
+                ]);
+            } catch (\Exception $e) {
+                \Log::warning('Failed to send verification email: ' . $e->getMessage());
+                
+                throw ValidationException::withMessages([
+                    'email' => 'Your email address is not verified. Unable to send verification email at this time.',
+                    'email_send_failed' => true,
+                ]);
+            }
         }
 
         RateLimiter::clear($this->throttleKey());

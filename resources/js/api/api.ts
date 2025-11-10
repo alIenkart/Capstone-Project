@@ -6,6 +6,10 @@ export class api {
         return plainInstance.get("/api/users");
     }
 
+    createUser(data) {
+        return plainInstance.post("/api/users", data);
+    }
+
     updateUser(id, data) {
         return plainInstance.patch(`/api/users/${id}`, data);
     }
