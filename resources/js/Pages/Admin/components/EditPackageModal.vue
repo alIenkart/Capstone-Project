@@ -503,6 +503,16 @@
                           ></path>
                         </svg>
                       </div>
+                    </div>  
+                  </div>
+                  <div>
+                    <label
+                      for="slotAvailable"
+                      class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2"
+                      >Slots Available</label
+                    >
+                    <div class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 pl-4">
+                      {{ formData.available_slot }}
                     </div>
                   </div>
                 </div>
@@ -754,6 +764,7 @@ const formData = ref({
   terms_condition: "",
   exclusions: "",
   capacity: 0,
+  available_slot: 0,
   status: "active",
   pax_rate: 0,
   kids_pax_rate: 0,
@@ -854,6 +865,7 @@ const fetchPackage = async (id) => {
       terms_condition: packageData.terms_condition || "",
       exclusions: packageData.exclusions || "",
       capacity: packageData.capacity || 0,
+      available_slot: packageData.available_slot || 0,
       status: packageData.status || "active",
       pax_rate: packageData.pax_rate || 0,
       kids_pax_rate: packageData.kids_pax_rate || 0,

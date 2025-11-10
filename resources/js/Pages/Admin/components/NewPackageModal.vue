@@ -971,6 +971,7 @@ const savePackage = async () => {
     data.append("kids_pax_rate", parseFloat(formData.value.kidsBasePrice));
     data.append("discounted_rate", parseFloat(formData.value.discountedRate));
     data.append("capacity", parseInt(formData.value.maxOccupancy));
+    data.append("available_slot", parseInt(formData.value.maxOccupancy));    
     data.append("tour_classification", JSON.stringify(formData.value.tourClassification));
     data.append("status", formData.value.status.toLowerCase());
 

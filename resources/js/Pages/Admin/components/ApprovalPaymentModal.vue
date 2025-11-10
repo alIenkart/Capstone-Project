@@ -939,11 +939,16 @@ async function submitVerificationOfPayment($status) {
       emit("close");
     }
   } catch (error) {
-    console.error(error);
-    toast.error("Something went wrong while submitting your payment.");
-  }
+    if (error.response && error.response.status === 422) {
+      const errorMessage =
+        error.response.data?.message ||
+        "Transaction cancelled due to invalid booking quantity.";
+      toast.error(errorMessage);
+    } else {
+      toast.error("Something went wrong while submitting your payment.");
+      }
+    }
 }
-
 onMounted(() => {
   if (props.payment?.id) {
     fetchPaymentAndBooking(props.payment.id);

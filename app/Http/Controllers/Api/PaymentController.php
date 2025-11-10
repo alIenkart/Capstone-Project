@@ -94,6 +94,11 @@ class PaymentController extends Controller
         
             if ($request->is_fully_paid) {
                 $payment->payment_status = 'Approved';
+                $response = $this->processPackageSlotUpdate($payment);
+            
+                if ($response instanceof \Illuminate\Http\JsonResponse) {
+                    return $response;
+                }
             }
         }
 
@@ -114,5 +119,29 @@ class PaymentController extends Controller
             'message' => 'Payment updated successfully',
             'payment' => $payment
         ]);
+    }
+
+    private function processPackageSlotUpdate(Payment $payment)
+    {
+        $booking = $payment->booking;
+        $package = $booking->package;
+
+        $total_quantity = $booking->total_quantity;
+        $available_slot = $package->available_slot;
+
+        if ($total_quantity > $available_slot) {
+            return response()->json([
+                'message' => 'Transaction cancelled. Total quantity exceeds available slots.',
+                'errors' => [
+                    'total_quantity' => "The booking quantity ({$total_quantity}) exceeds the available slots ({$available_slot})."
+                ]
+            ], 422);
+        }
+
+        $updated_slot = $available_slot - $total_quantity;
+        $package->available_slot = $updated_slot;
+        $package->save();
+
+        return true;
     }
 }
