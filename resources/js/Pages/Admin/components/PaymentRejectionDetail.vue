@@ -7,31 +7,57 @@
     leave-from-class="opacity-100 scale-100"
     leave-to-class="opacity-0 scale-95"
   >
-    <div v-if="visible" class="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 backdrop-blur-md p-4">
-      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-100">
-        <div class="relative px-8 py-8 bg-gradient-to-br from-red-500 to-red-600 border-b border-red-600">
+    <div
+      v-if="visible"
+      class="fixed inset-0 z-[70] flex items-center justify-center bg-black/40 backdrop-blur-md p-4"
+    >
+      <div
+        class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-100"
+      >
+        <div
+          class="relative px-8 py-8 bg-gradient-to-br from-red-500 to-red-600 border-b border-red-600"
+        >
           <div class="flex items-start gap-4">
             <div class="flex-shrink-0 p-3 bg-white/20 rounded-xl">
-              <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M6 18L18 6M6 6l12 12" />
+              <svg
+                class="w-6 h-6 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </div>
             <div class="flex-1">
               <h3 class="text-2xl font-bold text-white">Booking Rejected</h3>
-              <p class="text-sm font-medium text-white/80 mt-1">{{ formattedDate }}</p>
+              <p class="text-sm font-medium text-white/80 mt-1">
+                {{ formattedDate }}
+              </p>
             </div>
           </div>
         </div>
         <div class="px-8 py-8 space-y-6">
           <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Rejection Category</label>
-            <div class="inline-block px-4 py-2 bg-rose-50 border border-rose-200 rounded-lg">
+            <label
+              class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2"
+              >Rejection Category</label
+            >
+            <div
+              class="inline-block px-4 py-2 bg-rose-50 border border-rose-200 rounded-lg"
+            >
               <p class="text-sm font-semibold text-rose-700">{{ category }}</p>
             </div>
           </div>
           <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">Rejection Reason</label>
+            <label
+              class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3"
+              >Rejection Reason</label
+            >
             <div class="relative">
               <textarea
                 class="w-full rounded-xl border border-slate-200 p-4 text-sm text-slate-700 resize-none bg-slate-50 pointer-events-none"
@@ -42,7 +68,9 @@
             </div>
           </div>
         </div>
-        <div class="bg-slate-50/50 py-5 border-t border-slate-100 flex justify-end px-8 gap-3">
+        <div
+          class="bg-slate-50/50 py-5 border-t border-slate-100 flex justify-end px-8 gap-3"
+        >
           <button
             type="button"
             @click="$emit('close')"
@@ -57,18 +85,22 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed } from "vue";
 
 const props = defineProps({
   reason: { type: String, required: true },
   category: { type: String, required: true },
   date: { type: [String, Date], required: true },
-  visible: { type: Boolean, default: false }
+  visible: { type: Boolean, default: false },
 });
 
 const formattedDate = computed(() => {
-  if (!props.date) return '';
+  if (!props.date) return "";
   const d = new Date(props.date);
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  return d.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 });
 </script>

@@ -1,7 +1,8 @@
 <template>
   <footer class="home-footer">
     <div class="footer-main">
-      2025 Copyright. JE Travel & Tours | Unit 201 2nd floor M.B. Aguirre Brgy. San Jose City of Biñan, Laguna | +639395218437
+      2025 Copyright. JE Travel & Tours | Unit 201 2nd floor M.B. Aguirre Brgy.
+      San Jose City of Biñan, Laguna | +639395218437
     </div>
     <div class="footer-links">
       <a href="#" class="footer-link">Piracy Policy</a>
@@ -16,7 +17,7 @@
 
 <style>
 .home-footer {
-  background: #008DDA;
+  background: #008dda;
   padding: 12px 0 12px 0;
   text-align: center;
   border-top: 1px solid #eee;
@@ -41,7 +42,7 @@
   transition: color 0.2s, text-decoration 0.2s;
 }
 .footer-link:hover {
-  color: #73BE5D;
+  color: #73be5d;
   font-weight: 800;
   text-decoration: underline;
 }
@@ -50,5 +51,3 @@
   margin: 0 4px;
 }
 </style>
-
-

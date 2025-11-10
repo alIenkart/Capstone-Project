@@ -1,35 +1,29 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link } from "@inertiajs/vue3";
 
 defineProps({
-    canLogin: {
-        type: Boolean,
-    },
-    canRegister: {
-        type: Boolean,
-    },
-    laravelVersion: {
-        type: String,
-        required: true,
-    },
-    phpVersion: {
-        type: String,
-        required: true,
-    },
+  canLogin: {
+    type: Boolean,
+  },
+  canRegister: {
+    type: Boolean,
+  },
+  laravelVersion: {
+    type: String,
+    required: true,
+  },
+  phpVersion: {
+    type: String,
+    required: true,
+  },
 });
-
-
 </script>
 
 <template>
-    <Head title="Welcome" />
-    <p>Hello World</p>
+  <Head title="Welcome" />
+  <p>Hello World</p>
 
-    <Link :href="route('login')">
-        Log in
-    </Link>
+  <Link :href="route('login')"> Log in </Link>
 
-    <Link :href="route('register')">
-        Register
-    </Link>
+  <Link :href="route('register')"> Register </Link>
 </template>

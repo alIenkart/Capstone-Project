@@ -1,12 +1,18 @@
 <template>
-  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
-    <div class="relative bg-white rounded-2xl border-2 border-gray-300 shadow-2xl w-full max-w-3xl px-8 py-8">
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40"
+  >
+    <div
+      class="relative bg-white rounded-2xl border-2 border-gray-300 shadow-2xl w-full max-w-3xl px-8 py-8"
+    >
       <!-- Close button -->
       <button
         class="absolute top-4 right-4 text-2xl text-black hover:text-[#217093] font-bold"
         @click="$emit('close')"
         aria-label="Close"
-      >×</button>
+      >
+        ×
+      </button>
       <h2 class="text-center text-lg font-bold mb-6">Booking Approval</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <!-- Left: Booking Details -->
@@ -41,7 +47,10 @@
           <div class="font-semibold mb-2">Submitted Valid ID:</div>
           <div class="mb-2">
             <label for="idType" class="font-medium">ID Type:</label>
-            <select id="idType" class="ml-2 rounded-xl border-2 border-gray-300 px-2 py-1 focus:border-[#217093] focus:ring-[#217093]">
+            <select
+              id="idType"
+              class="ml-2 rounded-xl border-2 border-gray-300 px-2 py-1 focus:border-[#217093] focus:ring-[#217093]"
+            >
               <option>Senior</option>
               <option>Student</option>
               <option>PWD</option>
@@ -49,12 +58,30 @@
           </div>
           <div class="mb-4">
             <div class="font-medium mb-1">Preview:</div>
-            <div class="flex items-center justify-center border-2 border-gray-300 rounded-xl bg-gray-100 p-2 w-64 h-32">
-              <img src="https://i.ibb.co/7QpKsCX/sample-id.png" alt="ID Preview" class="h-full object-contain" />
-              <div class="absolute flex flex-col items-center justify-center w-64 h-32 bg-black bg-opacity-30 text-white text-sm font-semibold">
-                <svg class="mx-auto mb-1" width="28" height="28" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24">
-                  <path d="M1.5 12s4-7 10.5-7 10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/>
-                  <circle cx="12" cy="12" r="3"/>
+            <div
+              class="flex items-center justify-center border-2 border-gray-300 rounded-xl bg-gray-100 p-2 w-64 h-32"
+            >
+              <img
+                src="https://i.ibb.co/7QpKsCX/sample-id.png"
+                alt="ID Preview"
+                class="h-full object-contain"
+              />
+              <div
+                class="absolute flex flex-col items-center justify-center w-64 h-32 bg-black bg-opacity-30 text-white text-sm font-semibold"
+              >
+                <svg
+                  class="mx-auto mb-1"
+                  width="28"
+                  height="28"
+                  fill="none"
+                  stroke="white"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M1.5 12s4-7 10.5-7 10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"
+                  />
+                  <circle cx="12" cy="12" r="3" />
                 </svg>
                 View
               </div>
@@ -70,9 +97,21 @@
       </div>
       <!-- Action Buttons -->
       <div class="flex justify-center gap-6 mt-8">
-        <button class="rounded-xl bg-green-600 px-8 py-2 text-white font-semibold hover:bg-green-700 transition">Approve Booking</button>
-        <button class="rounded-xl bg-red-500 px-8 py-2 text-white font-semibold hover:bg-red-600 transition">Reject Booking</button>
-        <button class="rounded-xl bg-[#217093] px-8 py-2 text-white font-semibold hover:bg-[#14516b] transition">Cancel</button>
+        <button
+          class="rounded-xl bg-green-600 px-8 py-2 text-white font-semibold hover:bg-green-700 transition"
+        >
+          Approve Booking
+        </button>
+        <button
+          class="rounded-xl bg-red-500 px-8 py-2 text-white font-semibold hover:bg-red-600 transition"
+        >
+          Reject Booking
+        </button>
+        <button
+          class="rounded-xl bg-[#217093] px-8 py-2 text-white font-semibold hover:bg-[#14516b] transition"
+        >
+          Cancel
+        </button>
       </div>
     </div>
   </div>

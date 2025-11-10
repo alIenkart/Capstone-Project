@@ -16,29 +16,23 @@
 </template>
 
 <script setup>
-import { Pie } from 'vue-chartjs'
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-} from 'chart.js'
+import { Pie } from "vue-chartjs";
+import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from "chart.js";
 
-ChartJS.register(Title, Tooltip, Legend, ArcElement)
+ChartJS.register(Title, Tooltip, Legend, ArcElement);
 
 const chartData = {
-  labels: ['Active', 'Inactive'],
+  labels: ["Active", "Inactive"],
   datasets: [
     {
-      label: 'Packages',
+      label: "Packages",
       data: [40, 25],
-      backgroundColor: ['rgba(80, 255, 120, 0.7)', 'rgba(255, 60, 90, 0.7)'],
+      backgroundColor: ["rgba(80, 255, 120, 0.7)", "rgba(255, 60, 90, 0.7)"],
       borderRadius: 10,
       hoverOffset: 10,
     },
   ],
-}
+};
 
 const chartOptions = {
   responsive: true,
@@ -48,5 +42,5 @@ const chartOptions = {
       display: false,
     },
   },
-}
+};
 </script>

@@ -1,80 +1,82 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
-import LandingIndex from './LandingIndex.vue'
-import axios from 'axios'
-import { api } from '../../api/api'
-import { Link } from '@inertiajs/vue3'
+import { ref, onMounted, computed } from "vue";
+import LandingIndex from "./LandingIndex.vue";
+import axios from "axios";
+import { api } from "../../api/api";
+import { Link } from "@inertiajs/vue3";
 
-defineOptions({ layout: LandingIndex })
+defineOptions({ layout: LandingIndex });
 
 const service = new api();
-const packages = ref([])
-const showFilter = ref(false)
-const searchQuery = ref('')
-const selectedRegion = ref(null)
+const packages = ref([]);
+const showFilter = ref(false);
+const searchQuery = ref("");
+const selectedRegion = ref(null);
 
 const toggleFilter = () => {
-  showFilter.value = !showFilter.value
-}
+  showFilter.value = !showFilter.value;
+};
 
 const closeFilter = () => {
-  showFilter.value = false
-}
+  showFilter.value = false;
+};
 
 // Computed property for filtered packages
 const filteredPackages = computed(() => {
-  const hasQuery = Boolean(searchQuery.value.trim())
-  const query = searchQuery.value.toLowerCase().trim()
+  const hasQuery = Boolean(searchQuery.value.trim());
+  const query = searchQuery.value.toLowerCase().trim();
 
   // If no search and no region filter, return all
   if (!hasQuery && !selectedRegion.value) {
-    return packages.value
+    return packages.value;
   }
 
-  return packages.value.filter(pkg => {
+  return packages.value.filter((pkg) => {
     // Region filter
-    const regionMatch = selectedRegion.value ? pkg.region === selectedRegion.value : true
+    const regionMatch = selectedRegion.value
+      ? pkg.region === selectedRegion.value
+      : true;
 
     if (!hasQuery) {
-      return regionMatch
+      return regionMatch;
     }
 
     // Text search filters
-    const packageNameMatch = pkg.package_name?.toLowerCase().includes(query)
-    const paxRateMatch = pkg.pax_rate?.toString().includes(query)
-    const destinationMatch = pkg.destination?.toLowerCase().includes(query)
+    const packageNameMatch = pkg.package_name?.toLowerCase().includes(query);
+    const paxRateMatch = pkg.pax_rate?.toString().includes(query);
+    const destinationMatch = pkg.destination?.toLowerCase().includes(query);
 
-    return regionMatch && (packageNameMatch || paxRateMatch || destinationMatch)
-  })
-})
+    return (
+      regionMatch && (packageNameMatch || paxRateMatch || destinationMatch)
+    );
+  });
+});
 
 // Unique regions derived from filteredPackages
 const regions = computed(() => {
   const unique = new Set(
-    packages.value
-      .map(pkg => pkg.region)
-      .filter(region => Boolean(region))
-  )
-  return Array.from(unique).sort()
-})
+    packages.value.map((pkg) => pkg.region).filter((region) => Boolean(region))
+  );
+  return Array.from(unique).sort();
+});
 
 const selectRegion = (region) => {
-  selectedRegion.value = region
-  showFilter.value = false
-}
+  selectedRegion.value = region;
+  showFilter.value = false;
+};
 
 const fetchPackages = async () => {
-    try {
-        const response = await service.getPackages();
-        packages.value = response.data.data
-    } catch (error) {
-        console.error('Error fetching packages:', error)
-    }
-}
+  try {
+    const response = await service.getPackages();
+    packages.value = response.data.data;
+  } catch (error) {
+    console.error("Error fetching packages:", error);
+  }
+};
 
 onMounted(() => {
-    fetchPackages()
-})
+  fetchPackages();
+});
 </script>
 
 <template>
@@ -84,22 +86,27 @@ onMounted(() => {
       <div class="destination-subtitle">ALL DESTINATIONS</div>
     </div>
     <div class="destination-controls">
-      <input 
-        type="text" 
-        class="destination-search" 
-        placeholder="E.g. name, price, or destination" 
+      <input
+        type="text"
+        class="destination-search"
+        placeholder="E.g. name, price, or destination"
         v-model="searchQuery"
       />
-        <div class="destination-filter">
-        <button class="filter-btn" @click="toggleFilter">{{ selectedRegion || 'Filter' }}</button>
-        <ul 
-            class="filter-dropdown" 
-            v-show="showFilter"
-        >
-            <li @click="selectRegion(null)">All regions</li>
-            <li v-for="region in regions" :key="region" @click="selectRegion(region)">{{ region }}</li>
+      <div class="destination-filter">
+        <button class="filter-btn" @click="toggleFilter">
+          {{ selectedRegion || "Filter" }}
+        </button>
+        <ul class="filter-dropdown" v-show="showFilter">
+          <li @click="selectRegion(null)">All regions</li>
+          <li
+            v-for="region in regions"
+            :key="region"
+            @click="selectRegion(region)"
+          >
+            {{ region }}
+          </li>
         </ul>
-        </div>
+      </div>
     </div>
 
     <div class="destination-list">
@@ -109,15 +116,19 @@ onMounted(() => {
         :key="pkg.id"
       >
         <img :src="'/storage/' + pkg.image_path" :alt="pkg.title" />
-        <div class="destination-meta">₱ {{ pkg.pax_rate.toLocaleString() }}</div>
+        <div class="destination-meta">
+          ₱ {{ pkg.pax_rate.toLocaleString() }}
+        </div>
         <div class="destination-title">{{ pkg.destination }}</div>
         <div class="destination-days">
-          <span>{{ pkg.tour_duration   }} Days</span>
+          <span>{{ pkg.tour_duration }} Days</span>
         </div>
-          <Link :href="route('tourdetails', { id: pkg.id })"
-            class="mt-2 px-4 py-2 border border-[#008DDA] text-[#008DDA] rounded-full font-semibold hover:bg-[#008DDA] hover:text-white transition text-center block">
-            View Details
-          </Link>
+        <Link
+          :href="route('tourdetails', { id: pkg.id })"
+          class="mt-2 px-4 py-2 border border-[#008DDA] text-[#008DDA] rounded-full font-semibold hover:bg-[#008DDA] hover:text-white transition text-center block"
+        >
+          View Details
+        </Link>
       </div>
     </div>
   </section>
@@ -135,7 +146,7 @@ onMounted(() => {
 }
 
 .destination-title {
-  color: #008DDA;
+  color: #008dda;
   font-size: 1.5rem;
   font-weight: 800;
   margin-bottom: 6px;
@@ -143,9 +154,9 @@ onMounted(() => {
 }
 
 .destination-subtitle {
-  color: #008DDA;
+  color: #008dda;
   font-size: 1.1rem;
-  border-bottom: 3px solid #008DDA;
+  border-bottom: 3px solid #008dda;
   display: inline-block;
   margin-bottom: 18px;
 }
@@ -159,7 +170,7 @@ onMounted(() => {
 }
 
 .destination-search {
-  border: 1.5px solid #008DDA;
+  border: 1.5px solid #008dda;
   border-radius: 18px;
   padding: 6px 18px;
   font-size: 1rem;
@@ -172,8 +183,8 @@ onMounted(() => {
 
 .filter-btn {
   background: #fff;
-  color: #008DDA;
-  border: 1.5px solid #008DDA;
+  color: #008dda;
+  border: 1.5px solid #008dda;
   border-radius: 18px;
   padding: 6px 18px;
   cursor: pointer;
@@ -188,7 +199,7 @@ onMounted(() => {
   background: #fff;
   border: 1px solid #eee;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   min-width: 160px;
   z-index: 10;
   padding: 0;
@@ -198,7 +209,7 @@ onMounted(() => {
 
 .filter-dropdown li {
   padding: 10px 18px;
-  color: #008DDA;
+  color: #008dda;
   cursor: pointer;
   transition: background 0.2s;
 }
@@ -214,14 +225,14 @@ onMounted(() => {
   background: #fff;
   border-radius: 16px;
   padding: 32px 24px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
   justify-content: flex-start;
 }
 
 .destination-card {
   background: #fff;
   border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
   padding: 24px 18px 18px 18px;
   width: 270px;
   flex: 1 1 300px;
@@ -241,13 +252,13 @@ onMounted(() => {
 }
 
 .destination-meta {
-  color: #008DDA;
+  color: #008dda;
   font-weight: bold;
   margin-bottom: 6px;
 }
 
 .destination-days {
-  color: #008DDA;
+  color: #008dda;
   font-size: 1rem;
   margin-bottom: 12px;
   display: flex;
@@ -256,8 +267,8 @@ onMounted(() => {
 }
 
 .view-btn {
-  border: 1.5px solid #008DDA;
-  color: #008DDA;
+  border: 1.5px solid #008dda;
+  color: #008dda;
   background: #fff;
   border-radius: 24px;
   padding: 8px 32px;
@@ -268,7 +279,7 @@ onMounted(() => {
 }
 
 .view-btn:hover {
-  background: #008DDA;
+  background: #008dda;
   color: #fff;
 }
 </style>
