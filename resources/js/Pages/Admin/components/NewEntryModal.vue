@@ -427,9 +427,12 @@
                           <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Slots Booked</p>
                           <div class="flex items-center gap-2 mt-1">
                             <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-                              <div class="h-full bg-gradient-to-r from-[#73BE5D] to-[#5ca348] transition-all" :style="{ width: tooltipData.slotsTotal > 0 ? (tooltipData.slotsBooked / tooltipData.slotsTotal) * 100 + '%' : '0%' }"></div>
+                              <div class="h-full bg-gradient-to-r from-[#73BE5D] to-[#5ca348] transition-all"
+                                :style="{ width: tooltipData.slotsTotal > 0 ? (tooltipData.slotsBooked / tooltipData.slotsTotal) * 100 + '%' : '0%' }">
+                              </div>
                             </div>
-                            <span class="text-sm font-semibold text-gray-700">{{ tooltipData.slotsBooked }}/{{ tooltipData.slotsTotal }}</span>
+                            <span class="text-sm font-semibold text-gray-700">{{ tooltipData.slotsBooked }}/{{
+                              tooltipData.slotsTotal }}</span>
                           </div>
                         </div>
                       </div>
@@ -438,7 +441,8 @@
                         <div class="flex-1">
                           <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</p>
                           <div class="flex items-center gap-2 mt-1">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold" :class="{ 'bg-green-100 text-green-800': tooltipData.status === 'Available' || tooltipData.status === 'Accepting Joiners', 'bg-red-100 text-red-800': tooltipData.status === 'Slots Full', 'bg-gray-100 text-gray-800': tooltipData.status === 'Closed' }">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold"
+                              :class="{ 'bg-green-100 text-green-800': tooltipData.status === 'Available' || tooltipData.status === 'Accepting Joiners', 'bg-red-100 text-red-800': tooltipData.status === 'Slots Full', 'bg-gray-100 text-gray-800': tooltipData.status === 'Closed' }">
                               {{ tooltipData.status }}
                             </span>
                           </div>
@@ -473,7 +477,8 @@
                         tourType === 'Exclusive' &&
                         selectedDate &&
                         selectedEndDate
-                      " class="flex items-start gap-3 pt-2 bg-blue-50 -mx-6 -mb-6 px-6 py-4 rounded-b-2xl border-t border-blue-100">
+                      "
+                        class="flex items-start gap-3 pt-2 bg-blue-50 -mx-6 -mb-6 px-6 py-4 rounded-b-2xl border-t border-blue-100">
                         <div>
                           <p class="text-xs font-semibold text-[#1E71B8] uppercase tracking-wide">
                             Selected Range
@@ -608,8 +613,8 @@
                 <div v-if="isExclusiveTour" class="flex items-center gap-3">
                   <button @click="toggleCustomize"
                     class="px-5 py-2.5 rounded-xl text-white font-medium transition-all duration-300" :class="isEditingItinerary
-                        ? 'bg-[#73BE5D] hover:bg-[#5AA449]'
-                        : 'bg-[#1E71B8] hover:bg-[#155E9C]'
+                      ? 'bg-[#73BE5D] hover:bg-[#5AA449]'
+                      : 'bg-[#1E71B8] hover:bg-[#155E9C]'
                       ">
                     {{
                       isEditingItinerary ? "Save Customization" : "Customize"
@@ -655,19 +660,10 @@
                     </h3>
                     <button v-if="isEditingItinerary" @click="removeDay(index)"
                       class="text-red-500 hover:text-red-600 text-sm font-semibold flex items-center gap-1 transition">
-                      <svg
-                    class="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                    />
-                  </svg>
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
                     </button>
                   </div>
                   <div class="px-6 py-5 text-gray-700 leading-relaxed whitespace-pre-wrap text-[15px]">
@@ -687,7 +683,8 @@
           <div
             class="bg-gradient-to-br from-[#1E71B8] via-[#2980c9] to-[#1E71B8] rounded-3xl p-8 shadow-2xl relative overflow-hidden max-h-fit">
             <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="absolute bottom-0 left-0 w-64 h-64 bg-[#73BE5D]/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute bottom-0 left-0 w-64 h-64 bg-[#73BE5D]/10 rounded-full blur-3xl pointer-events-none">
+            </div>
             <div class="relative z-10 space-y-6">
               <div>
                 <div class="text-2xl font-bold text-white mb-1">
@@ -764,13 +761,21 @@
               </div>
             </div>
 
-            <button @click="submitBooking" :disabled="pax === 0 && kidsPax === 0"
-              class="relative z-10 w-full rounded-2xl py-4 font-bold text-lg transition-all duration-300 flex items-center justify-center gap-2 mt-6" :class="pax === 0 && kidsPax === 0 ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#73BE5D] text-white hover:bg-[#6aae56] hover:shadow-2xl hover:scale-105 active:scale-95'">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-              </svg>
-              Confirm Booking
-            </button>
+            <div class="relative group">
+              <button @click="submitBooking" :disabled="pax === 0 && kidsPax === 0 || !isItineraryValid"
+                class="relative z-10 w-full rounded-2xl py-4 font-bold text-lg transition-all duration-300 flex items-center justify-center gap-2 mt-6"
+                :class="pax === 0 && kidsPax === 0 || !isItineraryValid ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-[#73BE5D] text-white hover:bg-[#6aae56] hover:shadow-2xl hover:scale-105 active:scale-95'">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Confirm Booking
+              </button>
+
+              <div v-if="isExclusiveTour && !isItineraryValid"
+                class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max bg-gray-800 text-white text-xs px-3 py-2 rounded-lg shadow-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap z-50">
+                Itinerary must have {{ durationDays }} day{{ durationDays !== 1 ? 's' : '' }}
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -800,9 +805,11 @@
 import { ref, onMounted, computed, onBeforeUnmount, watch } from "vue";
 import { api } from "../../../api/api";
 import { useToast } from "vue-toastification";
+import { usePage } from "@inertiajs/vue3";
 
 const emit = defineEmits(["close", "booking-created"]);
 const toast = useToast();
+const page = usePage();
 const service = new api();
 
 const currentStep = ref(0);
@@ -1025,6 +1032,7 @@ watch(
   () => selectedPackageData.value.itinerary,
   (newItinerary) => {
     editableItinerary.value = parseItineraryToDays(newItinerary || "");
+    console.log("🚀 ~ editableItinerary.value:", editableItinerary.value)
   },
   { immediate: true }
 );
@@ -1330,11 +1338,28 @@ const prevStep = () => {
   }
 };
 
+const isItineraryValid = computed(() => {
+  if (isExclusiveTour.value) {
+    const currentItinerary = isEditingItinerary.value
+      ? editableItinerary.value
+      : customItinerary.value.length
+        ? customItinerary.value
+        : itineraryDays.value;
+
+    return currentItinerary.length === durationDays.value;
+  }
+
+  return true;
+});
+
 async function submitBooking() {
+  const itinerary = customItinerary.value.length ? JSON.stringify(customItinerary.value) : JSON.stringify(editableItinerary.value);
+
   try {
     const payload = {
       package_id: selectedPackage.value,
       customer_name: customerName.value,
+      customer_id: page.props.auth.user.id,
       voucher_id: voucherCode.value,
       total_quantity: pax.value + kidsPax.value,
       adult_quantity: pax.value,
@@ -1346,12 +1371,11 @@ async function submitBooking() {
       tour_classification: tourClassification.value,
       remarks: remarks.value,
       discount_images: discountImages.value,
-      custom_itinerary: customItinerary.value.length
-        ? customItinerary.value
-        : null,
+      itinerary: itinerary || null,
     };
+    console.log("🚀 ~ submitBooking ~ payload:", payload)
 
-    const response = await service.createBooking(payload);
+    await service.createBooking(payload);
     emit("booking-created");
     toast.success("Booking successfully created!");
   } catch (error) {
