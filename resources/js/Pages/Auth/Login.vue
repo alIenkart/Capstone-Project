@@ -95,6 +95,7 @@
 </template>
 
 <script setup>
+import LandingIndex from '../Landing/LandingIndex.vue';
 import Checkbox from '@/components/Checkbox.vue';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
@@ -108,6 +109,8 @@ defineProps({
     canResetPassword: Boolean,
     status: String,
 });
+
+defineOptions({ layout: LandingIndex });
 
 const toast = useToast();
 

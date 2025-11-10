@@ -10,7 +10,7 @@
           background-size: 100% 100%;
         "
       >
-        <div class="absolute inset-0 z-[1]"></div>
+        <div class="absolute inset-0 bg-gradient-to-br from-slate-900/60 via-slate-800/60 to-slate-900/60 z-[1]"></div>
       </div>
       <div class="relative z-[2] text-center">
         <h1
@@ -20,7 +20,7 @@
             letter-spacing: -1px;
           "
         >
-          Travel and Explore
+          Travel and <span class="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">Explore</span>
         </h1>
       </div>
     </section>
@@ -35,48 +35,60 @@
           <div
             v-for="(image, index) in infiniteImages"
             :key="index"
-            class="flex-none w-[400px] h-full bg-cover bg-center bg-no-repeat rounded-lg shadow-md transition-transform duration-300 cursor-pointer hover:scale-105"
+            class="flex-none w-[400px] h-full bg-cover bg-center bg-no-repeat rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer hover:scale-105 group"
             :style="{ backgroundImage: `url(${image})` }"
-          ></div>
+          >
+            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 rounded-2xl"></div>
+          </div>
         </div>
       </div>
     </section>
 
     <section class="py-20 bg-white">
       <div class="max-w-7xl mx-auto px-5">
-        <h2 class="text-3xl font-bold text-gray-800 mb-4 text-center">Blogs</h2>
+        <div class="mb-12">
+          <h2 class="text-4xl font-bold text-gray-900 mb-2">Latest Stories</h2>
+          <p class="text-gray-600">Inspiring tales from travelers around the globe</p>
+        </div>
         <div
           class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-7 mt-10"
         >
           <div
             v-for="post in visiblePosts"
             :key="post.id"
-            class="bg-white rounded-xl overflow-hidden shadow-lg transition-all duration-300 cursor-pointer hover:-translate-y-2 hover:shadow-2xl"
+            class="group bg-white rounded-2xl overflow-hidden shadow-lg transition-all duration-300 cursor-pointer hover:-translate-y-2 hover:shadow-2xl border border-gray-100"
           >
-            <div class="relative h-[250px] overflow-hidden">
+            <div class="relative h-[250px] overflow-hidden bg-gray-200">
               <img
                 v-if="post.image"
                 :src="post.image"
                 alt="Thumbnail"
-                class="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
               />
             </div>
             <div class="p-6">
-              <h3 class="text-xl font-bold text-gray-800 mb-3 leading-tight">
+              <div class="flex items-center gap-2 mb-3">
+                <svg class="w-4 h-4 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <p class="text-gray-700 text-sm leading-relaxed font-bold">
+                  {{ post.destination }}
+                </p>
+              </div>
+              <h3 class="text-xl font-bold text-gray-800 mb-3 leading-tight group-hover:text-blue-600 transition-colors">
                 {{ post.title }}
               </h3>
-              <p
-                class="text-gray-800 text-sm leading-relaxed mb-4 font-bold flex items-center gap-1"
-              >
-                {{ post.destination }}
-              </p>
               <p class="text-gray-600 text-sm leading-relaxed mb-4">
                 {{ post.excerpt }}
               </p>
-              <div class="flex items-center justify-between">
-                <span class="text-gray-400 text-xs font-medium"
+              <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                <span class="text-gray-500 text-xs font-medium"
                   >Author: {{ post.author }}</span
                 >
+                <svg class="w-4 h-4 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
               </div>
             </div>
           </div>
@@ -85,54 +97,47 @@
         <div v-if="hasMorePosts" class="flex justify-center mt-12">
           <button
             @click="loadMorePosts"
-            class="px-8 py-3 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+            class="group px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-full shadow-md hover:shadow-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
           >
             Load More
+            <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
           </button>
         </div>
       </div>
     </section>
 
     <section
-      class="py-20 bg-gradient-to-br from-gray-50 to-white border-t border-gray-200"
+      class="py-20 bg-gradient-to-br from-gray-50 via-white to-blue-50 border-t border-gray-200"
     >
       <div class="max-w-7xl mx-auto px-5">
-        <h2 class="text-4xl font-bold text-gray-800 mb-2 text-center">
-          Traveler Reviews & Feedback
-        </h2>
-        <p class="text-gray-600 text-center mb-12">
-          See what our travelers have to say about their experiences
-        </p>
+        <div class="mb-12">
+          <h2 class="text-4xl font-bold text-gray-900 mb-2">
+            Traveler Reviews & Feedback
+          </h2>
+          <p class="text-gray-600">
+            See what our travelers have to say about their experiences
+          </p>
+        </div>
 
         <div
           v-if="filteredReviews.length > 0"
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12"
         >
           <div
             v-for="review in filteredReviews"
             :key="review.id"
-            class="bg-white rounded-2xl shadow-lg overflow-hidden border-t-4 transition-all duration-300 hover:shadow-xl"
+            class="bg-white rounded-2xl shadow-lg overflow-hidden border-t-4 transition-all duration-300 hover:shadow-xl group"
             :class="review.is_public ? 'border-green-500' : 'border-yellow-500'"
           >
             <div class="p-6">
               <div class="flex justify-between items-start mb-4">
                 <div class="flex items-center">
                   <div
-                    class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-3 border-2 border-gray-200"
+                    class="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center mr-3 border-2 border-gray-200 font-bold text-blue-600"
                   >
-                    <svg
-                      class="w-6 h-6 text-blue-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      />
-                    </svg>
+                    {{ review.name.charAt(0) }}
                   </div>
                   <div>
                     <p class="text-lg font-semibold text-gray-900">
@@ -164,7 +169,7 @@
               </div>
 
               <blockquote
-                class="text-gray-700 italic border-l-4 border-gray-200 pl-4 mb-4 text-sm line-clamp-3"
+                class="text-gray-700 italic border-l-4 border-blue-300 pl-4 mb-4 text-sm line-clamp-3"
               >
                 "{{ review.comment }}"
               </blockquote>
@@ -174,7 +179,7 @@
 
         <div
           v-else
-          class="py-12 text-center bg-white rounded-2xl shadow-lg mb-8"
+          class="py-12 text-center bg-white rounded-2xl shadow-lg mb-12 border border-gray-100"
         >
           <svg
             class="w-16 h-16 mx-auto text-gray-300 mb-4"
@@ -197,19 +202,19 @@
           </p>
         </div>
 
-        <div class="bg-white p-8 rounded-2xl shadow-lg">
-          <h3 class="text-2xl font-bold text-gray-800 mb-2">
+        <div class="bg-gradient-to-br from-white to-gray-50 p-8 md:p-12 rounded-3xl shadow-lg border border-gray-200">
+          <h3 class="text-3xl font-bold text-gray-900 mb-2">
             Share Your Experience
           </h3>
-          <p class="text-gray-600 mb-6">
+          <p class="text-gray-600 mb-8">
             We'd love to hear how your trip went! Share your thoughts,
             suggestions, or anything that stood out. Your feedback helps us
             improve and provide better service for future travelers.
           </p>
 
           <div class="border-t border-gray-200 pt-6">
-            <div class="mb-4">
-              <label class="block text-gray-700 font-medium mb-3"
+            <div class="mb-6">
+              <label class="block text-gray-900 font-semibold mb-4"
                 >Your Rating</label
               >
               <div class="flex gap-3">
@@ -223,7 +228,7 @@
                       :class="
                         star <= newTestimonial.rating
                           ? 'text-yellow-400 fill-current cursor-pointer'
-                          : 'text-gray-300 cursor-pointer'
+                          : 'text-gray-300 cursor-pointer hover:text-yellow-300'
                       "
                       fill="currentColor"
                       viewBox="0 0 24 24"
@@ -239,21 +244,24 @@
             </div>
 
             <div class="mb-6">
-              <label class="block text-gray-700 font-medium mb-2"
+              <label class="block text-gray-900 font-semibold mb-3"
                 >Your Comment</label
               >
               <textarea
                 v-model="newTestimonial.comment"
                 rows="4"
                 placeholder="Share your thoughts..."
-                class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none"
+                class="w-full border border-gray-300 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all resize-none shadow-sm"
               />
             </div>
 
             <button
               @click="submitTestimonial"
-              class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg transition-all shadow-md hover:shadow-lg"
+              class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold px-6 py-3 rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 group"
             >
+              <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8m0 8l6.946-2.975M12 5.568l-6.946 2.974" />
+              </svg>
               Submit Feedback
             </button>
           </div>

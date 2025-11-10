@@ -104,7 +104,7 @@
                         >Upload Package Image</span
                       >
                       <span class="text-xs text-slate-400"
-                        >PNG, JPG • Max 10MB</span
+                        >PNG, JPG • Max 2MB</span
                       >
                     </template>
                     <input
@@ -769,6 +769,7 @@ const regionOptions = ref([
   "Region XII: SOCCSKSARGEN",
   "Region XIII: Caraga",
   "BARMM: Bangsamoro Autonomous Region in Muslim Mindanao",
+  "International"
 ]);
 
 const maxItineraryDays = computed(() => {
@@ -865,102 +866,133 @@ const adjustItineraryDays = () => {
 };
 
 const savePackage = async () => {
+  const requiredFields = {
+    name: "Package Name",
+    startDate: "Start Date",
+    endDate: "End Date",
+    destination: "Destination",
+    region: "Region",
+    description: "Description",
+    termsCondition: "Terms and Conditions",
+    exclusions: "Exclusions",
+    basePrice: "Base Price per Pax",
+    kidsBasePrice: "Kids Price per Pax",
+    discountedRate: "Discounted Rate",
+    maxOccupancy: "Maximum Occupancy",
+  };
+
+  // ✅ Loop through all required fields
+  for (const [key, label] of Object.entries(requiredFields)) {
+    const value = formData.value[key];
+
+    // Handle numeric and string checks separately
+    if (
+      value === null ||
+      value === undefined ||
+      value === "" ||
+      (typeof value === "number" && isNaN(value))
+    ) {
+      toast.error(`Please fill in ${label}.`);
+      return;
+    }
+  }
+
+  // ✅ Special check: Tour Classification (must not be empty)
   if (
-    !formData.value.name ||
-    !formData.value.basePrice ||
-    !formData.value.startDate ||
-    !formData.value.endDate
+    !Array.isArray(formData.value.tourClassification) ||
+    formData.value.tourClassification.length === 0
   ) {
-    toast.error(
-      "Please fill in Package Name, Base Price, Start Date, and End Date."
-    );
+    toast.error("Please select at least one Tour Classification.");
     return;
   }
 
+  // ✅ Special check: numeric fields must be > 0
+  const numericChecks = [
+    { key: "basePrice", label: "Base Price per Pax" },
+    { key: "kidsBasePrice", label: "Kids Price per Pax" },
+    { key: "discountedRate", label: "Discounted Rate" },
+    { key: "maxOccupancy", label: "Maximum Occupancy" },
+  ];
+
+  for (const { key, label } of numericChecks) {
+    const val = parseFloat(formData.value[key]);
+    if (isNaN(val) || val <= 0) {
+      toast.error(`${label} must be greater than 0.`);
+      return;
+    }
+  }
+
+  // ✅ Validate date range
   const startDate = new Date(formData.value.startDate);
   const endDate = new Date(formData.value.endDate);
-
   if (startDate > endDate) {
     toast.error("Start Date must be before End Date.");
     return;
   }
 
+  // ✅ Validate itinerary content (same logic you had before)
   const duration = calculateDuration();
-
   if (duration <= 0) {
     toast.error("Please select a valid date range.");
     return;
   }
 
-  const data = new FormData();
-  if (formData.value.image) {
-    data.append("image", formData.value.image);
+  if (itineraryDays.value.length < duration) {
+    toast.error(
+      `Please add itinerary details for all ${duration} days. Currently: ${itineraryDays.value.length}.`
+    );
+    return;
   }
-  data.append("package_name", formData.value.name);
-  data.append("start_date", formData.value.startDate);
-  data.append("end_date", formData.value.endDate);
-  data.append("tour_duration", duration.toString());
-  data.append("destination", formData.value.destination);
-  data.append("region", formData.value.region || "");
-  data.append("description", formData.value.description || "");
-  data.append("terms_condition", formData.value.termsCondition || "");
-  data.append("exclusions", formData.value.exclusions || "");
-  data.append(
-    "capacity",
-    formData.value.maxOccupancy ? parseInt(formData.value.maxOccupancy) : 0
-  );
-  data.append("status", formData.value.status.toLowerCase());
-  data.append(
-    "pax_rate",
-    formData.value.basePrice ? parseFloat(formData.value.basePrice) : 0
-  );
-  data.append(
-    "kids_pax_rate",
-    formData.value.kidsBasePrice ? parseFloat(formData.value.kidsBasePrice) : ""
-  );
-  data.append(
-    "discounted_rate",
-    formData.value.discountedRate
-      ? parseFloat(formData.value.discountedRate)
-      : 0
-  );
 
-  const formattedItinerary = {};
-  itineraryDays.value.forEach((day) => {
-    formattedItinerary[`day_${day.id}`] = day.content;
-  });
-  data.append("itinerary", JSON.stringify(formattedItinerary));
-  data.append(
-    "tour_classification",
-    JSON.stringify(formData.value.tourClassification)
+  const incompleteDay = itineraryDays.value.find(
+    (day) => !day.content || day.content.trim() === ""
   );
+  if (incompleteDay) {
+    toast.error(`Please fill in content for Day ${incompleteDay.id}.`);
+    return;
+  }
 
+  // ✅ If all validations pass → proceed to send
   try {
-    const response = await axios.post("/api/packages", data, {
-      headers: {
-        "Content-Type": "application/form-data",
-      },
+    const data = new FormData();
+    if (formData.value.image) {
+      data.append("image", formData.value.image);
+    }
+
+    data.append("package_name", formData.value.name);
+    data.append("start_date", formData.value.startDate);
+    data.append("end_date", formData.value.endDate);
+    data.append("destination", formData.value.destination);
+    data.append("region", formData.value.region);
+    data.append("description", formData.value.description);
+    data.append("terms_condition", formData.value.termsCondition);
+    data.append("exclusions", formData.value.exclusions);
+    data.append("pax_rate", parseFloat(formData.value.basePrice));
+    data.append("kids_pax_rate", parseFloat(formData.value.kidsBasePrice));
+    data.append("discounted_rate", parseFloat(formData.value.discountedRate));
+    data.append("capacity", parseInt(formData.value.maxOccupancy));
+    data.append("tour_classification", JSON.stringify(formData.value.tourClassification));
+    data.append("status", formData.value.status.toLowerCase());
+
+    const formattedItinerary = {};
+    itineraryDays.value.forEach((day) => {
+      formattedItinerary[`day_${day.id}`] = day.content;
     });
+    data.append("itinerary", JSON.stringify(formattedItinerary));
+
+    const response = await axios.post("/api/packages", data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
     toast.success("Package created successfully!");
     emit("save", response.data.data);
     closeModal();
   } catch (error) {
-    console.error("Error creating package:", error.response?.data || error);
-    if (error.response && error.response.data && error.response.data.errors) {
-      let errorMessages = "Validation Errors:\n";
-      for (const field in error.response.data.errors) {
-        errorMessages += `- ${field}: ${error.response.data.errors[field].join(
-          ", "
-        )}\n`;
-      }
-      toast.error("Error creating package:\n" + errorMessages);
-    } else {
-      toast.error(
-        "Error creating package. Please check the console for details."
-      );
-    }
+    console.error("Error creating package:", error);
+    toast.error("Error creating package. Please check console for details.");
   }
 };
+
 
 const handleImageUpload = (event) => {
   const file = event.target.files[0];

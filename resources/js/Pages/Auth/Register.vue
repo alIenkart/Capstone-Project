@@ -157,6 +157,7 @@
 </template>
 
 <script setup>
+import LandingIndex from '../Landing/LandingIndex.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
@@ -164,6 +165,8 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 import axios from 'axios';
 import { ref, computed } from 'vue';
 import { useToast } from 'vue-toastification';
+
+defineOptions({ layout: LandingIndex });
 
 const toast = useToast();
 const otp = ref('');

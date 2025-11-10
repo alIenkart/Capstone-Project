@@ -271,7 +271,7 @@
         </div>
 
         <div
-          class="flex flex-col gap-6 w-full lg:w-96 h-fit lg:sticky lg:top-10"
+          class="flex flex-col gap-6 w-full lg:w-96 h-fit"
         >
           <div
             class="bg-gradient-to-br from-[#1E71B8] to-[#155E9C] rounded-2xl p-6 shadow-lg text-white overflow-hidden relative"
@@ -444,17 +444,19 @@
 
 <script setup>
 import LandingIndex from "./LandingIndex.vue";
-import { computed, ref, onMounted } from "vue";
+import { computed, ref, onMounted, } from "vue";
 import { usePage, router, Link } from "@inertiajs/vue3";
 import { api } from "../../api/api";
 import { storeBooking } from "@/state/storeBooking";
 import { cloneDeep } from "lodash";
+import { useToast } from "vue-toastification";
 
 defineOptions({ layout: LandingIndex });
 
 const booking = storeBooking();
 const service = new api();
 const page = usePage();
+const toast = useToast();
 const id = computed(() => page.props.id);
 
 const selectedPackage = ref({});
@@ -466,42 +468,60 @@ const parsedItinerary = computed(() => {
     return [];
   }
 
-  const itineraryString = Object.values(selectedPackage.value.itinerary);
+  let itineraryData = selectedPackage.value.itinerary;
 
-  if (itineraryString.length > 0) {
-    const days = [];
+  if (typeof itineraryData === "string") {
+    try {
+      itineraryData = JSON.parse(itineraryData);
+    } catch (e) {
+      console.error("Invalid JSON itinerary:", e);
+      itineraryData = itineraryData.trim();
+    }
+  }
 
-    Object.values(itineraryString).forEach((match, index) => {
-      days.push({
+  if (typeof itineraryData === "object" && !Array.isArray(itineraryData)) {
+    const days = Object.keys(itineraryData)
+      .sort((a, b) => {
+        const numA = parseInt(a.replace(/\D/g, "")) || 0;
+        const numB = parseInt(b.replace(/\D/g, "")) || 0;
+        return numA - numB;
+      })
+      .map((key, index) => ({
         dayNumber: index + 1,
-        content: match,
-      });
-    });
+        content: itineraryData[key],
+      }));
 
     return days;
   }
 
-  const daySections = itineraryString
-    .split("\n\n")
-    .filter((section) => section.trim() !== "");
-  if (daySections.length > 1) {
-    const days = daySections.map((section, index) => {
-      const content = section.replace(/^Day\s+\d+:\s*/i, "").trim();
-      return {
-        dayNumber: index + 1,
-        content: content,
-      };
-    });
-
-    return days;
+  if (Array.isArray(itineraryData)) {
+    return itineraryData.map((content, index) => ({
+      dayNumber: index + 1,
+      content,
+    }));
   }
 
-  return [
-    {
-      dayNumber: 1,
-      content: itineraryString.trim(),
-    },
-  ];
+  if (typeof itineraryData === "string") {
+    const daySections = itineraryData
+      .split("\n\n")
+      .filter((section) => section.trim() !== "");
+
+    if (daySections.length > 1) {
+      return daySections.map((section, index) => ({
+        dayNumber: index + 1,
+        content: section.replace(/^Day\s+\d+:\s*/i, "").trim(),
+      }));
+    }
+
+    return [
+      {
+        dayNumber: 1,
+        content: itineraryData.trim(),
+      },
+    ];
+  }
+
+  return [];
 });
 
 const parsedTerms = computed(() => {
@@ -664,12 +684,19 @@ const relatedTrips = computed(() => {
     return [];
   }
 
-  const otherPackages = packages.value.filter(
-    (pkg) => pkg.id !== selectedPackage.value.id
-  );
+  const selectedClassifications = selectedPackage.value.tour_classification || [];
 
-  return otherPackages.sort(() => 0.5 - Math.random()).slice(0, 2);
+  const filteredPackages = packages.value.filter((pkg) => {
+    if (pkg.id === selectedPackage.value.id) return false;
+
+    return pkg.tour_classification?.some((cls) =>
+      selectedClassifications.includes(cls)
+    );
+  });
+
+  return filteredPackages.sort(() => 0.5 - Math.random()).slice(0, 2);
 });
+
 
 onMounted(() => {
   fetchSelectedPackage();

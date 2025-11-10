@@ -211,6 +211,19 @@
               </div>
             </div>
 
+            <div v-if="tourType === 'Joiners'" class="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-[#1E71B8] p-4 rounded-xl">
+              <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-[#1E71B8] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                </svg>
+                <div>
+                <p class="text-sm font-semibold text-[#1E71B8] mb-1">Click on dates to view availability details</p>
+                <p class="text-xs text-gray-600">
+                    Tour dates are fixed from <strong>{{ formatHuman(selectedDate) }}</strong> to <strong>{{ formatHuman(selectedend_date) }}</strong>
+                    </p>
+                  </div>
+                </div>
+              </div>
             <div
               v-if="tourType === 'Exclusive'"
               class="bg-gradient-to-r from-blue-50 to-blue-100 border border-[#1E71B8] p-4 rounded-xl flex items-start gap-3"
@@ -510,6 +523,7 @@ defineOptions({ layout: LandingIndex });
 const emit = defineEmits(["next"]);
 const booking = storeBooking();
 const selectedDate = ref("");
+const selectedEndDate = ref("");
 const selectedend_date = ref("");
 const currentDate = new Date();
 const currentMonthIndex = ref(currentDate.getMonth());
@@ -735,6 +749,7 @@ watch([currentMonthIndex, currentYear], () => {
 });
 
 const formatHuman = (ymd) => {
+  if (!ymd) return "";
   const [y, m, d] = ymd.split("-").map(Number);
   const date = new Date(y, m - 1, d);
   return date.toLocaleDateString("en-US", {
@@ -758,7 +773,7 @@ const selectTourType = (t) => {
         return `${y}-${m}-${d}`;
       };
       selectedDate.value = parseISODate(booking.start_date);
-      selectedend_date.value = "";
+      selectedend_date.value = parseISODate(booking.start_date);
     } else {
       selectedDate.value = "";
       selectedend_date.value = "";
@@ -979,7 +994,7 @@ onMounted(() => {
 
     if (tourType.value === "Joiners") {
       selectedDate.value = start_dateFormatted;
-      selectedend_date.value = "";
+      selectedend_date.value = end_dateFormatted;
 
       const [year, month] = start_dateFormatted.split("-").map(Number);
       currentMonthIndex.value = month - 1;

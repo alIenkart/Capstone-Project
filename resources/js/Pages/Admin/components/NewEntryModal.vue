@@ -215,13 +215,13 @@
                   <div>
                     <div class="text-xs text-gray-400 mb-1">Adult Rate</div>
                     <div class="text-lg font-bold text-white">
-                      ₱{{ selectedPackageData.pax_rate }}
+                      ₱{{ selectedPackageData.pax_rate?.toLocaleString() }}
                     </div>
                   </div>
                   <div>
                     <div class="text-xs text-gray-400 mb-1">Kids Rate</div>
                     <div class="text-lg font-bold text-white">
-                      ₱{{ selectedPackageData.kids_pax_rate }}
+                      ₱{{ selectedPackageData.kids_pax_rate?.toLocaleString() }}
                     </div>
                   </div>
                 </div>
@@ -459,6 +459,20 @@
                   </div>
                 </div>
 
+                <div v-if="tourType === 'Joiners'" class="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-[#1E71B8] p-4 rounded-xl">
+                  <div class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-[#1E71B8] flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                    </svg>
+                    <div>
+                      <p class="text-sm font-semibold text-[#1E71B8] mb-1">Click on dates to view availability details</p>
+                      <p class="text-xs text-gray-600">
+                        Tour dates are fixed from <strong>{{ formatHuman(selectedDate) }}</strong> to <strong>{{ formatHuman(selectedEndDate) }}</strong>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
                 <div class="flex items-center justify-between mb-6">
                   <button
                     @click="prevMonth"
@@ -495,140 +509,246 @@
                   class="grid grid-cols-7 gap-2 relative"
                   ref="calendarWrapperRef"
                 >
+                <div
+  v-for="(cell, i) in calendarDays"
+  :key="i"
+  class="h-16 rounded-xl flex items-center justify-center select-none text-sm font-semibold transition-all duration-300 relative overflow-hidden"
+  :class="{
+  'bg-gradient-to-br from-[#73BE5D] to-[#5fa84d] text-white shadow-lg scale-105 cursor-pointer hover:scale-110 hover:shadow-lg':
+    cell.isInRange && !cell.isPast && tourType === 'Joiners',
+  'bg-gradient-to-br from-[#73BE5D] to-[#5fa84d] text-white shadow-lg scale-105':
+    cell.isInRange && !cell.isPast && tourType === 'Exclusive',
+  'bg-gray-100 text-gray-400 cursor-not-allowed opacity-40':
+    !cell.day || cell.isPast || (tourType === 'Joiners' && !cell.isInRange),
+  'bg-[#d9d9d9] text-gray-700 cursor-pointer hover:scale-110 hover:shadow-md':
+    cell.day &&
+    cell.status === 'closed' &&
+    !cell.isPast &&
+    !cell.isInRange &&
+    tourType === 'Exclusive',
+  'bg-gradient-to-br from-[#45a834] to-[#3a8f2b] text-white cursor-pointer hover:scale-110 hover:shadow-lg':
+    cell.day &&
+    cell.status === 'accepting' &&
+    !cell.isPast &&
+    !cell.isInRange &&
+    tourType === 'Exclusive',
+  'bg-gradient-to-br from-[#2f5f98] to-[#254d7d] text-white cursor-pointer hover:scale-110 hover:shadow-lg':
+    cell.day &&
+    cell.status === 'full' &&
+    !cell.isPast &&
+    !cell.isInRange &&
+    tourType === 'Exclusive',
+  'text-black cursor-pointer hover:scale-110 hover:shadow-lg':
+    cell.day &&
+    cell.status === 'available' &&
+    !cell.isPast &&
+    !cell.isInRange &&
+    tourType === 'Exclusive',
+}"
+  @click="handleDateClick($event, cell)"
+>
+                  <span v-if="cell.day">{{ cell.day }}</span>
                   <div
-                    v-for="(cell, i) in calendarDays"
-                    :key="i"
-                    class="h-16 rounded-xl flex items-center justify-center select-none text-sm font-semibold transition-all duration-300 relative overflow-hidden"
-                    :class="{
-                      'bg-gradient-to-br from-[#73BE5D] to-[#5fa84d] text-white shadow-lg scale-105':
-                        cell.isInRange && !cell.isPast,
-                      'bg-gray-100 text-gray-400 cursor-not-allowed opacity-40':
-                        !cell.day || cell.isPast,
-                      'bg-[#d9d9d9] text-gray-700 cursor-pointer hover:scale-110 hover:shadow-md':
-                        cell.day &&
-                        cell.status === 'closed' &&
-                        !cell.isPast &&
-                        !cell.isInRange,
-                      'bg-gradient-to-br from-[#45a834] to-[#3a8f2b] text-white cursor-pointer hover:scale-110 hover:shadow-lg':
-                        cell.day &&
-                        cell.status === 'accepting' &&
-                        !cell.isPast &&
-                        !cell.isInRange,
-                      'bg-gradient-to-br from-[#2f5f98] to-[#254d7d] text-white cursor-pointer hover:scale-110 hover:shadow-lg':
-                        cell.day &&
-                        cell.status === 'full' &&
-                        !cell.isPast &&
-                        !cell.isInRange,
-                      'text-black cursor-pointer hover:scale-110 hover:shadow-lg':
-                        cell.day &&
-                        cell.status === 'available' &&
-                        !cell.isPast &&
-                        !cell.isInRange,
-                    }"
-                    @click="handleDateClick($event, cell)"
-                  >
-                    <span v-if="cell.day">{{ cell.day }}</span>
-                    <div
-                      v-if="cell.isInRange && !cell.isPast"
-                      class="absolute inset-0 bg-white/10 animate-pulse"
-                    ></div>
-                  </div>
+                    v-if="cell.isInRange && !cell.isPast"
+                    class="absolute inset-0 bg-white/10 animate-pulse"
+                  ></div>
+                </div>
 
-                  <div
-                    v-if="isTooltipOpen"
-                    ref="tooltipRef"
-                    class="rounded-2xl border-2 border-[#1E71B8] shadow-2xl bg-white z-50"
-                    :style="{
-                      position: 'absolute',
-                      left: tooltipX + 'px',
-                      top: tooltipY + 'px',
-                      width: '340px',
-                    }"
-                    @click.stop
-                  >
-                    <div class="px-5 pt-5 pb-4">
-                      <div class="flex items-start justify-between mb-3">
-                        <div class="text-[#1E71B8] font-bold text-lg">
-                          {{ tooltipData.title }}
-                        </div>
-                        <button
-                          class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-red-500 hover:text-white transition-all duration-300 font-bold"
-                          @click="closeTooltip"
-                        >
-                          ×
-                        </button>
-                      </div>
-                      <div
-                        class="h-1 w-full bg-gradient-to-r from-[#1E71B8] to-[#73BE5D] rounded-full mb-4"
-                      ></div>
-                      <div class="space-y-2 text-sm">
-                        <div class="flex justify-between">
-                          <span class="font-semibold text-[#1E71B8]"
-                            >Date:</span
-                          >
-                          <span class="text-gray-700">{{
-                            tooltipData.date
-                          }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                          <span class="font-semibold text-[#1E71B8]"
-                            >Slots Booked:</span
-                          >
-                          <span class="text-gray-700"
-                            >{{ tooltipData.slotsBooked }} /
-                            {{ tooltipData.slotsTotal }}</span
-                          >
-                        </div>
-                        <div class="flex justify-between">
-                          <span class="font-semibold text-[#1E71B8]"
-                            >Status:</span
-                          >
-                          <span class="text-gray-700">{{
-                            tooltipData.status
-                          }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                          <span class="font-semibold text-[#1E71B8]"
-                            >Price:</span
-                          >
-                          <span class="text-gray-700">{{
-                            tooltipData.price
-                          }}</span>
-                        </div>
-                        <div
-                          v-if="tourType === 'Joiners' && packageDuration > 1"
-                          class="pt-2 border-t border-gray-200"
-                        >
-                          <div class="flex justify-between">
-                            <span class="font-semibold text-[#1E71B8]"
-                              >Duration:</span
-                            >
-                            <span class="text-gray-700"
-                              >{{ packageDuration }} days</span
-                            >
-                          </div>
-                        </div>
-                        <div
-                          v-if="
-                            tourType === 'Exclusive' &&
-                            selectedDate &&
-                            selectedEndDate
-                          "
-                          class="pt-2 border-t border-gray-200"
-                        >
-                          <div
-                            class="text-xs text-[#1E71B8] font-semibold mb-1"
-                          >
-                            Selected Range:
-                          </div>
-                          <div class="text-xs text-gray-600">
-                            {{ formatHuman(selectedDate) }} -
-                            {{ formatHuman(selectedEndDate) }}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                <div
+    v-if="isTooltipOpen"
+    class="fixed inset-0 z-40 bg-black/30"
+    @click="closeTooltip"
+  ></div>
+
+  <div
+    v-if="isTooltipOpen"
+    ref="tooltipRef"
+    class="rounded-2xl shadow-2xl bg-white z-50 overflow-hidden"
+    :style="{
+      position: 'fixed',
+      left: '50%',
+      top: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: '380px',
+      maxHeight: '90vh',
+      border: '1px solid rgba(30, 113, 184, 0.1)',
+      overflowY: 'auto',
+    }"
+  >
+    <!-- Header with gradient background -->
+    <div
+      class="h-24 bg-gradient-to-br from-[#1E71B8] to-[#155E9C] relative overflow-hidden"
+    >
+      <div class="absolute inset-0 opacity-10">
+        <svg
+          class="w-full h-full"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+        >
+          <defs>
+            <pattern
+              id="pattern"
+              x="0"
+              y="0"
+              width="20"
+              height="20"
+              patternUnits="userSpaceOnUse"
+            >
+              <circle cx="10" cy="10" r="1" fill="white" />
+            </pattern>
+          </defs>
+          <rect width="100" height="100" fill="url(#pattern)" />
+        </svg>
+      </div>
+      <button
+        type="button"
+        @click.stop="closeTooltip"
+        class="absolute top-3 right-3 z-50 w-8 h-8 rounded-full bg-white/30 hover:bg-white/50 transition-all duration-200 flex items-center justify-center group"
+        style="pointer-events: auto"
+      >
+        <svg
+          class="w-5 h-5 text-white group-hover:scale-110 transition-transform"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+      <div class="relative pt-6 px-6">
+        <h3 class="text-white font-bold text-xl">{{ tooltipData.title }}</h3>
+        <div
+          class="w-12 h-1 bg-gradient-to-r from-[#73BE5D] to-transparent rounded-full mt-2"
+        ></div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="px-6 py-6 space-y-4">
+      <div class="flex items-start gap-3 pb-4 border-b border-gray-100">
+        <div class="flex-1">
+          <p
+            class="text-xs font-semibold text-gray-500 uppercase tracking-wide"
+          >
+            Date
+          </p>
+          <p class="text-sm text-gray-800 font-medium mt-1">
+            {{ tooltipData.date }}
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-3 pb-4 border-b border-gray-100">
+        <div class="flex-1">
+          <p
+            class="text-xs font-semibold text-gray-500 uppercase tracking-wide"
+          >
+            Slots Booked
+          </p>
+          <div class="flex items-center gap-2 mt-1">
+            <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+              <div
+                class="h-full bg-gradient-to-r from-[#73BE5D] to-[#5ca348] transition-all"
+                :style="{
+                  width:
+                    tooltipData.slotsTotal > 0
+                      ? (tooltipData.slotsBooked / tooltipData.slotsTotal) *
+                          100 +
+                        '%'
+                      : '0%',
+                }"
+              ></div>
+            </div>
+            <span class="text-sm font-semibold text-gray-700"
+              >{{ tooltipData.slotsBooked }}/{{
+                tooltipData.slotsTotal
+              }}</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-3 pb-4 border-b border-gray-100">
+        <div class="flex-1">
+          <p
+            class="text-xs font-semibold text-gray-500 uppercase tracking-wide"
+          >
+            Status
+          </p>
+          <div class="flex items-center gap-2 mt-1">
+            <span
+              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold"
+              :class="{
+                'bg-green-100 text-green-800':
+                  tooltipData.status === 'Available' ||
+                  tooltipData.status === 'Accepting Joiners',
+                'bg-red-100 text-red-800':
+                  tooltipData.status === 'Slots Full',
+                'bg-gray-100 text-gray-800': tooltipData.status === 'Closed',
+              }"
+            >
+              {{ tooltipData.status }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-3 pb-4">
+        <div class="flex-1">
+          <p
+            class="text-xs font-semibold text-gray-500 uppercase tracking-wide"
+          >
+            Price
+          </p>
+          <p class="text-lg font-bold text-[#73BE5D] mt-1">
+            {{ tooltipData.price}}
+          </p>
+        </div>
+      </div>
+
+      <!-- Conditional Duration/Range Section -->
+      <div
+        v-if="tourType === 'Joiners' && packageDuration > 1"
+        class="flex items-start gap-3 pt-2 bg-blue-50 -mx-6 -mb-6 px-6 py-4 rounded-b-2xl border-t border-blue-100"
+      >
+        <div>
+          <p
+            class="text-xs font-semibold text-[#1E71B8] uppercase tracking-wide"
+          >
+            Tour Duration
+          </p>
+          <p class="text-sm font-semibold text-[#1E71B8] mt-1">
+            {{ packageDuration }} day{{ packageDuration > 1 ? "s" : "" }}
+          </p>
+        </div>
+      </div>
+
+      <div
+        v-else-if="
+          tourType === 'Exclusive' &&
+          selectedDate &&
+          selectedEndDate
+        "
+        class="flex items-start gap-3 pt-2 bg-blue-50 -mx-6 -mb-6 px-6 py-4 rounded-b-2xl border-t border-blue-100"
+      >
+        <div>
+          <p
+            class="text-xs font-semibold text-[#1E71B8] uppercase tracking-wide"
+          >
+            Selected Range
+          </p>
+          <p class="text-sm font-semibold text-[#1E71B8] mt-1">
+            {{ formatHuman(selectedDate) }} - {{ formatHuman(selectedEndDate) }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
                 </div>
               </div>
             </div>
@@ -1408,48 +1528,58 @@ const isPastDate = (year, monthIndex, day) => {
 const handleDateClick = (event, cell) => {
   if (!cell.day || cell.isPast) return;
 
-  if (tourType.value === "Exclusive") {
-    if (!selectedDate.value || selectedEndDate.value) {
-      selectedDate.value = cell.dateKey;
-      selectedEndDate.value = "";
-    } else {
-      const start = new Date(selectedDate.value);
-      const end = new Date(cell.dateKey);
-      if (end < start) {
-        selectedEndDate.value = selectedDate.value;
-        selectedDate.value = cell.dateKey;
-      } else {
-        selectedEndDate.value = cell.dateKey;
-      }
+  if (tourType.value === "Joiners") {
+    if (cell.isInRange) {
       showTooltip(event, cell.dateKey);
     }
-  } else {
+    return;
+  }
+
+  if (!selectedDate.value || selectedEndDate.value) {
     selectedDate.value = cell.dateKey;
-    const startDate = new Date(cell.dateKey);
-    const duration = packageDuration.value;
-    const calculatedEndDate = new Date(startDate);
-    calculatedEndDate.setDate(calculatedEndDate.getDate() + (duration - 1));
-    selectedEndDate.value = formatYmd(
-      calculatedEndDate.getFullYear(),
-      calculatedEndDate.getMonth(),
-      calculatedEndDate.getDate()
-    );
+    selectedEndDate.value = "";
+  } else {
+    const start = new Date(selectedDate.value);
+    const end = new Date(cell.dateKey);
+    if (end < start) {
+      selectedEndDate.value = selectedDate.value;
+      selectedDate.value = cell.dateKey;
+    } else {
+      selectedEndDate.value = cell.dateKey;
+    }
     showTooltip(event, cell.dateKey);
   }
 };
 
 const showTooltip = (event, dateKey) => {
+  if (tourType.value !== "Joiners") {
+    isTooltipOpen.value = false;
+    return;
+  }
+
   const info = tourInfoByDate.value[dateKey] || null;
+  
+  // Calculate end date based on package duration
+  const startDate = new Date(selectedDate.value);
+  const endDate = new Date(startDate);
+  endDate.setDate(endDate.getDate() + (packageDuration.value - 1));
+  
+  // Format the date range
+  const formattedStartDate = formatHuman(selectedDate.value);
+  const formattedEndDate = formatHuman(
+    `${endDate.getFullYear()}-${String(endDate.getMonth() + 1).padStart(2, "0")}-${String(endDate.getDate()).padStart(2, "0")}`
+  );
+  
   isTooltipOpen.value = true;
   tooltipData.value = {
     title: info ? info.title : selectedPackageData.value.package_name || "Tour",
-    date: formatHuman(dateKey),
+    date: `${formattedStartDate} - ${formattedEndDate}`,
     slotsBooked: info ? info.slotsBooked : 0,
     slotsTotal: info
       ? info.slotsTotal
       : selectedPackageData.value.capacity || 0,
     status: info ? info.status : "Available",
-    price: info ? info.price : `₱${selectedPackageData.value.pax_rate || 0}`,
+    price: info ? info.price : `₱${selectedPackageData.value.pax_rate?.toLocaleString() || 0}`,
   };
 
   const wrapper = calendarWrapperRef.value;
@@ -1500,8 +1630,26 @@ const nextMonth = () => {
 const selectTourType = (t) => {
   tourType.value = t;
   isTypeOpen.value = false;
-  selectedDate.value = "";
-  selectedEndDate.value = "";
+  isTooltipOpen.value = false;
+  
+  if (t === "Joiners") {
+    const pkg = selectedPackageData.value;
+    if (pkg.start_date && pkg.end_date) {
+      selectedDate.value = formatYmd(
+        new Date(pkg.start_date).getFullYear(),
+        new Date(pkg.start_date).getMonth(),
+        new Date(pkg.start_date).getDate()
+      );
+      selectedEndDate.value = formatYmd(
+        new Date(pkg.end_date).getFullYear(),
+        new Date(pkg.end_date).getMonth(),
+        new Date(pkg.end_date).getDate()
+      );
+    }
+  } else {
+    selectedDate.value = "";
+    selectedEndDate.value = "";
+  }
 };
 
 const selectTourClassification = (c) => {
@@ -1512,10 +1660,25 @@ const selectTourClassification = (c) => {
 const handlePackageSelect = (id) => {
   selectedPackage.value = id;
   isPackageOpen.value = false;
-  tourClassifications.value =
-    packages.value.find((p) => p.id === id)?.tour_classification || [];
+  tourClassifications.value = packages.value.find((p) => p.id === id)?.tour_classification || [];
   if (tourClassifications.value.length > 0) {
     tourClassification.value = tourClassifications.value[0];
+  }
+  
+  if (tourType.value === "Joiners") {
+    const pkg = packages.value.find((p) => p.id === id);
+    if (pkg && pkg.start_date && pkg.end_date) {
+      selectedDate.value = formatYmd(
+        new Date(pkg.start_date).getFullYear(),
+        new Date(pkg.start_date).getMonth(),
+        new Date(pkg.start_date).getDate()
+      );
+      selectedEndDate.value = formatYmd(
+        new Date(pkg.end_date).getFullYear(),
+        new Date(pkg.end_date).getMonth(),
+        new Date(pkg.end_date).getDate()
+      );
+    }
   }
 };
 
@@ -1656,6 +1819,7 @@ const fetchPackages = async () => {
 
 onMounted(() => {
   fetchPackages();
+  tourType.value = "Joiners";
   document.addEventListener("click", handleClickOutside);
 });
 

@@ -141,7 +141,7 @@
       </div>
 
       <div v-if="isSidebarOpen" class="flex flex-col gap-1 px-3 mb-6 mt-auto">
-        <Link
+        <!-- <Link
           href="/admin/settings"
           class="group relative flex items-center gap-3 px-4 py-3 rounded-lg text-white/90 hover:text-white transition-all duration-200 hover:bg-white/10"
           :class="
@@ -151,7 +151,7 @@
           "
         >
           <span class="font-medium text-base">Settings</span>
-        </Link>
+        </Link> -->
 
         <button
           @click="handleLogout"

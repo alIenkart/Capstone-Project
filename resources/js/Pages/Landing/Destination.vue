@@ -1,3 +1,152 @@
+<template>
+  <section class="min-h-screen bg-gradient-to-b from-white to-blue-50">
+    <div class="max-w-7xl mx-auto px-4 md:px-6 pt-12 md:pt-16 pb-8">
+      <div class="text-center mb-12">
+        <h1 class="text-5xl md:text-6xl font-bold text-[#1E71B8] mb-4">
+          DESTINATIONS
+        </h1>
+      </div>
+
+      <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+        <div>
+          <h2 class="text-xl md:text-2xl font-bold text-[#008DDA] border-b-4 border-[#008DDA] pb-2">
+            ALL DESTINATIONS
+          </h2>
+        </div>
+
+        <div class="flex flex-col md:flex-row gap-4 items-center w-full md:w-auto">
+          <div class="w-full md:w-auto">
+            <input type="text"
+              class="w-full md:w-80 border-2 border-[#008DDA] rounded-full px-6 py-3 text-base focus:outline-none focus:ring-2 focus:ring-[#008DDA]/50 focus:border-[#008DDA] transition-all duration-300 placeholder-gray-400"
+              placeholder="Search by name, price, or destination" v-model="searchQuery" />
+          </div>
+
+          <div class="relative w-full md:w-auto">
+            <button
+              class="w-full md:w-auto bg-white text-[#008DDA] border-2 border-[#008DDA] rounded-full px-6 py-3 font-semibold text-base hover:bg-[#008DDA] hover:text-white transition-all duration-300 transform hover:scale-105 shadow-md hover:shadow-lg flex items-center justify-center gap-2"
+              @click="toggleFilter">
+              <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path
+                  d="M3 4a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v2.586a1 1 0 0 1-.293.707l-6.414 6.414a1 1 0 0 0-.293.707V17l-4 4v-6.586a1 1 0 0 0-.293-.707L3.293 7.293A1 1 0 0 1 3 6.586V4Z" />
+              </svg>
+              {{ selectedRegion || "Filter by Region" }}
+            </button>
+
+            <!-- Filter Dropdown -->
+            <transition enter-active-class="transition ease-out duration-100"
+              enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100"
+              leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100"
+              leave-to-class="transform opacity-0 scale-95">
+              <ul v-show="showFilter"
+                class="absolute top-full right-0 mt-2 bg-white border-2 border-[#008DDA]/20 rounded-2xl shadow-xl z-20 min-w-48 overflow-hidden backdrop-blur-sm">
+                <li @click="selectRegion(null)"
+                  class="px-6 py-3 text-[#008DDA] cursor-pointer hover:bg-gradient-to-r hover:from-blue-50 hover:to-transparent transition-all duration-200 font-medium hover:text-[#1E71B8]">
+                  All Regions
+                </li>
+                <li v-for="region in regions" :key="region" @click="selectRegion(region)"
+                  class="px-6 py-3 text-[#008DDA] cursor-pointer hover:bg-gradient-to-r hover:from-blue-50 hover:to-transparent transition-all duration-200 font-medium hover:text-[#1E71B8] border-t border-gray-100">
+                  {{ region }}
+                </li>
+              </ul>
+            </transition>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Destinations Grid -->
+    <div class="max-w-7xl mx-auto px-4 md:px-6 pb-20">
+      <div v-if="filteredPackages.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+        <div v-for="pkg in filteredPackages" :key="pkg.id"
+          class="group relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-[#1E71B8]/30 transform hover:-translate-y-2 flex flex-col h-full">
+          <!-- Hover Background Accent -->
+          <div
+            class="absolute inset-0 bg-gradient-to-br from-[#1E71B8]/5 to-[#008DDA]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+          </div>
+
+          <!-- Image Container -->
+          <div
+            class="relative w-full h-56 overflow-hidden bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center group/img">
+            <img :src="'/storage/' + pkg.image_path" :alt="pkg.destination"
+              class="max-h-full max-w-full object-contain transition-transform duration-500 group-hover/img:scale-110" />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover/img:opacity-100 transition-opacity duration-500">
+            </div>
+          </div>
+
+          <!-- Card Content -->
+          <div class="relative z-10 p-6 flex flex-col flex-grow">
+            <!-- Price Badge -->
+            <div
+              class="inline-flex items-center gap-1 mb-4 w-fit px-3 py-1 bg-gradient-to-r from-[#008DDA]/10 to-[#73BE5D]/10 rounded-full border border-[#008DDA]/20">
+              <span class="font-bold text-[#008DDA]">₱{{ pkg.pax_rate.toLocaleString() }}</span>
+            </div>
+
+            <!-- Destination Title -->
+            <h3
+              class="text-2xl font-bold text-[#1E71B8] mb-4 group-hover:text-[#008DDA] transition-colors duration-300 line-clamp-2">
+              {{ pkg.destination }}
+            </h3>
+
+            <!-- Divider -->
+            <div
+              class="w-8 h-1 bg-gradient-to-r from-[#008DDA] to-[#73BE5D] rounded-full mb-4 group-hover:w-16 transition-all duration-300">
+            </div>
+
+            <!-- Package Details -->
+            <div class="space-y-3 mb-6 flex-grow">
+              <!-- Package Name -->
+              <div class="flex items-center gap-2">
+
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor" class="w-5 h-5 text-[#008DDA] flex-shrink-0">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                </svg>
+                <span class="text-sm text-gray-600">{{ pkg.package_name }}</span>
+              </div>
+
+              <!-- Duration -->
+              <div class="flex items-center gap-2">
+                <svg class="w-5 h-5 text-[#008DDA] flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none"
+                  stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 6v6l4 2" />
+                </svg>
+                <span class="font-semibold text-gray-800 group-hover:text-[#008DDA] transition-colors">{{
+                  pkg.tour_duration }} Days</span>
+              </div>
+            </div>
+
+            <!-- View Details Button -->
+            <Link :href="route('tourdetails', { id: pkg.id })"
+              class="w-full px-6 py-3 rounded-xl font-semibold text-[#008DDA] border-2 border-[#008DDA] bg-white hover:bg-[#008DDA] hover:text-white transition-all duration-300 text-center shadow-sm hover:shadow-md flex items-center justify-center gap-2 group/btn">
+            View Details
+            <svg class="w-4 h-4 transition-transform group-hover/btn:translate-x-1" xmlns="http://www.w3.org/2000/svg"
+              fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      <!-- No Results Message -->
+      <div v-else class="flex flex-col items-center justify-center py-20">
+        <svg class="w-24 h-24 text-gray-300 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
+          stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.35-4.35" />
+        </svg>
+        <h3 class="text-2xl font-bold text-gray-600 mb-2">No destinations found</h3>
+        <p class="text-gray-500 text-lg">Try adjusting your search or filters</p>
+      </div>
+    </div>
+  </section>
+</template>
+
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import LandingIndex from "./LandingIndex.vue";
@@ -21,18 +170,15 @@ const closeFilter = () => {
   showFilter.value = false;
 };
 
-// Computed property for filtered packages
 const filteredPackages = computed(() => {
   const hasQuery = Boolean(searchQuery.value.trim());
   const query = searchQuery.value.toLowerCase().trim();
 
-  // If no search and no region filter, return all
   if (!hasQuery && !selectedRegion.value) {
     return packages.value;
   }
 
   return packages.value.filter((pkg) => {
-    // Region filter
     const regionMatch = selectedRegion.value
       ? pkg.region === selectedRegion.value
       : true;
@@ -41,7 +187,6 @@ const filteredPackages = computed(() => {
       return regionMatch;
     }
 
-    // Text search filters
     const packageNameMatch = pkg.package_name?.toLowerCase().includes(query);
     const paxRateMatch = pkg.pax_rate?.toString().includes(query);
     const destinationMatch = pkg.destination?.toLowerCase().includes(query);
@@ -52,7 +197,6 @@ const filteredPackages = computed(() => {
   });
 });
 
-// Unique regions derived from filteredPackages
 const regions = computed(() => {
   const unique = new Set(
     packages.value.map((pkg) => pkg.region).filter((region) => Boolean(region))
@@ -78,208 +222,3 @@ onMounted(() => {
   fetchPackages();
 });
 </script>
-
-<template>
-  <section class="destination-page">
-    <div class="destination-header">
-      <div class="destination-title">DESTINATIONS</div>
-      <div class="destination-subtitle">ALL DESTINATIONS</div>
-    </div>
-    <div class="destination-controls">
-      <input
-        type="text"
-        class="destination-search"
-        placeholder="E.g. name, price, or destination"
-        v-model="searchQuery"
-      />
-      <div class="destination-filter">
-        <button class="filter-btn" @click="toggleFilter">
-          {{ selectedRegion || "Filter" }}
-        </button>
-        <ul class="filter-dropdown" v-show="showFilter">
-          <li @click="selectRegion(null)">All regions</li>
-          <li
-            v-for="region in regions"
-            :key="region"
-            @click="selectRegion(region)"
-          >
-            {{ region }}
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="destination-list">
-      <div
-        class="destination-card"
-        v-for="pkg in filteredPackages"
-        :key="pkg.id"
-      >
-        <img :src="'/storage/' + pkg.image_path" :alt="pkg.title" />
-        <div class="destination-meta">
-          ₱ {{ pkg.pax_rate.toLocaleString() }}
-        </div>
-        <div class="destination-title">{{ pkg.destination }}</div>
-        <div class="destination-days">
-          <span>{{ pkg.tour_duration }} Days</span>
-        </div>
-        <Link
-          :href="route('tourdetails', { id: pkg.id })"
-          class="mt-2 px-4 py-2 border border-[#008DDA] text-[#008DDA] rounded-full font-semibold hover:bg-[#008DDA] hover:text-white transition text-center block"
-        >
-          View Details
-        </Link>
-      </div>
-    </div>
-  </section>
-</template>
-<style scoped>
-.destination-page {
-  max-width: 1200px;
-  margin: 40px auto 0 auto;
-  padding: 0 16px;
-}
-
-.destination-header {
-  text-align: left;
-  margin-bottom: 12px;
-}
-
-.destination-title {
-  color: #008dda;
-  font-size: 1.5rem;
-  font-weight: 800;
-  margin-bottom: 6px;
-  text-align: center;
-}
-
-.destination-subtitle {
-  color: #008dda;
-  font-size: 1.1rem;
-  border-bottom: 3px solid #008dda;
-  display: inline-block;
-  margin-bottom: 18px;
-}
-
-.destination-controls {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
-.destination-search {
-  border: 1.5px solid #008dda;
-  border-radius: 18px;
-  padding: 6px 18px;
-  font-size: 1rem;
-  outline: none;
-}
-
-.destination-filter {
-  position: relative;
-}
-
-.filter-btn {
-  background: #fff;
-  color: #008dda;
-  border: 1.5px solid #008dda;
-  border-radius: 18px;
-  padding: 6px 18px;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-.filter-dropdown {
-  display: block;
-  position: absolute;
-  top: 36px;
-  left: 0;
-  background: #fff;
-  border: 1px solid #eee;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  min-width: 160px;
-  z-index: 10;
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
-
-.filter-dropdown li {
-  padding: 10px 18px;
-  color: #008dda;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.filter-dropdown li:hover {
-  background: #f5f5f5;
-}
-
-.destination-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 32px;
-  background: #fff;
-  border-radius: 16px;
-  padding: 32px 24px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-  justify-content: flex-start;
-}
-
-.destination-card {
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-  padding: 24px 18px 18px 18px;
-  width: 270px;
-  flex: 1 1 300px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 24px;
-  transition: box-shadow 0.2s;
-}
-
-.destination-card img {
-  width: 100%;
-  height: 250px;
-  object-fit: contain;
-  border-radius: 12px;
-  margin-bottom: 16px;
-}
-
-.destination-meta {
-  color: #008dda;
-  font-weight: bold;
-  margin-bottom: 6px;
-}
-
-.destination-days {
-  color: #008dda;
-  font-size: 1rem;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.view-btn {
-  border: 1.5px solid #008dda;
-  color: #008dda;
-  background: #fff;
-  border-radius: 24px;
-  padding: 8px 32px;
-  font-size: 1rem;
-  cursor: pointer;
-  margin-top: 10px;
-  transition: background 0.2s, color 0.2s;
-}
-
-.view-btn:hover {
-  background: #008dda;
-  color: #fff;
-}
-</style>

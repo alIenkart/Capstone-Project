@@ -1,51 +1,58 @@
 <template>
   <div class="min-h-screen flex flex-col">
-    <nav class="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
-      <div class="flex items-center justify-between px-8 h-20">
+    <nav class="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-md backdrop-blur-sm bg-opacity-95">
+      <div class="flex items-center justify-between px-8 md:px-16 h-24 gap-12">
         <div class="flex-shrink-0">
           <img
             src="/storage/logo/Logo.png"
             alt="JE Travel & Tours"
-            class="h-12"
+            class="h-12 hover:opacity-80 transition-opacity duration-300"
           />
         </div>
 
-        <div class="flex items-center gap-20 flex-1 justify-center">
+        <div class="hidden lg:flex items-center gap-16 flex-1 justify-center">
           <Link
             href="/"
-            class="text-[#008DDA] font-semibold text-m uppercase hover:text-green-500 transition"
-            >Home
+            class="text-[#008DDA] font-semibold text-base uppercase transition-all duration-300 relative group whitespace-nowrap"
+          >
+            Home
+            <span class="absolute -bottom-2 left-0 w-0 h-1 bg-gradient-to-r from-[#008DDA] to-[#73BE5D] group-hover:w-full transition-all duration-300"></span>
           </Link>
           <Link
             href="/destination"
-            class="text-[#008DDA] font-semibold text-m uppercase hover:text-green-500 transition"
-            >Destinations</Link
+            class="text-[#008DDA] font-semibold text-base uppercase transition-all duration-300 relative group whitespace-nowrap"
           >
+            Destinations
+            <span class="absolute -bottom-2 left-0 w-0 h-1 bg-gradient-to-r from-[#008DDA] to-[#73BE5D] group-hover:w-full transition-all duration-300"></span>
+          </Link>
           <Link
             href="/blogs"
-            class="text-[#008DDA] font-semibold text-m uppercase hover:text-green-500 transition"
+            class="text-[#008DDA] font-semibold text-base uppercase transition-all duration-300 relative group whitespace-nowrap"
           >
-            Travel Blogs</Link
-          >
+            Travel Blogs
+            <span class="absolute -bottom-2 left-0 w-0 h-1 bg-gradient-to-r from-[#008DDA] to-[#73BE5D] group-hover:w-full transition-all duration-300"></span>
+          </Link>
           <Link
             href="/aboutus"
-            class="text-[#008DDA] font-semibold text-m uppercase hover:text-green-500 transition"
+            class="text-[#008DDA] font-semibold text-base uppercase transition-all duration-300 relative group whitespace-nowrap"
           >
-            About Us</Link
-          >
+            About Us
+            <span class="absolute -bottom-2 left-0 w-0 h-1 bg-gradient-to-r from-[#008DDA] to-[#73BE5D] group-hover:w-full transition-all duration-300"></span>
+          </Link>
           <Link
             href="/contactus"
-            class="text-[#008DDA] font-semibold text-m uppercase hover:text-green-500 transition"
+            class="text-[#008DDA] font-semibold text-base uppercase transition-all duration-300 relative group whitespace-nowrap"
           >
-            Contact Us</Link
-          >
+            Contact Us
+            <span class="absolute -bottom-2 left-0 w-0 h-1 bg-gradient-to-r from-[#008DDA] to-[#73BE5D] group-hover:w-full transition-all duration-300"></span>
+          </Link>
         </div>
 
-        <div v-if="user" class="flex items-center gap-6">
+        <div v-if="user" class="flex items-center gap-6 md:gap-8">
           <div class="relative" ref="notificationRef">
             <button
               @click="toggleNotifications"
-              class="relative p-2 text-[#008DDA] hover:bg-gray-100 rounded-full transition"
+              class="relative p-2 text-[#008DDA] hover:bg-blue-50 rounded-full transition-all duration-300 hover:shadow-md"
             >
               <svg
                 width="24"
@@ -60,99 +67,106 @@
               </svg>
               <span
                 v-if="unreadCount > 0"
-                class="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center"
+                class="absolute top-0 right-0 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-lg"
               >
                 {{ unreadCount }}
               </span>
             </button>
 
-            <div
-              v-if="showNotifications"
-              class="absolute right-0 mt-3 w-96 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden"
+            <transition
+              enter-active-class="transition ease-out duration-100"
+              enter-from-class="transform opacity-0 scale-95"
+              enter-to-class="transform opacity-100 scale-100"
+              leave-active-class="transition ease-in duration-75"
+              leave-from-class="transform opacity-100 scale-100"
+              leave-to-class="transform opacity-0 scale-95"
             >
               <div
-                class="bg-gradient-to-r from-[#008DDA] to-blue-700 px-6 py-4"
+                v-if="showNotifications"
+                class="absolute right-0 mt-3 w-full md:w-96 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden"
               >
-                <h3 class="text-white font-semibold text-lg">Notifications</h3>
-              </div>
-
-              <div class="max-h-96 overflow-y-auto">
-                <div v-if="notifications.length > 0">
-                  <div
-                    v-for="notif in notifications"
-                    :key="notif.id"
-                    @click="markAsRead(notif.id)"
-                    class="border-b border-gray-100 hover:bg-gray-50 transition cursor-pointer"
+                <div
+                  class="bg-gradient-to-r from-[#1E71B8] to-[#008DDA] px-6 py-4 flex items-center justify-between"
+                >
+                  <h3 class="text-white font-bold text-lg">Notifications</h3>
+                  <button
+                    @click="showNotifications = false"
+                    class="text-white hover:bg-white/20 p-1 rounded-full transition-all duration-300"
                   >
-                    <div class="p-4 bg-white hover:bg-gray-50">
-                      <div class="border-2 border-gray-300 rounded-lg p-4">
-                        <div class="flex items-start justify-between mb-3">
-                          <h4 class="font-bold text-gray-900 text-sm">
-                            {{ notif.title }}
-                          </h4>
-                          <div
-                            class="flex items-center gap-2"
-                            v-if="!notif.is_read"
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div class="max-h-96 overflow-y-auto">
+                  <div v-if="notifications.length > 0" class="divide-y divide-gray-100">
+                    <div
+                      v-for="notif in notifications"
+                      :key="notif.id"
+                      @click="markAsRead(notif.id)"
+                      class="p-4 hover:bg-gradient-to-r hover:from-blue-50 hover:to-transparent transition-all duration-300 cursor-pointer border-l-4 border-transparent hover:border-[#008DDA]"
+                      :class="notif.is_read ? 'bg-white' : 'bg-blue-50'"
+                    >
+                      <div class="flex items-start justify-between mb-2">
+                        <h4 class="font-bold text-gray-900 text-sm flex-1">
+                          {{ notif.title }}
+                        </h4>
+                        <div class="flex items-center gap-2 ml-2">
+                          <span
+                            class="text-xs font-mono bg-gradient-to-r from-[#008DDA] to-[#1E71B8] text-white px-2 py-1 rounded-full"
                           >
-                            <span
-                              class="text-xs font-mono bg-blue-100 text-blue-700 px-2 py-1 rounded"
-                            >
-                              B{{ String(notif.booking_id).padStart(5, "0") }}
-                            </span>
-                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                          </div>
-                          <div class="flex items-center gap-2" v-else>
-                            <span
-                              class="text-xs font-mono bg-blue-100 text-blue-700 px-2 py-1 rounded"
-                            >
-                              B{{ String(notif.booking_id).padStart(5, "0") }}
-                            </span>
-                          </div>
+                            B{{ String(notif.booking_id).padStart(5, "0") }}
+                          </span>
+                          <div
+                            v-if="!notif.is_read"
+                            class="w-3 h-3 rounded-full bg-gradient-to-r from-red-500 to-red-600 shadow-lg"
+                          ></div>
                         </div>
-                        <p class="text-gray-700 text-sm leading-relaxed mb-3">
-                          {{ notif.message }}
-                        </p>
-                        <p class="text-gray-500 text-xs">
-                          {{ formatNotificationDate(notif.created_at) }}
-                        </p>
                       </div>
+                      <p class="text-gray-700 text-sm leading-relaxed mb-2">
+                        {{ notif.message }}
+                      </p>
+                      <p class="text-gray-500 text-xs">
+                        {{ formatNotificationDate(notif.created_at) }}
+                      </p>
                     </div>
                   </div>
+                  <div v-else class="px-6 py-12 text-center">
+                    <svg
+                      width="32"
+                      height="32"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      class="mx-auto text-gray-300 mb-2"
+                    >
+                      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                      <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                    </svg>
+                    <p class="text-gray-500 text-sm font-medium">No notifications yet</p>
+                  </div>
                 </div>
-                <div v-else class="px-6 py-12 text-center">
-                  <svg
-                    width="32"
-                    height="32"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    class="mx-auto text-gray-300 mb-2"
-                  >
-                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-                  </svg>
-                  <p class="text-gray-500 text-sm">No notifications</p>
-                </div>
-              </div>
 
-              <div
-                class="bg-gray-50 px-6 py-3 text-center border-t border-gray-100"
-              >
-                <button
-                  @click="markAllAsRead"
-                  class="text-[#008DDA] text-sm font-medium hover:text-blue-700 transition"
+                <div
+                  class="bg-gradient-to-r from-blue-50 to-transparent px-6 py-3 text-center border-t border-gray-100"
                 >
-                  Mark All as Read
-                </button>
+                  <button
+                    @click="markAllAsRead"
+                    class="text-[#008DDA] text-sm font-semibold hover:text-[#1E71B8] transition-all duration-300"
+                  >
+                    Mark All as Read
+                  </button>
+                </div>
               </div>
-            </div>
+            </transition>
           </div>
 
           <div class="relative" ref="dropdownRef">
             <button
               @click="showDropdown = !showDropdown"
-              class="p-2 text-[#008DDA] hover:bg-gray-100 rounded-full transition border-2 border-[#008DDA]"
+              class="p-2 text-[#008DDA] hover:bg-blue-50 rounded-full transition-all duration-300 border-2 border-[#008DDA] hover:shadow-md hover:border-[#73BE5D]"
             >
               <svg
                 width="20"
@@ -167,70 +181,79 @@
               </svg>
             </button>
 
-            <div
-              v-if="showDropdown"
-              class="absolute right-0 mt-3 w-48 bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden"
+            <transition
+              enter-active-class="transition ease-out duration-100"
+              enter-from-class="transform opacity-0 scale-95"
+              enter-to-class="transform opacity-100 scale-100"
+              leave-active-class="transition ease-in duration-75"
+              leave-from-class="transform opacity-100 scale-100"
+              leave-to-class="transform opacity-0 scale-95"
             >
-              <Link
-                href="/profile"
-                class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 transition border-b border-gray-100"
+              <div
+                v-if="showDropdown"
+                class="absolute right-0 mt-3 w-56 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden"
               >
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  class="text-[#008DDA]"
+                <Link
+                  href="/profile"
+                  class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-transparent transition-all duration-300 border-b border-gray-100 group"
                 >
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
-                <span class="text-sm font-medium">Profile</span>
-              </Link>
-              <Link
-                href="/yourbookings"
-                class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 transition border-b border-gray-100"
-              >
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  class="text-[#008DDA]"
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    class="text-[#008DDA] group-hover:text-[#73BE5D] transition-all duration-300"
+                  >
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                  <span class="text-sm font-semibold">Profile</span>
+                </Link>
+                <Link
+                  href="/yourbookings"
+                  class="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-blue-50 hover:to-transparent transition-all duration-300 border-b border-gray-100 group"
                 >
-                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                  <line x1="16" y1="2" x2="16" y2="6" />
-                  <line x1="8" y1="2" x2="8" y2="6" />
-                  <line x1="3" y1="10" x2="21" y2="10" />
-                </svg>
-                <span class="text-sm font-medium">Your Bookings</span>
-              </Link>
-              <Link
-                :href="route('logout')"
-                method="post"
-                as="button"
-                class="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 transition"
-              >
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  class="text-red-500"
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    class="text-[#008DDA] group-hover:text-[#73BE5D] transition-all duration-300"
+                  >
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </svg>
+                  <span class="text-sm font-semibold">Your Bookings</span>
+                </Link>
+                <Link
+                  :href="route('logout')"
+                  method="post"
+                  as="button"
+                  class="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gradient-to-r hover:from-red-50 hover:to-transparent transition-all duration-300 group"
                 >
-                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                  <polyline points="16 17 21 12 16 7" />
-                  <line x1="21" y1="12" x2="9" y2="12" />
-                </svg>
-                <span class="text-sm font-medium">Logout</span>
-              </Link>
-            </div>
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    class="text-red-500 group-hover:text-red-600 transition-all duration-300"
+                  >
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <polyline points="16 17 21 12 16 7" />
+                    <line x1="21" y1="12" x2="9" y2="12" />
+                  </svg>
+                  <span class="text-sm font-semibold">Logout</span>
+                </Link>
+              </div>
+            </transition>
           </div>
         </div>
 
@@ -239,7 +262,7 @@
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
-            class="w-5 h-5 text-[#008DDA] transition-colors duration-300 group-hover:text-green-500"
+            class="w-5 h-5 text-[#008DDA] transition-all duration-300 group-hover:text-[#73BE5D] group-hover:scale-110"
           >
             <path
               fill-rule="evenodd"
@@ -250,7 +273,7 @@
 
           <Link
             href="/login"
-            class="text-lg font-medium text-[#008DDA] transition-colors duration-300 group-hover:text-green-500"
+            class="text-sm md:text-base font-semibold text-[#008DDA] transition-all duration-300 group-hover:text-[#73BE5D] ml-2"
           >
             Login
           </Link>
