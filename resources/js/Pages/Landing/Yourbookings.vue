@@ -793,59 +793,21 @@ const onFileChange = (event) => {
   previewUrl.value = file ? URL.createObjectURL(file) : null;
 };
 
-const viewReceipt = () => {
+async function viewReceipt() {
   const currentBooking = filteredBookings.value[selectedBookingIndex.value];
-  const currentPayment = payments.value.find(
-    (p) => p.booking_id === currentBooking.id
-  );
+   try {
+    const response = await axios.get(`/api/receipts/${currentBooking.id}`);
 
-  if (!currentPayment) {
-    toast.error("Payment information not found.");
-    return;
+    receiptData.value = response.data.data;
+     
+    showReceiptModal.value = true;
+
+  } catch (error) {
+    console.error(error);
+    toast.error("Something went wrong while submitting your payment.");
   }
 
-  const paymentHistory = currentPayment.payment_history || {};
-  const amountPaid =
-    paymentHistory.paymentType === "Full Payment"
-      ? paymentHistory.fullPaymentAmount || currentBooking.total_price
-      : paymentHistory.downPaymentAmount || 0;
-  const remainingBalance = paymentHistory.remainingBalance || 0;
-
-  receiptData.value = {
-    receiptNo: `B${String(currentBooking.id).padStart(5, "0")}`,
-    date: paymentHistory.paymentDate
-      ? new Date(paymentHistory.paymentDate).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
-      : new Date().toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }),
-    customerName: currentBooking.customer_name || "",
-    customerEmail: currentBooking.customer_email || "",
-    customerPhone: currentBooking.customer_phone || "+63XXXXXXXXXXX",
-    paymentVia: currentPayment.mode_of_payment || "GCash",
-    quantity: currentBooking.total_quantity,
-    paymentType: paymentHistory.paymentType || "Full Payment",
-    tourClassification: "Land Tour",
-    package: `${currentBooking.package_destination} Tour`,
-    duration: currentBooking.duration,
-    bookingType: currentBooking.tour_type,
-    destination: currentBooking.package_destination,
-    travelDate: new Date(currentBooking.start_date).toLocaleDateString(
-      "en-US",
-      { year: "numeric", month: "long", day: "numeric" }
-    ),
-    totalAmount: Number(currentBooking.total_price).toLocaleString("en-PH"),
-    amountPaid: Number(amountPaid).toLocaleString("en-PH"),
-    remainingBalance: Number(remainingBalance).toLocaleString("en-PH"),
-  };
-
-  showReceiptModal.value = true;
-};
+}
 
 const submitPayment = () => {
   const currentBooking = filteredBookings.value[selectedBookingIndex.value];
@@ -920,7 +882,6 @@ onMounted(async () => {
     payments.value = await fetchPaymentsByBookingId(
       filteredBookings.value[selectedBookingIndex.value].id
     );
-    console.log("🚀 ~ payments.value:", payments.value)
   }
 });
 

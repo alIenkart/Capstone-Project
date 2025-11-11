@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
+use App\Models\Receipt;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\PaymentResource;
 
 class PaymentController extends Controller
@@ -109,6 +111,8 @@ class PaymentController extends Controller
                 if ($response instanceof \Illuminate\Http\JsonResponse) {
                     return $response;
                 }
+                $user = Auth::user();
+                Receipt::createReceipt($payment, $user->id);
             }
         }
 

@@ -49,12 +49,12 @@
             OFFICIAL PAYMENT RECEIPT
           </h2>
           <p class="text-sm text-gray-600">
-            Receipt No: {{ receiptData.receiptNo || "XXXX - XXXX" }}
+            Receipt No: {{ receiptData.booking_id ? `B${String(receiptData.booking_id).padStart(5, "0")}` : "XXXX-XXXX" }}
           </p>
           <p class="text-sm text-gray-600">
             Date:
             {{
-              receiptData.date ||
+              receiptData.payment_history.paymentDate ||
               new Date().toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "long",
@@ -73,21 +73,21 @@
             <h3 class="font-bold text-gray-800 mb-3">Customer Information</h3>
             <div class="space-y-1 text-sm">
               <p>
-                <span class="text-gray-600">Name:</span>
+                <span class="text-gray-600">Name: </span>
                 <span class="font-medium">{{
-                  receiptData.customerName || "John Doe"
+                  receiptData.customer_name
                 }}</span>
               </p>
               <p>
-                <span class="text-gray-600">Email:</span>
+                <span class="text-gray-600">Email: </span>
                 <span class="font-medium">{{
-                  receiptData.customerEmail || "abc@email.com"
+                  receiptData.customer_email
                 }}</span>
               </p>
               <p>
-                <span class="text-gray-600">Phone No:</span>
+                <span class="text-gray-600">Phone No: </span>
                 <span class="font-medium">{{
-                  receiptData.customerPhone || "+63XXXXXXXXXXX"
+                  receiptData.customer_phone
                 }}</span>
               </p>
             </div>
@@ -98,21 +98,21 @@
             <h3 class="font-bold text-gray-800 mb-3">Payment Details</h3>
             <div class="space-y-1 text-sm">
               <p>
-                <span class="text-gray-600">Payment Via:</span>
+                <span class="text-gray-600">Payment Via: </span>
                 <span class="font-medium">{{
-                  receiptData.paymentVia || "GCash"
+                  receiptData.mode_of_payment
                 }}</span>
               </p>
               <p>
-                <span class="text-gray-600">Quantity:</span>
+                <span class="text-gray-600">Quantity: </span>
                 <span class="font-medium">{{
-                  receiptData.quantity || "10"
+                  receiptData.total_quantity
                 }}</span>
               </p>
               <p>
-                <span class="text-gray-600">Type of Payment:</span>
+                <span class="text-gray-600">Type of Payment: </span>
                 <span class="font-medium">{{
-                  receiptData.paymentType || "Downpayment"
+                  receiptData.type_of_payment
                 }}</span>
               </p>
             </div>
@@ -124,39 +124,43 @@
           <h3 class="font-bold text-gray-800 mb-3">Booking Details</h3>
           <div class="space-y-1 text-sm">
             <p>
-              <span class="text-gray-600">Tour Classification:</span>
+              <span class="text-gray-600">Tour Classification: </span>
               <span class="font-medium">{{
-                receiptData.tourClassification || "Land Tour"
+                receiptData.tour_classification?.length
+                  ? receiptData.tour_classification.length > 2
+                    ? receiptData.tour_classification.slice(0, -1).join(", ") + " and " + receiptData.tour_classification.slice(-1)
+                    : receiptData.tour_classification.join(" and ")
+                  : "N/A"
               }}</span>
             </p>
             <p>
-              <span class="text-gray-600">Package:</span>
+              <span class="text-gray-600">Package: </span>
               <span class="font-medium">{{
-                receiptData.package || "Baguio Tour"
+                receiptData.package_destination + " Tour" ?? "N/A"
               }}</span>
             </p>
             <p>
-              <span class="text-gray-600">Duration:</span>
+              <span class="text-gray-600">Duration: </span>
               <span class="font-medium">{{
-                receiptData.duration || "3 Days"
+                receiptData.duration + " Days" ?? "N/A"
               }}</span>
             </p>
             <p>
-              <span class="text-gray-600">Booking Type:</span>
+              <span class="text-gray-600">Booking Type: </span>
               <span class="font-medium">{{
-                receiptData.bookingType || "Exclusive"
-              }}</span>
-            </p>
-            <p>
-              <span class="text-gray-600">Destination:</span>
-              <span class="font-medium">{{
-                receiptData.destination || "Baguio, Philippines"
+                receiptData.tour_type
               }}</span>
             </p>
             <p>
               <span class="text-gray-600">Travel Date:</span>
               <span class="font-medium">{{
-                receiptData.travelDate || "April 2, 2025"
+                receiptData.start_date
+                  ? new Date(receiptData.start_date).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric"
+                    })
+                  : "N/A"
               }}</span>
             </p>
           </div>
@@ -168,20 +172,23 @@
             <div class="flex justify-between">
               <span class="font-bold text-gray-800">Total Amount:</span>
               <span class="font-bold text-gray-800"
-                >₱ {{ receiptData.totalAmount || "XXXX" }}</span
+                >₱ {{ receiptData.total_price}}</span
               >
             </div>
             <div class="flex justify-between">
               <span class="font-bold text-gray-800">Amount Paid:</span>
               <span class="font-bold text-green-600"
-                >₱ {{ receiptData.amountPaid || "XXXX" }}</span
+                >₱ {{ receiptData.total_price - receiptData.remaining_balance }}</span
               >
             </div>
+
+            <div v-if="receiptData.type_of_payment === 'Down Payment'">
             <div class="flex justify-between">
               <span class="font-bold text-gray-800">Remaining Balance:</span>
               <span class="font-bold text-red-600"
-                >₱ {{ receiptData.remainingBalance || "XXXX" }}</span
+                >₱ {{ receiptData.remaining_balance }}</span
               >
+            </div>
             </div>
           </div>
         </div>
@@ -243,7 +250,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from "vue";
+import { defineProps, defineEmits, watch } from "vue";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
@@ -370,4 +377,12 @@ const downloadReceipt = async () => {
     if (buttons) buttons.style.display = "flex";
   }
 };
+
+watch(
+  () => props.receiptData,
+  (newData) => {
+    console.log("Updated Receipt Data:", newData);
+  },
+  { immediate: true, deep: true }
+);
 </script>

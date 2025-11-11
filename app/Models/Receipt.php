@@ -2,6 +2,7 @@
 
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Receipt extends Model
 {
@@ -9,9 +10,6 @@ class Receipt extends Model
         'payment_id',
         'customer_id',
         'approved_by',
-        'receipt_date',
-        'total_amount',
-        'signature_path',
         'booking_id'
     ];
 
@@ -34,4 +32,18 @@ class Receipt extends Model
     {
         return $this->belongsTo(User::class, 'approved_by');
     }
+
+    public static function createReceipt($payment, $id)
+    {
+        \Log::info('Creating receipt for payment ID: ' . $payment->id . ' by user ID: ' . $id);
+        return self::updateOrCreate(
+            ['payment_id' => $payment->id],
+            [
+                'booking_id' => $payment->booking_id,
+                'customer_id' => $payment->booking->customer_id,
+                'approved_by' => $id,
+            ]
+        );
+    }
+
 }

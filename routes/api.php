@@ -15,9 +15,10 @@ use App\Http\Controllers\Api\AboutUsController;
 use App\Http\Controllers\Api\OurStoryController;
 use App\Http\Controllers\Api\AccreditationController;
 use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\ReceiptController;
 
 
-Route::middleware('api')->group(function () {
+Route::middleware(['web', 'auth', 'verified'])->group(function () {
 
     Route::get('bookings/by-user', [BookingController::class, 'getBookingsByUser']);
 
@@ -28,6 +29,9 @@ Route::middleware('api')->group(function () {
     Route::apiResource('payments', PaymentController::class);
     Route::apiResource('inquiries', InquiryController::class);
     Route::apiResource('feedbacks', FeedbackController::class);
+    Route::apiResource('receipts', ReceiptController::class);
+
+     // Contents
 
     Route::apiResource('contents', ContentController::class);
     Route::post('contents/{content}/upload-image', [ContentController::class, 'uploadImage']);
