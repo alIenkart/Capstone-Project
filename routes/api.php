@@ -26,7 +26,6 @@ Route::middleware('api')->group(function () {
     Route::apiResource('packages', PackagesController::class);
     Route::apiResource('vouchers', VoucherController::class);
     Route::apiResource('bookings', BookingController::class);
-    Route::apiResource('payments', PaymentController::class);
     Route::apiResource('inquiries', InquiryController::class);
     Route::apiResource('feedbacks', FeedbackController::class);
      // Contents
@@ -62,5 +61,6 @@ Route::middleware('api')->group(function () {
 
 Route::middleware(['web', 'auth', 'verified'])->group(function () {
     Route::apiResource('receipts', ReceiptController::class);
+    Route::apiResource('payments', PaymentController::class);
 });
 
