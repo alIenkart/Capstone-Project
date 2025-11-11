@@ -45,12 +45,13 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $id,
+            'first_name' => 'nullable|string|max:255',
+            'last_name' => 'nullable|string|max:255',
+            'email' => 'nullable|email|unique:users,email,' . $id,
             'phone_number' => 'nullable|string|max:20',
-            'role' => 'required|in:Admin,Customer',
+            'role' => 'nullable|in:Admin,Customer',
             'password' => 'nullable|string|min:8|confirmed',
+            'avatar' => 'nullable|string|max:500',
         ]);
 
         $user = User::findOrFail($id);
@@ -60,6 +61,10 @@ class UserController extends Controller
         $user->email = $validated['email'];
         $user->phone_number = $validated['phone_number'];
         $user->role = $validated['role'];
+
+        if (isset($validated['avatar'])) {
+            $user->avatar = $validated['avatar'];
+        }
 
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
