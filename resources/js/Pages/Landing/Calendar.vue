@@ -377,7 +377,6 @@ const availabilityByDate = ref({});
 const tourInfoByDate = ref({});
 
 const generatePackageDates = () => {
-  if (tourType.value === "Joiners") return;
   const pkg = booking.selectedPackage;
   if (!pkg || !pkg.start_date || !pkg.end_date) {
     return;
@@ -438,7 +437,9 @@ const generatePackageDates = () => {
       price: `₱ ${pkg.pax_rate.toLocaleString()}`,
     };
 
-    currentDay++;
+    if (tourType.value === "Joiners") {
+      currentDay++;
+    };
 
     const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
     if (currentDay > daysInMonth) {
