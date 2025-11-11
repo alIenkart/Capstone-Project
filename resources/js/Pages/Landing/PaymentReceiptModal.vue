@@ -54,12 +54,7 @@
           <p class="text-sm text-gray-600">
             Date:
             {{
-              receiptData.payment_history.paymentDate ||
-              new Date().toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })
+              formattedPayments
             }}
           </p>
         </div>
@@ -178,15 +173,14 @@
             <div class="flex justify-between">
               <span class="font-bold text-gray-800">Amount Paid:</span>
               <span class="font-bold text-green-600"
-                >₱ {{ receiptData.total_price - receiptData.remaining_balance }}</span
+                >₱ {{ formattedPaymentAmount }}</span
               >
             </div>
-
-            <div v-if="receiptData.type_of_payment === 'Down Payment'">
+            <div v-if="receiptData.type_of_payment === 'Down Payment' && !isMatch(receiptData.total_price, formattedPaymentAmount)">
             <div class="flex justify-between">
               <span class="font-bold text-gray-800">Remaining Balance:</span>
               <span class="font-bold text-red-600"
-                >₱ {{ receiptData.remaining_balance }}</span
+                >₱ {{ formattedPaymentAmount }}</span
               >
             </div>
             </div>
@@ -250,7 +244,7 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, watch } from "vue";
+import { defineProps, defineEmits, watch, computed } from "vue";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 
@@ -377,6 +371,49 @@ const downloadReceipt = async () => {
     if (buttons) buttons.style.display = "flex";
   }
 };
+
+const formattedPayments = computed(() => {
+  const history = props.receiptData.payment_history;
+
+  if (!history) return { type: "N/A", date: "N/A" };
+
+  const payments = Array.isArray(history) ? history : [history];
+
+  const type = payments.length > 1 ? "Down Payment" : "Full Payment";
+
+  const relevantDate =
+    type === "Full Payment"
+      ? payments[0].paymentDate
+      : payments[payments.length - 1].paymentDate;
+
+  const date = new Date(relevantDate).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  return date;
+});
+
+
+const formattedPaymentAmount = computed(() => {
+  const history = props.receiptData.payment_history;
+
+  if (!history) return 0;
+
+  const payments = Array.isArray(history) ? history : [history];
+
+  if (payments.length > 1) {
+    return payments.reduce((sum, p) => sum + (p.downPaymentAmount || 0), 0);
+  } else {
+    return payments[0].fullPaymentAmount || 0;
+  }
+});
+
+const isMatch = (amount, remaining) => {
+  return Number(amount) === Number(remaining);
+};
+
 
 watch(
   () => props.receiptData,
