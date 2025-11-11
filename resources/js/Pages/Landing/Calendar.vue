@@ -436,10 +436,8 @@ const generatePackageDates = () => {
             : "Available",
       price: `₱ ${pkg.pax_rate.toLocaleString()}`,
     };
-
-    if (tourType.value === "Joiners") {
+      if (tourType.value === "Joiners") return;
       currentDay++;
-    };
 
     const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
     if (currentDay > daysInMonth) {
@@ -722,8 +720,16 @@ const formatYmd = (year, monthIndex, day) => {
 const isPastDate = (year, monthIndex, day) => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+  
   const cellDate = new Date(year, monthIndex, day);
   cellDate.setHours(0, 0, 0, 0);
+  
+  if (tourType.value === "Exclusive") {
+    const fiveDaysFromNow = new Date(today);
+    fiveDaysFromNow.setDate(fiveDaysFromNow.getDate() + 4);
+    return cellDate <= fiveDaysFromNow;
+  }
+  
   return cellDate < today;
 };
 
