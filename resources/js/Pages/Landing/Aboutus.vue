@@ -102,12 +102,14 @@
       </div>
     </div>
   </section>
+  <Footer></Footer>
 </template>
 
 <script setup>
 import LandingIndex from "./LandingIndex.vue";
 import { onMounted, ref, computed } from "vue";
 import { api } from "@/api/api";
+import Footer from "./Footer.vue";
 
 defineOptions({ layout: LandingIndex });
 

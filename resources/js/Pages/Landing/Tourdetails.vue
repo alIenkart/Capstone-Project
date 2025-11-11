@@ -440,6 +440,7 @@
       </div>
     </div>
   </div>
+  <Footer></Footer>
 </template>
 
 <script setup>
@@ -450,6 +451,7 @@ import { api } from "../../api/api";
 import { storeBooking } from "@/state/storeBooking";
 import { cloneDeep } from "lodash";
 import { useToast } from "vue-toastification";
+import Footer from "./Footer.vue";
 
 defineOptions({ layout: LandingIndex });
 

@@ -11,6 +11,7 @@
       @back="goBack"
     />
   </div>
+  <Footer></Footer>
 </template>
 
 <script setup>
@@ -19,6 +20,7 @@ import LandingIndex from "./LandingIndex.vue";
 import Calendar from "./Calendar.vue";
 import ReservationDetails from "./ReservationDetails.vue";
 import BookingConfirmation from "./BookingConfirmation.vue";
+import Footer from "./Footer.vue";
 
 defineOptions({ layout: LandingIndex });
 

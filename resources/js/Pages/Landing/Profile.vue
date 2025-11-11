@@ -168,6 +168,7 @@
       </div>
     </div>
   </div>
+  <Footer></Footer>
 </template>
 
 <script setup>
@@ -175,6 +176,7 @@ import LandingIndex from "./LandingIndex.vue";
 import { usePage } from "@inertiajs/vue3";
 import { ref, computed, onMounted } from "vue";
 import { useToast } from "vue-toastification";
+import Footer from "./Footer.vue";
 
 defineOptions({ layout: LandingIndex });
 const page = usePage();

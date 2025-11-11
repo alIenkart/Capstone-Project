@@ -87,6 +87,7 @@
             </div>
         </form>
     </GuestLayout>
+    <Footer></Footer>
 </template>
 
 <script setup>
@@ -100,6 +101,7 @@ import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 import { useToast } from 'vue-toastification';
 import { ref } from 'vue';
+import Footer from '../Landing/Footer.vue';
 
 defineProps({
     canResetPassword: Boolean,

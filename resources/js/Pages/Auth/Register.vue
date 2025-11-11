@@ -197,6 +197,7 @@
             </div>
         </div>
     </div>
+    <Footer></Footer>
 </template>
 
 <script setup>
@@ -208,6 +209,7 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 import axios from 'axios';
 import { ref, computed } from 'vue';
 import { useToast } from 'vue-toastification';
+import Footer from '../Landing/Footer.vue';
 
 defineOptions({ layout: LandingIndex });
 

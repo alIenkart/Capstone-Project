@@ -859,6 +859,7 @@
       </main>
     </div>
   </div>
+  <Footer></Footer>
 </template>
 
 <script setup>
@@ -878,6 +879,7 @@ import { toCamelCase } from "@/helper/helper";
 import { useToast } from "vue-toastification";
 import RejectionModal from "../Admin/components/PaymentRejectionDetail.vue";
 import { _ } from "lodash";
+import Footer from "./Footer.vue";
 
 const user = usePage().props.auth.user;
 const toast = useToast();

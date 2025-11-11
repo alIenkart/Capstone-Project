@@ -144,6 +144,7 @@
       </div>
     </div>
   </section>
+  <Footer></Footer>
 </template>
 
 <script setup>
@@ -152,6 +153,7 @@ import LandingIndex from "./LandingIndex.vue";
 import axios from "axios";
 import { api } from "../../api/api";
 import { Link } from "@inertiajs/vue3";
+import Footer from "./Footer.vue";
 
 defineOptions({ layout: LandingIndex });
 

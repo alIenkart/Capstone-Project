@@ -146,6 +146,7 @@
       </div>
     </section>
   </div>
+  <Footer></Footer>
 </template>
 
 <script setup>
@@ -153,6 +154,7 @@ import { ref, computed, onMounted } from "vue";
 import { Link } from "@inertiajs/vue3";
 import { api } from "../../api/api";
 import LandingIndex from "./LandingIndex.vue";
+import Footer from "./Footer.vue";
 
 defineOptions({ layout: LandingIndex });
 

@@ -278,6 +278,7 @@
       </div>
     </div>
   </div>
+  <Footer></Footer>
 </template>
 
 <script setup>
@@ -288,6 +289,7 @@ import { reactive, computed, ref } from "vue";
 import { api } from "../../api/api";
 import { usePage, router } from "@inertiajs/vue3";
 import { useToast } from "vue-toastification";
+import Footer from "./Footer.vue";
 
 defineOptions({ layout: LandingIndex });
 
