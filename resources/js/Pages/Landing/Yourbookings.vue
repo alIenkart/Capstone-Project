@@ -43,11 +43,11 @@
                 selectedStatusFilter = status;
               isFilterOpen = false;
               " :class="[
-                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 last:border-b-0 hover:bg-blue-50',
-                  selectedStatusFilter === status
-                    ? 'bg-blue-50 border-l-4 border-l-blue-500'
-                    : '',
-                ]">
+                'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 last:border-b-0 hover:bg-blue-50',
+                selectedStatusFilter === status
+                  ? 'bg-blue-50 border-l-4 border-l-blue-500'
+                  : '',
+              ]">
                 <span :class="[
                   'font-medium',
                   selectedStatusFilter === status
@@ -121,7 +121,7 @@
               </div>
             </div>
             <span class="font-mono text-xs text-blue-500 flex-shrink-0">B{{ String(booking.id).padStart(5, "0")
-              }}</span>
+            }}</span>
           </div>
           <div v-else class="flex items-center justify-center py-12 text-gray-400 text-base">
             No bookings found.
@@ -185,7 +185,7 @@
                   Booking Type:
                   <span class="font-medium text-gray-700">{{
                     filteredBookings[selectedBookingIndex].tour_type
-                    }}</span>
+                  }}</span>
                 </div>
                 <div>
                   Booked:
@@ -227,7 +227,7 @@
               <span class="text-gray-500 text-xs sm:text-sm font-normal">Guests</span>
               <span class="font-medium text-gray-800 mt-1">{{
                 filteredBookings[selectedBookingIndex].total_quantity
-                }}</span>
+              }}</span>
             </div>
             <div class="flex flex-col">
               <span class="text-gray-500 text-xs sm:text-sm font-normal">Total Due</span>
@@ -383,13 +383,29 @@
                 <div>
                   <label class="block mb-2 text-gray-700 font-semibold text-xs sm:text-sm">Upload Payment
                     Receipt:</label>
-                  <div class="flex items-center gap-3 sm:gap-4 mb-4 flex-wrap">
+                  <!-- Image Preview with Fullscreen -->
+                  <div v-if="paymentStatus === 'Under Review'" class="flex items-center gap-3 sm:gap-4 mb-4 flex-wrap">
+                    <div
+                      class="flex items-center bg-white px-2 sm:px-3 py-2 rounded shadow border border-green-200 bg-green-50 cursor-pointer hover:shadow-lg transition-shadow"
+                      @click="openFullscreenImage(proofOfPaymentUrl)">
+                      <img v-if="proofOfPaymentUrl" :src="proofOfPaymentUrl" alt="Proof of Payment"
+                        class="w-16 h-16 sm:w-20 sm:h-20 rounded object-cover border hover:opacity-80 transition-opacity" />
+                      <div v-else
+                        class="w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center bg-gray-100 rounded">
+                        <span class="text-xs text-gray-500">No image</span>
+                      </div>
+                      <div class="ml-3 flex-1">
+                        <p class="text-xs font-semibold text-green-700">Proof Submitted</p>
+                        <p class="text-xs text-gray-600">Waiting for verification</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div v-else class="flex items-center gap-3 sm:gap-4 mb-4 flex-wrap">
                     <label v-if="!selectedFile" :class="[
                       'flex items-center px-3 sm:px-4 py-2 rounded-lg border shadow-sm transition text-xs sm:text-sm',
-                      filteredBookings[selectedBookingIndex]?.status ===
-                        'Pending' ||
-                        filteredBookings[selectedBookingIndex]?.status ===
-                        'Rejected' ||
+                      filteredBookings[selectedBookingIndex]?.status === 'Pending' ||
+                        filteredBookings[selectedBookingIndex]?.status === 'Rejected' ||
                         paymentStatus === 'Under Review'
                         ? 'bg-gray-200 text-gray-400 border-gray-300 cursor-not-allowed'
                         : 'bg-blue-50 text-blue-700 border-blue-100 hover:bg-blue-200 cursor-pointer',
@@ -399,34 +415,43 @@
                         <path d="M12 16v-4m0 0V8m0 4h4m-4 0H8m12 4v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-4"></path>
                       </svg>
                       <span>Add Image</span>
-                      <input type="file" class="hidden" @change="onFileChange" :disabled="filteredBookings[selectedBookingIndex]?.status ===
-                        'Pending' ||
-                        filteredBookings[selectedBookingIndex]?.status ===
-                        'Rejected' ||
-                        paymentStatus === 'Under Review'
-                        " />
+                      <input type="file" class="hidden" @change="onFileChange" :disabled="filteredBookings[selectedBookingIndex]?.status === 'Pending' ||
+                        filteredBookings[selectedBookingIndex]?.status === 'Rejected' ||
+                        paymentStatus === 'Under Review'" />
                     </label>
 
                     <div v-else :class="[
-                      'flex items-center bg-white px-2 sm:px-3 py-2 rounded shadow border',
+                      'flex items-center bg-white px-2 sm:px-3 py-2 rounded shadow border cursor-pointer hover:shadow-lg transition-shadow',
                       paymentStatus === 'Under Review'
                         ? 'cursor-not-allowed opacity-60'
-                        : 'cursor-pointer',
-                    ]" @click="
-                        paymentStatus !== 'Under Review'
-                          ? $refs.fileInput.click()
-                          : null
-                        ">
+                        : '',
+                    ]" @click="paymentStatus !== 'Under Review' ? openFullscreenImage(previewUrl) : null">
                       <img :src="previewUrl" alt="Preview"
-                        class="w-16 h-16 sm:w-20 sm:h-20 rounded object-cover border" />
-                      <input ref="fileInput" type="file" class="hidden" @change="onFileChange" :disabled="filteredBookings[selectedBookingIndex]?.status ===
-                        'Pending' ||
-                        filteredBookings[selectedBookingIndex]?.status ===
-                        'Rejected' ||
-                        paymentStatus === 'Under Review'
-                        " />
+                        class="w-16 h-16 sm:w-20 sm:h-20 rounded object-cover border hover:opacity-80 transition-opacity" />
+                      <input ref="fileInput" type="file" class="hidden" @change="onFileChange" :disabled="filteredBookings[selectedBookingIndex]?.status === 'Pending' ||
+                        filteredBookings[selectedBookingIndex]?.status === 'Rejected' ||
+                        paymentStatus === 'Under Review'" />
                     </div>
                   </div>
+
+                  <!-- Fullscreen Image Modal -->
+                  <Transition enter-active-class="transition-opacity duration-300" enter-from-class="opacity-0"
+                    enter-to-class="opacity-100" leave-active-class="transition-opacity duration-200"
+                    leave-from-class="opacity-100" leave-to-class="opacity-0">
+                    <div v-if="showFullscreenImage"
+                      class="fixed inset-0 z-[80] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4"
+                      @click="closeFullscreenImage">
+                      <button @click.stop="closeFullscreenImage"
+                        class="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors z-10">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                          <path d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                      </button>
+
+                      <img :src="fullscreenImageUrl" alt="Fullscreen Preview"
+                        class="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl" @click.stop />
+                    </div>
+                  </Transition>
                 </div>
               </div>
 
@@ -479,7 +504,7 @@
                 <button v-if="
                   paymentStatus === 'Under Review' && isBookingStatusPending()
                 " @click="submitPayment" :disabled="filteredBookings[selectedBookingIndex]?.status === 'Pending'
-                    "
+                  "
                   class="w-full bg-[#1E71B8] hover:bg-[#155a8a] focus:ring-2 focus:ring-[#52c2f8] transition shadow-lg text-white px-6 sm:px-8 py-2 sm:py-3 rounded-xl font-semibold text-sm sm:text-lg focus:outline-none active:scale-95 duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
                   Submit
                 </button>
@@ -703,6 +728,8 @@ const rejectionDate = ref(null);
 const rejectionCategory = ref(null);
 const rejectionReason = ref(null);
 const showSuccessAnimation = ref(false);
+const showFullscreenImage = ref(false);
+const fullscreenImageUrl = ref(null);
 
 const modeOfPaymentOptions = [
   { label: "GCASH", value: "GCASH" },
@@ -724,6 +751,18 @@ const formData = ref({
   proofOfPayment: null,
 });
 
+const openFullscreenImage = (imageUrl) => {
+  if (imageUrl) {
+    fullscreenImageUrl.value = imageUrl;
+    showFullscreenImage.value = true;
+  }
+};
+
+const closeFullscreenImage = () => {
+  showFullscreenImage.value = false;
+  fullscreenImageUrl.value = null;
+};
+
 const selectOptionModePayment = (option) => {
   selectedModeOfPayment.value = option.value;
   dropdownOpenModePayment.value = false;
@@ -736,9 +775,7 @@ const selectOptionTypePayment = (option) => {
 
 const filteredBookings = computed(() => {
   if (selectedStatusFilter.value === "All") {
-    return bookings.value.sort(
-      (a, b) => new Date(b.created_at) - new Date(a.created_at)
-    );
+    return bookings.value.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
   }
   return bookings.value.filter(
     (booking) => booking.status === selectedStatusFilter.value
@@ -858,6 +895,24 @@ const isBookingRejected = () => {
   return false;
 };
 
+const proofOfPaymentUrl = computed(() => {
+  if (!payments.value.length || !filteredBookings.value.length) return null;
+
+  const currentBookingId = filteredBookings.value[selectedBookingIndex.value].id;
+  const currentPayment = payments.value.find(p => p.booking_id === currentBookingId);
+
+  if (!currentPayment?.proof_of_payment) return null;
+
+  let proofArray;
+  try {
+    proofArray = JSON.parse(currentPayment.proof_of_payment);
+  } catch (e) {
+    proofArray = [currentPayment.proof_of_payment];
+  }
+
+  return proofArray?.[0] ? `/storage/${proofArray[0]}` : null;
+});
+
 onMounted(async () => {
   bookings.value = await fetchBookingsByUser(userId);
 
@@ -865,6 +920,7 @@ onMounted(async () => {
     payments.value = await fetchPaymentsByBookingId(
       filteredBookings.value[selectedBookingIndex.value].id
     );
+    console.log("🚀 ~ payments.value:", payments.value)
   }
 });
 
