@@ -392,14 +392,19 @@ const newTestimonial = ref({
   comment: "",
 });
 const submitTestimonial = async () => {
+  if (!newTestimonial.value.user_id) {
+    toast.warning("You need to login first.");
+    return;
+  }
+
   if (
-    !newTestimonial.value.user_id ||
     !newTestimonial.value.comment ||
     newTestimonial.value.rating === 0
   ) {
     toast.warning("Please complete all fields before submitting.");
     return;
   }
+
   isSubmitting.value = true;
   try {
     const testimonialData = {

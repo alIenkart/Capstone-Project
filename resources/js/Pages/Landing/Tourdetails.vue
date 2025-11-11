@@ -653,6 +653,10 @@ const setTab = (tab) => {
 };
 
 const handleBookNow = () => {
+  if (!page.props?.auth?.user?.id) {
+    toast.warning("You need to login first.");
+  }
+
   if (!selectedPackage.value || !selectedPackage.value.id) {
     console.error("No package selected");
     return;
