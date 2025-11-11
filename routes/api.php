@@ -18,7 +18,7 @@ use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\ReceiptController;
 
 
-Route::middleware(['web', 'auth', 'verified'])->group(function () {
+Route::middleware('api')->group(function () {
 
     Route::get('bookings/by-user', [BookingController::class, 'getBookingsByUser']);
 
@@ -29,8 +29,6 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
     Route::apiResource('payments', PaymentController::class);
     Route::apiResource('inquiries', InquiryController::class);
     Route::apiResource('feedbacks', FeedbackController::class);
-    Route::apiResource('receipts', ReceiptController::class);
-
      // Contents
 
     Route::apiResource('contents', ContentController::class);
@@ -61,3 +59,8 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
     Route::patch('/packages/{id}/toggle-status', [PackagesController::class, 'toggleStatus']);
 
 });
+
+Route::middleware(['web', 'auth', 'verified'])->group(function () {
+    Route::apiResource('receipts', ReceiptController::class);
+});
+
