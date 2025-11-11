@@ -49,7 +49,9 @@
         <div>
           <h3 class="text-white text-2xl font-extrabold tracking-wide mb-6">STAY CONNECTED</h3>
           <div class="flex gap-5 ml-1">
-            <a @click="showNoLinks"
+            <a 
+              href="https://www.facebook.com/Djjjtravelandtour"
+              target="_blank"
               class="text-blue-100 hover:text-[#73BE5D] transition-all duration-300 transform hover:scale-110"
               title="Instagram">
               <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-facebook w-7 h-7"
