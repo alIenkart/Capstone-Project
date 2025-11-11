@@ -953,6 +953,7 @@ async function submitProofOfPayment() {
     fullPaymentAmount: selectedPaymentType.value === "Full Payment" ? total : 0,
     downPaymentAmount:
       selectedPaymentType.value === "Down Payment" ? paidAmount : 0,
+    remainingBalance: remaining,
     paymentDate: new Date().toISOString().split("T")[0],
     proofOfPayment: selectedFile.value ? selectedFile.value.name : null,
     modeOfPayment: selectedModeOfPayment.value,
