@@ -50,7 +50,7 @@
         <p class="text-base md:text-lg text-gray-700 mb-4 leading-relaxed text-center">
           Planning a trip? JE Travel & Tours is here to provide you with a wide range of tour and guidance towards a
           meaningful and memorable travel. The agency is specialized in creating seamless travel experiences and is
-          <span v-if="showMore" class="block mt-2 text-gray-600 animate-fadeIn">
+          <span v-if="showMore" class="block text-gray-600 animate-fadeIn">
             dedicated to providing clear and reliable service to make your journey enjoyable and stress-free. Let the
             team help you to plan your next journey! Book now!
           </span>
