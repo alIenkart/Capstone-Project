@@ -384,7 +384,7 @@
                   <label class="block mb-2 text-gray-700 font-semibold text-xs sm:text-sm">Upload Payment
                     Receipt:</label>
                   <!-- Image Preview with Fullscreen -->
-                  <div v-if="paymentStatus === 'Under Review'" class="flex items-center gap-3 sm:gap-4 mb-4 flex-wrap">
+                  <div v-if="paymentStatus === 'Under Review' || paymentStatus === 'Approved'" class="flex items-center gap-3 sm:gap-4 mb-4 flex-wrap">
                     <div
                       class="flex items-center bg-white px-2 sm:px-3 py-2 rounded shadow border border-green-200 bg-green-50 cursor-pointer hover:shadow-lg transition-shadow"
                       @click="openFullscreenImage(proofOfPaymentUrl)">
