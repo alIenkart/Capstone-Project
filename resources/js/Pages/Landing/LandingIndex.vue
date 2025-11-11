@@ -3,11 +3,13 @@
     <nav class="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-md backdrop-blur-sm bg-opacity-95">
       <div class="flex items-center justify-between px-6 md:px-16 h-20 gap-12">
         <div class="hidden lg:block flex-shrink-0">
-          <img
-            src="/storage/logo/Logo.png"
-            alt="JE Travel & Tours"
-            class="h-12 hover:opacity-80 transition-opacity duration-300"
-          />
+          <Link href="/" class="block">
+            <img
+              src="/storage/logo/Logo.png"
+              alt="JE Travel & Tours"
+              class="h-12 hover:opacity-80 transition-opacity duration-300 cursor-pointer"
+            />
+          </Link>
         </div>
 
         <button
