@@ -368,6 +368,9 @@
                         class="w-full rounded-xl border-2 border-gray-200 pl-8 sm:pl-10 pr-3 sm:pr-4 py-2 sm:py-3.5 bg-white text-gray-800 font-semibold text-base sm:text-lg focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all duration-200 hover:border-blue-300 hover:shadow-md shadow-sm"
                         placeholder="0.00" />
                     </div>
+                    <div class="text-red-500 text-[0.6rem] sm:text-sm mt-2">
+                      "Please note: A minimum down payment of 20% to 50% is required."
+                    </div>
                   </div>
                   <div class="flex items-center justify-between text-xs sm:text-sm px-2">
                     <span class="text-gray-600 font-normal">Total Amount:</span>
