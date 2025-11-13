@@ -147,10 +147,22 @@
               }}</span>
             </p>
             <p>
-              <span class="text-gray-600">Travel Date:</span>
+              <span class="text-gray-600">Trip Start Date: </span>
               <span class="font-medium">{{
                 receiptData.start_date
                   ? new Date(receiptData.start_date).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric"
+                    })
+                  : "N/A"
+              }}</span>
+            </p>
+            <p>
+              <span class="text-gray-600">Trip End Date: </span>
+              <span class="font-medium">{{
+                receiptData.start_date
+                  ? new Date(receiptData.end_date).toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "long",
                       day: "numeric"
