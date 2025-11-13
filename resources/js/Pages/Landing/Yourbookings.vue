@@ -475,17 +475,18 @@
 
             <div class="flex justify-center w-full">
               <div class="flex flex-col items-center gap-3 sm:gap-4 mt-6 sm:mt-8 mb-2 relative group w-full max-w-xs">
-                <div v-if="
-                  paymentStatus === 'Under Review' || isBookingStatusPending()
-                " class="flex justify-center w-full">
+                <div v-if="statusMessage" class="flex justify-center w-full">
                   <div
-                    class="bg-yellow-50 border border-yellow-300 text-yellow-700 px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-sm text-center w-full text-xs sm:text-sm">
-                    <div v-if="isBookingStatusPending && !paymentStatus">
-                      <span class="font-semibold block">⏳ Booking Under Review</span>
-                    </div>
-                    <div v-else>
-                      <span class="font-semibold block">⏳ Payment Under Review</span>
-                    </div>
+                    class="bg-yellow-50 border border-yellow-300 text-yellow-700 px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-sm text-center w-full text-xs sm:text-sm"
+                  >
+                    <span class="font-semibold block">{{ statusMessage }}</span>
+                  </div>
+                </div>
+
+                <div v-if="paymentStatus === 'Cancelled' && isBookingStatusCancelled" class="flex justify-center w-full">
+                  <div
+                    class="bg-red-50 border border-red-300 text-red-700 px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-sm text-center w-full text-xs sm:text-sm">
+                      <span class="font-semibold block">Booking has been Cancelled</span>
                   </div>
                 </div>
 
@@ -515,8 +516,8 @@
                 <button v-if="
                   paymentStatus === 'Pending' &&
                   !filteredBookings[selectedBookingIndex]?.rejected_at &&
-                  !isPaymentRejected()
-                "
+                  !isPaymentRejected()" 
+                  @click="cancelBooking()" 
                   class="w-full bg-white hover:bg-red-50 text-red-500 border border-red-400 px-6 sm:px-8 py-2 sm:py-3 rounded-xl font-semibold text-sm sm:text-lg transition shadow-md focus:outline-none focus:ring-2 focus:ring-red-100 active:scale-95 duration-150">
                   Cancel Booking
                 </button>
@@ -776,6 +777,13 @@ const selectOptionTypePayment = (option) => {
   dropdownOpenTypePayment.value = false;
 };
 
+const statusMessage = computed(() => {
+  if (isBookingStatusCancelled()) return '';
+  if (isBookingStatusPending && !paymentStatus) return '⏳ Booking Under Review';
+  if (paymentStatus === 'Pending') return '⏳ Payment Under Review';
+  return '';
+});
+
 const filteredBookings = computed(() => {
   if (selectedStatusFilter.value === "All") {
     return bookings.value.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
@@ -930,6 +938,29 @@ const typeOfPayment = computed(() => {
   return currentPayment?.payment_history?.paymentType || "";
 });
 
+async function cancelBooking() {
+  const currentBooking = filteredBookings.value[selectedBookingIndex.value];
+
+  const data = new FormData();
+  data.append("status", "Cancelled");
+
+  try {
+    const response = await axios.post(
+      `/api/bookings/${currentBooking.id}?_method=PUT`,
+      data
+    );
+
+    if (response.status === 200) {
+      toast.success("Booking successfully cancelled!");
+    }
+    payments.value = await fetchPaymentsByBookingId(currentBooking.id);
+  } catch (error) {
+    console.error(error);
+    toast.error("Something went wrong while submitting your payment.");
+  }
+
+}
+
 async function submitProofOfPayment() {
   const currentBooking = filteredBookings.value[selectedBookingIndex.value];
   if (!currentBooking) return toast.error("No booking selected.");
@@ -1047,6 +1078,14 @@ const isBookingStatusPending = () => {
 
   return currentBooking.status === "Pending";
 };
+
+const isBookingStatusCancelled = () => {
+  const currentBooking = filteredBookings.value[selectedBookingIndex.value];
+
+  if (!currentBooking) return false;
+
+  return currentBooking.status === "Cancelled";
+}
 
 const handleBookingClick = (index) => {
   selectedBookingIndex.value = index;

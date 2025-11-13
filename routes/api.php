@@ -15,8 +15,7 @@ use App\Http\Controllers\Api\AboutUsController;
 use App\Http\Controllers\Api\OurStoryController;
 use App\Http\Controllers\Api\AccreditationController;
 use App\Http\Controllers\Api\NotificationController;
-use App\Http\Controllers\Api\ReceiptController;
-
+use App\Http\Controllers\AnalyticsController;
 
 Route::middleware('api')->group(function () {
 
@@ -55,7 +54,8 @@ Route::middleware('api')->group(function () {
     Route::post('notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
     Route::delete('notifications/{id}', [NotificationController::class, 'destroy']);
 
-    Route::patch('/packages/{id}/toggle-status', [PackagesController::class, 'toggleStatus']);
+    Route::patch('packages/{id}/toggle-status', [PackagesController::class, 'toggleStatus']);
+    Route::get('analytics', [AnalyticsController::class, 'index']);
 
 });
 

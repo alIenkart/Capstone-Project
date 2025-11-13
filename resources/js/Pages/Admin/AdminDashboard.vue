@@ -3,13 +3,21 @@
     <div class="flex flex-wrap gap-4 mb-4 justify-between">
       <div class="flex-1 min-w-0">
         <div class="bg-white text-black rounded-lg p-6 flex flex-col h-[430px]">
-          <PackagesChart />
+          <PackagesChart
+            :activePackages="activePackages"
+            :inactivePackages="inactivePackages"
+          />
         </div>
       </div>
 
       <div class="flex-1 min-w-0">
         <div class="bg-white text-black rounded-lg p-6 flex flex-col h-[430px]">
-          <BookingsChart />
+          <BookingsChart 
+            :approvedBooking="approvedBooking"
+            :pendingBooking="pendingBooking"
+            :rejectedBooking="rejectedBooking"
+            :cancelledBooking="cancelledBooking"
+          />
         </div>
       </div>
 
@@ -183,6 +191,37 @@ import BookingsChart from "./components/Analytics/BookingsChart.vue";
 import PaymentsChart from "./components/Analytics/PaymentsChart.vue";
 import TravelDestinationChart from "./components/Analytics/TravelDestinationChart.vue";
 import SalesChart from "./components/Analytics/SalesChart.vue";
+import { onMounted, ref } from "vue";
+import { api } from "../../api/api";
 
 defineOptions({ layout: AdminIndex });
+const service = new api();
+const data = ref({});
+const activePackages = ref(0);
+const inactivePackages = ref(0);
+const approvedBooking = ref(0);
+const pendingBooking = ref(0);
+const rejectedBooking = ref(0);
+const cancelledBooking = ref(0);
+
+const fetchData = async () => {
+  try {
+    const response = await service.fetchAnalyticsData();
+    data.value = response.data;
+
+    activePackages.value = data.value.data.packages.active_packages;
+    inactivePackages.value = data.value.data.packages.inactive_packages;
+    approvedBooking.value = data.value.data.bookings.approved;
+    pendingBooking.value = data.value.data.bookings.pending;
+    rejectedBooking.value = data.value.data.bookings.rejected;
+    cancelledBooking.value = data.value.data.bookings.cancelled;
+
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+};
+
+onMounted(() => {
+  fetchData();
+});
 </script>

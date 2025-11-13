@@ -119,7 +119,7 @@ class BookingController extends Controller
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'status' => 'required|in:Pending,Approved,Rejected',
+            'status' => 'required|in:Pending,Approved,Rejected,Cancelled',
             'id_type' => 'nullable|string|max:255',
             'remarks' => 'nullable|string|max:1000',
             'rejection_reason' => 'nullable|string|max:1000',
@@ -169,6 +169,14 @@ class BookingController extends Controller
 
             if ($validated['status'] === 'Pending') {
                 $booking->update($validated);
+            }
+
+            if ($validated['status'] === 'Cancelled') {
+                $booking->update($validated);
+
+                if ($booking->payment) {
+                    $booking->payment->update(['payment_status' => 'Cancelled']);
+                }
             }
 
             DB::commit();

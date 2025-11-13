@@ -210,4 +210,9 @@ export class api {
     deleteNotification(id: number) {
         return plainInstance.delete(`/api/notifications/${id}`);
     }
+
+    fetchAnalyticsData() {
+        return plainInstance.get(`/api/analytics/`);
+
+    }
 }
