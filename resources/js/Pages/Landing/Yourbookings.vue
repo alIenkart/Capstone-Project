@@ -780,9 +780,10 @@ const selectOptionTypePayment = (option) => {
 const statusMessage = computed(() => {
   if (isBookingStatusCancelled()) return '';
   if (isBookingStatusPending && !paymentStatus) return '⏳ Booking Under Review';
-  if (paymentStatus === 'Pending') return '⏳ Payment Under Review';
+  if (paymentStatus === 'Under Review') return '⏳ Payment Under Review';
   return '';
 });
+
 
 const filteredBookings = computed(() => {
   if (selectedStatusFilter.value === "All") {
