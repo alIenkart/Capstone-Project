@@ -22,6 +22,7 @@ class ReceiptResource extends JsonResource
             'total_quantity' => $this->booking->total_quantity ?? null,
             'duration' => $this->booking->duration ?? null,
             'start_date' => $this->booking->start_date ?? null,
+            'end_date' => $this->booking->end_date ?? null,
             'tour_type' => $this->booking->tour_type ?? null,
             'tour_classification' => $this->booking->package->tour_classification ?? null,
             'package_destination' => $this->booking->package_destination ?? null,
