@@ -884,7 +884,7 @@ const formattedDate = computed(() => {
 });
 
 const travelDate = computed(() => {
-  const date = new Date(props.booking.travel_date ?? "");
+  const date = new Date(props.booking.start_date ?? "");
   return isNaN(date)
     ? "—"
     : date.toLocaleDateString("en-US", {
