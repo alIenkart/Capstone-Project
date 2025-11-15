@@ -457,15 +457,42 @@
                   </Transition>
                 </div>
               </div>
-
-              <div class="w-full lg:w-1/3 flex flex-col justify-center items-center h-fit">
+              <div v-if="selectedModeOfPayment === 'PayMaya'" class="w-full lg:w-1/3 flex flex-col justify-center items-center h-fit">
                 <div class="font-semibold text-gray-800 text-center text-base sm:text-lg">
-                  Dorie Magjobos
+                  Dorie Anne May E.
                 </div>
                 <div class="text-gray-500 text-center text-sm sm:text-base font-normal mb-3">
-                  xxxx xxx 1200
+                  09xx xxx 5395
                 </div>
-                <img src="/storage/qr-payment/qr.png" alt="QR Payment"
+                <img src="/storage/qr-payment/paymaya.jpg" alt="QR Payment"
+                  class="w-36 h-36 sm:w-48 sm:h-48 bg-white border-2 border-gray-200 rounded-lg object-contain mb-2 shadow-sm flex-shrink-0" />
+                <div class="text-xs sm:text-sm text-gray-500 mt-2 text-center font-normal">
+                  Scan this QR code to pay
+                </div>
+              </div>
+
+              <div v-else-if="selectedModeOfPayment === 'Bank'" class="w-full lg:w-1/3 flex flex-col justify-center items-center h-fit">
+                <div class="font-semibold text-gray-800 text-center text-base sm:text-lg">
+                  Dorie Anne May E.
+                </div>
+                <div class="text-gray-500 text-center text-sm sm:text-base font-normal mb-3">
+                  xxxx xxxx 4555
+                </div>
+                <img src="/storage/qr-payment/banktransfer.jpg" alt="QR Payment"
+                  class="w-36 h-36 sm:w-48 sm:h-48 bg-white border-2 border-gray-200 rounded-lg object-contain mb-2 shadow-sm flex-shrink-0" />
+                <div class="text-xs sm:text-sm text-gray-500 mt-2 text-center font-normal">
+                  Scan this QR code to pay
+                </div>
+              </div>
+
+              <div v-else class="w-full lg:w-1/3 flex flex-col justify-center items-center h-fit">
+                <div class="font-semibold text-gray-800 text-center text-base sm:text-lg">
+                  Dorie Anne May E.
+                </div>
+                <div class="text-gray-500 text-center text-sm sm:text-base font-normal mb-3">
+                  0999 397 xxxx
+                </div>
+                <img src="/storage/qr-payment/gcashqr.jpg" alt="QR Payment"
                   class="w-36 h-36 sm:w-48 sm:h-48 bg-white border-2 border-gray-200 rounded-lg object-contain mb-2 shadow-sm flex-shrink-0" />
                 <div class="text-xs sm:text-sm text-gray-500 mt-2 text-center font-normal">
                   Scan this QR code to pay
@@ -737,7 +764,7 @@ const fullscreenImageUrl = ref(null);
 
 const modeOfPaymentOptions = [
   { label: "GCASH", value: "GCASH" },
-  { label: "Pay Maya", value: "Pay Maya" },
+  { label: "PayMaya", value: "PayMaya" },
   { label: "Bank", value: "Bank" },
 ];
 
