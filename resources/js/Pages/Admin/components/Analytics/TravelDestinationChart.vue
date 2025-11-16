@@ -20,6 +20,7 @@ import {
   CategoryScale,
   LinearScale,
 } from "chart.js";
+import { computed } from "vue";
 
 ChartJS.register(
   Title,
@@ -30,35 +31,27 @@ ChartJS.register(
   LinearScale
 );
 
-const categories = [
-  "South Korea",
-  "Canada",
-  "United Kingdom",
-  "Netherlands",
-  "Italy",
-  "France",
-  "Japan",
-  "United States",
-  "China",
-  "Germany",
-];
+const props = defineProps({
+  destinations: { type: Object, required: true },
+});
 
-const dataValues = [400, 430, 448, 470, 540, 580, 690, 1100, 1200, 1380];
+const categories = computed(() => Object.keys(props.destinations));
+const dataValues = computed(() => Object.values(props.destinations));
 
-const chartData = {
-  labels: categories,
+const chartData = computed(() => ({
+  labels: categories.value,
   datasets: [
     {
       label: "Location",
-      data: dataValues,
-      backgroundColor: categories.map(() => "rgba(54, 162, 235, 0.3)"),
-      borderColor: categories.map(() => "rgba(54, 162, 235, 0.6)"),
+      data: dataValues.value,
+      backgroundColor: categories.value.map(() => "rgba(54, 162, 235, 0.3)"),
+      borderColor: categories.value.map(() => "rgba(54, 162, 235, 0.6)"),
       borderWidth: 1,
       borderRadius: 6,
       barPercentage: 0.6,
     },
   ],
-};
+}));
 
 const chartOptions = {
   indexAxis: "y",

@@ -1,5 +1,21 @@
 <template>
   <div class="pb-10 bg-gray-50 min-h-screen">
+
+    <div class="flex justify-end mb-6">
+    <div class="inline-flex text-sm font-medium text-gray-900 bg-gray-100 p-1 rounded-lg">
+        <span :class="['px-3 py-1 cursor-pointer rounded-md shadow-sm transition-colors',
+            selectedPeriod === 'Monthly' ? 'text-blue-600 bg-white' : 'hover:text-gray-700']"
+          @click="selectedPeriod = 'Monthly'">
+          Monthly
+        </span>
+        <span :class="['px-3 py-1 cursor-pointer rounded-md shadow-sm transition-colors',
+            selectedPeriod === 'Yearly' ? 'text-blue-600 bg-white' : 'hover:text-gray-700']"
+          @click="selectedPeriod = 'Yearly'">
+          Yearly
+        </span>
+      </div>
+    </div>
+      
     <div class="flex flex-wrap gap-4 mb-4 justify-between">
       <div class="flex-1 min-w-0">
         <div class="bg-white text-black rounded-lg p-6 flex flex-col h-[430px]">
@@ -23,13 +39,19 @@
 
       <div class="flex-1 min-w-0">
         <div class="bg-white text-black rounded-lg p-6 flex flex-col h-[430px]">
-          <PaymentsChart />
+          <PaymentsChart 
+            :fullyPaid="fullyPaid"
+            :downPayment="downPayment"
+            :underReview="underReview"
+          />
         </div>
       </div>
 
       <div class="flex-1 min-w-0">
         <div class="bg-white text-black rounded-lg p-6 flex flex-col h-[430px]">
-          <TravelDestinationChart />
+          <TravelDestinationChart 
+            :destinations="destinations"
+          />
         </div>
       </div>
     </div>
@@ -37,28 +59,15 @@
     <div class="bg-white rounded-xl p-8 shadow-lg mb-8">
       <div class="flex justify-between items-center mb-6 border-b pb-4">
         <h2 class="text-2xl font-semibold text-gray-800">Sales Overview</h2>
-        <div
-          class="flex text-sm font-medium text-gray-500 bg-gray-100 p-1 rounded-lg"
-        >
-          <span
-            class="px-3 py-1 cursor-pointer rounded-md text-blue-600 bg-white shadow-sm transition-colors"
-          >
-            Monthly
-          </span>
-          <span
-            class="px-3 py-1 cursor-pointer transition-colors hover:text-gray-700"
-          >
-            Yearly
-          </span>
-        </div>
       </div>
-      <SalesChart />
+      <SalesChart 
+        :revenue="revenue"
+      />
     </div>
 
-    ---
 
     <div class="space-y-6 pt-4">
-      <h3 class="text-xl font-semibold text-gray-800">
+      <!-- <h3 class="text-xl font-semibold text-gray-800">
         Approved & Paid Bookings
       </h3>
 
@@ -170,16 +179,16 @@
               </div>
             </div>
           </div>
-        </div>
-      </div>
-
-      <div class="flex justify-center pt-6">
+        </div> 
+      </div> -->
+      
+      <!-- <div class="flex justify-center pt-6">
         <button
           class="bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg px-10 py-3 text-base transition-colors shadow-md hover:shadow-lg"
         >
           See All Bookings
         </button>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -197,12 +206,18 @@ import { api } from "../../api/api";
 defineOptions({ layout: AdminIndex });
 const service = new api();
 const data = ref({});
+const selectedPeriod = ref('Monthly');
 const activePackages = ref(0);
 const inactivePackages = ref(0);
 const approvedBooking = ref(0);
 const pendingBooking = ref(0);
 const rejectedBooking = ref(0);
 const cancelledBooking = ref(0);
+const fullyPaid = ref(0);
+const downPayment = ref(0);
+const underReview = ref(0);
+const destinations = ref([]);
+const revenue = ref([]);
 
 const fetchData = async () => {
   try {
@@ -215,7 +230,11 @@ const fetchData = async () => {
     pendingBooking.value = data.value.data.bookings.pending;
     rejectedBooking.value = data.value.data.bookings.rejected;
     cancelledBooking.value = data.value.data.bookings.cancelled;
-
+    fullyPaid.value = data.value.data.payments.fully_paid;
+    downPayment.value = data.value.data.payments.down_payment;
+    underReview.value = data.value.data.payments.under_review;
+    destinations.value = data.value.data.destinations;
+    revenue.value = data.value.data.revenue;
   } catch (error) {
     console.error("Error fetching data:", error);
   }

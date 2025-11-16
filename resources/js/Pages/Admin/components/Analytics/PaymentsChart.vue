@@ -15,7 +15,7 @@
       </div>
       <div class="flex items-center text-gray-600 text-sm">
         <span class="w-3 h-3 rounded-full bg-yellow-400 mr-2"></span>
-        <span>Under Review</span>
+        <span>For Review</span>
       </div>
     </div>
   </div>
@@ -24,15 +24,26 @@
 <script setup>
 import { Pie } from "vue-chartjs";
 import { Chart as ChartJS, Title, Tooltip, Legend, ArcElement } from "chart.js";
+import { computed } from "vue";
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement);
 
-const chartData = {
-  labels: ["Fully Paid", "Down Payment", "Under Review"],
+const props = defineProps({
+  fullyPaid: { type: Number, required: true },
+  downPayment: { type: Number, required: true },
+  underReview: { type: Number, required: true },
+});
+
+const chartData = computed(() => ({
+  labels: ["Fully Paid", "Down Payment", "For Review"],
   datasets: [
     {
       label: "Payments",
-      data: [40, 25, 10],
+      data: [
+        props.fullyPaid,
+        props.downPayment,
+        props.underReview,
+      ],
       backgroundColor: [
         "rgba(40, 167, 69, 0.7)",
         "rgba(0, 123, 255, 0.7)",
@@ -42,7 +53,7 @@ const chartData = {
       hoverOffset: 10,
     },
   ],
-};
+}));
 
 const chartOptions = {
   responsive: true,

@@ -6,8 +6,10 @@
   </div>
 </template>
 
+
 <script setup>
 import { Bar } from "vue-chartjs";
+import { computed } from "vue";
 import {
   Chart as ChartJS,
   Title,
@@ -27,34 +29,54 @@ ChartJS.register(
   LinearScale
 );
 
-const chartData = {
-  labels: [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ],
-  datasets: [
-    {
-      label: "Monthly Sales",
-      data: [65, 59, 80, 81, 56, 55, 40, 45, 70, 75, 90, 100],
-      backgroundColor: "rgba(54, 162, 235, 0.3)",
-      borderColor: "rgba(54, 162, 235, 0.6)",
-      borderWidth: 1,
-      borderRadius: 6,
-      barPercentage: 0.7,
-      categoryPercentage: 0.7,
-    },
-  ],
-};
+const props = defineProps({
+  revenue: { type: Array, required: true },
+});
+
+// Month labels
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+// Computed chart data using revenue prop
+const chartData = computed(() => {
+  // Create an array of 12 zeros
+  const data = Array(12).fill(0);
+
+  props.revenue.forEach(item => {
+    const [year, month] = item.month.split("-").map(Number);
+    if (month >= 1 && month <= 12) {
+      data[month - 1] = item.total_revenue;
+    }
+  });
+
+  return {
+    labels: months,
+    datasets: [
+      {
+        label: "Monthly Sales",
+        data,
+        backgroundColor: "rgba(54, 162, 235, 0.3)",
+        borderColor: "rgba(54, 162, 235, 0.6)",
+        borderWidth: 1,
+        borderRadius: 6,
+        barPercentage: 0.7,
+        categoryPercentage: 0.7,
+      },
+    ],
+  };
+});
 
 const chartOptions = {
   responsive: true,

@@ -25,6 +25,16 @@ class AnalyticsResource extends JsonResource
                 'cancelled' => $this['bookings']['cancelled'] ?? 0,
                 'pending' => $this['bookings']['pending'] ?? 0,
             ],
+            'payments' => [
+                'fully_paid' => $this['payments']['fully_paid'] ?? 0,
+                'down_payment' => $this['payments']['down_payment'] ?? 0,
+                'under_review' => $this['payments']['under_review'] ?? 0,
+            ],
+            'destinations' => 
+                $this['destinations'] ?? [],
+            'revenue' => 
+                $this['revenue'] ?? [],
+            
         ];
     }
 }
