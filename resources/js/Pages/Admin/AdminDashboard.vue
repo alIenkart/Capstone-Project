@@ -200,7 +200,7 @@ import BookingsChart from "./components/Analytics/BookingsChart.vue";
 import PaymentsChart from "./components/Analytics/PaymentsChart.vue";
 import TravelDestinationChart from "./components/Analytics/TravelDestinationChart.vue";
 import SalesChart from "./components/Analytics/SalesChart.vue";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { api } from "../../api/api";
 
 defineOptions({ layout: AdminIndex });
@@ -219,9 +219,9 @@ const underReview = ref(0);
 const destinations = ref([]);
 const revenue = ref([]);
 
-const fetchData = async () => {
+const fetchData = async (period) => {
   try {
-    const response = await service.fetchAnalyticsData();
+    const response = await service.fetchAnalyticsData(period);
     data.value = response.data;
 
     activePackages.value = data.value.data.packages.active_packages;
@@ -240,7 +240,11 @@ const fetchData = async () => {
   }
 };
 
+watch(selectedPeriod, (newPeriod) => {
+  fetchData(newPeriod);
+});
+
 onMounted(() => {
-  fetchData();
+  fetchData(selectedPeriod.value);
 });
 </script>

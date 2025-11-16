@@ -13,13 +13,14 @@ class AnalyticsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $packages = $this->getPackageCounts();
-        $bookings = $this->getBookingCounts();
-        $payments = $this->getPaymentCounts();
-        $destinations = $this->getDestinationCounts();
-        $revenue = $this->getRevenue();
+        $period = $request->query('period');
+        $packages = $this->getPackageCounts($period);
+        $bookings = $this->getBookingCounts($period);
+        $payments = $this->getPaymentCounts($period);
+        $destinations = $this->getDestinationCounts($period);
+        $revenue = $this->getRevenue($period);
 
         return new AnalyticsResource([
             'packages' => $packages,
@@ -62,9 +63,13 @@ class AnalyticsController extends Controller
         //
     }
 
-    public function getPackageCounts(): array
+    public function getPackageCounts($period): array
     {
-        $statusCounts = Packages::selectRaw('status, COUNT(*) as total')
+        $query = Packages::query();
+    
+        $query = $this->applyPeriodFilter($query, $period);    
+        
+        $statusCounts = $query->selectRaw('status, COUNT(*) as total')
             ->groupBy('status')
             ->pluck('total', 'status');
 
@@ -74,9 +79,13 @@ class AnalyticsController extends Controller
         ];
     }
 
-    public function getBookingCounts(): array
+    public function getBookingCounts($period): array
     {
-        $statusCounts = Booking::selectRaw('status, COUNT(*) as total')
+        $query = Booking::query();
+
+        $query = $this->applyPeriodFilter($query, $period);    
+
+        $statusCounts = $query->selectRaw('status, COUNT(*) as total')
             ->groupBy('status')
             ->pluck('total', 'status');
 
@@ -89,9 +98,13 @@ class AnalyticsController extends Controller
         ];
     }
 
-    public function getPaymentCounts(): array
+    public function getPaymentCounts($period): array
     {
-        $statusCounts = Payment::selectRaw("
+        $query = Payment::query();
+
+        $query = $this->applyPeriodFilter($query, $period); 
+        
+        $statusCounts = $query->selectRaw("
                 SUM(CASE WHEN is_fully_paid = 1 THEN 1 ELSE 0 END) AS fully_paid,
                 SUM(CASE WHEN payment_status = 'Down Payment' AND is_fully_paid = 0 THEN 1 ELSE 0 END) AS down_payment,
                 SUM(CASE WHEN payment_status = 'Under Review' THEN 1 ELSE 0 END) AS under_review
@@ -105,35 +118,61 @@ class AnalyticsController extends Controller
         ];
     }
 
-    public function getDestinationCounts(): array
+    public function getDestinationCounts($period): array
     {
-        $destinationCounts = Payment::query()
+        $query = Payment::query()
             ->where('is_fully_paid', true)
-            ->with('booking')
-            ->get()
+            ->with('booking');
+
+        $query = $this->applyPeriodFilter($query, $period); 
+        
+        $destinationCounts = $query->get()
             ->groupBy(fn($payment) => optional($payment->booking->package)->destination)
             ->map(fn($group) => $group->count())
             ->toArray();
-    
+
         return $destinationCounts;
     }
 
-    public function getRevenue(): array
+    public function getRevenue($period): array
     {
-        $revenueData = Payment::with('booking')
-        ->where('is_fully_paid', true)
-        ->get()
-        ->groupBy(fn($payment) => $payment->created_at->format('Y-m'))
-        ->map(fn($group) => [
-            'month' => $group->first()->created_at->format('Y-m'),
-            'total_revenue' => $group->sum(fn($payment) => optional($payment->booking)->original_amount ?? 0)
-        ])
-        ->values()
-        ->toArray();
+        $query = Payment::query();
+
+        $query = $this->applyPeriodFilter($query, $period); 
+
+        $format = $period === 'Yearly' ? 'Y' : 'Y-m';
+        $label = $period === 'Yearly' ? 'year' : 'month';
+        
+        $revenueData = $query->get()
+            ->groupBy(fn($payment) => $payment->created_at->format($format))
+            ->map(fn($group) => [
+                $label => $group->first()->created_at->format($format),
+                'total_revenue' => $group->sum(fn($payment) => optional($payment->booking)->original_amount ?? 0)
+            ])
+            ->values()
+            ->toArray();
+
+        \Log::info($revenueData);
     
         return $revenueData;
     }
     
-    
-    
+    /**
+     * Apply period filter to a query.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string|null $period
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    protected function applyPeriodFilter($query, ?string $period)
+    {
+        if ($period === 'Monthly') {
+            $query->whereYear('created_at', now()->year)
+                ->whereMonth('created_at', now()->month);
+        } elseif ($period === 'Yearly') {
+            $query->whereYear('created_at', now()->year);
+        }
+
+        return $query;
+    }
 }

@@ -211,8 +211,9 @@ export class api {
         return plainInstance.delete(`/api/notifications/${id}`);
     }
 
-    fetchAnalyticsData() {
-        return plainInstance.get(`/api/analytics/`);
-
+    fetchAnalyticsData(period) {
+        console.log("Sending period:", period);
+        return plainInstance.get(`/api/analytics/`, { params: { period } });
+    
     }
 }

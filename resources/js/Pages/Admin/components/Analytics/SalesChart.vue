@@ -6,7 +6,6 @@
   </div>
 </template>
 
-
 <script setup>
 import { Bar } from "vue-chartjs";
 import { computed } from "vue";
@@ -49,23 +48,34 @@ const months = [
   "December",
 ];
 
-// Computed chart data using revenue prop
 const chartData = computed(() => {
-  // Create an array of 12 zeros
-  const data = Array(12).fill(0);
+  if (props.revenue.length === 0) {
+    return { labels: [], datasets: [] };
+  }
 
-  props.revenue.forEach(item => {
-    const [year, month] = item.month.split("-").map(Number);
-    if (month >= 1 && month <= 12) {
-      data[month - 1] = item.total_revenue;
-    }
-  });
+  let labels = [];
+  let data = [];
+
+  if (props.revenue[0].month) {
+    labels = months;
+    data = Array(12).fill(0);
+
+    props.revenue.forEach(item => {
+      const [year, month] = item.month.split("-").map(Number);
+      if (month >= 1 && month <= 12) {
+        data[month - 1] = item.total_revenue;
+      }
+    });
+  } else if (props.revenue[0].year) {
+    labels = props.revenue.map(item => item.year);
+    data = props.revenue.map(item => item.total_revenue);
+  }
 
   return {
-    labels: months,
+    labels,
     datasets: [
       {
-        label: "Monthly Sales",
+        label: props.revenue[0].month ? "Monthly Sales" : "Yearly Sales",
         data,
         backgroundColor: "rgba(54, 162, 235, 0.3)",
         borderColor: "rgba(54, 162, 235, 0.6)",

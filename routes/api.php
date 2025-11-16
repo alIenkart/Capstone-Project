@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\OurStoryController;
 use App\Http\Controllers\Api\AccreditationController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\Api\ReceiptController;
 
 Route::middleware('api')->group(function () {
 
