@@ -146,55 +146,54 @@
       </div>
     </section>
 
-    <section class="max-w-7xl mx-auto px-4 md:px-6 py-16 md:py-24" v-if="seasonalPackages.length > 0">
+    <section class="w-full px-4 md:px-6 py-16 md:py-24 bg-gradient-to-b from-white via-blue-50 to-white">
+    <div class="max-w-7xl mx-auto">
       <div class="text-center mb-16">
-        <h2 class="text-3xl md:text-4xl font-bold text-[#1E71B8] mb-4 relative inline-block">
-          Special Offers
-          <span
-            class="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-[#1E71B8] to-[#008DDA] rounded-full"></span>
-        </h2>
-        <p class="text-gray-600 mt-6 text-lg">Limited time seasonal packages at exclusive rates</p>
+        <div class="inline-block">
+          <h2 class="text-3xl md:text-4xl font-bold text-[#1E71B8] mb-4 relative inline-block">
+            Special Offers
+            <span class="absolute -bottom-4 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-orange-500 to-red-600 rounded-full"></span>
+          </h2>
+        </div>
+        <p class="text-gray-600 mt-8 text-lg font-medium">Limited time seasonal packages at exclusive rates</p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
         <div v-for="pkg in seasonalPackages" :key="pkg.id"
           class="group relative h-full overflow-hidden rounded-3xl bg-white shadow-md hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-[#1E71B8]/30 transform hover:-translate-y-2 flex flex-col">
           
-          <div class="absolute top-4 right-4 z-20 bg-gradient-to-r from-orange-500 to-red-600 text-white px-4 py-2 rounded-full text-xs font-bold shadow-lg">
-            SEASONAL
+          <div class="absolute top-4 right-4 z-20 flex flex-col items-center gap-2">
+            <div class="bg-gradient-to-r from-orange-500 to-red-600 text-white px-4 py-2 rounded-full text-xs font-bold shadow-lg">
+              SEASONAL
+            </div>
           </div>
 
-          <div
-            class="absolute inset-0 bg-gradient-to-br from-[#1E71B8]/5 to-[#008DDA]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-          </div>
+          <div class="absolute inset-0 bg-gradient-to-br from-[#1E71B8]/5 to-[#008DDA]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
-          <div
-            class="relative w-full h-56 overflow-hidden bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center group/img">
+          <div class="relative w-full h-56 overflow-hidden bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center group/img">
             <img :src="'/storage/' + pkg.image_path" :alt="pkg.destination"
               class="max-h-full max-w-full object-contain transition-transform duration-500 group-hover/img:scale-110" />
-            <div
-              class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover/img:opacity-100 transition-opacity duration-500">
-            </div>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover/img:opacity-100 transition-opacity duration-500"></div>
           </div>
 
           <div class="relative z-10 p-6 flex flex-col flex-grow">
-            <div class="space-y-2 mb-4">
-              <div class="flex items-center gap-3">
-                <div
-                  class="inline-flex items-center gap-1 px-3 py-1 bg-gradient-to-r from-orange-500/10 to-red-600/10 rounded-full border border-orange-500/20">
-                  <span class="font-bold text-orange-600 text-sm">₱{{ pkg.seasonal_pax_rate.toLocaleString() }}</span>
+            <div class="mb-4">
+              <div class="flex items-center gap-3 mb-3">
+                <div>
+                  <span class="font-bold text-orange-600 px-3 py-1 bg-gradient-to-r from-orange-500/10 to-red-600/10 rounded-full border border-orange-500/20 inline-block">₱{{ pkg.seasonal_pax_rate.toLocaleString() }}</span>
                 </div>
+                <span class="text-sm text-gray-500 line-through">₱{{ pkg.pax_rate.toLocaleString() }}</span>
               </div>
+              <span class="text-xs font-bold text-white bg-gradient-to-r from-orange-500 to-red-600 px-2 py-1 rounded-full shadow-lg">
+              SAVE {{ calculateDiscount(pkg.pax_rate, pkg.seasonal_pax_rate) }}%
+            </span>
             </div>
 
-            <h3
-              class="text-2xl font-bold text-[#1E71B8] mb-4 group-hover:text-[#008DDA] transition-colors duration-300 line-clamp-2">
+            <h3 class="text-2xl font-bold text-[#1E71B8] mb-4 group-hover:text-[#008DDA] transition-colors duration-300 line-clamp-2">
               {{ pkg.destination }}
             </h3>
 
-            <div
-              class="w-8 h-1 bg-gradient-to-r from-orange-500 to-red-600 rounded-full mb-4 group-hover:w-16 transition-all duration-300">
-            </div>
+            <div class="w-8 h-1 bg-gradient-to-r from-orange-500 to-red-600 rounded-full mb-4 group-hover:w-16 transition-all duration-300"></div>
 
             <div class="space-y-3 mb-6 flex-grow">
               <div class="flex items-center gap-2">
@@ -204,7 +203,6 @@
                   <path stroke-linecap="round" stroke-linejoin="round"
                     d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                 </svg>
-
                 <span class="text-sm text-gray-600">{{ pkg.package_name }}</span>
               </div>
 
@@ -214,14 +212,14 @@
                   <circle cx="12" cy="12" r="10" />
                   <path d="M12 6v6l4 2" />
                 </svg>
-                <span class="font-semibold text-gray-800 group-hover:text-[#008DDA] transition-colors">{{
-                  pkg.tour_duration }} Days</span>
+                <span class="font-semibold text-gray-800 group-hover:text-[#008DDA] transition-colors">
+                  {{ pkg.tour_duration }} Days
+                </span>
               </div>
             </div>
-
             <Link :href="route('tourdetails', { id: pkg.id })"
               class="w-full px-6 py-3 rounded-xl font-semibold text-white border-2 bg-gradient-to-r from-orange-500 to-red-600 border-orange-500 hover:from-orange-600 hover:to-red-700 hover:border-orange-600 transition-all duration-300 text-center shadow-sm hover:shadow-md flex items-center justify-center gap-2 group/btn">
-            Book Now
+            View Details
             <svg class="w-4 h-4 transition-transform group-hover/btn:translate-x-1" xmlns="http://www.w3.org/2000/svg"
               fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path d="M5 12h14M12 5l7 7-7 7" />
@@ -230,7 +228,8 @@
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
   </div>
   <Footer></Footer>
 </template>
@@ -288,6 +287,12 @@ const headerDescription = computed(() =>
 
 const toggleMore = () => {
   showMore.value = !showMore.value;
+};
+
+const calculateDiscount = (originalPrice, seasonalPrice) => {
+  if (originalPrice <= 0) return 0;
+  const discount = ((originalPrice - seasonalPrice) / originalPrice) * 100;
+  return Math.round(discount);
 };
 
 onMounted(() => {

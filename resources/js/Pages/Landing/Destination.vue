@@ -55,6 +55,7 @@
     </div>
 
     <div class="max-w-7xl mx-auto px-4 md:px-6 pb-20">
+      <!-- Regular Packages -->
       <div v-if="filteredPackages.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
         <div v-for="pkg in filteredPackages" :key="pkg.id"
           class="group relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-[#1E71B8]/30 transform hover:-translate-y-2 flex flex-col h-full">
@@ -77,9 +78,20 @@
           </div>
 
           <div class="relative z-10 p-6 flex flex-col flex-grow">
-            <div
-              :class="pkg.is_seasonal ? 'inline-flex items-center gap-1 mb-4 w-fit px-3 py-1 bg-gradient-to-r from-orange-500/10 to-red-600/10 rounded-full border border-orange-500/20' : 'inline-flex items-center gap-1 mb-4 w-fit px-3 py-1 bg-gradient-to-r from-[#008DDA]/10 to-[#73BE5D]/10 rounded-full border border-[#008DDA]/20'">
-              <span :class="pkg.is_seasonal ? 'font-bold text-orange-600 text-sm' : 'font-bold text-[#008DDA]'">₱{{ pkg.is_seasonal ? pkg.seasonal_pax_rate.toLocaleString() : pkg.pax_rate.toLocaleString() }}</span>
+            <div v-if="pkg.is_seasonal" class="mb-4">
+              <div class="flex items-center gap-3 mb-3">
+                <div>
+                  <span class="font-bold text-orange-600 px-3 py-1 bg-gradient-to-r from-orange-500/10 to-red-600/10 rounded-full border border-orange-500/20 inline-block">₱{{ pkg.seasonal_pax_rate.toLocaleString() }}</span>
+                </div>
+                <span class="text-sm text-gray-500 line-through">₱{{ pkg.pax_rate.toLocaleString() }}</span>
+              </div>
+              <span class="text-xs font-bold text-white bg-gradient-to-r from-orange-500 to-red-600 px-2 py-1 rounded-full shadow-lg">
+              SAVE {{ calculateDiscount(pkg.pax_rate, pkg.seasonal_pax_rate) }}%
+            </span>
+            </div>
+            <div v-else
+              class="inline-flex items-center gap-1 mb-4 w-fit px-3 py-1 bg-gradient-to-r from-[#008DDA]/10 to-[#73BE5D]/10 rounded-full border border-[#008DDA]/20">
+              <span class="font-bold text-[#008DDA]">₱{{ pkg.pax_rate.toLocaleString() }}</span>
             </div>
 
             <h3
@@ -93,7 +105,6 @@
 
             <div class="space-y-3 mb-6 flex-grow">
               <div class="flex items-center gap-2">
-
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                   stroke="currentColor" class="w-5 h-5 text-[#008DDA] flex-shrink-0">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
@@ -116,7 +127,7 @@
 
             <Link :href="route('tourdetails', { id: pkg.id })"
               :class="pkg.is_seasonal ? 'w-full px-6 py-3 rounded-xl font-semibold text-white border-2 bg-gradient-to-r from-orange-500 to-red-600 border-orange-500 hover:from-orange-600 hover:to-red-700 hover:border-orange-600 transition-all duration-300 text-center shadow-sm hover:shadow-md flex items-center justify-center gap-2 group/btn' : 'w-full px-6 py-3 rounded-xl font-semibold text-[#008DDA] border-2 border-[#008DDA] bg-white hover:bg-[#008DDA] hover:text-white transition-all duration-300 text-center shadow-sm hover:shadow-md flex items-center justify-center gap-2 group/btn'">
-            {{ pkg.is_seasonal ? 'Book Now' : 'View Details' }}
+            View Details
             <svg class="w-4 h-4 transition-transform group-hover/btn:translate-x-1" xmlns="http://www.w3.org/2000/svg"
               fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path d="M5 12h14M12 5l7 7-7 7" />
@@ -217,6 +228,12 @@ const handleClickOutside = (event) => {
   if (filterRef.value && !filterRef.value.contains(event.target)) {
     showFilter.value = false;
   }
+};
+
+const calculateDiscount = (originalPrice, seasonalPrice) => {
+  if (originalPrice <= 0) return 0;
+  const discount = ((originalPrice - seasonalPrice) / originalPrice) * 100;
+  return Math.round(discount);
 };
 
 onMounted(() => {

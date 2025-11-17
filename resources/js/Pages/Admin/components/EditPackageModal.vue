@@ -31,8 +31,8 @@
                 <div
                   class="relative flex items-center justify-center border-2 border-dashed rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 p-8 text-slate-500 cursor-pointer hover:text-[#217093] hover:border-[#217093] hover:bg-gradient-to-br hover:from-blue-50 hover:to-slate-50 transition-all group"
                   :class="imagePreview
-                      ? 'border-[#217093] bg-white'
-                      : 'border-slate-300'
+                    ? 'border-[#217093] bg-white'
+                    : 'border-slate-300'
                     ">
                   <label for="imageUpload" class="flex flex-col items-center justify-center w-full cursor-pointer">
                     <template v-if="imagePreview">
@@ -281,7 +281,7 @@
                             d="M11.99 2.243a4.49 4.49 0 0 0-3.398 1.55 4.49 4.49 0 0 0-3.497 1.306 4.491 4.491 0 0 0-1.307 3.498 4.491 4.491 0 0 0-1.548 3.397c0 1.357.6 2.573 1.548 3.397a4.491 4.491 0 0 0 1.307 3.498 4.49 4.49 0 0 0 3.498 1.307 4.49 4.49 0 0 0 3.397 1.549 4.49 4.49 0 0 0 3.397-1.549 4.49 4.49 0 0 0 3.497-1.307 4.491 4.491 0 0 0 1.306-3.497 4.491 4.491 0 0 0 1.55-3.398c0-1.357-.601-2.573-1.549-3.397a4.491 4.491 0 0 0-1.307-3.498 4.49 4.49 0 0 0-3.498-1.307 4.49 4.49 0 0 0-3.396-1.549Zm3.53 7.28a.75.75 0 0 0-1.06-1.06l-6 6a.75.75 0 1 0 1.06 1.06l6-6Zm-5.78-.905a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25Zm4.5 4.5a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25Z"
                             clip-rule="evenodd" />
                         </svg>
-                        <input type="number" v-model="seasonalPaxRate"
+                        <input type="number" v-model.number="seasonalPaxRate"
                           class="w-full rounded-lg border-2 outline-none transition-all pl-10 pr-4 py-2.5 text-sm font-medium bg-white"
                           style="border-color: #217093;"
                           @focus="$event.target.style.borderColor = '#2a8bb5'; $event.target.style.boxShadow = 'inset 0 0 0 3px rgba(42, 139, 181, 0.1)'"
@@ -299,7 +299,7 @@
                             d="M11.99 2.243a4.49 4.49 0 0 0-3.398 1.55 4.49 4.49 0 0 0-3.497 1.306 4.491 4.491 0 0 0-1.307 3.498 4.491 4.491 0 0 0-1.548 3.397c0 1.357.6 2.573 1.548 3.397a4.491 4.491 0 0 0 1.307 3.498 4.49 4.49 0 0 0 3.498 1.307 4.49 4.49 0 0 0 3.397 1.549 4.49 4.49 0 0 0 3.397-1.549 4.49 4.49 0 0 0 3.497-1.307 4.491 4.491 0 0 0 1.306-3.497 4.491 4.491 0 0 0 1.55-3.398c0-1.357-.601-2.573-1.549-3.397a4.491 4.491 0 0 0-1.307-3.498 4.49 4.49 0 0 0-3.498-1.307 4.49 4.49 0 0 0-3.396-1.549Zm3.53 7.28a.75.75 0 0 0-1.06-1.06l-6 6a.75.75 0 1 0 1.06 1.06l6-6Zm-5.78-.905a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25Zm4.5 4.5a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25Z"
                             clip-rule="evenodd" />
                         </svg>
-                        <input type="number" v-model="seasonalKidsPaxRate"
+                        <input type="number" v-model.number="seasonalKidsPaxRate"
                           class="w-full rounded-lg border-2 outline-none transition-all pl-10 pr-4 py-2.5 text-sm font-medium bg-white"
                           style="border-color: #217093;"
                           @focus="$event.target.style.borderColor = '#2a8bb5'; $event.target.style.boxShadow = 'inset 0 0 0 3px rgba(42, 139, 181, 0.1)'"
@@ -308,6 +308,11 @@
                       </div>
                     </div>
                   </div>
+
+                  <button type="button" @click="updateSeasonalPricing"
+                    class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-sm font-bold rounded-lg hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                    Update Seasonal Pricing
+                  </button>
                 </div>
 
                 <p v-else class="text-sm text-slate-600">Toggle this to activate seasonal pricing for this package.</p>
@@ -756,11 +761,12 @@ const fetchPackage = async (id) => {
     originalPaxRate.value = packageData.pax_rate || 0;
     originalKidsPaxRate.value = packageData.kids_pax_rate || 0;
 
-    if (packageData.seasonal_pax_rate) {
-      seasonalPaxRate.value = packageData.seasonal_pax_rate;
-    }
-    if (packageData.seasonal_kids_pax_rate) {
-      seasonalKidsPaxRate.value = packageData.seasonal_kids_pax_rate;
+    if (packageData.is_seasonal) {
+      seasonalPaxRate.value = packageData.seasonal_pax_rate || 0;
+      seasonalKidsPaxRate.value = packageData.seasonal_kids_pax_rate || 0;
+    } else {
+      seasonalPaxRate.value = 0;
+      seasonalKidsPaxRate.value = 0;
     }
 
     formData.value = {
@@ -849,13 +855,17 @@ const updatePackage = async () => {
   try {
     if (
       !formData.value.package_name ||
-      !formData.value.pax_rate ||
       !formData.value.start_date ||
       !formData.value.end_date
     ) {
       toast.error(
-        "Please fill in Package Name, Base Price, Start Date, and End Date."
+        "Please fill in Package Name, Start Date, and End Date."
       );
+      return;
+    }
+
+    if (!isSeasonalActive.value && !formData.value.pax_rate) {
+      toast.error("Please fill in Base Price per Pax.");
       return;
     }
 
@@ -872,6 +882,7 @@ const updatePackage = async () => {
     itineraryDays.value.forEach((day) => {
       formattedItinerary[`day_${day.id}`] = day.content;
     });
+
     if (formData.value.image) {
       const data = new FormData();
       data.append("package_name", formData.value.package_name);
@@ -886,13 +897,17 @@ const updatePackage = async () => {
       data.append("exclusions", formData.value.exclusions);
       data.append("capacity", parseInt(formData.value.capacity) || 0);
       data.append("status", formData.value.status.toLowerCase());
-      data.append("pax_rate", parseFloat(formData.value.pax_rate) || 0);
-      data.append("kids_pax_rate", formData.value.kids_pax_rate || 0);
       data.append(
         "discounted_rate",
         parseFloat(formData.value.discounted_rate) || 0
       );
       data.append("image", formData.value.image);
+
+      if (!isSeasonalActive.value) {
+        data.append("pax_rate", parseFloat(formData.value.pax_rate) || 0);
+        data.append("kids_pax_rate", formData.value.kids_pax_rate || 0);
+      }
+
       formData.value.tour_classification.forEach((item, index) => {
         data.append(`tour_classification[${index}]`, item);
       });
@@ -918,11 +933,15 @@ const updatePackage = async () => {
         exclusions: formData.value.exclusions,
         capacity: parseInt(formData.value.capacity) || 0,
         status: formData.value.status.toLowerCase(),
-        pax_rate: parseFloat(formData.value.pax_rate) || 0,
-        kids_pax_rate: formData.value.kids_pax_rate || 0,
         discounted_rate: parseFloat(formData.value.discounted_rate) || 0,
         tour_classification: formData.value.tour_classification,
       };
+
+      if (!isSeasonalActive.value) {
+        payload.pax_rate = parseFloat(formData.value.pax_rate) || 0;
+        payload.kids_pax_rate = formData.value.kids_pax_rate || 0;
+      }
+
       response = await axios.put(`/api/packages/${formData.value.id}`, payload);
     }
 
@@ -1010,7 +1029,6 @@ const addItineraryDay = () => {
   itineraryDays.value.push({ id: newDayNumber, content: "" });
 };
 
-// Seasonal pricing methods
 const toggleSeasonalMode = () => {
   showSeasonalConfirmation.value = true;
 };
@@ -1031,6 +1049,9 @@ const saveSeasonalPricing = async () => {
       return;
     }
 
+    originalPaxRate.value = formData.value.pax_rate;
+    originalKidsPaxRate.value = formData.value.kids_pax_rate;
+
     const payload = {
       is_seasonal: true,
       seasonal_pax_rate: parseFloat(seasonalPaxRate.value),
@@ -1042,16 +1063,42 @@ const saveSeasonalPricing = async () => {
       payload
     );
 
-    // Update main prices
-    formData.value.pax_rate = response.data.data.seasonal_pax_rate;
-    if (response.data.data.seasonal_kids_pax_rate) {
-      formData.value.kids_pax_rate = response.data.data.seasonal_kids_pax_rate;
-    }
+    isSeasonalActive.value = true;
+
+    seasonalPaxRate.value = response.data.data.seasonal_pax_rate;
+    seasonalKidsPaxRate.value = response.data.data.seasonal_kids_pax_rate || '';
 
     toast.success("Seasonal pricing activated successfully!");
     isSeasonalMode.value = false;
-    seasonalPaxRate.value = 0;
-    seasonalKidsPaxRate.value = 0;
+
+  } catch (error) {
+    console.error("Error updating seasonal pricing:", error);
+    toast.error("Error updating seasonal pricing");
+  }
+};
+
+const updateSeasonalPricing = async () => {
+  try {
+    if (!seasonalPaxRate.value) {
+      toast.error("Please enter seasonal base price");
+      return;
+    }
+
+    const payload = {
+      is_seasonal: true,
+      seasonal_pax_rate: parseFloat(seasonalPaxRate.value),
+      seasonal_kids_pax_rate: seasonalKidsPaxRate.value ? parseFloat(seasonalKidsPaxRate.value) : null,
+    };
+
+    const response = await axios.put(
+      `/api/packages/${formData.value.id}/seasonal-pricing`,
+      payload
+    );
+
+    seasonalPaxRate.value = response.data.data.seasonal_pax_rate;
+    seasonalKidsPaxRate.value = response.data.data.seasonal_kids_pax_rate || seasonalKidsPaxRate.value;
+
+    toast.success("Seasonal pricing updated successfully!");
   } catch (error) {
     console.error("Error updating seasonal pricing:", error);
     toast.error("Error updating seasonal pricing");
@@ -1067,7 +1114,8 @@ const cancelSeasonalPricing = () => {
 const deactivateSeasonalPricing = async () => {
   try {
     const payload = {
-      pax_rate: parseFloat(originalPaxRate.value),
+      is_seasonal: false,
+      pax_rate: parseFloat(originalPaxRate.value) || 0,
       kids_pax_rate: originalKidsPaxRate.value ? parseFloat(originalKidsPaxRate.value) : null,
     };
 
@@ -1077,6 +1125,7 @@ const deactivateSeasonalPricing = async () => {
     );
 
     isSeasonalActive.value = false;
+
     formData.value.pax_rate = response.data.data.pax_rate;
     formData.value.kids_pax_rate = response.data.data.kids_pax_rate;
 

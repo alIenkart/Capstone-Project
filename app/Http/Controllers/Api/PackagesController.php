@@ -123,8 +123,7 @@ class PackagesController extends Controller
         $package = Packages::findOrFail($id);
 
         \Log::info('=== UPDATE PACKAGE ===');
-        \Log::info('Start Date from Request:', ['start_date' => $request->input('start_date')]);
-        \Log::info('End Date from Request:', ['end_date' => $request->input('end_date')]);
+        \Log::info('Is Seasonal:', ['is_seasonal' => $package->is_seasonal]);
 
         $itinerary = json_decode($request->input('itinerary'), true);
         $request->merge(['itinerary' => $itinerary]);
@@ -145,7 +144,7 @@ class PackagesController extends Controller
             'exclusions' => 'sometimes|required|string',
             'capacity' => 'sometimes|required|integer|min:1',
             'status' => 'sometimes|required|in:active,inactive',
-            'pax_rate' => 'sometimes|required|numeric|min:0',
+            'pax_rate' => 'sometimes|nullable|numeric|min:0',
             'kids_pax_rate' => 'sometimes|nullable|numeric|min:0',
             'discounted_rate' => 'sometimes|required|numeric|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -165,10 +164,6 @@ class PackagesController extends Controller
                 $endDate = Carbon::createFromFormat('Y-m-d', $request->input('end_date'));
                 
                 $duration = abs($endDate->diffInDays($startDate)) + 1;
-                
-                \Log::info('Duration Calculation:', [
-                    'final_duration' => $duration,
-                ]);
                 
                 $data['tour_duration'] = $duration;
             } catch (\Exception $e) {
@@ -193,6 +188,11 @@ class PackagesController extends Controller
             $data['available_slot'] = max(0, $new_capacity - $total_booked);
         }
 
+        if ($package->is_seasonal) {
+            \Log::info('Package is seasonal, removing pricing from update');
+            unset($data['pax_rate']);
+            unset($data['kids_pax_rate']);
+        }
 
         $package->update($data);
 
@@ -231,28 +231,23 @@ class PackagesController extends Controller
     public function updateSeasonalPricing(Request $request, $id)
     {
         $package = Packages::findOrFail($id);
-    
+
         $validator = Validator::make($request->all(), [
             'is_seasonal' => 'required|boolean',
             'seasonal_pax_rate' => 'required_if:is_seasonal,true|nullable|numeric|min:0',
             'seasonal_kids_pax_rate' => 'nullable|numeric|min:0',
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-    
-        $data = $request->all();
-    
-        if ($data['is_seasonal']) {
-            $data['pax_rate'] = $data['seasonal_pax_rate'];
-            if ($data['seasonal_kids_pax_rate']) {
-                $data['kids_pax_rate'] = $data['seasonal_kids_pax_rate'];
-            }
-        }
-    
-        $package->update($data);
-    
+
+        $package->update([
+            'is_seasonal' => $request->is_seasonal,
+            'seasonal_pax_rate' => $request->seasonal_pax_rate,
+            'seasonal_kids_pax_rate' => $request->seasonal_kids_pax_rate,
+        ]);
+
         return response()->json([
             'data' => $package,
             'message' => 'Seasonal pricing updated successfully'
@@ -262,16 +257,18 @@ class PackagesController extends Controller
     public function deactivateSeasonalPricing(Request $request, $id)
     {
         $package = Packages::findOrFail($id);
-    
+
         $validator = Validator::make($request->all(), [
+            'is_seasonal' => 'required|boolean',
             'pax_rate' => 'required|numeric|min:0',
             'kids_pax_rate' => 'nullable|numeric|min:0',
         ]);
-    
+
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
-    
+
+        // When deactivating, restore original prices
         $package->update([
             'is_seasonal' => false,
             'pax_rate' => $request->pax_rate,
@@ -279,7 +276,7 @@ class PackagesController extends Controller
             'seasonal_pax_rate' => null,
             'seasonal_kids_pax_rate' => null,
         ]);
-    
+
         return response()->json([
             'data' => $package,
             'message' => 'Seasonal pricing deactivated successfully'
