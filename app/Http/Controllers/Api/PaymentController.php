@@ -52,8 +52,8 @@ class PaymentController extends Controller
                     'total_price' => 0,
                 ]
             );
-        } else {
-            $payment = Payment::where('id', $id)->first();
+        } else if($request->input('type') === 'payment_approval'){
+            $payment = Payment::where('booking_id', $id)->first();
     
             if (!$payment) {
                 return response()->json([
