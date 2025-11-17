@@ -56,8 +56,9 @@
 
             <div class="flex items-center justify-between gap-3 bg-gray-50 rounded-lg p-4">
               <div
-                class="bg-gradient-to-r from-[#1E71B8] to-[#155E9C] rounded-lg px-4 py-2 text-white font-semibold text-lg">
-                ₱{{ selectedPackage.pax_rate?.toLocaleString() }}
+                :class="'bg-gradient-to-r from-[#1E71B8] to-[#155E9C]'"
+                class="rounded-lg px-4 py-2 text-white font-semibold text-lg">
+                ₱{{ (selectedPackage.is_seasonal ? selectedPackage.seasonal_pax_rate : selectedPackage.pax_rate)?.toLocaleString() }}
               </div>
               <div class="flex items-center gap-3">
                 <button @click="pax > 0 && pax--"
@@ -86,8 +87,9 @@
 
             <div class="flex items-center justify-between gap-3 bg-gray-50 rounded-lg p-4">
               <div
-                class="bg-gradient-to-r from-[#1E71B8] to-[#155E9C] rounded-lg px-4 py-2 text-white font-semibold text-lg">
-                ₱{{ selectedPackage.kids_pax_rate?.toLocaleString() }}
+                :class="'bg-gradient-to-r from-[#1E71B8] to-[#155E9C]'"
+                class="rounded-lg px-4 py-2 text-white font-semibold text-lg">
+                ₱{{ (selectedPackage.is_seasonal ? selectedPackage.seasonal_kids_pax_rate : selectedPackage.kids_pax_rate)?.toLocaleString() }}
               </div>
               <div class="flex items-center gap-3">
                 <button @click="kidsPax > 0 && kidsPax--"
@@ -236,9 +238,12 @@
         </div>
 
         <div
-          class="bg-gradient-to-br from-[#1E71B8] to-[#155E9C] rounded-2xl p-6 shadow-lg text-white overflow-hidden relative">
+          :class="'bg-gradient-to-br from-[#1E71B8] to-[#155E9C]'"
+          class="rounded-2xl p-6 shadow-lg text-white overflow-hidden relative">
           <div class="absolute -top-12 -right-12 w-32 h-32 bg-white opacity-10 rounded-full"></div>
-          <div class="absolute -bottom-8 -left-8 w-24 h-24 bg-[#73BE5D] opacity-10 rounded-full"></div>
+          <div
+            :class="'bg-[#73BE5D]'"
+            class="absolute -bottom-8 -left-8 w-24 h-24 opacity-10 rounded-full"></div>
 
           <div class="relative z-10">
             <div class="mb-5 pb-5 border-b border-white border-opacity-20">
@@ -293,16 +298,16 @@
 
               <div class="flex justify-between items-center text-lg">
                 <span class="font-bold">Total</span>
-                <span class="text-[#73BE5D] font-bold text-2xl">₱{{ totalAmountWithDiscount.toLocaleString() }}</span>
+                <span :class="'text-[#73BE5D]'" class="font-bold text-2xl">₱{{ finalTotalAmount.toLocaleString() }}</span>
               </div>
             </div>
 
             <button @click="postPackage" :disabled="pax + kidsPax === 0 || (isExclusiveTour && isEditingItinerary)
               "
-              class="w-full py-3 px-4 rounded-lg font-bold text-[#1E71B8] text-lg transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+              class="w-full py-3 px-4 rounded-lg font-bold text-lg transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
               :class="pax + kidsPax === 0 || (isExclusiveTour && isEditingItinerary)
                   ? 'bg-gray-300'
-                  : 'bg-[#73BE5D] hover:bg-[#5ca348] active:scale-95'
+                  :'bg-[#73BE5D] hover:bg-[#5ca348] text-[#1E71B8]'
                 ">
               Proceed to Payment
             </button>
@@ -340,24 +345,26 @@ const editableItinerary = ref({});
 const durationDays = computed(() => booking.getHowManyDays);
 
 const adultTotalAmount = computed(() => {
-  const amount = selectedPackage.value.pax_rate || 0;
+  const amount = selectedPackage.value.is_seasonal
+    ? Number(selectedPackage.value.seasonal_pax_rate)
+    : Number(selectedPackage.value.pax_rate);
+
   return amount * pax.value;
 });
 
 const kidsTotalAmount = computed(() => {
-  const amount = selectedPackage.value.kids_pax_rate || 0;
+  const amount = selectedPackage.value.is_seasonal
+    ? Number(selectedPackage.value.seasonal_kids_pax_rate)
+    : Number(selectedPackage.value.kids_pax_rate);
+
   return amount * kidsPax.value;
 });
 
 const totalAmount = computed(
   () => adultTotalAmount.value + kidsTotalAmount.value
 );
-const discountRate = 0.2;
-const totalAmountWithDiscount = computed(() => {
-  const subtotal = totalAmount.value;
-  const discountAmount = subtotal * discountRate;
-  return subtotal - discountAmount;
-});
+
+const finalTotalAmount = computed(() => totalAmount.value);
 
 const isExclusiveTour = computed(
   () => booking.tourType?.toLowerCase() === "exclusive"
@@ -507,11 +514,22 @@ const postPackage = () => {
   booking.setAdultsQuantity(pax.value);
   booking.setKidsQuantity(kidsPax.value);
   booking.setAmount(totalAmount.value);
-  booking.setTotalAmountWithDiscount(totalAmountWithDiscount.value);
+  booking.setTotalAmountWithDiscount(finalTotalAmount.value);
   booking.setPackageDestination(selectedPackage.value.destination);
   booking.setDuration(durationDays.value);
-  booking.setAdultRate(selectedPackage.value.pax_rate || 0);
-  booking.setKidsRate(selectedPackage.value.kids_pax_rate || 0);
+
+  booking.setAdultRate(
+  selectedPackage.value.is_seasonal
+      ? Number(selectedPackage.value.seasonal_pax_rate)
+      : Number(selectedPackage.value.pax_rate)
+  );
+
+  booking.setKidsRate(
+    selectedPackage.value.is_seasonal
+      ? Number(selectedPackage.value.seasonal_kids_pax_rate)
+      : Number(selectedPackage.value.kids_pax_rate)
+  );
+
   booking.setAdultTotalAmount(adultTotalAmount.value);
   booking.setKidsTotalAmount(kidsTotalAmount.value);
   booking.setDiscountImages(discountImages.value);

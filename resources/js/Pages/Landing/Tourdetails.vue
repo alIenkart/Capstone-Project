@@ -270,21 +270,44 @@
           </div>
         </div>
 
-        <div
-          class="flex flex-col gap-6 w-full lg:w-96 h-fit"
-        >
+        <div class="flex flex-col gap-6 w-full lg:w-96 h-fit">
           <div
-            class="bg-gradient-to-br from-[#1E71B8] to-[#155E9C] rounded-2xl p-6 shadow-lg text-white overflow-hidden relative"
+            :class="selectedPackage.is_seasonal ? 'bg-gradient-to-br from-orange-500 to-red-600' : 'bg-gradient-to-br from-[#1E71B8] to-[#155E9C]'"
+            class="rounded-2xl p-6 shadow-lg text-white overflow-hidden relative"
           >
             <div
               class="absolute -top-12 -right-12 w-32 h-32 bg-white opacity-10 rounded-full"
             ></div>
             <div
-              class="absolute -bottom-8 -left-8 w-24 h-24 bg-[#73BE5D] opacity-10 rounded-full"
+              :class="selectedPackage.is_seasonal ? 'bg-red-700' : 'bg-[#73BE5D]'"
+              class="absolute -bottom-8 -left-8 w-24 h-24 opacity-10 rounded-full"
             ></div>
 
             <div class="relative z-10">
-              <div class="mb-5 pb-5 border-b border-white border-opacity-20">
+              <div v-if="selectedPackage.is_seasonal" class="mb-5 pb-5 border-b border-white border-opacity-20">
+                <p class="text-white text-opacity-70 text-xs uppercase tracking-widest font-semibold mb-2">
+                  Seasonal Rate
+                </p>
+                <div class="flex items-center gap-3 mb-3">
+                  <div>
+                    <div class="flex items-baseline gap-1">
+                      <span class="text-lg font-bold">₱</span>
+                      <span class="text-3xl font-bold">{{
+                        selectedPackage?.seasonal_pax_rate?.toLocaleString()
+                      }}</span>
+                      <span class="text-sm text-white text-opacity-80">/pax</span>
+                    </div>
+                  </div>
+                  <div class="flex flex-col items-start">
+                    <span class="text-sm text-white text-opacity-80 line-through">₱{{ selectedPackage?.pax_rate?.toLocaleString() }}</span>
+                    <span class="text-xs font-bold bg-white text-orange-600 px-2 py-1 rounded-full mt-1">
+                      SAVE {{ calculateDiscount(selectedPackage?.pax_rate, selectedPackage?.seasonal_pax_rate) }}%
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div v-else class="mb-5 pb-5 border-b border-white border-opacity-20">
                 <p
                   class="text-white text-opacity-70 text-xs uppercase tracking-widest font-semibold mb-2"
                 >
@@ -300,7 +323,7 @@
               </div>
 
               <div class="mb-6">
-                <div class="bg-[#73BE5D] rounded-lg px-4 py-3 text-center">
+                <div :class="selectedPackage.is_seasonal ? 'bg-red-700' : 'bg-[#73BE5D]'" class="rounded-lg px-4 py-3 text-center">
                   <p
                     class="text-white text-opacity-80 text-xs uppercase tracking-wide mb-1"
                   >
@@ -315,7 +338,8 @@
               <button
                 v-if="selectedPackage.id"
                 @click="handleBookNow"
-                class="w-full py-3 px-4 bg-white text-[#1E71B8] font-bold text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 active:scale-95"
+                class="w-full py-3 px-4 bg-white font-bold text-lg rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 active:scale-95"
+                :class="selectedPackage.is_seasonal ? 'text-orange-600 hover:bg-orange-50' : 'text-[#1E71B8] hover:bg-blue-50'"
               >
                 BOOK NOW →
               </button>
@@ -346,16 +370,21 @@
               <div
                 v-for="pkg in relatedTrips"
                 :key="pkg.id"
-                class="bg-gradient-to-br from-blue-50 to-gray-50 rounded-xl overflow-hidden border border-gray-200 hover:shadow-lg transition-all duration-300"
+                :class="pkg.is_seasonal ? 'bg-gradient-to-br from-orange-50 to-red-50' : 'bg-gradient-to-br from-blue-50 to-gray-50'"
+                class="rounded-xl overflow-hidden border hover:shadow-lg transition-all duration-300"
+                :style="pkg.is_seasonal ? 'border-color: rgb(249, 115, 22);' : 'border-color: rgb(229, 231, 235);'"
               >
                 <div
-                  class="h-40 bg-gray-200 overflow-hidden flex items-center justify-center"
+                  class="h-40 bg-gray-200 overflow-hidden flex items-center justify-center relative"
                 >
                   <img
                     :src="'/storage/' + pkg.image_path"
                     :alt="pkg.destination"
                     class="w-full h-full object-contain"
                   />
+                  <div v-if="pkg.is_seasonal" class="absolute top-3 right-3 z-10 bg-gradient-to-r from-orange-500 to-red-600 text-white px-4 py-2 rounded-full text-xs font-bold shadow-lg">
+                    SEASONAL
+                  </div>
                 </div>
 
                 <div class="p-4">
@@ -366,7 +395,13 @@
                   </h3>
 
                   <div class="space-y-2 mb-4">
-                    <div class="flex items-center gap-1 text-gray-700 m-0.5">
+                    <div v-if="pkg.is_seasonal" class="flex items-center gap-2 m-0.5">
+                      <div>
+                        <span class="font-bold text-orange-600 px-2 py-1 bg-gradient-to-r from-orange-500/10 to-red-600/10 rounded-full border border-orange-500/20 inline-block text-sm">₱{{ pkg.seasonal_pax_rate?.toLocaleString() }}</span>
+                      </div>
+                      <span class="text-sm text-gray-500 line-through">₱{{ pkg.pax_rate?.toLocaleString() }}</span>
+                    </div>
+                    <div v-else class="flex items-center gap-1 text-gray-700 m-0.5">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="currentColor"
@@ -608,8 +643,6 @@ const parsedExclusions = computed(() => {
       };
     } else if (currentExclusion) {
       if (currentExclusion.content) {
-        currentExclusion.content += "\n" + trimmedLine;
-      } else {
         currentExclusion.content = trimmedLine;
       }
     } else {
@@ -652,6 +685,12 @@ const setTab = (tab) => {
   activeTab.value = tab;
 };
 
+const calculateDiscount = (originalPrice, seasonalPrice) => {
+  if (originalPrice <= 0) return 0;
+  const discount = ((originalPrice - seasonalPrice) / originalPrice) * 100;
+  return Math.round(discount);
+};
+
 const handleBookNow = () => {
   if (!page.props?.auth?.user?.id) {
     toast.warning("You need to login first.");
@@ -670,7 +709,7 @@ const handleBookNow = () => {
   booking.setPackageId(selectedPackage.value?.id);
   booking.setPackageDestination(selectedPackage.value?.destination);
   booking.setDuration(selectedPackage.value?.tour_duration);
-  booking.setAdultRate(selectedPackage.value?.pax_rate);
+  booking.setAdultRate(selectedPackage.value.is_seasonal ? selectedPackage.value?.seasonal_pax_rate : selectedPackage.value?.pax_rate);
   booking.setItinerary(selectedPackage.value?.itinerary);
   booking.setDate(date);
 
