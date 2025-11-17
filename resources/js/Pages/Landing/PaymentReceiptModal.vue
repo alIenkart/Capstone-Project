@@ -177,15 +177,21 @@
         <div class="bg-gray-50 rounded-lg p-4 mb-6">
           <div class="space-y-2 text-sm">
             <div class="flex justify-between">
-              <span class="font-bold text-gray-800">Total Amount:</span>
+              <span class="font-bold text-gray-800">Amount Paid:</span>
               <span class="font-bold text-gray-800"
-                >₱ {{ receiptData.total_price}}</span
+                >₱ {{ formattedPaymentAmount }}.00</span
+              >
+            </div>
+            <div v-if=(receiptData.discount_amount) class="flex justify-between">
+              <span class="font-bold text-gray-800">Discount ({{ receiptData.discount_percent }}%):</span>
+              <span class="font-bold text-gray-800"
+                >₱ {{ receiptData.discount_amount }}</span
               >
             </div>
             <div class="flex justify-between">
-              <span class="font-bold text-gray-800">Amount Paid:</span>
+              <span class="font-bold text-gray-800">Total Amount:</span>
               <span class="font-bold text-green-600"
-                >₱ {{ formattedPaymentAmount }}</span
+                >₱ {{ receiptData.original_amount}}</span
               >
             </div>
             <div v-if="receiptData.type_of_payment === 'Down Payment' && !isMatch(receiptData.total_price, formattedPaymentAmount)">

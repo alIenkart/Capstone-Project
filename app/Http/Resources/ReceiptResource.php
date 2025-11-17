@@ -31,6 +31,9 @@ class ReceiptResource extends JsonResource
             'total_price' => $this->booking->total_price ?? null,
             'remaining_balance' => $this->payment->total_price ?? null,
             'payment_history' => $this->payment->payment_history ?? null,
+            'discount_amount' => $this->booking->discount_amount ?? null,
+            'discount_percent' => $this->booking->discount_percent ?? null,
+            'original_amount' => $this->booking->original_amount ?? null,
         ];
     }
 }
