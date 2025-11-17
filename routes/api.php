@@ -24,6 +24,9 @@ Route::middleware('api')->group(function () {
 
     Route::apiResource('users', UserController::class);
     Route::apiResource('packages', PackagesController::class);
+    Route::put('packages/{id}/seasonal-pricing', [PackagesController::class, 'updateSeasonalPricing']);
+    Route::put('packages/{id}/deactivate-seasonal', [PackagesController::class, 'deactivateSeasonalPricing']);
+    
     Route::apiResource('vouchers', VoucherController::class);
     Route::apiResource('bookings', BookingController::class);
     Route::apiResource('inquiries', InquiryController::class);
@@ -64,4 +67,3 @@ Route::middleware(['web', 'auth', 'verified'])->group(function () {
     Route::apiResource('receipts', ReceiptController::class);
     Route::apiResource('payments', PaymentController::class);
 });
-

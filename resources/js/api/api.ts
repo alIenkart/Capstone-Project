@@ -22,6 +22,14 @@ export class api {
     getPackage(id) {
         return plainInstance.get(`/api/packages/${id}`);
     }
+
+    updateSeasonalPricing(id: number, payload: object) {
+        return plainInstance.put(`/api/packages/${id}/seasonal-pricing`, payload);
+    }
+    
+    deactivateSeasonalPricing(id: number, payload: object) {
+        return plainInstance.put(`/api/packages/${id}/deactivate-seasonal`, payload);
+    }
     
     //Booking API
     getBookings(){

@@ -396,6 +396,14 @@
                     Discount ID is missing or broken
                   </p>
                 </div>
+                <button
+                  v-if="props.booking.discount_images"
+                  type="button"
+                  @click="showDiscountModal = true"
+                  class="mt-4 flex items-center justify-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all w-full"
+                >
+                  Apply Discount
+                </button>
               </div>
 
               <div
@@ -854,6 +862,10 @@ const isDropdownOpen = ref(false);
 const selectedImage = ref(null);
 const imageLoadErrors = ref([]);
 const users = ref();
+const showDiscountModal = ref(false);
+const discountAmount = ref("");
+const discountType = ref("percentage");
+const discountReason = ref("");
 
 const rejectionCategories = [
   "Incomplete/Invalid Information",
@@ -861,6 +873,33 @@ const rejectionCategories = [
   "Policy Violations",
   "Invalid Discount ID",
 ];
+
+const submitDiscount = async () => {
+  if (!discountAmount.value) {
+    toast.error("Please enter a discount amount");
+    return;
+  }
+
+  try {
+    const payload = {
+      discount_amount: parseFloat(discountAmount.value),
+      discount_type: discountType.value,
+      discount_reason: discountReason.value || null,
+      applied_by: page.props.auth.user.id,
+    };
+
+    await service.updateBooking(props.booking.id, payload);
+    
+    toast.success("Discount applied successfully!");
+    showDiscountModal.value = false;
+    discountAmount.value = "";
+    discountReason.value = "";
+    emit("booking-updated");
+  } catch (error) {
+    console.error("Error applying discount:", error);
+    toast.error("Failed to apply discount.");
+  }
+};
 
 const selectCategory = (category) => {
   rejectionCategory.value = category;

@@ -32,7 +32,10 @@ class Packages extends Model
         'discounted_rate',
         'time_stamp',
         'tour_classification',
-        'available_slot'
+        'available_slot',
+        'is_seasonal',
+        'seasonal_pax_rate',
+        'seasonal_kids_pax_rate'
     ];
     
     protected $casts = [
@@ -40,5 +43,8 @@ class Packages extends Model
         'tour_classification' => 'array',
         'start_date' => 'date',
         'end_date' => 'date',
+        'is_seasonal' => 'boolean',
+        'seasonal_pax_rate' => 'decimal:2',
+        'seasonal_kids_pax_rate' => 'decimal:2',
     ];
 }

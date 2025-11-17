@@ -227,4 +227,62 @@ class PackagesController extends Controller
             'message' => 'Status updated successfully',
         ], 200);
     }
+
+    public function updateSeasonalPricing(Request $request, $id)
+    {
+        $package = Packages::findOrFail($id);
+    
+        $validator = Validator::make($request->all(), [
+            'is_seasonal' => 'required|boolean',
+            'seasonal_pax_rate' => 'required_if:is_seasonal,true|nullable|numeric|min:0',
+            'seasonal_kids_pax_rate' => 'nullable|numeric|min:0',
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+    
+        $data = $request->all();
+    
+        if ($data['is_seasonal']) {
+            $data['pax_rate'] = $data['seasonal_pax_rate'];
+            if ($data['seasonal_kids_pax_rate']) {
+                $data['kids_pax_rate'] = $data['seasonal_kids_pax_rate'];
+            }
+        }
+    
+        $package->update($data);
+    
+        return response()->json([
+            'data' => $package,
+            'message' => 'Seasonal pricing updated successfully'
+        ], 200);
+    }
+    
+    public function deactivateSeasonalPricing(Request $request, $id)
+    {
+        $package = Packages::findOrFail($id);
+    
+        $validator = Validator::make($request->all(), [
+            'pax_rate' => 'required|numeric|min:0',
+            'kids_pax_rate' => 'nullable|numeric|min:0',
+        ]);
+    
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+    
+        $package->update([
+            'is_seasonal' => false,
+            'pax_rate' => $request->pax_rate,
+            'kids_pax_rate' => $request->kids_pax_rate,
+            'seasonal_pax_rate' => null,
+            'seasonal_kids_pax_rate' => null,
+        ]);
+    
+        return response()->json([
+            'data' => $package,
+            'message' => 'Seasonal pricing deactivated successfully'
+        ], 200);
+    }
 }

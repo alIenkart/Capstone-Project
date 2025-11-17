@@ -54,17 +54,19 @@
       </div>
     </div>
 
-    <!-- Destinations Grid -->
     <div class="max-w-7xl mx-auto px-4 md:px-6 pb-20">
       <div v-if="filteredPackages.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
         <div v-for="pkg in filteredPackages" :key="pkg.id"
           class="group relative overflow-hidden rounded-3xl bg-white shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-[#1E71B8]/30 transform hover:-translate-y-2 flex flex-col h-full">
-          <!-- Hover Background Accent -->
+          
+          <div v-if="pkg.is_seasonal" class="absolute top-4 right-4 z-20 bg-gradient-to-r from-orange-500 to-red-600 text-white px-4 py-2 rounded-full text-xs font-bold shadow-lg">
+            SEASONAL
+          </div>
+
           <div
             class="absolute inset-0 bg-gradient-to-br from-[#1E71B8]/5 to-[#008DDA]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
           </div>
 
-          <!-- Image Container -->
           <div
             class="relative w-full h-56 overflow-hidden bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center group/img">
             <img :src="'/storage/' + pkg.image_path" :alt="pkg.destination"
@@ -74,28 +76,22 @@
             </div>
           </div>
 
-          <!-- Card Content -->
           <div class="relative z-10 p-6 flex flex-col flex-grow">
-            <!-- Price Badge -->
             <div
-              class="inline-flex items-center gap-1 mb-4 w-fit px-3 py-1 bg-gradient-to-r from-[#008DDA]/10 to-[#73BE5D]/10 rounded-full border border-[#008DDA]/20">
-              <span class="font-bold text-[#008DDA]">₱{{ pkg.pax_rate.toLocaleString() }}</span>
+              :class="pkg.is_seasonal ? 'inline-flex items-center gap-1 mb-4 w-fit px-3 py-1 bg-gradient-to-r from-orange-500/10 to-red-600/10 rounded-full border border-orange-500/20' : 'inline-flex items-center gap-1 mb-4 w-fit px-3 py-1 bg-gradient-to-r from-[#008DDA]/10 to-[#73BE5D]/10 rounded-full border border-[#008DDA]/20'">
+              <span :class="pkg.is_seasonal ? 'font-bold text-orange-600 text-sm' : 'font-bold text-[#008DDA]'">₱{{ pkg.is_seasonal ? pkg.seasonal_pax_rate.toLocaleString() : pkg.pax_rate.toLocaleString() }}</span>
             </div>
 
-            <!-- Destination Title -->
             <h3
               class="text-2xl font-bold text-[#1E71B8] mb-4 group-hover:text-[#008DDA] transition-colors duration-300 line-clamp-2">
               {{ pkg.destination }}
             </h3>
 
-            <!-- Divider -->
             <div
-              class="w-8 h-1 bg-gradient-to-r from-[#008DDA] to-[#73BE5D] rounded-full mb-4 group-hover:w-16 transition-all duration-300">
+              :class="pkg.is_seasonal ? 'w-8 h-1 bg-gradient-to-r from-orange-500 to-red-600 rounded-full mb-4 group-hover:w-16 transition-all duration-300' : 'w-8 h-1 bg-gradient-to-r from-[#008DDA] to-[#73BE5D] rounded-full mb-4 group-hover:w-16 transition-all duration-300'">
             </div>
 
-            <!-- Package Details -->
             <div class="space-y-3 mb-6 flex-grow">
-              <!-- Package Name -->
               <div class="flex items-center gap-2">
 
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -107,7 +103,6 @@
                 <span class="text-sm text-gray-600">{{ pkg.package_name }}</span>
               </div>
 
-              <!-- Duration -->
               <div class="flex items-center gap-2">
                 <svg class="w-5 h-5 text-[#008DDA] flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none"
                   stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -119,10 +114,9 @@
               </div>
             </div>
 
-            <!-- View Details Button -->
             <Link :href="route('tourdetails', { id: pkg.id })"
-              class="w-full px-6 py-3 rounded-xl font-semibold text-[#008DDA] border-2 border-[#008DDA] bg-white hover:bg-[#008DDA] hover:text-white transition-all duration-300 text-center shadow-sm hover:shadow-md flex items-center justify-center gap-2 group/btn">
-            View Details
+              :class="pkg.is_seasonal ? 'w-full px-6 py-3 rounded-xl font-semibold text-white border-2 bg-gradient-to-r from-orange-500 to-red-600 border-orange-500 hover:from-orange-600 hover:to-red-700 hover:border-orange-600 transition-all duration-300 text-center shadow-sm hover:shadow-md flex items-center justify-center gap-2 group/btn' : 'w-full px-6 py-3 rounded-xl font-semibold text-[#008DDA] border-2 border-[#008DDA] bg-white hover:bg-[#008DDA] hover:text-white transition-all duration-300 text-center shadow-sm hover:shadow-md flex items-center justify-center gap-2 group/btn'">
+            {{ pkg.is_seasonal ? 'Book Now' : 'View Details' }}
             <svg class="w-4 h-4 transition-transform group-hover/btn:translate-x-1" xmlns="http://www.w3.org/2000/svg"
               fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path d="M5 12h14M12 5l7 7-7 7" />
@@ -132,7 +126,6 @@
         </div>
       </div>
 
-      <!-- No Results Message -->
       <div v-else class="flex flex-col items-center justify-center py-20">
         <svg class="w-24 h-24 text-gray-300 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor"
           stroke-width="2" viewBox="0 0 24 24">
