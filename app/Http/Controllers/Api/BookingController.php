@@ -121,6 +121,9 @@ class BookingController extends Controller
         $validated = $request->validate([
             'status' => 'required|in:Pending,Approved,Rejected,Cancelled',
             'id_type' => 'nullable|string|max:255',
+            'total_price' => 'nullable|numeric|min:0',
+            'discount_amount' => 'nullable|integer|min:0',
+            'discount_percent' => 'nullable|integer|min:0',
             'remarks' => 'nullable|string|max:1000',
             'rejection_reason' => 'nullable|string|max:1000',
             'rejection_category' => 'nullable|string|max:255',
@@ -179,6 +182,11 @@ class BookingController extends Controller
                 }
             }
 
+            if (isset($validated['discount_amount']) && $validated['discount_amount'] == 0) {
+                $validated['discount_amount'] = null;
+                $validated['discount_percent'] = null;
+            }
+        
             DB::commit();
 
             return response()->json([

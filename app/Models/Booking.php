@@ -45,6 +45,8 @@ class Booking extends Model
         'adult_total_amount',
         'kids_total_amount',
         'original_amount',
+        'discount_amount',
+        'discount_percent',
         
         // Customer contact details
         'customer_email',

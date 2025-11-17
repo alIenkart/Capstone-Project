@@ -35,13 +35,17 @@ class Payment extends Model
 
     public static function createFromBooking($booking)
     {
+        $total_price = $booking->original_amount;
+        if (!is_null($booking->discount_amount)) {
+            $total_price -= $booking->discount_amount;
+        }
         return self::updateOrCreate(
             ['booking_id' => $booking->id],
             [
-                'total_price' => $booking->total_price,
+                'total_price' => $total_price,
                 'amount_paid' => 0,
                 'customer_id' => $booking->customer_id,
-                'remaining_payment' => $booking->total_price,
+                'remaining_payment' => $total_price,
                 'mode_of_payment' => $booking->mode_of_payment,
                 'payment_status' => 'Pending',
                 'payment_date' => now(),

@@ -281,7 +281,7 @@
                 <td
                   class="px-6 py-4 text-sm font-semibold text-gray-700 text-center"
                 >
-                  ₱{{ formatNumber(entry.total_price) }}
+                  ₱{{ formatNumber(entry.original_amount) - formatNumber(entry.discount_amount) }}
                 </td>
                 <td class="px-6 py-4 text-sm text-center">
                   <button

@@ -48,6 +48,62 @@
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 lg:gap-6">
             <div class="lg:col-span-2 space-y-6">
               <div
+                class="bg-gradient-to-br from-emerald-50 to-white rounded-xl p-6 border border-emerald-200 shadow-sm hover:shadow-md transition-shadow"
+              >
+                <div class="flex items-center gap-3 mb-4">
+                  <div
+                    class="p-2.5 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg shadow-md"
+                  >
+                    <svg
+                      class="w-5 h-5 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                      />
+                    </svg>
+                  </div>
+                  <h4 class="text-xl font-bold text-slate-800">
+                    Payment Information
+                  </h4>
+                </div>
+
+                <div v-if="!isDiscountApplied && !booking.discount_amount" class="flex items-baseline gap-3">
+                  <p class="text-sm font-semibold text-slate-600">
+                    Total Amount
+                  </p>
+                  <p class="text-3xl font-bold text-emerald-600">
+                    ₱{{ booking.original_amount?.toLocaleString() ?? "0" }}
+                  </p>
+                </div>
+
+                <div v-else class="flex items-baseline gap-6">
+                  <div class="grid grid-cols-2 gap-y-3 text-left">
+                    <p class="text-sm font-semibold text-slate-600">Amount</p>
+                    <p class="text-sm font-bold text-slate-700">
+                      ₱{{ booking.original_amount?.toLocaleString() ?? "0" }} 
+                    </p>
+
+                    <p class="text-sm font-semibold text-slate-600">Discount</p>
+                    <p class="text-sm font-bold text-slate-700 border-b border-black pb-1">
+                      ₱{{ discountValue || booking.discount_amount || 0 }} 
+                      ({{ discountPercentage || booking.discount_percent || 0 }}%)
+                    </p>
+
+                    <p class="text-sm font-semibold text-slate-600 mt-2">Total Amount </p>
+                    <p class="text-xl font-bold text-emerald-600 mt-1 ml-2">
+                      ₱{{ discountAmount || (booking.original_amount - (booking.discount_amount ?? 0)) }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div
                 class="bg-white rounded-xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow"
               >
                 <div class="flex items-center gap-3 mb-5">
@@ -252,40 +308,6 @@
                   </p>
                 </div>
               </div>
-              <div
-                class="bg-gradient-to-br from-emerald-50 to-white rounded-xl p-6 border border-emerald-200 shadow-sm hover:shadow-md transition-shadow"
-              >
-                <div class="flex items-center gap-3 mb-4">
-                  <div
-                    class="p-2.5 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg shadow-md"
-                  >
-                    <svg
-                      class="w-5 h-5 text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-                      />
-                    </svg>
-                  </div>
-                  <h4 class="text-xl font-bold text-slate-800">
-                    Payment Information
-                  </h4>
-                </div>
-                <div class="flex items-baseline gap-3">
-                  <p class="text-sm font-semibold text-slate-600">
-                    Total Amount
-                  </p>
-                  <p class="text-3xl font-bold text-emerald-600">
-                    ₱{{ booking.total_price?.toLocaleString() ?? "0" }}
-                  </p>
-                </div>
-              </div>
             </div>
 
             <div class="space-y-6">
@@ -399,10 +421,12 @@
                 <button
                   v-if="props.booking.discount_images"
                   type="button"
+                  :disabled="props.booking.status !== 'Pending'"
                   @click="showDiscountModal = true"
-                  class="mt-4 flex items-center justify-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all w-full"
-                >
-                  Apply Discount
+                  class="mt-4 flex items-center justify-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all w-full
+                    disabled:from-gray-300 disabled:to-gray-400 disabled:text-gray-600 disabled:cursor-not-allowed"
+                  >
+                  {{ (isDiscountApplied || booking.discount_amount) ? "Discount Applied" : "Apply Discount" }}
                 </button>
               </div>
 
@@ -834,6 +858,176 @@
         </div>
       </div>
     </Transition>
+
+    <Transition
+      enter-active-class="transition-all duration-300 ease-out"
+      enter-from-class="opacity-0 scale-95"
+      enter-to-class="opacity-100 scale-100"
+      leave-active-class="transition-all duration-200 ease-in"
+      leave-from-class="opacity-100 scale-100"
+      leave-to-class="opacity-0 scale-95"
+    >
+      <div
+        v-if="showDiscountModal"
+        class="fixed inset-0 z-[70] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+      >
+        <div
+          class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
+        >
+          <!-- Header -->
+          <div class="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-6">
+            <div class="flex items-center gap-3">
+              <div class="p-3 bg-white/20 rounded-lg">
+                <svg
+                  class="w-6 h-6 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M7 17l10-10M7 9a2 2 0 110-4 2 2 0 010 4zm10 10a2 2 0 110-4 2 2 0 010 4z"
+                  />
+                </svg>
+              </div>
+              <h3 class="text-xl font-bold text-white">Apply Discount</h3>
+            </div>
+          </div>
+
+          <!-- Body -->
+          <div class="px-6 py-6 space-y-4">
+            <div>
+              <label class="block text-sm font-semibold text-slate-700 mb-4">
+                Select Discount Type <span class="text-blue-500">*</span>
+              </label>
+
+              <div class="relative mb-4">
+                <button
+                  type="button"
+                  @click="discountSelection = !discountSelection"
+                  :class="[
+                    'w-full px-5 py-4 text-left bg-white border-2 rounded-xl transition-all duration-200 text-sm font-medium',
+                    selectedDiscountType
+                      ? 'border-blue-500 text-slate-800'
+                      : 'border-slate-200 text-slate-400',
+                    discountSelection
+                      ? 'ring-4 ring-blue-500/10 border-blue-500'
+                      : 'hover:border-slate-300',
+                  ]"
+                >
+                  {{ selectedDiscountType?.label || "Select discount type" }}
+                </button>
+
+                <Transition
+                  enter-active-class="transition-all duration-200 ease-out"
+                  enter-from-class="opacity-0 scale-95 -translate-y-2"
+                  enter-to-class="opacity-100 scale-100 translate-y-0"
+                  leave-active-class="transition-all duration-150 ease-in"
+                  leave-from-class="opacity-100 scale-100 translate-y-0"
+                  leave-to-class="opacity-0 scale-95 -translate-y-2"
+                >
+                  <div v-if="discountSelection">
+                    <div
+                      class="fixed inset-0 z-10"
+                      @click="discountSelection = false"
+                    ></div>
+
+                    <div
+                      class="absolute z-20 w-full mt-2 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden"
+                    >
+                      <button
+                        v-for="(type, index) in discountTypes"
+                        :key="type.value"
+                        type="button"
+                        @click="selectDiscount(type)"
+                        :class="[
+                          'w-full px-5 py-4 text-left text-sm font-medium transition-all duration-150',
+                          selectedDiscountType?.value === type.value
+                            ? 'bg-blue-50 text-blue-700'
+                            : 'text-slate-700 hover:bg-slate-50',
+                          index !== 0 ? 'border-t border-slate-100' : '',
+                        ]"
+                      >
+                        {{ type.label }}
+                      </button>
+                    </div>
+                  </div>
+                </Transition>
+              </div>
+
+              <p
+                v-if="!selectedDiscountType"
+                class="text-xs text-blue-500 mt-3 font-medium"
+              >
+                Please select a discount type
+              </p>
+            </div>
+
+            <div v-if="selectedDiscountType">
+              <label class="block text-sm font-semibold text-slate-700 mb-4">
+                Discount Amount:
+              </label>
+              <label class="block text-sm font-semibold text-slate-700 mb-4 text-center">
+                ₱{{ discountedAmount.price.toLocaleString() }} x {{ discountedAmount.percent }}% =
+
+                ₱{{ discountedAmount.totalAmount.toLocaleString() }}
+              </label>
+            </div>
+          </div>
+
+          <!-- Footer -->
+          <div
+            class="bg-slate-50 px-6 py-4 border-t border-slate-200 flex justify-end gap-3"
+          >
+            <button
+              type="button"
+              @click="showDiscountModal = false"
+              class="rounded-lg px-6 py-2.5 text-sm font-semibold bg-slate-200 text-slate-800 hover:bg-slate-300 transition-all"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              @click="submitDiscount"
+              :disabled="isSubmitting"
+              class="flex items-center gap-2 rounded-lg bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 disabled:from-green-400 disabled:to-green-500 disabled:cursor-not-allowed px-6 py-2.5 text-sm font-semibold text-white transition-all"
+            >
+              <svg
+                v-if="!isSubmitting"
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+              <svg
+                v-else
+                class="w-5 h-5 animate-spin"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 12a8 8 0 0116 0"
+                />
+              </svg>
+              {{ isSubmitting ? "Processing..." : "Apply Discount" }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -863,9 +1057,40 @@ const selectedImage = ref(null);
 const imageLoadErrors = ref([]);
 const users = ref();
 const showDiscountModal = ref(false);
-const discountAmount = ref("");
-const discountType = ref("percentage");
-const discountReason = ref("");
+const discountAmount = ref(0);
+const discountType = ref("");
+const discountPercentage = ref(null);
+const discountValue = ref(null);
+const discountSelection = ref(false);
+const selectedDiscountType = ref(null);
+const isDiscountApplied = ref(false);
+
+const discountTypes = [
+  { label: "Person With Disability(PWD)", value: 20 },
+  { label: "Senior Citizen", value: 20 },
+]
+
+function selectDiscount(type) {
+  selectedDiscountType.value = type
+  discountType.value = type.label
+  discountSelection.value = false
+}
+
+const discountedAmount = computed(() => {
+  if (!selectedDiscountType.value) return 0
+  
+  const price = props.booking.total_price
+  const percent = selectedDiscountType.value.value
+  const discount = (price * (percent / 100))
+  const totalAmount = price - discount
+
+  return {
+    price,
+    percent,
+    discount,
+    totalAmount
+  }
+})
 
 const rejectionCategories = [
   "Incomplete/Invalid Information",
@@ -874,31 +1099,19 @@ const rejectionCategories = [
   "Invalid Discount ID",
 ];
 
-const submitDiscount = async () => {
-  if (!discountAmount.value) {
-    toast.error("Please enter a discount amount");
+const submitDiscount = () => {
+  if (!selectedDiscountType.value) {
+    toast.error("Please Select a Discount Type");
     return;
   }
 
-  try {
-    const payload = {
-      discount_amount: parseFloat(discountAmount.value),
-      discount_type: discountType.value,
-      discount_reason: discountReason.value || null,
-      applied_by: page.props.auth.user.id,
-    };
-
-    await service.updateBooking(props.booking.id, payload);
+  discountAmount.value = discountedAmount.value.totalAmount;
+  discountPercentage.value = discountedAmount.value.percent;
+  discountValue.value = discountedAmount.value.discount;
+  isDiscountApplied.value = true;
+  showDiscountModal.value = false;
     
-    toast.success("Discount applied successfully!");
-    showDiscountModal.value = false;
-    discountAmount.value = "";
-    discountReason.value = "";
-    emit("booking-updated");
-  } catch (error) {
-    console.error("Error applying discount:", error);
-    toast.error("Failed to apply discount.");
-  }
+  toast.success("Discount applied successfully!");
 };
 
 const selectCategory = (category) => {
@@ -931,13 +1144,6 @@ const travelDate = computed(() => {
         day: "numeric",
         year: "numeric",
       });
-});
-
-const discountedPrice = computed(() => {
-  if (!props.booking.total_price || !props.booking.discount_rate) return null;
-  const discount =
-    props.booking.total_price * (props.booking.discount_rate / 100);
-  return (props.booking.total_price - discount).toFixed(2);
 });
 
 const discountImages = computed(() => {
@@ -1036,12 +1242,18 @@ const submitStatus = async (statusValue) => {
   try {
     const payload = {
       status: statusValue,
-      id_type: form.value.id_type,
       remarks: form.value.remarks,
+      total_price: props.booking.original_amount - discountValue.value
     };
 
     if (statusValue === "Approved") {
       payload.approved_by = page.props.auth.user.id;
+    }
+
+    if(isDiscountApplied){
+      payload.id_type = discountType.value;
+      payload.discount_amount = discountValue.value;
+      payload.discount_percent = discountPercentage.value;
     }
 
     await service.updateBooking(props.booking.id, payload);
