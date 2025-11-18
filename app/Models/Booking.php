@@ -114,4 +114,36 @@ class Booking extends Model
     {
         return $this->hasOne(Payment::class);
     }
+
+    public function cancelBooking()
+    {
+        $this->update(['status' => 'Cancelled']);
+
+        $this->load('package');
+
+        if ($this->payment) {
+            $this->payment->update(['payment_status' => 'Cancelled']);
+        }
+
+        if ($this->package) {
+            $this->package->available_slot += $this->total_quantity;
+            $this->package->save();
+        }
+    }
+
+    public function rejectBooking(array $data)
+    {
+        $data['rejected_at'] = now();
+
+        $this->update($data);
+
+        $this->load('package');
+
+        if ($this->package) {
+            $this->package->available_slot += $this->total_quantity;
+            $this->package->save();
+        }
+    }
+
+
 }
