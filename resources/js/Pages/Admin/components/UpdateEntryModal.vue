@@ -1262,8 +1262,7 @@ const submitStatus = async (statusValue) => {
     emit("booking-updated");
     emit("close");
   } catch (error) {
-    console.error("Error updating booking:", error);
-    toast.error("Failed to update booking.");
+    toast.error(error.response.data.error);
   }
 };
 
