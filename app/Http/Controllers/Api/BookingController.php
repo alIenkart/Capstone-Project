@@ -158,7 +158,8 @@ class BookingController extends Controller
             }
 
             if ($validated['status'] === 'Rejected') {
-                $booking->rejectBooking($validated);
+                $validated['rejected_at'] = now();
+                $booking->update($validated);
 
                 // Send rejection email
                 try {
@@ -181,7 +182,11 @@ class BookingController extends Controller
             }
 
             if ($validated['status'] === 'Cancelled') {
-                $booking->cancelBooking();
+                $booking->update($validated);
+
+                if ($booking->payment) {
+                    $booking->payment->update(['payment_status' => 'Cancelled']);
+                }
             }
 
             if (isset($validated['discount_amount']) && $validated['discount_amount'] == 0) {
