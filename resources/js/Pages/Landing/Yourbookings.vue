@@ -230,13 +230,15 @@
               }}</span>
             </div>
             <div class="flex flex-col">
-              <span class="text-gray-500 text-xs sm:text-sm font-normal">Total Due</span>
+              <span class="text-gray-500 text-xs sm:text-sm font-normal">
+                {{ paymentStatus === 'Approved' ? 'Paid' : 'Total Due' }}
+              </span>
               <span class="text-base sm:text-lg font-bold text-green-600 mt-1">
                 ₱{{
-                  Number(
-                    filteredBookings[selectedBookingIndex].total_price
-                  ).toLocaleString("en-PH")
-                }}
+                    Number(
+                      totalDue
+                    ).toLocaleString("en-PH")
+                  }}
               </span>
             </div>
             <div class="flex flex-col">
@@ -266,6 +268,33 @@
             <h4 class="font-semibold text-base sm:text-lg text-gray-700 mb-4 text-center">
               Payment
             </h4>
+            <div v-if="paymentStatus === 'Approved'">
+              <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-4 sm:p-5 shadow-md">
+                <div class="flex items-center justify-between gap-4">
+                  
+                  <!-- Icon + Message -->
+                  <div class="flex items-center gap-3 sm:gap-4">
+                    <div class="bg-green-100 p-2 sm:p-3 rounded-lg flex-shrink-0">
+                      <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <span class="text-gray-700 text-sm sm:text-base font-medium block">Booking Fully Paid</span>
+                      <span class="text-lg sm:text-2xl font-bold text-green-700">
+                        ₱{{ Number(totalDue).toLocaleString("en-PH") }}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="bg-green-500 text-white px-3 sm:px-4 py-1 rounded-full text-xs sm:text-sm font-semibold flex-shrink-0">
+                    FULLY PAID
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div v-else>
             <div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start mb-6">
               <div class="w-full lg:w-2/3 flex flex-col gap-4 lg:gap-5 justify-start">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
@@ -318,6 +347,7 @@
                   </div>
                 </div>
 
+
                 <div v-if="selectedPaymentType === 'Full Payment'"
                   class="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-3 sm:p-5 shadow-sm">
                   <div class="flex items-center justify-between gap-3">
@@ -335,8 +365,7 @@
                         <span class="text-lg sm:text-2xl font-bold text-green-700">
                           ₱{{
                             Number(
-                              filteredBookings[selectedBookingIndex]
-                                ?.total_price || 0
+                              totalDue
                             ).toLocaleString("en-PH")
                           }}
                         </span>
@@ -436,6 +465,7 @@
                         paymentStatus === 'Under Review'" />
                     </div>
                   </div>
+                </div>
 
                   <!-- Fullscreen Image Modal -->
                   <Transition enter-active-class="transition-opacity duration-300" enter-from-class="opacity-0"
@@ -921,6 +951,8 @@ onMounted(async () => {
     payments.value = await fetchPaymentsByBookingId(
       filteredBookings.value[selectedBookingIndex.value].id
     );
+
+    console.log(payments.value);
   }
 });
 
@@ -953,6 +985,24 @@ const paymentStatus = computed(() => {
   );
   return currentPayment ? currentPayment.payment_status : null;
 });
+
+const totalDue = computed(() => {
+  const currentBooking = filteredBookings.value[selectedBookingIndex.value];
+  const currentPayment = payments.value.find((p) => p.booking_id === currentBooking.id);
+
+  if(currentPayment.payment_status === "Approved"){
+    return currentBooking.total_price;
+  }
+
+  if (currentPayment.type_of_payment === "Down Payment") {
+    const history = currentPayment.payment_history || [];
+    const paidAmount = history.reduce((total, entry) => total + (entry.downPaymentAmount || 0), 0);
+    return Math.max(currentBooking.total_price - paidAmount, 0);
+  } else {
+    return currentBooking.total_price;
+  }
+});
+
 
 const typeOfPayment = computed(() => {
   if (!payments.value.length || !filteredBookings.value.length) return "";

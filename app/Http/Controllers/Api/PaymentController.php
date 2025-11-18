@@ -54,11 +54,14 @@ class PaymentController extends Controller
             );
         } else if($request->input('type') === 'payment_approval'){
             $payment = Payment::where('booking_id', $id)->first();
+            $response = $this->processPackageSlotUpdate($payment);
     
             if (!$payment) {
-                return response()->json([
-                    'message' => 'Payment not found.',
-                ], 404);
+                return response()->json(['message' => 'Payment not found.',], 404);
+            }
+
+            if ($response instanceof \Illuminate\Http\JsonResponse) {
+                return $response;
             }
         }  
 
@@ -106,16 +109,11 @@ class PaymentController extends Controller
         
             if ($request->is_fully_paid) {
                 $payment->payment_status = 'Approved';
-                $response = $this->processPackageSlotUpdate($payment);
-            
-                if ($response instanceof \Illuminate\Http\JsonResponse) {
-                    return $response;
-                }
+
                 $user = Auth::user();
                 Receipt::createReceipt($payment, $user->id);
             }
         }
-
         if ($request->has('type_of_payment')) {
             $payment->type_of_payment = $request->type_of_payment;
         }
@@ -137,6 +135,10 @@ class PaymentController extends Controller
 
     private function processPackageSlotUpdate(Payment $payment)
     {
+        if ($payment->slot_deducted) {
+            return true;
+        }
+
         $booking = $payment->booking;
         $package = $booking->package;
 
@@ -152,6 +154,9 @@ class PaymentController extends Controller
             ], 422);
         }
 
+        $payment->slot_deducted = true;
+        $payment->save();
+        
         $updated_slot = $available_slot - $total_quantity;
         $package->available_slot = $updated_slot;
         $package->save();
