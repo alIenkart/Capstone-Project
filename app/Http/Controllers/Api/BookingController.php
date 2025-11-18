@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use App\Mail\BookingRejected;
+use Illuminate\Validation\ValidationException;
 
 class BookingController extends Controller
 {
@@ -138,6 +139,12 @@ class BookingController extends Controller
 
         try {
             if ($validated['status'] === 'Approved') {
+                $response = $this->processPackageSlotUpdate($booking);
+
+                if ($response instanceof \Illuminate\Http\JsonResponse) {
+                    return $response;
+                }
+
                 $validated['approved_at'] = now();
                 $booking->update($validated);
 
@@ -151,8 +158,7 @@ class BookingController extends Controller
             }
 
             if ($validated['status'] === 'Rejected') {
-                $validated['rejected_at'] = now();
-                $booking->update($validated);
+                $booking->rejectBooking($validated);
 
                 // Send rejection email
                 try {
@@ -175,11 +181,7 @@ class BookingController extends Controller
             }
 
             if ($validated['status'] === 'Cancelled') {
-                $booking->update($validated);
-
-                if ($booking->payment) {
-                    $booking->payment->update(['payment_status' => 'Cancelled']);
-                }
+                $booking->cancelBooking();
             }
 
             if (isset($validated['discount_amount']) && $validated['discount_amount'] == 0) {
@@ -202,5 +204,25 @@ class BookingController extends Controller
                 'error' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    private function processPackageSlotUpdate(Booking $booking)
+    {
+        $package = $booking->package;
+
+        $total_quantity = $booking->total_quantity;
+        $available_slot = $package->available_slot;
+
+        if ($total_quantity > $available_slot) {
+            throw ValidationException::withMessages([
+                'total_quantity' => "The booking quantity ({$total_quantity}) exceeds the available slots ({$available_slot})."
+            ]);
+        }
+
+        $updated_slot = $available_slot - $total_quantity;
+        $package->available_slot = $updated_slot;
+        $package->save();
+
+        return true;
     }
 }
