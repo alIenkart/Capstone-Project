@@ -58,7 +58,7 @@
               <div
                 :class="'bg-gradient-to-r from-[#1E71B8] to-[#155E9C]'"
                 class="rounded-lg px-4 py-2 text-white font-semibold text-lg">
-                ₱{{ (selectedPackage.is_seasonal ? selectedPackage.seasonal_pax_rate : selectedPackage.pax_rate)?.toLocaleString() }}
+                ₱{{ (selectedPackage.is_seasonal ? parseFloat(selectedPackage.seasonal_pax_rate)?.toLocaleString() : selectedPackage.pax_rate)?.toLocaleString() }}
               </div>
               <div class="flex items-center gap-3">
                 <button @click="pax > 0 && pax--"
@@ -68,12 +68,18 @@
                 <input type="text" :value="pax"
                   class="w-16 h-10 rounded-lg text-center border-2 border-[#1E71B8] bg-white text-[#1E71B8] font-bold text-lg"
                   readonly />
-                <button @click="pax++"
-                  class="w-10 h-10 rounded-full bg-[#1E71B8] text-white font-bold text-lg flex items-center justify-center transition-all duration-300 hover:bg-[#155E9C] active:scale-95">
+                <button 
+                  @click="pax < maxPaxAllowed && pax++"
+                  class="w-10 h-10 rounded-full bg-[#1E71B8] text-white font-bold text-lg flex items-center justify-center transition-all duration-300 hover:bg-[#155E9C] active:scale-95"
+                  :disabled="pax >= maxPaxAllowed"
+                >
                   +
                 </button>
               </div>
             </div>
+            <p class="text-xs font-medium text-gray-500 mt-3">
+              Available slots: {{ availableSlots - totalTravelers }} / {{ availableSlots }}
+            </p>
           </div>
 
           <div
@@ -89,7 +95,7 @@
               <div
                 :class="'bg-gradient-to-r from-[#1E71B8] to-[#155E9C]'"
                 class="rounded-lg px-4 py-2 text-white font-semibold text-lg">
-                ₱{{ (selectedPackage.is_seasonal ? selectedPackage.seasonal_kids_pax_rate : selectedPackage.kids_pax_rate)?.toLocaleString() }}
+                ₱{{ (selectedPackage.is_seasonal ? parseFloat(selectedPackage.seasonal_kids_pax_rate)?.toLocaleString() : selectedPackage.kids_pax_rate)?.toLocaleString() }}
               </div>
               <div class="flex items-center gap-3">
                 <button @click="kidsPax > 0 && kidsPax--"
@@ -99,12 +105,18 @@
                 <input type="text" :value="kidsPax"
                   class="w-16 h-10 rounded-lg text-center border-2 border-[#1E71B8] bg-white text-[#1E71B8] font-bold text-lg"
                   readonly />
-                <button @click="kidsPax++"
-                  class="w-10 h-10 rounded-full bg-[#1E71B8] text-white font-bold text-lg flex items-center justify-center transition-all duration-300 hover:bg-[#155E9C] active:scale-95">
+                <button 
+                  @click="kidsPax < maxKidsAllowed && kidsPax++"
+                  class="w-10 h-10 rounded-full bg-[#1E71B8] text-white font-bold text-lg flex items-center justify-center transition-all duration-300 hover:bg-[#155E9C] active:scale-95"
+                  :disabled="kidsPax >= maxKidsAllowed"
+                >
                   +
                 </button>
               </div>
             </div>
+            <p class="text-xs font-medium text-gray-500 mt-3">
+              Available slots: {{ availableSlots - totalTravelers }} / {{ availableSlots }}
+            </p>
           </div>
         </div>
 
@@ -344,6 +356,20 @@ const editableItinerary = ref({});
 
 const durationDays = computed(() => booking.getHowManyDays);
 
+const totalTravelers = computed(() => pax.value + kidsPax.value);
+
+const availableSlots = computed(() => booking.availableSlots);
+
+const maxPaxAllowed = computed(() => {
+  const remaining = availableSlots.value - kidsPax.value;
+  return Math.max(0, remaining);
+});
+
+const maxKidsAllowed = computed(() => {
+  const remaining = availableSlots.value - pax.value;
+  return Math.max(0, remaining);
+});
+
 const adultTotalAmount = computed(() => {
   const amount = selectedPackage.value.is_seasonal
     ? Number(selectedPackage.value.seasonal_pax_rate)
@@ -503,6 +529,11 @@ const postPackage = () => {
     return;
   }
 
+  if (totalTravelers.value > availableSlots.value) {
+    toast.error(`Total travelers cannot exceed ${availableSlots.value} available slots.`);
+    return;
+  }
+
   if (isExclusiveTour.value && isEditingItinerary.value) {
     toast.warning(
       "Please save your itinerary customization before proceeding."
@@ -554,6 +585,10 @@ const fetchSelectedPackage = async () => {
       } catch (e) {
         console.error("Failed to parse itinerary:", e);
       }
+    }
+
+    if (data.available_slots) {
+      booking.setAvailableSlots(data.available_slots);
     }
 
     selectedPackage.value = data;

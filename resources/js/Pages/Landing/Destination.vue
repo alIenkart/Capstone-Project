@@ -81,12 +81,12 @@
             <div v-if="pkg.is_seasonal" class="mb-4">
               <div class="flex items-center gap-3 mb-3">
                 <div>
-                  <span class="font-bold text-orange-600 px-3 py-1 bg-gradient-to-r from-orange-500/10 to-red-600/10 rounded-full border border-orange-500/20 inline-block">₱{{ pkg.seasonal_pax_rate.toLocaleString() }}</span>
+                  <span class="font-bold text-orange-600 px-3 py-1 bg-gradient-to-r from-orange-500/10 to-red-600/10 rounded-full border border-orange-500/20 inline-block">₱{{ parseFloat(pkg.seasonal_pax_rate)?.toLocaleString() }}</span>
                 </div>
                 <span class="text-sm text-gray-500 line-through">₱{{ pkg.pax_rate.toLocaleString() }}</span>
               </div>
               <span class="text-xs font-bold text-white bg-gradient-to-r from-orange-500 to-red-600 px-2 py-1 rounded-full shadow-lg">
-              SAVE {{ calculateDiscount(pkg.pax_rate, pkg.seasonal_pax_rate) }}%
+              SAVE {{ calculateDiscount(pkg.pax_rate, parseFloat(pkg.seasonal_pax_rate)) }}%
             </span>
             </div>
             <div v-else

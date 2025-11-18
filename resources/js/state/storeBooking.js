@@ -30,6 +30,7 @@ export const storeBooking = defineStore('booking', {
     itinerary: [],
     start_date: '',
     end_date: '',
+    availableSlots: 0,
   }),
 
   getters: {
@@ -168,6 +169,10 @@ export const storeBooking = defineStore('booking', {
     setDate(date) {
       this.start_date = date[0].startDate;
       this.end_date = date[1].endDate;
+    },
+
+    setAvailableSlots(slot) {
+      this.availableSlots = slot;
     },
 
     reset() {

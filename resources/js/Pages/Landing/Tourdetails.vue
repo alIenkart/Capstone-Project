@@ -293,7 +293,7 @@
                     <div class="flex items-baseline gap-1">
                       <span class="text-lg font-bold">₱</span>
                       <span class="text-3xl font-bold">{{
-                        selectedPackage?.seasonal_pax_rate?.toLocaleString()
+                        parseFloat(selectedPackage?.seasonal_pax_rate)?.toLocaleString()
                       }}</span>
                       <span class="text-sm text-white text-opacity-80">/pax</span>
                     </div>
@@ -301,7 +301,7 @@
                   <div class="flex flex-col items-start">
                     <span class="text-sm text-white text-opacity-80 line-through">₱{{ selectedPackage?.pax_rate?.toLocaleString() }}</span>
                     <span class="text-xs font-bold bg-white text-orange-600 px-2 py-1 rounded-full mt-1">
-                      SAVE {{ calculateDiscount(selectedPackage?.pax_rate, selectedPackage?.seasonal_pax_rate) }}%
+                      SAVE {{ calculateDiscount(selectedPackage?.pax_rate, parseFloat(selectedPackage?.seasonal_pax_rate)) }}%
                     </span>
                   </div>
                 </div>
@@ -397,7 +397,7 @@
                   <div class="space-y-2 mb-4">
                     <div v-if="pkg.is_seasonal" class="flex items-center gap-2 m-0.5">
                       <div>
-                        <span class="font-bold text-orange-600 px-2 py-1 bg-gradient-to-r from-orange-500/10 to-red-600/10 rounded-full border border-orange-500/20 inline-block text-sm">₱{{ pkg.seasonal_pax_rate?.toLocaleString() }}</span>
+                        <span class="font-bold text-orange-600 px-2 py-1 bg-gradient-to-r from-orange-500/10 to-red-600/10 rounded-full border border-orange-500/20 inline-block text-sm">₱{{ parseFloat(pkg.seasonal_pax_rate)?.toLocaleString() }}</span>
                       </div>
                       <span class="text-sm text-gray-500 line-through">₱{{ pkg.pax_rate?.toLocaleString() }}</span>
                     </div>

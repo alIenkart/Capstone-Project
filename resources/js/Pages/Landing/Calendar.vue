@@ -226,10 +226,16 @@
             </div>
           </div>
         </div>
-        <button @click="postDate"
-          class="mt-8 px-8 py-3 bg-gradient-to-r from-[#1E71B8] to-[#155E9C] text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 active:scale-95 text-lg">
-          Next →
-        </button>
+        <div class="relative mt-8 w-fit mx-auto group">
+          <button @click="postDate"
+            :disabled="availableSlots === 0"
+            class="px-8 py-3 bg-gradient-to-r from-[#1E71B8] to-[#155E9C] text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 active:scale-95 text-lg disabled:opacity-30 disabled:cursor-not-allowed disabled:shadow-none disabled:hover:shadow-lg">
+            Next →
+          </button>
+          <div v-if="availableSlots === 0" class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-lg whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none">
+            All slots are full
+          </div>
+        </div>
       </div>
     </div>
     <div v-if="isTooltipOpen" class="fixed inset-0 z-40 bg-black/30" @click="isTooltipOpen = false"></div>
@@ -281,20 +287,20 @@
         <div class="flex items-start gap-3 pb-4 border-b border-gray-100">
           <div class="flex-1">
             <p class="text-xs font-semibold text-gray-500 uppercase tracking-wide">
-              Slots Booked
+              Available Slots
             </p>
             <div class="flex items-center gap-2 mt-1">
               <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
                 <div class="h-full bg-gradient-to-r from-[#73BE5D] to-[#5ca348] transition-all" :style="{
                   width:
                     tooltipData.slotsTotal > 0
-                      ? (tooltipData.slotsBooked / tooltipData.slotsTotal) *
+                      ? (tooltipData.availableSlots / tooltipData.slotsTotal) *
                       100 +
                       '%'
                       : '0%',
                 }"></div>
               </div>
-              <span class="text-sm font-semibold text-gray-700">{{ tooltipData.slotsBooked }}/{{
+              <span class="text-sm font-semibold text-gray-700">{{ tooltipData.availableSlots }}/{{
                 tooltipData.slotsTotal
                 }}</span>
             </div>
@@ -375,9 +381,11 @@ const tooltipRef = ref(null);
 
 const availabilityByDate = ref({});
 const tourInfoByDate = ref({});
+const availableSlots = ref(null);
 
 const generatePackageDates = () => {
   const pkg = booking.selectedPackage;
+  availableSlots.value = pkg.available_slot;
   if (!pkg || !pkg.start_date || !pkg.end_date) {
     return;
   }
@@ -396,11 +404,6 @@ const generatePackageDates = () => {
   const endMonth = em;
   const endYear = ey;
 
-  const seededRandom = (seed) => {
-    const x = Math.sin(seed) * 10000;
-    return x - Math.floor(x);
-  };
-
   while (
     currentYear < endYear ||
     (currentYear === endYear && currentMonth < endMonth) ||
@@ -413,31 +416,20 @@ const generatePackageDates = () => {
     const dateKey = `${currentYear}-${m}-${d}`;
 
     let status = "available";
-    let booked = 0;
+    let booked = pkg.available_slot;
 
-    const dateSeed = parseInt(dateKey.replace(/-/g, ""));
-    const randomValue = seededRandom(dateSeed);
-    booked = Math.floor(randomValue * (pkg.capacity + 1));
-
-    if (booked === 0) status = "accepting";
-    if (booked >= pkg.capacity) status = "full";
+    if (booked === 0) status = "full";
 
     availabilityByDate.value[dateKey] = status;
-
     tourInfoByDate.value[dateKey] = {
       title: pkg.package_name,
-      slotsBooked: booked,
+      availableSlots: booked,
       slotsTotal: pkg.capacity,
-      status:
-        status === "accepting"
-          ? "Accepting Joiners"
-          : status === "full"
-            ? "Slots Full"
-            : "Available",
-      price: `₱ ${pkg.pax_rate.toLocaleString()}`,
+      status: status === "full" ? "Slots Full" : "Accepting Joiners",
+      price: `₱ ${pkg.is_seasonal ? parseFloat(pkg.seasonal_pax_rate).toLocaleString() : pkg.pax_rate.toLocaleString()}`,
     };
-      if (tourType.value === "Joiners") return;
-      currentDay++;
+
+    currentDay++;
 
     const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
     if (currentDay > daysInMonth) {
@@ -665,34 +657,17 @@ const showTooltip = (event, dateKey) => {
   let dateDisplay = formatHuman(dateKey);
 
   if (tourType.value === "Joiners") {
-    const [year, month, day] = dateKey.split("-").map(Number);
-
-    let endDay = day + tourDuration.value - 1;
-    let endMonth = month;
-    let endYear = year;
-
-    const daysInMonth = new Date(endYear, endMonth, 0).getDate();
-    if (endDay > daysInMonth) {
-      endDay -= daysInMonth;
-      endMonth++;
-      if (endMonth > 12) {
-        endMonth = 1;
-        endYear++;
-      }
-    }
-
-    const endDateKey = `${endYear}-${String(endMonth).padStart(
-      2,
-      "0"
-    )}-${String(endDay).padStart(2, "0")}`;
-
-    dateDisplay = `${formatHuman(dateKey)} - ${formatHuman(endDateKey)}`;
+    const pkg = booking.selectedPackage;
+    const startDateStr = pkg.start_date.split("T")[0];
+    const endDateStr = pkg.end_date.split("T")[0];
+    
+    dateDisplay = `${formatHuman(startDateStr)} - ${formatHuman(endDateStr)}`;
   }
 
   tooltipData.value = {
     title: info ? info.title : "Tour",
     date: dateDisplay,
-    slotsBooked: info ? info.slotsBooked : 0,
+    availableSlots: info ? info.availableSlots : 0,
     slotsTotal: info ? info.slotsTotal : 0,
     status: info ? info.status : "Available",
     price: info ? info.price : "₱ -",
@@ -793,6 +768,7 @@ const postDate = () => {
   booking.reset();
   booking.tourType = tourType.value;
   booking.tourClassification = tourClassification.value;
+  booking.setAvailableSlots(availableSlots.value);
 
   let end_date = selectedDate.value;
   if (tourType.value === "Exclusive") {
