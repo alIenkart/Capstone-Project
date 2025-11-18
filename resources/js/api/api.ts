@@ -219,6 +219,14 @@ export class api {
         return plainInstance.delete(`/api/notifications/${id}`);
     }
 
+    sendDisasterNotification(payload: {
+        booking_id: number;
+        new_travel_date?: string;
+        reason?: string;
+    }) {
+        return plainInstance.post("/api/disaster-notifications", payload);
+    }
+
     fetchAnalyticsData(period) {
         console.log("Sending period:", period);
         return plainInstance.get(`/api/analytics/`, { params: { period } });
