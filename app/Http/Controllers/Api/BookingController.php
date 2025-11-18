@@ -224,10 +224,6 @@ class BookingController extends Controller
             ]);
         }
 
-        $updated_slot = $available_slot - $total_quantity;
-        $package->available_slot = $updated_slot;
-        $package->save();
-
         return true;
     }
 }
