@@ -14,15 +14,15 @@
               </Link>
             </li>
             <li>
-              <button @click="showUnderConstruction"
+              <button @click="openPrivacyPolicy"
                 class="text-blue-100 hover:text-[#73BE5D] text-sm tracking-wide transition-all duration-300 relative group font-semibold text-left">
-                Piracy Policy
+                Privacy Policy
                 <span
                   class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-[#73BE5D] to-[#008DDA] group-hover:w-full transition-all duration-300 rounded-full"></span>
               </button>
             </li>
             <li>
-              <button @click="isModalOpen = true"
+              <button @click="openTermsAndConditions"
                 class="text-blue-100 hover:text-[#73BE5D] text-sm tracking-wide transition-all duration-300 relative group font-semibold text-left">
                 Terms & Conditions
                 <span
@@ -53,7 +53,7 @@
               href="https://www.facebook.com/Djjjtravelandtour"
               target="_blank"
               class="text-blue-100 hover:text-[#73BE5D] transition-all duration-300 transform hover:scale-110"
-              title="Instagram">
+              title="Facebook">
               <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-facebook w-7 h-7"
                 viewBox="0 0 16 16">
                 <path
@@ -62,7 +62,7 @@
             </a>
             <a @click="showNoLinks"
               class="text-blue-100 hover:text-[#73BE5D] transition-all duration-300 transform hover:scale-110"
-              title="Facebook">
+              title="Instagram">
               <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-instagram w-7 h-7"
                 viewBox="0 0 16 16">
                 <path
@@ -71,7 +71,7 @@
             </a>
             <a @click="showNoLinks"
               class="text-blue-100 hover:text-[#73BE5D] transition-all duration-300 transform hover:scale-110"
-              title="Tiktok">
+              title="Twitter">
               <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-twitter-x w-7 h-7"
                 viewBox="0 0 16 16">
                 <path
@@ -80,7 +80,7 @@
             </a>
             <a @click="showNoLinks"
               class="text-blue-100 hover:text-[#73BE5D] transition-all duration-300 transform hover:scale-110"
-              title="X">
+              title="TikTok">
               <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-tiktok w-7 h-7"
                 viewBox="0 0 16 16">
                 <path
@@ -100,99 +100,31 @@
       </div>
     </div>
 
-    <Transition enterActiveClass="transition ease-out duration-300" enterFromClass="opacity-0"
-      enterToClass="opacity-100" leaveActiveClass="transition ease-in duration-200" leaveFromClass="opacity-100"
-      leaveToClass="opacity-0">
-      <div v-if="isModalOpen" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40" @click="isModalOpen = false">
-      </div>
-    </Transition>
+    <!-- Terms and Conditions Component -->
+    <TermsAndCondition :isOpen="isTermsOpen" @close="isTermsOpen = false" />
 
-    <Transition enterActiveClass="transition ease-out duration-300" enterFromClass="opacity-0 scale-95"
-      enterToClass="opacity-100 scale-100" leaveActiveClass="transition ease-in duration-200"
-      leaveFromClass="opacity-100 scale-100" leaveToClass="opacity-0 scale-95">
-      <div v-if="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center p-4"
-        @click.self="isModalOpen = false">
-        <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-          <div class="bg-gradient-to-r from-[#1E71B8] to-[#008DDA] px-8 py-6 flex items-center justify-between">
-            <h2 class="text-2xl font-bold text-white tracking-wide">Terms & Conditions</h2>
-            <button @click="isModalOpen = false"
-              class="text-white/80 hover:text-white transition-all duration-200 p-1 hover:scale-110">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-
-          <div class="overflow-y-auto flex-1 px-8 py-8 space-y-8">
-            <p class="text-gray-700 text-sm leading-relaxed">
-              These Terms and Conditions govern the use of services provided by
-              <span class="font-semibold text-[#1E71B8]">Traveller Laguna</span>. By confirming booking with our agency,
-              customers must consider the terms outlined below.
-            </p>
-
-            <div class="space-y-8">
-              <div class="border-l-4 border-[#73BE5D] pl-5">
-                <h3 class="text-lg font-bold text-[#1E71B8] mb-3 flex items-center gap-2">
-                  <span class="w-2 h-2 bg-[#73BE5D] rounded-full"></span>
-                  Booking and Reservations Confirmation
-                </h3>
-                <p class="text-gray-600 text-sm leading-relaxed">
-                  All bookings require a confirmed down payment to secure reservations. Prices are subject to change
-                  until
-                  full payment is received and confirmed. Full payment must be settled on or before the specified due
-                  date.
-                </p>
-              </div>
-
-              <div class="border-l-4 border-[#008DDA] pl-5">
-                <h3 class="text-lg font-bold text-[#1E71B8] mb-3 flex items-center gap-2">
-                  <span class="w-2 h-2 bg-[#008DDA] rounded-full"></span>
-                  Cancellation and Refund Policy
-                </h3>
-                <p class="text-gray-600 text-sm leading-relaxed">
-                  Cancellations must be submitted before the specified booking date via email or other contact channels.
-                  Refunds follow the policies of third-party providers (airlines, hotels, etc.). Non-refundable fees and
-                  penalties may apply.
-                </p>
-              </div>
-
-              <div class="border-l-4 border-[#73BE5D] pl-5">
-                <h3 class="text-lg font-bold text-[#1E71B8] mb-3 flex items-center gap-2">
-                  <span class="w-2 h-2 bg-[#73BE5D] rounded-full"></span>
-                  Changes and Amendments
-                </h3>
-                <p class="text-gray-600 text-sm leading-relaxed">
-                  Traveller Laguna reserves the right to modify itineraries due to unforeseen circumstances. Clients
-                  will
-                  be notified of any changes, and reasonable alternatives will be provided. Any client-requested changes
-                  after booking may incur additional charges.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="bg-gray-50 px-8 py-5 flex justify-end border-t border-gray-200">
-            <button @click="isModalOpen = false"
-              class="px-6 py-2.5 bg-gradient-to-r from-[#1E71B8] to-[#008DDA] text-white font-semibold rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
-              Close
-            </button>
-          </div>
-        </div>
-      </div>
-    </Transition>
+    <!-- Privacy Policy Component -->
+    <PrivacyPolicy :isOpen="isPrivacyOpen" @close="isPrivacyOpen = false" />
   </footer>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-import { Link } from "@inertiajs/vue3";
+import { Link } from "@inertiajs/vue3"
 import { useToast } from 'vue-toastification'
+import TermsAndCondition from '../TermsAndPrivacy/TermsAndCondition.vue'
+import PrivacyPolicy from '../TermsAndPrivacy/PrivacyPolicy.vue'
 
-const isModalOpen = ref(false)
+const isTermsOpen = ref(false)
+const isPrivacyOpen = ref(false)
 const toast = useToast()
 
-const showUnderConstruction = () => {
-  toast.info('This page is under construction. We\'ll be back soon!')
+const openTermsAndConditions = () => {
+  isTermsOpen.value = true
+}
+
+const openPrivacyPolicy = () => {
+  isPrivacyOpen.value = true
 }
 
 const showNoLinks = () => {

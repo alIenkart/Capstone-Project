@@ -227,14 +227,14 @@
                   I confirm that I have read and agree to the
                   <a
                     href="#"
-                    @click.prevent="openModal('terms')"
+                    @click.prevent="openTermsAndConditions"
                     class="text-[#1E71B8] font-semibold underline hover:text-[#155E9C] transition-colors"
                     >Terms and Conditions</a
                   >
                   and
                   <a
                     href="#"
-                    @click.prevent="openModal('privacy')"
+                    @click.prevent="openPrivacyPolicy"
                     class="text-[#1E71B8] font-semibold underline hover:text-[#155E9C] transition-colors"
                     >Privacy Policy</a
                   >.
@@ -390,18 +390,20 @@
       </div>
     </div>
 
-    <TermsAndPrivacyModal
-      :show="showModal"
-      :type="modalType"
-      @close="closeModal"
-    />
+    <!-- Terms and Conditions Modal Component -->
+    <TermsAndCondition :isOpen="isTermsOpen" @close="closeTermsAndConditions" />
 
+    <!-- Privacy Policy Modal Component -->
+    <PrivacyPolicy :isOpen="isPrivacyOpen" @close="closePrivacyPolicy" />
+
+    <!-- Booking Success Modal -->
     <BookingSuccessModal
       :show="showSuccessModal"
       @close="closeSuccessModal"
       @returnHome="returnHome"
     />
 
+    <!-- Loading Overlay -->
     <LoadingOverlay :show="isLoading" message="Processing your booking..." />
   </div>
 </template>
@@ -413,7 +415,8 @@ import { usePage } from "@inertiajs/vue3";
 import { ref, computed, onMounted } from "vue";
 import { storeBooking } from "../../state/storeBooking";
 import { useToast } from "vue-toastification";
-import TermsAndPrivacyModal from "../../components/TermsAndPrivacyModal.vue";
+import TermsAndCondition from '../TermsAndPrivacy/TermsAndCondition.vue'
+import PrivacyPolicy from '../TermsAndPrivacy/PrivacyPolicy.vue'
 import BookingSuccessModal from "../../components/BookingSuccessModal.vue";
 import LoadingOverlay from "../../components/LoadingOverlay.vue";
 
@@ -432,8 +435,8 @@ const email = ref("");
 const phone_number = ref("");
 const address = ref("");
 const agreeChecked = ref(false);
-const showModal = ref(false);
-const modalType = ref("terms");
+const isTermsOpen = ref(false);
+const isPrivacyOpen = ref(false);
 const showSuccessModal = ref(false);
 const isLoading = ref(false);
 
@@ -520,6 +523,22 @@ const formatDate = (dateString) => {
     day: "numeric",
     year: "numeric",
   });
+};
+
+const openTermsAndConditions = () => {
+  isTermsOpen.value = true;
+};
+
+const closeTermsAndConditions = () => {
+  isTermsOpen.value = false;
+};
+
+const openPrivacyPolicy = () => {
+  isPrivacyOpen.value = true;
+};
+
+const closePrivacyPolicy = () => {
+  isPrivacyOpen.value = false;
 };
 
 async function postBooking() {
@@ -622,15 +641,6 @@ async function postBooking() {
     toast.error("Failed to create booking. Please try again.");
   }
 }
-
-const openModal = (type) => {
-  modalType.value = type;
-  showModal.value = true;
-};
-
-const closeModal = () => {
-  showModal.value = false;
-};
 
 const closeSuccessModal = () => {
   showSuccessModal.value = false;
