@@ -1,11 +1,7 @@
 <template>
-  <!-- Payment Approval Modal -->
-  <div
-    v-if="!showReceipt"
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6"
-  >
+  <div v-if="!showReceipt"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6">
     <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-4xl overflow-hidden mx-auto">
-      <!-- Header -->
       <div class="bg-gradient-to-r from-[#217093] to-[#2a8bb5] px-5 py-5 sm:px-8 sm:py-6 relative">
         <h2 class="text-2xl font-bold text-white">Payment Approval</h2>
         <p class="text-white/80 text-sm mt-1">
@@ -19,11 +15,8 @@
           </svg>
         </button>
       </div>
-
-      <!-- Content -->
       <div class="px-5 py-6 sm:px-8 max-h-[calc(100vh-16rem)] overflow-y-auto">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
-          <!-- Left: Booking Details -->
           <div class="space-y-6">
             <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-6 border border-gray-200">
               <div class="flex items-center gap-2 mb-4">
@@ -38,19 +31,19 @@
                   <span class="text-gray-600">Name:</span>
                   <span class="font-semibold text-gray-800">{{
                     receiptData.customerName
-                    }}</span>
+                  }}</span>
                 </div>
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2">
                   <span class="text-gray-600">Email:</span>
                   <span class="font-semibold text-gray-800">{{
                     receiptData.customerEmail
-                    }}</span>
+                  }}</span>
                 </div>
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2">
                   <span class="text-gray-600">Phone:</span>
                   <span class="font-semibold text-gray-800">{{
                     receiptData.customerPhone
-                    }}</span>
+                  }}</span>
                 </div>
               </div>
             </div>
@@ -104,10 +97,6 @@
                     {{ receiptData.destination }}
                   </div>
                 </div>
-                <!-- <div>
-                  <div class="text-gray-600 text-xs">Discount Applied</div>
-                  <div class="font-semibold text-green-600">Yes</div>
-                </div> -->
               </div>
             </div>
 
@@ -122,8 +111,7 @@
                     <span class="font-semibold text-gray-800">₱ {{ currentPayment?.fullPaymentAmount }}</span>
                   </div>
                   <div
-                    class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2 text-lg font-bold pt-2 border-t border-emerald-200"
-                  >
+                    class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2 text-lg font-bold pt-2 border-t border-emerald-200">
                     <span class="text-gray-800">Total Amount Paid:</span>
                     <span class="text-[#217093]">₱ {{ currentPayment?.fullPaymentAmount }}</span>
                   </div>
@@ -142,8 +130,7 @@
                     </div>
                   </div>
                   <div
-                    class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2 text-lg font-bold pt-2 border-t border-emerald-200"
-                  >
+                    class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2 text-lg font-bold pt-2 border-t border-emerald-200">
                     <span class="text-gray-800">Total Amount Paid:</span>
                     <span class="text-[#217093]">
                       ₱ {{ totalDownPayment.toLocaleString() }}
@@ -153,8 +140,6 @@
               </div>
             </div>
           </div>
-
-          <!-- Right: Payment Proof -->
           <div class="space-y-6">
             <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-200">
               <div class="flex items-center gap-2 mb-4">
@@ -174,8 +159,6 @@
                   </option>
                 </select>
               </div>
-
-              <!-- Payment Info -->
               <div v-for="(image, index) in receiptImages" :key="index">
                 <label class="block text-sm font-medium text-gray-700 mb-2">Proof of Payment</label>
                 <div @click="openImageModal(image)"
@@ -223,6 +206,18 @@
                 class="w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-2 focus:ring-[#217093]/20 outline-none transition-all p-4 resize-none"></textarea>
             </div>
 
+            <div class="flex justify-center mt-4">
+              <button v-if="isPaymentApproved()" type="button" @click="showDisasterModal = true"
+                class="flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor" class="w-5 h-5">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                </svg>
+                Send Disaster Email and Notification
+              </button>
+            </div>
+
             <div v-if="isDownPayment()">
               <div class="flex items-center mb-4">
                 <input id="fullyVerified" type="checkbox" v-model="isFullyPaid"
@@ -235,8 +230,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Footer Actions -->
       <div v-if="isPaymentPending()">
         <div class="bg-gray-50 px-8 py-6 border-t border-gray-200">
           <div class="flex flex-wrap justify-center gap-4">
@@ -301,14 +294,11 @@
 
   <RejectionModal :reason="rejectionReason" :category="rejectionCategory" :date="rejectionDate"
     :visible="showRejectionModalDetail" @close="showRejectionModalDetail = false" />
-
-  <!-- Image Modal for Full Size View -->
   <Transition enter-active-class="transition-all duration-300 ease-out" enter-from-class="opacity-0"
     enter-to-class="opacity-100" leave-active-class="transition-all duration-200 ease-in" leave-from-class="opacity-100"
     leave-to-class="opacity-0">
     <div v-if="showImageModal" @click="closeImageModal"
       class="fixed inset-0 z-[60] flex items-center justify-center bg-black/95 backdrop-blur-md p-4 cursor-zoom-out">
-      <!-- Close Button -->
       <button @click="closeImageModal"
         class="absolute top-6 right-6 z-10 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white rounded-full p-3 transition-all duration-200 hover:scale-110 active:scale-95 group"
         aria-label="Close">
@@ -381,8 +371,6 @@
       </div>
     </div>
   </Transition>
-
-  <!-- Reject Confirmation Modal -->
   <Transition enter-active-class="transition-all duration-300 ease-out" enter-from-class="opacity-0"
     enter-to-class="opacity-100" leave-active-class="transition-all duration-200 ease-in" leave-from-class="opacity-100"
     leave-to-class="opacity-0">
@@ -393,7 +381,6 @@
         leave-active-class="transition-all duration-200 ease-in" leave-from-class="opacity-100 scale-100 translate-y-0"
         leave-to-class="opacity-0 scale-95 translate-y-4">
         <div v-if="showRejectionModal" @click.stop class="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
-          <!-- Icon -->
           <div class="flex justify-center mb-4">
             <div class="bg-red-100 rounded-full p-3">
               <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -402,34 +389,22 @@
               </svg>
             </div>
           </div>
-
-          <!-- Title -->
           <h3 class="text-xl font-bold text-gray-900 text-center mb-2">
             Reject Payment
           </h3>
           <p class="text-gray-600 text-center mb-6">
             Please provide the reason and category for rejecting this payment.
           </p>
-
           <form @submit.prevent="confirmReject" class="space-y-4">
             <div class="relative">
-              <button
-                type="button"
-                @click="showCategoryDropdown = !showCategoryDropdown"
-                class="w-full flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center rounded-xl border-2 border-gray-300 focus:border-red-500 focus:ring-1 focus:ring-red-500 px-4 py-2 outline-none text-gray-700 transition-all text-left sm:text-base"
-              >
+              <button type="button" @click="showCategoryDropdown = !showCategoryDropdown"
+                class="w-full flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center rounded-xl border-2 border-gray-300 focus:border-red-500 focus:ring-1 focus:ring-red-500 px-4 py-2 outline-none text-gray-700 transition-all text-left sm:text-base">
                 <span>{{ rejectionCategory || 'Select Rejection Category' }}</span>
-                <svg
-                  class="w-5 h-5 text-gray-500 transition-transform sm:ml-2 self-start sm:self-center"
-                  :class="{ 'rotate-180': showCategoryDropdown }"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg class="w-5 h-5 text-gray-500 transition-transform sm:ml-2 self-start sm:self-center"
+                  :class="{ 'rotate-180': showCategoryDropdown }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
               </button>
-
               <transition enter-active-class="transition ease-out duration-100"
                 enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100"
                 leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100"
@@ -452,20 +427,13 @@
                 class="w-full rounded-xl border-2 border-gray-300 focus:border-red-500 focus:ring-1 focus:ring-red-500 px-4 py-2 outline-none resize-none"
                 required></textarea>
             </div>
-
-            <!-- Buttons -->
             <div class="flex flex-col sm:flex-row gap-3 mt-4">
-              <button
-                type="button"
-                @click="cancelReject"
-                class="flex-1 px-4 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"
-              >
+              <button type="button" @click="cancelReject"
+                class="flex-1 px-4 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold rounded-xl transition-all duration-200 hover:scale-105 active:scale-95">
                 Cancel
               </button>
-              <button
-                @click="submitVerificationOfPayment('Rejected')"
-                class="flex-1 px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-xl transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg"
-              >
+              <button @click="submitVerificationOfPayment('Rejected')"
+                class="flex-1 px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold rounded-xl transition-all duration-200 hover:scale-105 active:scale-95 shadow-lg">
                 Reject
               </button>
             </div>
@@ -474,17 +442,9 @@
       </Transition>
     </div>
   </Transition>
-
-  <!-- Official Payment Receipt Modal -->
-  <div
-    v-if="showReceipt"
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 sm:p-6"
-  >
-    <div
-      id="receipt-content"
-      class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto mx-auto"
-    >
-      <!-- Header with Logo -->
+  <div v-if="showReceipt" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4 sm:p-6">
+    <div id="receipt-content"
+      class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto mx-auto">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-5 sm:p-6 border-b">
         <div class="flex items-center gap-3">
           <img src="/storage/logo/Logo.png" alt="JE Travel & Tours" class="w-16 h-16 object-contain" />
@@ -501,8 +461,6 @@
           </svg>
         </button>
       </div>
-
-      <!-- Receipt Content -->
       <div class="p-5 sm:p-8">
         <div class="text-center mb-6 space-y-1">
           <h2 class="text-2xl font-bold text-gray-800 mb-1">
@@ -513,12 +471,8 @@
           </p>
           <p class="text-sm text-gray-600">Date: {{ receiptData.date }}</p>
         </div>
-
         <hr class="border-gray-300 mb-6" />
-
-        <!-- Customer Information & Payment Details -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <!-- Customer Information -->
           <div>
             <h3 class="font-bold text-gray-800 mb-3">Customer Information</h3>
             <div class="space-y-1 text-sm">
@@ -536,8 +490,6 @@
               </p>
             </div>
           </div>
-
-          <!-- Payment Details -->
           <div>
             <h3 class="font-bold text-gray-800 mb-3">Payment Details</h3>
             <div class="space-y-1 text-sm">
@@ -556,8 +508,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Booking Details -->
         <div class="mb-6">
           <h3 class="font-bold text-gray-800 mb-3">Booking Details</h3>
           <div class="space-y-1 text-sm">
@@ -565,7 +515,7 @@
               <span class="text-gray-600">Tour Classification:</span>
               <span class="font-medium">{{
                 receiptData.tourClassification
-                }}</span>
+              }}</span>
             </p>
             <p>
               <span class="text-gray-600">Package:</span>
@@ -589,8 +539,6 @@
             </p>
           </div>
         </div>
-
-        <!-- Total Amount -->
         <div class="bg-gray-50 rounded-lg p-4 mb-6">
           <div class="space-y-2 text-sm">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2">
@@ -607,10 +555,7 @@
             </div>
           </div>
         </div>
-
         <hr class="border-gray-300 mb-6" />
-
-        <!-- Authorized By -->
         <div class="mb-6">
           <p class="font-bold text-gray-800 mb-3">Authorized by:</p>
           <div class="text-center">
@@ -619,10 +564,7 @@
             <p class="text-sm text-gray-600 italic">Position</p>
           </div>
         </div>
-
         <hr class="border-gray-300 mb-6" />
-
-        <!-- Footer -->
         <div class="text-center text-sm text-gray-600">
           <p class="font-medium mb-1">
             Thank you for booking with JE Travel & Tours!
@@ -634,8 +576,6 @@
           </p>
         </div>
       </div>
-
-      <!-- Action Buttons -->
       <div id="receipt-buttons" class="flex justify-center gap-4 p-6 border-t bg-gray-50">
         <button @click="closeReceipt"
           class="px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-semibold transition">
@@ -648,12 +588,197 @@
       </div>
     </div>
   </div>
+
+  <Transition enter-active-class="transition-all duration-300 ease-out" enter-from-class="opacity-0 scale-95"
+    enter-to-class="opacity-100 scale-100" leave-active-class="transition-all duration-200 ease-in"
+    leave-from-class="opacity-100 scale-100" leave-to-class="opacity-0 scale-95">
+    <div v-if="showDisasterModal"
+      class="fixed inset-0 z-[70] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden border border-slate-200 max-h-[90vh]">
+        <div class="bg-gradient-to-r from-orange-500 to-red-600 px-8 py-8">
+          <div class="flex items-center gap-4">
+            <div class="p-3 bg-white/20 rounded-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-6 h-6 text-white">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-white">Confirm Schedule Change Notification</h3>
+          </div>
+        </div>
+
+        <div class="px-8 py-8 space-y-6 max-h-[calc(100vh-300px)] overflow-y-auto">
+          <div class="bg-orange-50 border-l-4 border-orange-500 p-5 rounded-lg">
+            <p class="text-sm text-orange-800 font-semibold mb-2">
+              Urgent Travel Advisory
+            </p>
+            <p class="text-sm text-orange-700 leading-relaxed">
+              An email notification will be sent to the customer regarding the travel date change due to unforeseen
+              circumstances (disaster/emergency).
+            </p>
+          </div>
+
+          <div class="bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl p-6 border border-slate-200">
+            <div class="grid grid-cols-2 gap-6">
+              <div class="space-y-4">
+                <div class="flex justify-between items-start pb-4 border-b border-slate-200">
+                  <span class="text-sm font-semibold text-slate-600">Booking Reference</span>
+                  <span class="text-sm font-bold text-slate-900">
+                    B{{ String(props.payment?.booking_id).padStart(5, '0') }}
+                  </span>
+                </div>
+
+                <div class="flex justify-between items-start pb-4 border-b border-slate-200">
+                  <span class="text-sm font-semibold text-slate-600">Customer Name</span>
+                  <span class="text-sm font-bold text-slate-900">
+                    {{ receiptData?.customerName }}
+                  </span>
+                </div>
+
+                <div class="flex justify-between items-start pb-4 border-b border-slate-200">
+                  <span class="text-sm font-semibold text-slate-600">Email</span>
+                  <span class="text-sm font-bold text-slate-900 break-all text-right">
+                    {{ receiptData?.customerEmail }}
+                  </span>
+                </div>
+
+                <div class="flex justify-between items-start pb-4 border-b border-slate-200">
+                  <span class="text-sm font-semibold text-slate-600">Package</span>
+                  <span class="text-sm font-bold text-slate-900 text-right">
+                    {{ receiptData?.package }}
+                  </span>
+                </div>
+
+                <div class="flex justify-between items-start pb-4 border-b border-slate-200">
+                  <span class="text-sm font-semibold text-slate-600">Original Date</span>
+                  <span class="text-sm font-bold text-slate-900">
+                    {{
+                      receiptData?.travelDate
+                        ? new Date(receiptData?.travelDate).toLocaleDateString('en-US')
+                        : 'N/A'
+                    }}
+                  </span>
+                </div>
+
+                <div class="flex justify-between items-start">
+                  <span class="text-sm font-semibold text-slate-600">Tour Type</span>
+                  <span class="text-sm font-bold text-slate-900">
+                    {{ receiptData?.bookingType }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="space-y-4">
+                <div class="flex justify-between items-start pb-4 border-b border-slate-200">
+                  <span class="text-sm font-semibold text-slate-600">Duration</span>
+                  <span class="text-sm font-bold text-slate-900">
+                    {{ receiptData?.duration }} Day(s)
+                  </span>
+                </div>
+
+                <div class="flex justify-between items-start pb-4 border-b border-slate-200">
+                  <span class="text-sm font-semibold text-slate-600">Number of Travelers</span>
+                  <span class="text-sm font-bold text-slate-900">
+                    {{ receiptData?.quantity }}
+                  </span>
+                </div>
+
+                <div class="flex justify-between items-start pb-4 border-b border-slate-200">
+                  <span class="text-sm font-semibold text-slate-600">Booking Total</span>
+                  <span class="text-sm font-bold text-slate-900">
+                    ₱{{ parseFloat(receiptData?.totalAmount).toLocaleString() }}
+                  </span>
+                </div>
+
+                <div class="flex justify-between items-start pb-4 border-b border-slate-200">
+                  <span class="text-sm font-semibold text-slate-600">Remaining Balance</span>
+                  <span class="text-sm font-bold text-green-600">
+                    ₱{{ parseFloat(props.payment?.payment_history[0].remainingBalance).toLocaleString() }}
+                  </span>
+                </div>
+
+                <div class="flex justify-between items-start pb-4 border-b border-slate-200">
+                  <span class="text-sm font-semibold text-slate-600">Payment Type</span>
+                  <span class="text-sm font-bold text-slate-900">
+                    {{ props.payment?.type_of_payment }}
+                  </span>
+                </div>
+
+                <div class="flex justify-between items-start">
+                  <span class="text-sm font-semibold text-slate-600">Payment Status</span>
+                  <span class="text-sm font-bold px-3 py-1.5 rounded-full" :class="{
+                    'bg-green-100 text-green-800': props.payment?.payment_status === 'Approved',
+                    'bg-yellow-100 text-yellow-800': props.payment?.payment_status === 'Pending',
+                    'bg-red-100 text-red-800': props.payment?.payment_status === 'Rejected'
+                  }">
+                    {{ props.payment?.payment_status }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-gradient-to-br from-red-50 to-red-100 border border-red-200 rounded-xl p-6">
+            <p class="text-xs font-bold text-red-800 mb-4 tracking-wide">
+              CUSTOMER WILL RECEIVE EMAIL CONTAINING
+            </p>
+            <ul class="text-xs text-red-700 space-y-3">
+              <li class="flex items-start gap-3 leading-relaxed">
+                <span class="text-red-500 font-bold mt-0.5 flex-shrink-0">—</span>
+                <span>Urgent Travel Advisory - Schedule Change Required</span>
+              </li>
+              <li class="flex items-start gap-3 leading-relaxed">
+                <span class="text-red-500 font-bold mt-0.5 flex-shrink-0">—</span>
+                <span>Full booking information and details</span>
+              </li>
+              <li class="flex items-start gap-3 leading-relaxed">
+                <span class="text-red-500 font-bold mt-0.5 flex-shrink-0">—</span>
+                <span>Reason for reschedule (Force Majeure)</span>
+              </li>
+              <li class="flex items-start gap-3 leading-relaxed">
+                <span class="text-red-500 font-bold mt-0.5 flex-shrink-0">—</span>
+                <span>Payment status and travel credit confirmation</span>
+              </li>
+              <li class="flex items-start gap-3 leading-relaxed">
+                <span class="text-red-500 font-bold mt-0.5 flex-shrink-0">—</span>
+                <span>Contact details to reschedule travel</span>
+              </li>
+              <li class="flex items-start gap-3 leading-relaxed">
+                <span class="text-red-500 font-bold mt-0.5 flex-shrink-0">—</span>
+                <span>Apology and appreciation for understanding</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-slate-50 to-slate-100 px-8 py-6 border-t border-slate-200 flex justify-end gap-4">
+          <button type="button" @click="showDisasterModal = false" :disabled="isSubmittingDisaster"
+            class="rounded-lg px-6 py-2.5 text-sm font-semibold bg-slate-300 text-slate-800 hover:bg-slate-400 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed">
+            Cancel
+          </button>
+
+          <button type="button" @click="submitDisasterNotificationFromPayment" :disabled="isSubmittingDisaster"
+            class="flex items-center gap-2 rounded-lg bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 disabled:from-orange-400 disabled:to-red-500 disabled:cursor-not-allowed px-6 py-2.5 text-sm font-semibold text-white transition-all duration-200">
+            <svg v-if="!isSubmittingDisaster" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+            </svg>
+            <svg v-else class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 12a8 8 0 0116 0" />
+            </svg>
+            {{ isSubmittingDisaster ? "Sending..." : "Yes, Send Email" }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </Transition>
 </template>
 
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import axios from "axios";
 import { useToast } from "vue-toastification";
 import RejectionModal from "./PaymentRejectionDetail.vue";
 
@@ -682,6 +807,11 @@ const rejectionReason = ref(null);
 const paymentHistory = ref([]);
 const showCategoryDropdown = ref(false);
 const selectedPaymentIndex = ref(0);
+const showDisasterModal = ref(false);
+const isSubmittingDisaster = ref(false);
+const disasterPaymentForm = ref({ reason: "" });
+
+
 const currentPayment = computed(
   () => paymentHistory.value[selectedPaymentIndex.value]
 );
@@ -697,7 +827,6 @@ const fetchPaymentAndBooking = async (id) => {
     const response = await axios.get(`/api/payments/${id}`);
     const data = response.data.data;
 
-    // Assign defaults safely
     paymentData.value = {
       payment_id: data.payment_id || null,
       booking_id: data.booking_id || null,
@@ -773,6 +902,50 @@ const fetchPaymentAndBooking = async (id) => {
   }
 };
 
+const submitDisasterNotificationFromPayment = async () => {
+  if (!props.payment?.booking_id) {
+    toast.error("Invalid booking ID");
+    return;
+  }
+
+  isSubmittingDisaster.value = true;
+  try {
+    const paymentStatus = currentPayment.value?.paymentType === "Full Payment"
+      ? "Approved"
+      : (currentPayment.value?.paymentType === "Down Payment" ? "Down Payment Approved" : "Pending");
+
+    const payload = {
+      booking_id: props.payment.booking_id,
+      new_travel_date: null,
+      reason: disasterPaymentForm.value.reason || null,
+      payment_status: paymentStatus,
+    };
+
+    const response = await axios.post("/api/disaster-notifications", payload);
+
+    if (response?.data?.success) {
+      toast.success("Disaster notification email sent successfully!");
+      showDisasterModal.value = false;
+
+      setTimeout(() => {
+        emit("close");
+      }, 1500);
+    } else {
+      toast.error(response?.data?.message || "Failed to send notification");
+    }
+  } catch (error) {
+    console.error("Error sending disaster notification:", error);
+    console.error("Error response data:", error.response?.data);
+
+    toast.error(
+      error.response?.data?.message ||
+      "An error occurred while sending the notification"
+    );
+  } finally {
+    isSubmittingDisaster.value = false;
+  }
+};
+
 const approvePayment = () => {
   receiptData.value.paymentVia = paymentMethod.value;
   showReceipt.value = true;
@@ -813,6 +986,12 @@ const isDownPayment = () => {
 const isPaymentComplete = () => {
   return (
     paymentStatus.value === "Approved" || paymentStatus.value === "Pending"
+  );
+};
+
+const isPaymentApproved = () => {
+  return (
+    paymentStatus.value === "Approved"
   );
 };
 
@@ -973,8 +1152,8 @@ async function submitVerificationOfPayment($status) {
       toast.error(errorMessage);
     } else {
       toast.error("Something went wrong while submitting your payment.");
-      }
     }
+  }
 }
 onMounted(() => {
   if (props.payment?.id) {

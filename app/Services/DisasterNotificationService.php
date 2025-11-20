@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Booking;
 use App\Models\Notification;
+use App\Models\Payment;
 use App\Mail\DisasterDateChangeMail;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
@@ -34,27 +35,53 @@ class DisasterNotificationService
         return 'B' . str_pad($id, 5, '0', STR_PAD_LEFT);
     }
 
+    private function isPaymentConfirmed(Booking $booking): bool
+    {
+        $payment = Payment::where('booking_id', $booking->id)
+            ->whereIn('payment_status', ['Approved', 'Down Payment Approved'])
+            ->latest()
+            ->first();
+
+        if ($payment) {
+            \Log::info("Payment found for booking {$booking->id}: Status = {$payment->payment_status}");
+            return true;
+        }
+
+        $isConfirmed = !empty($booking->payment_confirmed_at);
+        \Log::info("Payment not found in payments table for booking {$booking->id}. Using payment_confirmed_at: " . ($isConfirmed ? 'Yes' : 'No'));
+        
+        return $isConfirmed;
+    }
+
     public function sendDisasterDateChangeNotification(
         Booking $booking,
         ?string $newTravelDate = null,
-        ?string $reason = null
+        ?string $reason = null,
+        ?bool $forcePaymentConfirmed = null
     ): array {
         try {
-            $packageName = $booking->package_destination ?? 'Unknown Package';
+            $travelDate = $booking->start_date ?? $booking->travel_date ?? now();
+            
+            $packageName = $booking->package_destination ?? 'Your Package';
             $duration = $booking->duration ?? '0';
-            $currentDate = $this->formatDate($booking->travel_date);
+            $currentDate = $this->formatDate($travelDate);
             $proposedDate = $newTravelDate 
                 ? $this->formatDate($newTravelDate)
                 : 'To be announced';
             $bookingId = $this->formatBookingId($booking->id);
+            
+            $isPaymentConfirmed = $forcePaymentConfirmed !== null 
+                ? $forcePaymentConfirmed 
+                : $this->isPaymentConfirmed($booking);
+
+            \Log::info("Sending disaster notification for booking {$booking->id}. Payment Confirmed: " . ($isPaymentConfirmed ? 'Yes' : 'No'));
 
             $notification = $this->createDisasterNotification(
                 $booking,
                 $packageName,
                 $duration,
                 $currentDate,
-                $proposedDate,
-                $reason
+                $isPaymentConfirmed
             );
 
             $this->sendDisasterEmail(
@@ -63,8 +90,11 @@ class DisasterNotificationService
                 $duration,
                 $currentDate,
                 $proposedDate,
-                $reason
+                $reason,
+                $isPaymentConfirmed
             );
+
+            \Log::info("Disaster notification created for booking {$booking->id}");
 
             return [
                 'success' => true,
@@ -85,19 +115,18 @@ class DisasterNotificationService
         string $packageName,
         string $duration,
         string $currentDate,
-        string $proposedDate,
-        ?string $reason
+        bool $isPaymentConfirmed
     ): Notification {
-        $title = 'Important: Travel Date Change Due to Disaster';
-        $message = "Your booking for {$packageName} - {$duration} Day/s on {$currentDate} has been postponed due to safety advisories. ".
-            "Please check your registered email for details and contact us. " .
-            "immediately to select a new travel date. Your previous payment remains valid and secure. ";
-
-        if ($reason) {
-            $message .= "Details: {$reason}. ";
+        if ($isPaymentConfirmed) {
+            $title = 'Booking Confirmed & Paid - Rescheduling Notice';
+            $message = "Your booking for {$packageName} - {$duration} Day/s on {$currentDate} has been rescheduled due to safety advisories. " .
+                "Your status remains CONFIRMED & PAID. Your payment is safe. Please contact us immediately to select a new travel date.";
+        } else {
+            $title = 'Booking Confirmed - Rescheduling Notice';
+            $message = "Your booking for {$packageName} - {$duration} Day/s on {$currentDate} has been rescheduled due to safety advisories. " .
+                "Your booking is CONFIRMED, but your Payment is still PENDING. " .
+                "Please contact us to select a new date and settle your payment to secure your slot.";
         }
-
-        $message .= "Please check your email and contact us immediately to confirm or discuss alternative dates. We appreciate your understanding.";
 
         return Notification::create([
             'user_id' => $booking->customer_id,
@@ -105,6 +134,7 @@ class DisasterNotificationService
             'type' => 'disaster_date_change',
             'title' => $title,
             'message' => $message,
+            'is_read' => false,
         ]);
     }
 
@@ -114,9 +144,14 @@ class DisasterNotificationService
         string $duration,
         string $currentDate,
         string $proposedDate,
-        ?string $reason
+        ?string $reason,
+        bool $isPaymentConfirmed
     ): void {
         try {
+            if (!$booking->customer_email) {
+                throw new \Exception("Customer email is missing for booking {$booking->id}");
+            }
+
             Mail::to($booking->customer_email)
                 ->send(new DisasterDateChangeMail(
                     $booking,
@@ -124,12 +159,13 @@ class DisasterNotificationService
                     $duration,
                     $currentDate,
                     $proposedDate,
-                    $reason
+                    $reason,
+                    $isPaymentConfirmed
                 ));
 
             \Log::info("Disaster notification email sent to {$booking->customer_email} for booking {$booking->id}");
         } catch (\Exception $e) {
-            \Log::error("Failed to send disaster email: " . $e->getMessage());
+            \Log::error("Failed to send disaster email to {$booking->customer_email}: " . $e->getMessage());
             throw $e;
         }
     }

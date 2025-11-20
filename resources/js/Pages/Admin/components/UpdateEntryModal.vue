@@ -517,6 +517,7 @@
                 </div>
               </div>
               <button
+                v-if="isApproved"
                 type="button"
                 @click="showDisasterModal = true"
                 class="w-full flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all"
@@ -1044,91 +1045,105 @@
         class="fixed inset-0 z-[70] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
       >
         <div
-          class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
+          class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden border border-slate-200 max-h-[90vh]"
         >
-          <div class="bg-gradient-to-r from-orange-500 to-red-600 px-6 py-6">
-            <div class="flex items-center gap-3">
+          <div class="bg-gradient-to-r from-orange-500 to-red-600 px-8 py-8">
+            <div class="flex items-center gap-4">
               <div class="p-3 bg-white/20 rounded-lg">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-white">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
                   </svg>
               </div>
-              <h3 class="text-xl font-bold text-white">Confirm Schedule Change Notification</h3>
+              <h3 class="text-2xl font-bold text-white">Confirm Schedule Change Notification</h3>
             </div>
           </div>
 
-          <div class="px-6 py-6 space-y-4">
-            <div class="bg-orange-50 border-l-4 border-orange-500 p-4 rounded">
-              <p class="text-sm text-orange-800 font-medium mb-2">
-                <strong>Urgent Travel Advisory</strong>
+          <div class="px-8 py-8 space-y-6 max-h-[calc(90vh-280px)] overflow-y-auto">
+            <div class="bg-orange-50 border-l-4 border-orange-500 p-5 rounded-lg">
+              <p class="text-sm text-orange-800 font-semibold mb-2">
+                Urgent Travel Advisory
               </p>
-              <p class="text-sm text-orange-700">
+              <p class="text-sm text-orange-700 leading-relaxed">
                 An email notification will be sent to the customer regarding the travel date change due to unforeseen circumstances (disaster/emergency).
               </p>
             </div>
 
-            <div class="bg-slate-50 rounded-lg p-4 space-y-3 border border-slate-200">
-              <div class="flex justify-between items-start">
-                <span class="text-sm font-medium text-slate-600">Booking Reference:</span>
-                <span class="text-sm font-semibold text-slate-900">B{{ String(props.booking.id).padStart(5, '0') }}</span>
-              </div>
-              <div class="flex justify-between items-start">
-                <span class="text-sm font-medium text-slate-600">Customer Name:</span>
-                <span class="text-sm font-semibold text-slate-900">{{ props.booking.customer_name }}</span>
-              </div>
-              <div class="flex justify-between items-start">
-                <span class="text-sm font-medium text-slate-600">Email:</span>
-                <span class="text-sm font-semibold text-slate-900 break-all">{{ props.booking.customer_email }}</span>
-              </div>
-              <div class="flex justify-between items-start">
-                <span class="text-sm font-medium text-slate-600">Package:</span>
-                <span class="text-sm font-semibold text-slate-900">{{ props.booking.package_destination }}</span>
-              </div>
-              <div class="flex justify-between items-start">
-                <span class="text-sm font-medium text-slate-600">Original Date:</span>
-                <span class="text-sm font-semibold text-slate-900">{{ travelDate }}</span>
-              </div>
-              <div class="flex justify-between items-start">
-                <span class="text-sm font-medium text-slate-600">Tour Type:</span>
-                <span class="text-sm font-semibold text-slate-900">{{ props.booking.tour_type }}</span>
-              </div>
-              <div class="flex justify-between items-start">
-                <span class="text-sm font-medium text-slate-600">No. of Travelers:</span>
-                <span class="text-sm font-semibold text-slate-900">{{ props.booking.total_quantity }}</span>
-              </div>
-              <div class="flex justify-between items-start">
-                <span class="text-sm font-medium text-slate-600">Total Amount:</span>
-                <span class="text-sm font-semibold text-slate-900">₱{{ parseFloat(props.booking.original_amount)?.toLocaleString() }}</span>
+            <div class="bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl p-6 border border-slate-200">
+              <div class="grid grid-cols-2 gap-6">
+                <div class="space-y-4">
+                  <div class="flex justify-between items-start pb-4 border-b border-slate-200">
+                    <span class="text-sm font-semibold text-slate-600">Booking Reference</span>
+                    <span class="text-sm font-bold text-slate-900">B{{ String(props.booking.id).padStart(5, '0') }}</span>
+                  </div>
+                  <div class="flex justify-between items-start pb-4 border-b border-slate-200">
+                    <span class="text-sm font-semibold text-slate-600">Customer Name</span>
+                    <span class="text-sm font-bold text-slate-900">{{ props.booking.customer_name }}</span>
+                  </div>
+                  <div class="flex justify-between items-start pb-4 border-b border-slate-200">
+                    <span class="text-sm font-semibold text-slate-600">Email</span>
+                    <span class="text-sm font-bold text-slate-900 break-all text-right">{{ props.booking.customer_email }}</span>
+                  </div>
+                  <div class="flex justify-between items-start pb-4 border-b border-slate-200">
+                    <span class="text-sm font-semibold text-slate-600">Package</span>
+                    <span class="text-sm font-bold text-slate-900 text-right">{{ props.booking.package_destination }}</span>
+                  </div>
+                  <div class="flex justify-between items-start">
+                    <span class="text-sm font-semibold text-slate-600">Original Date</span>
+                    <span class="text-sm font-bold text-slate-900">{{ travelDate }}</span>
+                  </div>
+                </div>
+                <div class="space-y-4">
+                  <div class="flex justify-between items-start pb-4 border-b border-slate-200">
+                    <span class="text-sm font-semibold text-slate-600">Tour Type</span>
+                    <span class="text-sm font-bold text-slate-900">{{ props.booking.tour_type }}</span>
+                  </div>
+                  <div class="flex justify-between items-start pb-4 border-b border-slate-200">
+                    <span class="text-sm font-semibold text-slate-600">Number of Travelers</span>
+                    <span class="text-sm font-bold text-slate-900">{{ props.booking.total_quantity }}</span>
+                  </div>
+                  <div class="flex justify-between items-start pb-4 border-b border-slate-200">
+                    <span class="text-sm font-semibold text-slate-600">Total Amount</span>
+                    <span class="text-sm font-bold text-slate-900">₱{{ parseFloat(props.booking.original_amount)?.toLocaleString() }}</span>
+                  </div>
+                  <div class="flex justify-between items-start">
+                    <span class="text-sm font-semibold text-slate-600"></span>
+                    <span class="text-sm font-bold text-slate-900"></span>
+                  </div>
+                  <div class="flex justify-between items-start">
+                    <span class="text-sm font-semibold text-slate-600"></span>
+                    <span class="text-sm font-bold text-slate-900"></span>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
-              <p class="text-xs font-semibold text-red-800 mb-3">
-                Customer will receive email containing:
+            <div class="bg-gradient-to-br from-red-50 to-red-100 border border-red-200 rounded-xl p-6">
+              <p class="text-xs font-bold text-red-800 mb-4 tracking-wide">
+                CUSTOMER WILL RECEIVE EMAIL CONTAINING
               </p>
-              <ul class="text-xs text-red-700 space-y-2">
-                <li class="flex items-start gap-2">
-                  <span class="text-red-500 mt-1">✓</span>
+              <ul class="text-xs text-red-700 space-y-3">
+                <li class="flex items-start gap-3 leading-relaxed">
+                  <span class="text-red-500 font-bold mt-0.5 flex-shrink-0">—</span>
                   <span>Urgent Travel Advisory - Schedule Change Required</span>
                 </li>
-                <li class="flex items-start gap-2">
-                  <span class="text-red-500 mt-1">✓</span>
+                <li class="flex items-start gap-3 leading-relaxed">
+                  <span class="text-red-500 font-bold mt-0.5 flex-shrink-0">—</span>
                   <span>Full booking information and details</span>
                 </li>
-                <li class="flex items-start gap-2">
-                  <span class="text-red-500 mt-1">✓</span>
+                <li class="flex items-start gap-3 leading-relaxed">
+                  <span class="text-red-500 font-bold mt-0.5 flex-shrink-0">—</span>
                   <span>Reason for reschedule (Force Majeure)</span>
                 </li>
-                <li class="flex items-start gap-2">
-                  <span class="text-red-500 mt-1">✓</span>
+                <li class="flex items-start gap-3 leading-relaxed">
+                  <span class="text-red-500 font-bold mt-0.5 flex-shrink-0">—</span>
                   <span>Assurance that booking & payment remain valid</span>
                 </li>
-                <li class="flex items-start gap-2">
-                  <span class="text-red-500 mt-1">✓</span>
+                <li class="flex items-start gap-3 leading-relaxed">
+                  <span class="text-red-500 font-bold mt-0.5 flex-shrink-0">—</span>
                   <span>Contact details to reschedule travel</span>
                 </li>
-                <li class="flex items-start gap-2">
-                  <span class="text-red-500 mt-1">✓</span>
+                <li class="flex items-start gap-3 leading-relaxed">
+                  <span class="text-red-500 font-bold mt-0.5 flex-shrink-0">—</span>
                   <span>Apology and appreciation for understanding</span>
                 </li>
               </ul>
@@ -1136,13 +1151,13 @@
           </div>
 
           <div
-            class="bg-slate-50 px-6 py-4 border-t border-slate-200 flex justify-end gap-3"
+            class="bg-gradient-to-r from-slate-50 to-slate-100 px-8 py-6 border-t border-slate-200 flex justify-end gap-4 sticky bottom-0"
           >
             <button
               type="button"
               @click="showDisasterModal = false"
               :disabled="isSubmittingDisaster"
-              class="rounded-lg px-6 py-2.5 text-sm font-semibold bg-slate-200 text-slate-800 hover:bg-slate-300 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+              class="rounded-lg px-6 py-2.5 text-sm font-semibold bg-slate-300 text-slate-800 hover:bg-slate-400 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               Cancel
             </button>
@@ -1150,11 +1165,11 @@
               type="button"
               @click="submitDisasterNotification"
               :disabled="isSubmittingDisaster"
-              class="flex items-center gap-2 rounded-lg bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 disabled:from-orange-400 disabled:to-red-500 disabled:cursor-not-allowed px-6 py-2.5 text-sm font-semibold text-white transition-all"
+              class="flex items-center gap-2 rounded-lg bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 disabled:from-orange-400 disabled:to-red-500 disabled:cursor-not-allowed px-6 py-2.5 text-sm font-semibold text-white transition-all duration-200"
             >
               <svg
                 v-if="!isSubmittingDisaster"
-                class="w-5 h-5"
+                class="w-4 h-4"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -1162,13 +1177,13 @@
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  stroke-width="2"
+                  stroke-width="2.5"
                   d="M5 13l4 4L19 7"
                 />
               </svg>
               <svg
                 v-else
-                class="w-5 h-5 animate-spin"
+                class="w-4 h-4 animate-spin"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -1176,7 +1191,7 @@
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  stroke-width="2"
+                  stroke-width="2.5"
                   d="M4 12a8 8 0 0116 0"
                 />
               </svg>
@@ -1361,6 +1376,12 @@ const isApprovedOrRejected = computed(() => {
   );
 });
 
+const isApproved = computed(() => {
+  return (
+    props.booking.status === "Approved"
+  );
+});
+
 const adminName = computed(() => {
   if (!users.value) return "Unknown Admin";
 
@@ -1471,21 +1492,30 @@ const submitDisasterNotification = async () => {
     const payload = {
       booking_id: props.booking.id,
       new_travel_date: null,
-      reason: null,
+      reason: disasterForm.value.reason || null,
     };
 
     const response = await service.sendDisasterNotification(payload);
 
     if (response?.data?.success) {
       toast.success("Disaster notification email sent successfully!");
+      
       showDisasterModal.value = false;
+      
       emit("booking-updated");
+      
+      setTimeout(() => {
+        emit("close");
+      }, 1500);
     } else {
       toast.error(response?.data?.message || "Failed to send notification");
     }
   } catch (error) {
     console.error("Error sending disaster notification:", error);
-    toast.error(error.response?.data?.message || "An error occurred");
+    toast.error(
+      error.response?.data?.message || 
+      "An error occurred while sending the notification"
+    );
   } finally {
     isSubmittingDisaster.value = false;
   }

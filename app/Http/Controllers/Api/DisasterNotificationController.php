@@ -24,6 +24,7 @@ class DisasterNotificationController extends Controller
                 'booking_id' => 'required|integer|exists:bookings,id',
                 'new_travel_date' => 'nullable|date_format:Y-m-d',
                 'reason' => 'nullable|string|max:500',
+                'payment_status' => 'nullable|string',
             ]);
 
             $booking = Booking::findOrFail($validated['booking_id']);
@@ -35,10 +36,20 @@ class DisasterNotificationController extends Controller
                 ], 400);
             }
 
+            $forcePaymentConfirmed = null;
+            if (!empty($validated['payment_status'])) {
+                $paymentStatus = $validated['payment_status'];
+                
+                $forcePaymentConfirmed = in_array($paymentStatus, ['Approved', 'Down Payment Approved']);
+                
+                \Log::info("Payment status from request: {$paymentStatus}, Force confirmed: " . ($forcePaymentConfirmed ? 'Yes' : 'No'));
+            }
+
             $result = $this->disasterNotificationService->sendDisasterDateChangeNotification(
                 $booking,
                 $validated['new_travel_date'] ?? null,
-                $validated['reason'] ?? null
+                $validated['reason'] ?? null,
+                $forcePaymentConfirmed
             );
 
             if ($result['success']) {

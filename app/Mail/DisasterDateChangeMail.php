@@ -20,6 +20,7 @@ class DisasterDateChangeMail extends Mailable implements ShouldQueue
     public string $currentDate;
     public string $proposedDate;
     public ?string $reason;
+    public bool $isPaymentConfirmed;
 
     public function __construct(
         Booking $booking,
@@ -27,7 +28,8 @@ class DisasterDateChangeMail extends Mailable implements ShouldQueue
         string $duration,
         string $currentDate,
         string $proposedDate,
-        ?string $reason = null
+        ?string $reason = null,
+        bool $isPaymentConfirmed = false
     ) {
         $this->booking = $booking;
         $this->packageName = $packageName;
@@ -35,19 +37,28 @@ class DisasterDateChangeMail extends Mailable implements ShouldQueue
         $this->currentDate = $currentDate;
         $this->proposedDate = $proposedDate;
         $this->reason = $reason;
+        $this->isPaymentConfirmed = $isPaymentConfirmed;
     }
 
     public function envelope(): Envelope
     {
+        $subject = $this->isPaymentConfirmed 
+            ? 'Booking Confirmed & Paid - Rescheduling Notice'
+            : 'Booking Confirmed - Rescheduling Notice';
+
         return new Envelope(
-            subject: 'Important: Travel Date Change Due to Disaster - ' . ($this->booking->booking_reference ?? 'Booking'),
+            subject: $subject . ' - ' . ($this->booking->booking_reference ?? 'Booking'),
         );
     }
 
     public function content(): Content
     {
+        $view = $this->isPaymentConfirmed 
+            ? 'emails.disaster-date-change-paid'
+            : 'emails.disaster-date-change-pending';
+
         return new Content(
-            view: 'emails.disaster-date-change',
+            view: $view,
             with: [
                 'booking' => $this->booking,
                 'packageName' => $this->packageName,
@@ -57,6 +68,7 @@ class DisasterDateChangeMail extends Mailable implements ShouldQueue
                 'reason' => $this->reason,
                 'bookingId' => 'B' . str_pad($this->booking->id, 5, '0', STR_PAD_LEFT),
                 'customerName' => $this->booking->customer_name,
+                'isPaymentConfirmed' => $this->isPaymentConfirmed,
             ],
         );
     }
