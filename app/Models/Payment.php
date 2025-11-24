@@ -22,6 +22,8 @@ class Payment extends Model
         'rejection_category',
         'rejection_reason',
         'rejected_at',
+        'approved_by',
+        'rejected_by',
     ];
 
     protected $casts = [

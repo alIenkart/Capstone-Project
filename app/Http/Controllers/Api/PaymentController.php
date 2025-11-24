@@ -44,6 +44,8 @@ class PaymentController extends Controller
             'rejection_reason' => 'nullable|string|required_if:payment_status,Rejected',
         ]);
 
+        $user = Auth::user();
+
         if ($request->input('type') === 'payment_submission') {
             $payment = Payment::firstOrCreate(
                 ['booking_id' => $id],
@@ -109,6 +111,7 @@ class PaymentController extends Controller
         
             if ($request->is_fully_paid) {
                 $payment->payment_status = 'Approved';
+                $payment->approved_by = $user->id;
 
                 $user = Auth::user();
                 Receipt::createReceipt($payment, $user->id);
@@ -122,6 +125,7 @@ class PaymentController extends Controller
             $payment->is_fully_paid = false;
             $payment->rejection_category = $request->rejection_category;
             $payment->rejection_reason = $request->rejection_reason;
+            $payment->rejected_by = $user->id;
             $payment->rejected_at = now();
         }
 
