@@ -218,7 +218,7 @@
               </button>
             </div>
 
-            <div v-if="isDownPayment()">
+            <div v-if="isDownPayment() && !isBookingPaid">
               <div class="flex items-center mb-4">
                 <input id="fullyVerified" type="checkbox" v-model="isFullyPaid"
                   class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" />
@@ -810,6 +810,7 @@ const selectedPaymentIndex = ref(0);
 const showDisasterModal = ref(false);
 const isSubmittingDisaster = ref(false);
 const disasterPaymentForm = ref({ reason: "" });
+const isBookingPaid = ref(false);
 
 
 const currentPayment = computed(
@@ -836,6 +837,7 @@ const fetchPaymentAndBooking = async (id) => {
       remarks: data.remarks || "",
       image_path: data.receipt || "",
       payment_status: data.payment_status || "",
+      is_fully_paid: data.is_fully_paid || false,
       created_at: data.created_at || null,
       updated_at: data.updated_at || null,
       type_of_payment: data.type_of_payment || "",
@@ -858,6 +860,7 @@ const fetchPaymentAndBooking = async (id) => {
     paymentHistory.value = data.payment_history || [];
     typeOfPayment.value = paymentData.value.type_of_payment || "";
     paymentStatus.value = paymentData.value.payment_status || "";
+    isBookingPaid.value = paymentData.value.is_fully_paid || "";
     (rejectionDate.value = paymentData.value.rejected_at || ""),
       (rejectionCategory.value = paymentData.value.rejection_category || ""),
       (rejectionReason.value = paymentData.value.rejection_reason || "");
