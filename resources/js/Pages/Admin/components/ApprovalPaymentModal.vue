@@ -139,6 +139,52 @@
                 </div>
               </div>
             </div>
+
+            <div v-if="paymentData.approved_by || paymentData.rejected_by"
+              :class="['rounded-xl p-6 border shadow-sm hover:shadow-md transition-shadow', statusBgClass,]">
+              <div class="flex items-center gap-3">
+                <div :class="['p-2.5 rounded-lg shadow-md', statusIconBgClass]">
+                    <svg
+                      class="w-5 h-5 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                    <path
+                      v-if="paymentData.approved_by"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
+                    <path
+                      v-else
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                    </svg>
+                </div>
+                <div v-if="paymentData.approved_by">
+                  <p class="text-sm font-semibold text-slate-600 uppercase tracking-wider">
+                    Approved by
+                  </p>
+                  <p class="text-base font-bold">
+                    {{ paymentData.approved_by }}
+                  </p>
+                </div>
+
+                <div v-if="paymentData.rejected_by">
+                  <p class="text-sm font-semibold text-slate-600 uppercase tracking-wider">
+                    Rejected by
+                  </p>
+                  <p class="text-base font-bold">
+                    {{ paymentData.rejected_by }}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="space-y-6">
             <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-2xl p-6 border border-purple-200">
@@ -827,6 +873,7 @@ const fetchPaymentAndBooking = async (id) => {
   try {
     const response = await axios.get(`/api/payments/${id}`);
     const data = response.data.data;
+    console.log("Fetched payment data:", data);
 
     paymentData.value = {
       payment_id: data.payment_id || null,
@@ -844,6 +891,8 @@ const fetchPaymentAndBooking = async (id) => {
       rejection_reason: data.rejection_reason || "",
       rejection_category: data.rejection_category || "",
       rejected_at: data.rejected_at || "",
+      approved_by: data.approved_by_name || "",
+      rejected_by: data.rejected_by_name || "",
       booking: {
         customer_name: data.booking?.customer_name || "",
         customer_email: data.booking?.customer_email || "",
@@ -1158,6 +1207,23 @@ async function submitVerificationOfPayment($status) {
     }
   }
 }
+
+const statusIconBgClass = computed(() => {
+  if (paymentData.value.approved_by) {
+    return "bg-gradient-to-br from-green-500 to-emerald-600";
+  } else {
+    return "bg-gradient-to-br from-red-500 to-rose-600";
+  }
+});
+
+const statusBgClass = computed(() => {
+  if (paymentData.value.approved_by) {
+    return "bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200";
+  } else {
+    return "bg-gradient-to-br from-red-50 to-rose-50 border border-red-200";
+  }
+});
+
 onMounted(() => {
   if (props.payment?.id) {
     fetchPaymentAndBooking(props.payment.id);
