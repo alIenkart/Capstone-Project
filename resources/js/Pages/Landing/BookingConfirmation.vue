@@ -634,6 +634,7 @@ async function postBooking() {
     await new Promise((resolve) => setTimeout(resolve, 500));
     isLoading.value = false;
     showSuccessModal.value = true;
+    booking.reset()
   } catch (error) {
     console.error("Error saving booking:", error);
     console.error("Error response:", error.response?.data);

@@ -176,18 +176,35 @@ export const storeBooking = defineStore('booking', {
     },
 
     reset() {
-      this.startDate = null
-      this.endDate = null
-      this.packageId = null
-      this.packageType = null
-      this.adultsQuantity = 0
-      this.kidsQuantity = 0
-      this.amount = 0
-      this.adultTotalAmount = 0
-      this.kidsTotalAmount = 0
-      this.discountId = null
-      this.voucherCode = ''
-      this.customItinerary = []
+      this.startDate = null;
+      this.endDate = null;
+      this.packageId = null;
+      this.packageType = null;
+      this.packageDestination = '';
+      this.adultsQuantity = 0;
+      this.kidsQuantity = 0;
+      this.amount = 0;
+      this.adultTotalAmount = 0;
+      this.kidsTotalAmount = 0;
+      this.discountId = null;
+      this.voucherCode = '';
+      this.customItinerary = [];
+      this.duration = 0;
+      this.amountWithDiscount = 0;
+      this.adultRate = 0;
+      this.kidsRate = 0;
+      this.user = null;
+      this.discountIdImage = null;
+      this.discountImages = [];
+      this.selectedIdType = '';
+      this.tourType = '';
+      this.tourClassification = '';
+      this.remarks = '';
+      this.selectedPackage = null;
+      this.itinerary = [];
+      this.start_date = '';
+      this.end_date = '';
+      this.availableSlots = 0;
     }
   },
   persist: true

@@ -1,10 +1,8 @@
 <template>
   <div
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn px-2 sm:px-4"
-  >
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fadeIn px-2 sm:px-4">
     <div
-      class="relative bg-white rounded-3xl shadow-2xl w-full max-w-6xl mx-auto max-h-[95vh] overflow-hidden flex flex-col animate-slideUp"
-    >
+      class="relative bg-white rounded-3xl shadow-2xl w-full max-w-6xl mx-auto max-h-[95vh] overflow-hidden flex flex-col animate-slideUp">
       <button
         class="absolute top-6 right-6 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-red-500 hover:text-white transition-all duration-300 hover:rotate-90"
         @click="$emit('close')" aria-label="Close">
@@ -327,7 +325,8 @@
                   </button>
                 </div>
 
-                <div class="grid grid-cols-7 gap-1 sm:gap-2 text-center text-xs sm:text-sm font-bold text-[#1E71B8] mb-4">
+                <div
+                  class="grid grid-cols-7 gap-1 sm:gap-2 text-center text-xs sm:text-sm font-bold text-[#1E71B8] mb-4">
                   <div>Sun</div>
                   <div>Mon</div>
                   <div>Tue</div>
@@ -371,7 +370,7 @@
                         !cell.isPast &&
                         !cell.isInRange &&
                         tourType === 'Exclusive',
-                    }" @click="handleDateClick($event, cell)">
+                    }" @click="handleDateClick(cell)">
                     <span v-if="cell.day">{{ cell.day }}</span>
                     <div v-if="cell.isInRange && !cell.isPast" class="absolute inset-0 bg-white/10 animate-pulse"></div>
                   </div>
@@ -389,7 +388,6 @@
                       border: '1px solid rgba(30, 113, 184, 0.1)',
                       overflowY: 'auto',
                     }">
-                    <!-- Header with gradient background -->
                     <div class="h-24 bg-gradient-to-br from-[#1E71B8] to-[#155E9C] relative overflow-hidden">
                       <div class="absolute inset-0 opacity-10">
                         <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
@@ -416,7 +414,6 @@
                       </div>
                     </div>
 
-                    <!-- Content -->
                     <div class="px-6 py-6 space-y-4">
                       <div class="flex items-start gap-3 pb-4 border-b border-gray-100">
                         <div class="flex-1">
@@ -463,7 +460,6 @@
                         </div>
                       </div>
 
-                      <!-- Conditional Duration/Range Section -->
                       <div v-if="tourType === 'Joiners' && packageDuration > 1"
                         class="flex items-start gap-3 pt-2 bg-blue-50 -mx-6 -mb-6 px-6 py-4 rounded-b-2xl border-t border-blue-100">
                         <div>
@@ -517,20 +513,23 @@
                   <div class="text-center">
                     <div class="text-xs text-white/70 mb-1">Quantity</div>
                     <div class="flex items-center gap-2">
-                      <button @click="pax > 0 && pax--"
+                      <button @click="removeAdult"
                         class="w-9 h-9 rounded-full bg-white text-[#1E71B8] font-bold text-lg flex items-center justify-center hover:bg-gray-100 hover:scale-110 transition-all duration-300 shadow-md">
                         -
                       </button>
                       <input type="text" :value="pax"
                         class="w-12 h-9 rounded-xl text-center border-2 border-white/20 bg-white/10 text-white font-bold backdrop-blur-sm"
                         readonly />
-                      <button @click="pax++"
-                        class="w-9 h-9 rounded-full bg-white text-[#1E71B8] font-bold text-lg flex items-center justify-center hover:bg-gray-100 hover:scale-110 transition-all duration-300 shadow-md">
+                      <button @click="addAdult" :disabled="!isExclusiveTour && pax >= maxPaxAllowed"
+                        class="w-9 h-9 rounded-full bg-white text-[#1E71B8] font-bold text-lg flex items-center justify-center hover:bg-gray-100 hover:scale-110 transition-all duration-300 shadow-md disabled:opacity-60 disabled:hover:scale-100 disabled:hover:shadow-none">
                         +
                       </button>
                     </div>
                   </div>
                 </div>
+                <p class="text-xs font-medium text-gray-200 mt-3" v-if="!isExclusiveTour">
+                  Available slots: {{ availableSlots - totalTravelers }} / {{ availableSlots }}
+                </p>
               </div>
 
               <div class="bg-gradient-to-r from-[#1E71B8] to-[#2980c9] rounded-2xl px-6 py-5 shadow-lg">
@@ -548,20 +547,23 @@
                   <div class="text-center">
                     <div class="text-xs text-white/70 mb-1">Quantity</div>
                     <div class="flex items-center gap-2">
-                      <button @click="kidsPax > 0 && kidsPax--"
+                      <button @click="removeKid"
                         class="w-9 h-9 rounded-full bg-white text-[#1E71B8] font-bold text-lg flex items-center justify-center hover:bg-gray-100 hover:scale-110 transition-all duration-300 shadow-md">
                         -
                       </button>
                       <input type="text" :value="kidsPax"
                         class="w-12 h-9 rounded-xl text-center border-2 border-white/20 bg-white/10 text-white font-bold backdrop-blur-sm"
                         readonly />
-                      <button @click="kidsPax++"
-                        class="w-9 h-9 rounded-full bg-white text-[#1E71B8] font-bold text-lg flex items-center justify-center hover:bg-gray-100 hover:scale-110 transition-all duration-300 shadow-md">
+                      <button @click="addKid" :disabled="!isExclusiveTour && kidsPax >= maxKidsAllowed"
+                        class="w-9 h-9 rounded-full bg-white text-[#1E71B8] font-bold text-lg flex items-center justify-center hover:bg-gray-100 hover:scale-110 transition-all duration-300 shadow-md disabled:opacity-60 disabled:hover:scale-100 disabled:hover:shadow-none">
                         +
                       </button>
                     </div>
                   </div>
                 </div>
+                <p class="text-xs font-medium text-gray-200 mt-3" v-if="!isExclusiveTour">
+                  Available slots: {{ availableSlots - totalTravelers }} / {{ availableSlots }}
+                </p>
               </div>
             </div>
 
@@ -783,7 +785,8 @@
         </div>
       </div>
 
-      <div class="px-4 sm:px-8 pb-6 sm:pb-8 flex flex-col sm:flex-row justify-between items-center border-t border-gray-100 pt-6 gap-3 sm:gap-0">
+      <div
+        class="px-4 sm:px-8 pb-6 sm:pb-8 flex flex-col sm:flex-row justify-between items-center border-t border-gray-100 pt-6 gap-3 sm:gap-0">
         <button v-if="currentStep > 0" @click="prevStep"
           class="w-full sm:w-auto px-6 sm:px-8 py-3 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 rounded-2xl font-semibold hover:from-gray-200 hover:to-gray-300 transition-all duration-300 hover:shadow-lg hover:scale-105 active:scale-95 flex items-center justify-center gap-2">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -792,12 +795,21 @@
           Back
         </button>
         <div v-else></div>
-        <button v-if="currentStep < 2" @click="nextStep"
-          class="w-full sm:w-auto px-6 sm:px-8 py-3 bg-gradient-to-r from-[#1E71B8] to-[#2980c9] text-white rounded-2xl font-semibold hover:from-[#2980c9] hover:to-[#1E71B8] transition-all duration-300 hover:shadow-lg hover:scale-105 active:scale-95 flex items-center justify-center gap-2">
+        <button v-if="currentStep < 2" @click="nextStep" :disabled="isNextButtonDisabled"
+          class="w-full sm:w-auto px-6 sm:px-8 py-3 rounded-2xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 relative group"
+          :class="isNextButtonDisabled
+            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            : 'bg-gradient-to-r from-[#1E71B8] to-[#2980c9] text-white hover:from-[#2980c9] hover:to-[#1E71B8] hover:shadow-lg hover:scale-105 active:scale-95'
+            ">
           Next
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
           </svg>
+
+          <div v-if="isNextButtonDisabled && currentStep === 1 && booking.selectedPackage?.available_slot === 0"
+            class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max bg-gray-800 text-white text-xs px-3 py-2 rounded-lg shadow-lg opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
+            All slots are full
+          </div>
         </button>
       </div>
     </div>
@@ -805,12 +817,14 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, onBeforeUnmount, watch } from "vue";
+import { ref, onMounted, computed, onBeforeUnmount, watch, toRaw } from "vue";
 import { api } from "../../../api/api";
 import { useToast } from "vue-toastification";
 import { usePage } from "@inertiajs/vue3";
+import { storeBooking } from "@/state/storeBooking";
 
 const emit = defineEmits(["close", "booking-created"]);
+const booking = storeBooking();
 const toast = useToast();
 const page = usePage();
 const service = new api();
@@ -835,8 +849,6 @@ const isPackageOpen = ref(false);
 const isTypeOpen = ref(false);
 const isClassOpen = ref(false);
 const isTooltipOpen = ref(false);
-const tooltipX = ref(0);
-const tooltipY = ref(0);
 const tooltipData = ref({});
 const tourInfoByDate = ref({});
 
@@ -870,6 +882,20 @@ const packageDuration = computed(() => {
   return duration ? parseInt(duration) : 1;
 });
 
+const totalTravelers = computed(() => pax.value + kidsPax.value);
+
+const availableSlots = computed(() => selectedPackageData.value.available_slot || 0);
+
+const maxPaxAllowed = computed(() => {
+  const remaining = availableSlots.value - kidsPax.value;
+  return Math.max(0, remaining);
+});
+
+const maxKidsAllowed = computed(() => {
+  const remaining = availableSlots.value - pax.value;
+  return Math.max(0, remaining);
+});
+
 const adultTotalAmount = computed(() => {
   const amount = selectedPackageData.value.pax_rate || 0;
   return amount * pax.value;
@@ -883,6 +909,28 @@ const kidsTotalAmount = computed(() => {
 const totalAmount = computed(() => {
   return adultTotalAmount.value + kidsTotalAmount.value;
 });
+
+const addAdult = () => {
+  if (!isExclusiveTour.value && pax.value >= maxPaxAllowed.value) return;
+  pax.value++;
+};
+
+const removeAdult = () => {
+  if (pax.value > 0) {
+    pax.value--;
+  }
+};
+
+const addKid = () => {
+  if (!isExclusiveTour.value && kidsPax.value >= maxKidsAllowed.value) return;
+  kidsPax.value++;
+};
+
+const removeKid = () => {
+  if (kidsPax.value > 0) {
+    kidsPax.value--;
+  }
+};
 
 const durationDays = computed(() => {
   const start = selectedDate.value;
@@ -1024,7 +1072,6 @@ const parseItineraryToDays = (itineraryString) => {
   return [{ id: 1, content: itineraryString.trim() }];
 };
 
-
 const itineraryDays = computed(() => {
   return customItinerary.value?.length
     ? customItinerary.value
@@ -1086,12 +1133,12 @@ const isPastDate = (year, monthIndex, day) => {
   return cellDate < today;
 };
 
-const handleDateClick = (event, cell) => {
+const handleDateClick = (cell) => {
   if (!cell.day || cell.isPast) return;
 
   if (tourType.value === "Joiners") {
     if (cell.isInRange) {
-      showTooltip(event, cell.dateKey);
+      showTooltip(cell.dateKey);
     }
     return;
   }
@@ -1108,11 +1155,11 @@ const handleDateClick = (event, cell) => {
     } else {
       selectedEndDate.value = cell.dateKey;
     }
-    showTooltip(event, cell.dateKey);
+    showTooltip(cell.dateKey);
   }
 };
 
-const showTooltip = (event, dateKey) => {
+const showTooltip = (dateKey) => {
   if (tourType.value !== "Joiners") {
     isTooltipOpen.value = false;
     return;
@@ -1120,12 +1167,10 @@ const showTooltip = (event, dateKey) => {
 
   const info = tourInfoByDate.value[dateKey] || null;
 
-  // Calculate end date based on package duration
   const startDate = new Date(selectedDate.value);
   const endDate = new Date(startDate);
   endDate.setDate(endDate.getDate() + (packageDuration.value - 1));
 
-  // Format the date range
   const formattedStartDate = formatHuman(selectedDate.value);
   const formattedEndDate = formatHuman(
     `${endDate.getFullYear()}-${String(endDate.getMonth() + 1).padStart(2, "0")}-${String(endDate.getDate()).padStart(2, "0")}`
@@ -1143,17 +1188,6 @@ const showTooltip = (event, dateKey) => {
     price: info ? info.price : `₱${selectedPackageData.value.pax_rate?.toLocaleString() || 0}`,
   };
 
-  const wrapper = calendarWrapperRef.value;
-  if (wrapper && wrapper.getBoundingClientRect) {
-    const rect = wrapper.getBoundingClientRect();
-    const clickX = event.clientX - rect.left;
-    const clickY = event.clientY - rect.top;
-    tooltipX.value = Math.max(8, Math.min(clickX, rect.width - 360));
-    tooltipY.value = Math.max(8, Math.min(clickY, rect.height - 220));
-  } else {
-    tooltipX.value = 12;
-    tooltipY.value = 12;
-  }
 };
 
 const closeTooltip = () => {
@@ -1310,6 +1344,18 @@ const handleClickOutside = (event) => {
   }
 };
 
+const isNextButtonDisabled = computed(() => {
+  if (currentStep.value === 0) {
+    return !customerName.value || !selectedPackage.value;
+  }
+  if (currentStep.value === 1) {
+    return (
+      tourType.value === "Joiners" && booking.selectedPackage?.available_slot === 0
+    );
+  }
+  return false;
+});
+
 const nextStep = () => {
   if (currentStep.value === 0) {
     if (!customerName.value) {
@@ -1320,6 +1366,8 @@ const nextStep = () => {
       toast.warning("Please select a package");
       return;
     }
+    const filterPackage = toRaw(packages.value).find(item => item.id === selectedPackage.value)
+    booking.setPackage(filterPackage)
   }
   if (currentStep.value === 1) {
     if (!selectedDate.value) {
@@ -1328,6 +1376,10 @@ const nextStep = () => {
     }
     if (tourType.value === "Exclusive" && !selectedEndDate.value) {
       toast.warning("Please select an end date");
+      return;
+    }
+    if (booking.selectedPackage?.availableSlots === 0) {
+      toast.error("All slots are full for this package");
       return;
     }
   }
@@ -1397,6 +1449,7 @@ onMounted(() => {
   fetchPackages();
   tourType.value = "Joiners";
   document.addEventListener("click", handleClickOutside);
+  booking.reset()
 });
 
 onBeforeUnmount(() => {
