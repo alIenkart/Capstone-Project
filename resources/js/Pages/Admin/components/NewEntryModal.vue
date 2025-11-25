@@ -632,14 +632,12 @@
               </p>
             </div>
 
-            <!-- 👇 PLACE THIS RIGHT BELOW THE "* Maximum of 3 Discount ID Upload" TEXT -->
             <div class="mt-6">
               <label class="block font-semibold mb-3 text-[#1E71B8] text-sm uppercase tracking-wide">
                 Discount Type <span class="text-blue-500">*</span>
               </label>
 
               <div class="relative">
-                <!-- Dropdown Trigger -->
                 <button type="button" @click="discountSelection = !discountSelection" :class="[
                   'w-full px-5 py-3 text-left bg-white border-2 rounded-xl transition-all duration-200 text-sm font-medium flex items-center justify-between',
                   selectedDiscountType
@@ -651,14 +649,12 @@
                 ]">
                   <span>{{ selectedDiscountType?.label || "Select discount type" }}</span>
 
-                  <!-- Arrow -->
                   <svg class="w-5 h-5 text-slate-400 transition-transform duration-200"
                     :class="{ 'rotate-180': discountSelection }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                   </svg>
                 </button>
 
-                <!-- Dropdown List -->
                 <Transition enter-active-class="transition-all duration-200 ease-out"
                   enter-from-class="opacity-0 scale-95 -translate-y-2"
                   enter-to-class="opacity-100 scale-100 translate-y-0"
@@ -666,10 +662,8 @@
                   leave-from-class="opacity-100 scale-100 translate-y-0"
                   leave-to-class="opacity-0 scale-95 -translate-y-2">
                   <div v-if="discountSelection">
-                    <!-- Click Outside Overlay -->
                     <div class="fixed inset-0 z-10" @click="discountSelection = false"></div>
 
-                    <!-- List -->
                     <div
                       class="absolute z-20 w-full mt-2 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden">
                       <button v-for="(type, index) in discountTypes" :key="type.value" @click="selectDiscount(type)"
