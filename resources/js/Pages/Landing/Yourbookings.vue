@@ -296,7 +296,7 @@
 
             <div v-else>
             <div class="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start mb-6">
-              <div class="w-full lg:w-2/3 flex flex-col gap-4 lg:gap-5 justify-start">
+              <div class="w-full flex flex-col gap-4 lg:gap-5 justify-start">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <div>
                     <label class="block mb-2 sm:mb-3 text-gray-700 font-semibold text-xs sm:text-sm tracking-wide"
@@ -487,6 +487,7 @@
                   </Transition>
                 </div>
               </div>
+            <div class="w-full flex justify-center">
               <div v-if="selectedModeOfPayment === 'PayMaya'" class="w-full lg:w-1/3 flex flex-col justify-center items-center h-fit">
                 <div class="font-semibold text-gray-800 text-center text-base sm:text-lg">
                   Dorie Anne May E.
@@ -528,6 +529,7 @@
                   Scan this QR code to pay
                 </div>
               </div>
+            </div>
             </div>
 
             <div class="flex justify-center w-full">
@@ -993,14 +995,12 @@ const totalDue = computed(() => {
   if(currentPayment.payment_status === "Approved"){
     return currentBooking.total_price;
   }
-
-  if (currentPayment.type_of_payment === "Down Payment") {
+  else if (currentPayment.type_of_payment === "Down Payment") {
     const history = currentPayment.payment_history || [];
     const paidAmount = history.reduce((total, entry) => total + (entry.downPaymentAmount || 0), 0);
     return Math.max(currentBooking.total_price - paidAmount, 0);
-  } else {
-    return currentBooking.total_price;
-  }
+  } 
+  return currentBooking.total_price;
 });
 
 
