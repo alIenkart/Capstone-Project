@@ -55,6 +55,29 @@
             </div>
 
             <div class="group">
+              <label class="block font-semibold mb-3 text-[#1E71B8] text-sm uppercase tracking-wide">Customer
+                Email</label>
+              <input v-model="customerEmail" type="email"
+                class="w-full rounded-2xl border-2 border-gray-200 px-5 py-4 focus:border-[#73BE5D] focus:ring-4 focus:ring-[#73BE5D]/10 outline-none transition-all duration-300 hover:border-[#1E71B8]"
+                placeholder="Enter customer email" />
+            </div>
+
+            <div class="group">
+              <label class="block font-semibold mb-3 text-[#1E71B8] text-sm uppercase tracking-wide">Phone
+                Number</label>
+              <input v-model="customerPhone" type="tel"
+                class="w-full rounded-2xl border-2 border-gray-200 px-5 py-4 focus:border-[#73BE5D] focus:ring-4 focus:ring-[#73BE5D]/10 outline-none transition-all duration-300 hover:border-[#1E71B8]"
+                placeholder="Enter phone number" />
+            </div>
+
+            <div class="group">
+              <label class="block font-semibold mb-3 text-[#1E71B8] text-sm uppercase tracking-wide">Address</label>
+              <input v-model="customerAddress" type="text"
+                class="w-full rounded-2xl border-2 border-gray-200 px-5 py-4 focus:border-[#73BE5D] focus:ring-4 focus:ring-[#73BE5D]/10 outline-none transition-all duration-300 hover:border-[#1E71B8]"
+                placeholder="Enter address" />
+            </div>
+
+            <div class="group">
               <label class="block font-semibold mb-3 text-[#1E71B8] text-sm uppercase tracking-wide">Package
                 Name</label>
               <div class="relative" ref="packageDropdownRef">
@@ -609,6 +632,66 @@
               </p>
             </div>
 
+            <!-- 👇 PLACE THIS RIGHT BELOW THE "* Maximum of 3 Discount ID Upload" TEXT -->
+            <div class="mt-6">
+              <label class="block font-semibold mb-3 text-[#1E71B8] text-sm uppercase tracking-wide">
+                Discount Type <span class="text-blue-500">*</span>
+              </label>
+
+              <div class="relative">
+                <!-- Dropdown Trigger -->
+                <button type="button" @click="discountSelection = !discountSelection" :class="[
+                  'w-full px-5 py-3 text-left bg-white border-2 rounded-xl transition-all duration-200 text-sm font-medium flex items-center justify-between',
+                  selectedDiscountType
+                    ? 'border-[#1E71B8] text-slate-800'
+                    : 'border-slate-300 text-slate-400',
+                  discountSelection
+                    ? 'ring-4 ring-[#1E71B8]/10 border-[#1E71B8]'
+                    : 'hover:border-slate-400',
+                ]">
+                  <span>{{ selectedDiscountType?.label || "Select discount type" }}</span>
+
+                  <!-- Arrow -->
+                  <svg class="w-5 h-5 text-slate-400 transition-transform duration-200"
+                    :class="{ 'rotate-180': discountSelection }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                <!-- Dropdown List -->
+                <Transition enter-active-class="transition-all duration-200 ease-out"
+                  enter-from-class="opacity-0 scale-95 -translate-y-2"
+                  enter-to-class="opacity-100 scale-100 translate-y-0"
+                  leave-active-class="transition-all duration-150 ease-in"
+                  leave-from-class="opacity-100 scale-100 translate-y-0"
+                  leave-to-class="opacity-0 scale-95 -translate-y-2">
+                  <div v-if="discountSelection">
+                    <!-- Click Outside Overlay -->
+                    <div class="fixed inset-0 z-10" @click="discountSelection = false"></div>
+
+                    <!-- List -->
+                    <div
+                      class="absolute z-20 w-full mt-2 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden">
+                      <button v-for="(type, index) in discountTypes" :key="type.value" @click="selectDiscount(type)"
+                        type="button" :class="[
+                          'w-full px-5 py-3 text-left text-sm font-medium transition-all duration-150',
+                          selectedDiscountType?.value === type.value
+                            ? 'bg-blue-50 text-[#1E71B8]'
+                            : 'text-slate-700 hover:bg-slate-50',
+                          index !== 0 ? 'border-t border-slate-100' : '',
+                        ]">
+                        {{ type.label }}
+                      </button>
+                    </div>
+                  </div>
+                </Transition>
+              </div>
+
+              <p v-if="!selectedDiscountType" class="text-xs text-blue-500 mt-3 font-medium">
+                Please select a discount type
+              </p>
+            </div>
+
             <div class="mt-6">
               <div class="flex w-full mb-6 items-center justify-between">
                 <h2 class="text-2xl font-bold text-[#1E71B8] tracking-tight">
@@ -836,6 +919,9 @@ const selectedPackage = ref("");
 const pax = ref(0);
 const kidsPax = ref(0);
 const customerName = ref("");
+const customerEmail = ref("");
+const customerPhone = ref("");
+const customerAddress = ref("");
 const voucherCode = ref("");
 const selectedDate = ref("");
 const selectedEndDate = ref("");
@@ -871,6 +957,39 @@ const availabilityByDate = ref({
   "2025-01-10": "accepting",
   "2025-01-11": "available",
   "2025-01-12": "full",
+});
+
+const discountTypes = [
+  { label: "Person With Disability(PWD)", value: 20 },
+  { label: "Senior Citizen", value: 20 },
+]
+
+const discountSelection = ref(false);
+const selectedDiscountType = ref(null);
+const originalPrice = ref(1000);
+
+const selectDiscount = (type) => {
+  selectedDiscountType.value = type;
+  discountSelection.value = false;
+};
+
+const discountedAmount = computed(() => {
+  if (!selectedDiscountType.value) {
+    return {
+      price: originalPrice.value,
+      percent: 0,
+      totalAmount: 0,
+    };
+  }
+
+  const percent = selectedDiscountType.value.value;
+  const discount = (originalPrice.value * percent) / 100;
+
+  return {
+    price: originalPrice.value,
+    percent,
+    totalAmount: originalPrice.value - discount,
+  };
 });
 
 const selectedPackageData = computed(() => {
@@ -1346,7 +1465,7 @@ const handleClickOutside = (event) => {
 
 const isNextButtonDisabled = computed(() => {
   if (currentStep.value === 0) {
-    return !customerName.value || !selectedPackage.value;
+    return !customerName.value || !selectedPackage.value || !customerEmail.value || !customerPhone.value || !customerAddress.value;
   }
   if (currentStep.value === 1) {
     return (
@@ -1407,22 +1526,31 @@ const isItineraryValid = computed(() => {
 });
 
 async function submitBooking() {
-  const itinerary = customItinerary.value.length ? JSON.stringify(customItinerary.value) : JSON.stringify(editableItinerary.value);
+  const itinerary = customItinerary.value.length
+    ? JSON.stringify(customItinerary.value)
+    : JSON.stringify(editableItinerary.value);
 
   try {
     const payload = {
       package_id: selectedPackage.value,
       customer_name: customerName.value,
+      customer_email: customerEmail.value,
+      customer_phone: customerPhone.value,
+      customer_address: customerAddress.value,
       customer_id: page.props.auth.user.id,
       voucher_id: voucherCode.value,
       total_quantity: pax.value + kidsPax.value,
-      adult_quantity: pax.value,
+      adults_quantity: pax.value,
       kids_quantity: kidsPax.value,
+      duration: durationDays.value,
+      start_date: selectedDate.value,
+      end_date: selectedEndDate.value || selectedDate.value,
       total_price: totalAmount.value,
       tour_date: selectedDate.value,
       tour_end_date: selectedEndDate.value || selectedDate.value,
       tour_type: tourType.value,
       tour_classification: tourClassification.value,
+      package_destination: selectedPackageData.value.destination || "",
       remarks: remarks.value,
       discount_images: discountImages.value,
       itinerary: itinerary || null,
