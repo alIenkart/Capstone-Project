@@ -214,10 +214,14 @@ class BookingController extends Controller
     private function processPackageSlotUpdate(Booking $booking)
     {
         $package = $booking->package;
-
+        $tour_type = $booking->tour_type;
         $total_quantity = $booking->total_quantity;
         $available_slot = $package->available_slot;
 
+        if($tour_type === 'Exclusive'){
+            return true;
+        }
+        
         if ($total_quantity > $available_slot) {
             throw ValidationException::withMessages([
                 'total_quantity' => "The booking quantity ({$total_quantity}) exceeds the available slots ({$available_slot})."
