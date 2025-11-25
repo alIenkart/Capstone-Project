@@ -24,6 +24,8 @@ class Payment extends Model
         'rejected_at',
         'approved_by',
         'rejected_by',
+        'mode_of_payment',
+        'is_fully_paid',
     ];
 
     protected $casts = [
@@ -51,6 +53,22 @@ class Payment extends Model
                 'mode_of_payment' => $booking->mode_of_payment,
                 'payment_status' => 'Pending',
                 'payment_date' => now(),
+            ]
+        );
+    }
+
+    public static function approvePayment($booking)
+    {
+        return self::updateOrCreate(
+            ['booking_id' => $booking->id],
+            [
+                'approved_by' => $booking->approved_by,
+                'mode_of_payment' => "Cash",
+                'type_of_payment' => "Full Payment",
+                'total_price' => 0,
+                'customer_id' => $booking->customer_id,
+                'is_fully_paid' => 1,
+                'payment_status' => 'Approved',
             ]
         );
     }

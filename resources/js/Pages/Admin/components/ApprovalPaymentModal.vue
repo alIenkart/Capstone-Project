@@ -235,10 +235,10 @@
 
               <div class="mt-5">
                 <label class="block text-sm font-medium text-gray-700">
-                  Type of Payment: {{ currentPayment?.paymentType }}
+                  Type of Payment: {{ paymentData.type_of_payment }}
                 </label>
                 <label class="block text-sm font-medium text-gray-700">
-                  Mode Of Payment: {{ currentPayment?.modeOfPayment }}
+                  Mode Of Payment: {{ paymentData.mode_of_payment }}
                 </label>
                 <label class="block text-sm font-medium text-gray-700">
                   Remaining Balance: ₱{{ currentPayment?.remainingBalance }}
@@ -885,6 +885,7 @@ const fetchPaymentAndBooking = async (id) => {
       image_path: data.receipt || "",
       payment_status: data.payment_status || "",
       is_fully_paid: data.is_fully_paid || false,
+      mode_of_payment: data.mode_of_payment || "",
       created_at: data.created_at || null,
       updated_at: data.updated_at || null,
       type_of_payment: data.type_of_payment || "",

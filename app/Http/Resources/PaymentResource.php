@@ -23,6 +23,7 @@ class PaymentResource extends JsonResource
             'payment_status' => $this->payment_status,
             'is_fully_paid' => $this->is_fully_paid,
             'type_of_payment' => $this->type_of_payment,
+            'mode_of_payment' => $this->mode_of_payment,
             'rejection_category' => $this->rejection_category,
             'rejection_reason' => $this->rejection_reason,
             'rejected_by_name' => trim(optional($this->rejectedByUser)->first_name . ' ' . optional($this->rejectedByUser)->last_name),

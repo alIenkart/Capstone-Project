@@ -615,6 +615,7 @@ async function postBooking() {
   formData.append("customer_email", booking.user.email);
   formData.append("customer_phone", booking.user.phone_number);
   formData.append("customer_address", booking.user.address);
+  formData.append("walk_in", 0);
 
   if (booking.discountImages && booking.discountImages.length > 0) {
     booking.discountImages.forEach((image, index) => {

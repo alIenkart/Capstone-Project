@@ -28,6 +28,7 @@ class Booking extends Model
         'rejected_by',
         'rejected_at',
         'travel_date',
+        'walk_in',
         
         // Package details
         'package_destination',

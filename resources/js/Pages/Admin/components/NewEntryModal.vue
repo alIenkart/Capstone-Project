@@ -1540,6 +1540,7 @@ async function submitBooking() {
       start_date: selectedDate.value,
       end_date: selectedEndDate.value || selectedDate.value,
       total_price: totalAmount.value,
+      original_amount: totalAmount.value,
       tour_date: selectedDate.value,
       tour_end_date: selectedEndDate.value || selectedDate.value,
       tour_type: tourType.value,
@@ -1548,6 +1549,8 @@ async function submitBooking() {
       remarks: remarks.value,
       discount_images: discountImages.value,
       itinerary: itinerary || null,
+      approved_by: page.props.auth.user.id,
+      walk_in: true,
     };
 
     await service.createBooking(payload);

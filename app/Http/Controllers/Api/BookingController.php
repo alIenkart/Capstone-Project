@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use App\Mail\BookingRejected;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Auth;
 
 class BookingController extends Controller
 {
@@ -61,6 +62,8 @@ class BookingController extends Controller
             'remarks' => 'nullable|string|max:1000',
             'id_type' => 'nullable|string|max:255',
             'discount_id_image' => 'nullable|file|mimes:jpeg,png,jpg,gif,pdf|max:2048',
+            'walk_in' => 'nullable|boolean',
+            'approved_by' => 'nullable|exists:users,id',
 
             // Package details
             'package_destination' => 'nullable|string|max:255',
@@ -109,13 +112,30 @@ class BookingController extends Controller
         // Default status
         $validated['status'] = $validated['status'] ?? 'Pending';
 
+        if ($validated['walk_in'] === true) {
+            $validated = $this->handleWalkInBooking($validated);
+        }
+
         $booking = Booking::create($validated);
+
+        if ($booking->walk_in === true) {
+            Payment::approvePayment($booking);
+        }
 
         return response()->json([
             'message' => 'Booking created successfully.',
             'data' => $booking
         ], 201);
     }
+
+    private function handleWalkInBooking($data)
+    {
+        $data['status'] = 'Approved';
+        $data['approved_at'] = now();
+
+        return $data;
+    }
+
 
     public function update(Request $request, $id)
     {
