@@ -992,17 +992,23 @@ const totalDue = computed(() => {
   const currentBooking = filteredBookings.value[selectedBookingIndex.value];
   const currentPayment = payments.value.find((p) => p.booking_id === currentBooking.id);
 
-  if(currentPayment.payment_status === "Approved"){
-    return currentBooking.total_price;
-  }
-  else if (currentPayment.type_of_payment === "Down Payment") {
+  if(!currentPayment) return currentBooking.original_amount;
+  
+  if (currentPayment.type_of_payment === "Down Payment") {
     const history = currentPayment.payment_history || [];
-    const paidAmount = history.reduce((total, entry) => total + (entry.downPaymentAmount || 0), 0);
-    return Math.max(currentBooking.total_price - paidAmount, 0);
-  } 
-  return currentBooking.total_price;
-});
+    const paidAmount = history.reduce(
+      (total, entry) => total + (entry.downPaymentAmount || 0),
+      0
+    );
+    const remaining = currentBooking.total_price - paidAmount;
 
+    if (remaining <= 0) {
+      return currentBooking.original_amount;
+    }
+    return remaining;
+  }
+  return currentBooking.original_amount;
+});
 
 const typeOfPayment = computed(() => {
   if (!payments.value.length || !filteredBookings.value.length) return "";
