@@ -145,9 +145,14 @@ class PaymentController extends Controller
 
         $booking = $payment->booking;
         $package = $booking->package;
+        $tour_type = $booking->tour_type;
 
         $total_quantity = $booking->total_quantity;
         $available_slot = $package->available_slot;
+
+        if($tour_type === 'Exclusive'){
+            return true;
+        }
 
         if ($total_quantity > $available_slot) {
             return response()->json([
