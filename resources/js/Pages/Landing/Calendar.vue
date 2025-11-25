@@ -228,11 +228,11 @@
         </div>
         <div class="relative mt-8 w-fit mx-auto group">
           <button @click="postDate"
-            :disabled="availableSlots === 0"
+            :disabled="availableSlots === 0 && tourType === 'Joiners'"
             class="px-8 py-3 bg-gradient-to-r from-[#1E71B8] to-[#155E9C] text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 active:scale-95 text-lg disabled:opacity-30 disabled:cursor-not-allowed disabled:shadow-none disabled:hover:shadow-lg">
             Next →
           </button>
-          <div v-if="availableSlots === 0" class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-lg whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none">
+          <div v-if="availableSlots === 0 && tourType === 'Joiners'" class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-sm rounded-lg whitespace-nowrap opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 pointer-events-none">
             All slots are full
           </div>
         </div>

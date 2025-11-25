@@ -61,7 +61,7 @@
                 ₱{{ (selectedPackage.is_seasonal ? parseFloat(selectedPackage.seasonal_pax_rate)?.toLocaleString() : selectedPackage.pax_rate)?.toLocaleString() }}
               </div>
               <div class="flex items-center gap-3">
-                <button @click="pax > 0 && pax--"
+                <button @click="removeAdult"
                   class="w-10 h-10 rounded-full bg-[#1E71B8] text-white font-bold text-lg flex items-center justify-center transition-all duration-300 hover:bg-[#155E9C] active:scale-95">
                   −
                 </button>
@@ -69,15 +69,15 @@
                   class="w-16 h-10 rounded-lg text-center border-2 border-[#1E71B8] bg-white text-[#1E71B8] font-bold text-lg"
                   readonly />
                 <button 
-                  @click="pax < maxPaxAllowed && pax++"
+                  @click="addAdult"
                   class="w-10 h-10 rounded-full bg-[#1E71B8] text-white font-bold text-lg flex items-center justify-center transition-all duration-300 hover:bg-[#155E9C] active:scale-95"
-                  :disabled="pax >= maxPaxAllowed"
+                  :disabled="!isExclusiveTour && pax >= maxPaxAllowed"
                 >
                   +
                 </button>
               </div>
             </div>
-            <p class="text-xs font-medium text-gray-500 mt-3">
+            <p class="text-xs font-medium text-gray-500 mt-3" v-if="!isExclusiveTour">
               Available slots: {{ availableSlots - totalTravelers }} / {{ availableSlots }}
             </p>
           </div>
@@ -98,7 +98,7 @@
                 ₱{{ (selectedPackage.is_seasonal ? parseFloat(selectedPackage.seasonal_kids_pax_rate)?.toLocaleString() : selectedPackage.kids_pax_rate)?.toLocaleString() }}
               </div>
               <div class="flex items-center gap-3">
-                <button @click="kidsPax > 0 && kidsPax--"
+                <button @click="removeKid"
                   class="w-10 h-10 rounded-full bg-[#1E71B8] text-white font-bold text-lg flex items-center justify-center transition-all duration-300 hover:bg-[#155E9C] active:scale-95">
                   −
                 </button>
@@ -106,15 +106,15 @@
                   class="w-16 h-10 rounded-lg text-center border-2 border-[#1E71B8] bg-white text-[#1E71B8] font-bold text-lg"
                   readonly />
                 <button 
-                  @click="kidsPax < maxKidsAllowed && kidsPax++"
+                  @click="addKid"
                   class="w-10 h-10 rounded-full bg-[#1E71B8] text-white font-bold text-lg flex items-center justify-center transition-all duration-300 hover:bg-[#155E9C] active:scale-95"
-                  :disabled="kidsPax >= maxKidsAllowed"
+                  :disabled="!isExclusiveTour && kidsPax >= maxKidsAllowed"
                 >
                   +
                 </button>
               </div>
             </div>
-            <p class="text-xs font-medium text-gray-500 mt-3">
+            <p class="text-xs font-medium text-gray-500 mt-3" v-if="!isExclusiveTour">
               Available slots: {{ availableSlots - totalTravelers }} / {{ availableSlots }}
             </p>
           </div>
@@ -432,6 +432,26 @@ const formatDate = (dateString) => {
   });
 };
 
+const addAdult = () => {
+  pax.value++;
+};
+
+const removeAdult = () => {
+  if (pax.value > 0) {
+    pax.value--;
+  }
+};
+
+const addKid = () => {
+  kidsPax.value++;
+};
+
+const removeKid = () => {
+  if (kidsPax.value > 0) {
+    kidsPax.value--;
+  }
+};
+
 const toggleCustomize = () => {
   if (!isExclusiveTour.value) return;
   if (isEditingItinerary.value) {
@@ -529,7 +549,7 @@ const postPackage = () => {
     return;
   }
 
-  if (totalTravelers.value > availableSlots.value) {
+  if (!isExclusiveTour.value && totalTravelers.value > availableSlots.value) {
     toast.error(`Total travelers cannot exceed ${availableSlots.value} available slots.`);
     return;
   }
@@ -565,10 +585,9 @@ const postPackage = () => {
   booking.setKidsTotalAmount(kidsTotalAmount.value);
   booking.setDiscountImages(discountImages.value);
   booking.setRemarks(remarks.value);
-
-  const finalItinerary = booking.customItinerary?.length
-    ? booking.customItinerary
-    : booking.itinerary || [];
+  const finalItinerary = booking.customItinerary.length === 0
+    ? booking.itinerary
+    : booking.customItinerary || [];
   booking.setItinerary(finalItinerary);
 
   emit("next");
@@ -599,7 +618,6 @@ const fetchSelectedPackage = async () => {
     console.error("Error fetching selectedPackage:", error);
   }
 };
-
 
 onMounted(() => {
   fetchSelectedPackage();
