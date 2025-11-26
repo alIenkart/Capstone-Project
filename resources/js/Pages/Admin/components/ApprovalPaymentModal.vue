@@ -252,7 +252,7 @@
                 class="w-full rounded-xl border-2 border-gray-300 focus:border-[#217093] focus:ring-2 focus:ring-[#217093]/20 outline-none transition-all p-4 resize-none"></textarea>
             </div>
 
-            <div class="flex justify-center mt-4">
+            <div class="flex justify-center gap-4 mt-4">
               <button v-if="isPaymentApproved()" type="button" @click="showDisasterModal = true"
                 class="flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -262,7 +262,21 @@
                 </svg>
                 Send Disaster Email and Notification
               </button>
+              
+              <button v-if="paymentData.mode_of_payment === 'Cash'" type="button" @click="openReceiptModal"
+                class="flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Download Receipt
+              </button>
             </div>
+            <PaymentReceiptModal 
+              :isOpen="showReceiptModal" 
+              :receiptData="paymentData" 
+              @close="closeReceiptModal" 
+            />
 
             <div v-if="isDownPayment() && !isBookingPaid">
               <div class="flex items-center mb-4">
@@ -279,7 +293,7 @@
       <div v-if="isPaymentPending()">
         <div class="bg-gray-50 px-8 py-6 border-t border-gray-200">
           <div class="flex flex-wrap justify-center gap-4">
-            ⚠️ No payment has been submitted yet by the user.
+            No payment has been submitted yet by the user.
           </div>
         </div>
       </div>
@@ -827,6 +841,7 @@ import html2canvas from "html2canvas";
 import axios from "axios";
 import { useToast } from "vue-toastification";
 import RejectionModal from "./PaymentRejectionDetail.vue";
+import PaymentReceiptModal from "../../Landing/PaymentReceiptModal.vue";
 
 const emit = defineEmits(["close"]);
 
@@ -851,29 +866,31 @@ const rejectionDate = ref(null);
 const rejectionCategory = ref(null);
 const rejectionReason = ref(null);
 const paymentHistory = ref([]);
+const totalPrice = ref();
 const showCategoryDropdown = ref(false);
 const selectedPaymentIndex = ref(0);
 const showDisasterModal = ref(false);
 const isSubmittingDisaster = ref(false);
 const disasterPaymentForm = ref({ reason: "" });
 const isBookingPaid = ref(false);
-
+const showReceiptModal = ref(false);
 
 const currentPayment = computed(
   () => paymentHistory.value[selectedPaymentIndex.value]
 );
-const totalDownPayment = computed(() =>
-  paymentHistory.value.reduce(
+
+const totalDownPayment = computed(() => {
+  return paymentHistory.value.reduce(
     (sum, payment) => sum + (payment.downPaymentAmount || 0),
     0
-  )
+  );
+}
 );
 
 const fetchPaymentAndBooking = async (id) => {
   try {
     const response = await axios.get(`/api/payments/${id}`);
     const data = response.data.data;
-    console.log("Fetched payment data:", data);
 
     paymentData.value = {
       payment_id: data.payment_id || null,
@@ -908,6 +925,7 @@ const fetchPaymentAndBooking = async (id) => {
       },
     };
     paymentHistory.value = data.payment_history || [];
+    totalPrice.value = data.booking.total_price || 0;
     typeOfPayment.value = paymentData.value.type_of_payment || "";
     paymentStatus.value = paymentData.value.payment_status || "";
     isBookingPaid.value = paymentData.value.is_fully_paid || "";
@@ -1030,6 +1048,14 @@ const openImageModal = () => {
 
 const closeImageModal = () => {
   showImageModal.value = false;
+};
+
+const openReceiptModal = () => {
+  showReceiptModal.value = true;
+};
+
+const closeReceiptModal = () => {
+  showReceiptModal.value = false;
 };
 
 const isDownPayment = () => {

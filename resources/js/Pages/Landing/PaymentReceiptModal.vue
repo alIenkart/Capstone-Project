@@ -7,7 +7,6 @@
       id="receipt-content"
       class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
     >
-      <!-- Header with Logo -->
       <div class="flex items-center justify-between p-6 border-b">
         <div class="flex items-center gap-3">
           <img
@@ -42,7 +41,6 @@
         </button>
       </div>
 
-      <!-- Receipt Content -->
       <div class="p-8">
         <div class="text-center mb-6">
           <h2 class="text-2xl font-bold text-gray-800 mb-1">
@@ -61,34 +59,31 @@
 
         <hr class="border-gray-300 mb-6" />
 
-        <!-- Customer Information & Payment Details -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          <!-- Customer Information -->
           <div>
             <h3 class="font-bold text-gray-800 mb-3">Customer Information</h3>
             <div class="space-y-1 text-sm">
               <p>
                 <span class="text-gray-600">Name: </span>
                 <span class="font-medium">{{
-                  receiptData.customer_name
+                  receiptData.customer_name || receiptData.booking.customer_name
                 }}</span>
               </p>
               <p>
                 <span class="text-gray-600">Email: </span>
                 <span class="font-medium">{{
-                  receiptData.customer_email
+                  receiptData.customer_email || receiptData.booking.customer_email
                 }}</span>
               </p>
               <p>
                 <span class="text-gray-600">Phone No: </span>
                 <span class="font-medium">{{
-                  receiptData.customer_phone
+                  receiptData.customer_phone || receiptData.booking.customer_phone
                 }}</span>
               </p>
             </div>
           </div>
 
-          <!-- Payment Details -->
           <div>
             <h3 class="font-bold text-gray-800 mb-3">Payment Details</h3>
             <div class="space-y-1 text-sm">
@@ -101,7 +96,7 @@
               <p>
                 <span class="text-gray-600">Quantity: </span>
                 <span class="font-medium">{{
-                  receiptData.total_quantity
+                  receiptData.total_quantity || receiptData.booking.total_quantity
                 }}</span>
               </p>
               <p>
@@ -114,7 +109,6 @@
           </div>
         </div>
 
-        <!-- Booking Details -->
         <div class="mb-6">
           <h3 class="font-bold text-gray-800 mb-3">Booking Details</h3>
           <div class="space-y-1 text-sm">
@@ -131,19 +125,19 @@
             <p>
               <span class="text-gray-600">Package: </span>
               <span class="font-medium">{{
-                receiptData.package_destination + " Tour" ?? "N/A"
+                receiptData.package_destination ? receiptData.package_destination + " Tour" : receiptData.booking.package_destination ? receiptData.booking.package_destination + " Tour" : "N/A"
               }}</span>
             </p>
             <p>
               <span class="text-gray-600">Duration: </span>
               <span class="font-medium">{{
-                receiptData.duration + " Days" ?? "N/A"
+                receiptData.duration ? receiptData.duration + " Days" : receiptData.booking.duration ? receiptData.booking.duration + " Days" : "N/A"
               }}</span>
             </p>
             <p>
               <span class="text-gray-600">Booking Type: </span>
               <span class="font-medium">{{
-                receiptData.tour_type
+                receiptData.tour_type || receiptData.booking.tour_type
               }}</span>
             </p>
             <p>
@@ -155,7 +149,12 @@
                       month: "long",
                       day: "numeric"
                     })
-                  : "N/A"
+                  : receiptData.booking.start_date
+                   ? new Date(receiptData.booking.start_date).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric"
+                    }) : "N/A"
               }}</span>
             </p>
             <p>
@@ -167,13 +166,17 @@
                       month: "long",
                       day: "numeric"
                     })
-                  : "N/A"
+                  : receiptData.booking.end_date
+                   ? new Date(receiptData.booking.end_date).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric"
+                    }) : "N/A"
               }}</span>
             </p>
           </div>
         </div>
 
-        <!-- Total Amount -->
         <div class="bg-gray-50 rounded-lg p-4 mb-6">
           <div class="space-y-2 text-sm">
             <div class="flex justify-between">
@@ -191,7 +194,7 @@
             <div class="flex justify-between">
               <span class="font-bold text-gray-800">Total Amount:</span>
               <span class="font-bold text-green-600"
-                >₱ {{ receiptData.original_amount}}</span
+                >₱ {{ receiptData.original_amount || receiptData.booking.total_price.toLocaleString()}}</span
               >
             </div>
             <div v-if="receiptData.type_of_payment === 'Down Payment' && !isMatch(receiptData.total_price, formattedPaymentAmount)">
@@ -207,7 +210,6 @@
 
         <hr class="border-gray-300 mb-6" />
 
-        <!-- Authorized By -->
         <div class="mb-6">
           <p class="font-bold text-gray-800 mb-3">Authorized by:</p>
           <div class="text-center">
@@ -223,7 +225,6 @@
 
         <hr class="border-gray-300 mb-6" />
 
-        <!-- Footer -->
         <div class="text-center text-sm text-gray-600">
           <p class="font-medium mb-1">
             Thank you for booking with JE Travel & Tours!
@@ -239,7 +240,6 @@
         </div>
       </div>
 
-      <!-- Action Buttons -->
       <div
         id="receipt-buttons"
         class="flex justify-center gap-4 p-6 border-t bg-gray-50"
@@ -291,19 +291,16 @@ const downloadReceipt = async () => {
     return;
   }
 
-  // Hide buttons temporarily (close button will be hidden via print:hidden class)
   const buttons = document.getElementById("receipt-buttons");
 
   if (buttons) buttons.style.display = "none";
 
-  // Remove modal constraints for proper rendering
   const originalMaxHeight = receiptElement.style.maxHeight;
   const originalOverflow = receiptElement.style.overflow;
   receiptElement.style.maxHeight = "none";
   receiptElement.style.overflow = "visible";
 
   try {
-    // Small delay to ensure rendering is complete
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     const canvas = await html2canvas(receiptElement, {
@@ -317,7 +314,6 @@ const downloadReceipt = async () => {
       imageTimeout: 0,
       removeContainer: true,
       ignoreElements: (element) => {
-        // Ignore the close button and failed images
         if (
           element.id === "close-button" ||
           element.classList.contains("print:hidden")
@@ -341,16 +337,13 @@ const downloadReceipt = async () => {
 
     const pdfWidth = 210;
     const pdfHeight = 297;
-    const imgWidth = pdfWidth - 20; // 10mm margin on each side
+    const imgWidth = pdfWidth - 20;
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-    // Center the content with margins
     const xOffset = 10;
     const yOffset = 10;
 
-    // Add image to PDF, fitting to one page
     if (imgHeight <= pdfHeight - 20) {
-      // Content fits on one page with margins
       pdf.addImage(
         imgData,
         "PNG",
@@ -362,7 +355,6 @@ const downloadReceipt = async () => {
         "FAST"
       );
     } else {
-      // Scale down to fit on one page
       const scaledHeight = pdfHeight - 20;
       const scaledWidth = (canvas.width * scaledHeight) / canvas.height;
       const centeredX = (pdfWidth - scaledWidth) / 2;
@@ -383,7 +375,6 @@ const downloadReceipt = async () => {
     console.error("Error generating PDF:", error);
     alert("Failed to generate PDF. Please try again.");
   } finally {
-    // Restore original styles
     receiptElement.style.maxHeight = originalMaxHeight;
     receiptElement.style.overflow = originalOverflow;
     if (buttons) buttons.style.display = "flex";
@@ -415,6 +406,10 @@ const formattedPayments = computed(() => {
 
 
 const formattedPaymentAmount = computed(() => {
+  if (props.receiptData.payment_history) {
+    return props.receiptData.booking.total_price.toLocaleString();
+  }
+
   const history = props.receiptData.payment_history;
 
   if (!history) return 0;
