@@ -7,7 +7,7 @@
       id="receipt-content"
       class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
     >
-      <div class="flex items-center justify-between p-6 border-b">
+      <div class="flex items-center justify-center p-6 border-b">
         <div class="flex items-center gap-3">
           <img
             src="/storage/logo/Logo.png"
@@ -21,24 +21,6 @@
             <p class="text-xs text-gray-400">Adventure Awaits</p>
           </div>
         </div>
-        <button
-          @click="closeModal"
-          class="text-gray-400 hover:text-gray-600 transition"
-        >
-          <svg
-            class="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
       </div>
 
       <div class="p-8">
