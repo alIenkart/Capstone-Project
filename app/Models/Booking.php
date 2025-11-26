@@ -32,6 +32,7 @@ class Booking extends Model
         
         // Package details
         'package_destination',
+        'tour_classification',
         'tour_type',
         'duration',
         'start_date',

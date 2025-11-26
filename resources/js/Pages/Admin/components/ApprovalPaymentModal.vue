@@ -263,7 +263,7 @@
                 Send Disaster Email and Notification
               </button>
               
-              <button v-if="paymentData.mode_of_payment === 'Cash'" type="button" @click="openReceiptModal"
+              <button v-if="paymentData.mode_of_payment === 'Cash'" type="button" @click="viewReceipt()"
                 class="flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold text-white bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -274,7 +274,7 @@
             </div>
             <PaymentReceiptModal 
               :isOpen="showReceiptModal" 
-              :receiptData="paymentData" 
+              :receiptData="receipt" 
               @close="closeReceiptModal" 
             />
 
@@ -874,6 +874,7 @@ const isSubmittingDisaster = ref(false);
 const disasterPaymentForm = ref({ reason: "" });
 const isBookingPaid = ref(false);
 const showReceiptModal = ref(false);
+const receipt = ref({});
 
 const currentPayment = computed(
   () => paymentHistory.value[selectedPaymentIndex.value]
@@ -887,10 +888,26 @@ const totalDownPayment = computed(() => {
 }
 );
 
+async function viewReceipt() {
+  const currentBooking = props.payment.booking.id;
+   try {
+    const response = await axios.get(`/api/receipts/${currentBooking}`);
+
+    receipt.value = response.data.data;
+     
+    showReceiptModal.value = true;
+
+  } catch (error) {
+    console.error(error);
+    toast.error("Something went wrong while submitting your payment.");
+  }
+
+}
 const fetchPaymentAndBooking = async (id) => {
   try {
     const response = await axios.get(`/api/payments/${id}`);
     const data = response.data.data;
+
 
     paymentData.value = {
       payment_id: data.payment_id || null,
@@ -922,6 +939,8 @@ const fetchPaymentAndBooking = async (id) => {
         end_date: data.booking?.end_date || "",
         total_quantity: data.booking?.total_quantity || 0,
         total_price: data.booking?.total_price || 0,
+        walk_in: data?.booking.walk_in || "",
+        tour_classification: data?.package.tour_classification || "",
       },
     };
     paymentHistory.value = data.payment_history || [];
@@ -1048,10 +1067,6 @@ const openImageModal = () => {
 
 const closeImageModal = () => {
   showImageModal.value = false;
-};
-
-const openReceiptModal = () => {
-  showReceiptModal.value = true;
 };
 
 const closeReceiptModal = () => {

@@ -45,6 +45,11 @@ class PaymentResource extends JsonResource
                 'end_date' => $this->booking->end_date ?? null,
                 'total_quantity' => $this->booking->total_quantity ?? null,
                 'total_price' => $this->booking->total_price ?? null,
+                'walk_in' => $this->booking->walk_in ?? null,
+            ],
+
+            'package' => [
+                'tour_classification' => $this->booking->package->tour_classification ?? null,
             ],
         ];
     }

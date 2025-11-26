@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Payment;
+use App\Models\Receipt;
 use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -67,6 +68,7 @@ class BookingController extends Controller
 
             // Package details
             'package_destination' => 'nullable|string|max:255',
+            'tour_classification'=> 'nullable|string|max:255',
             'tour_type' => 'nullable|string|max:255',
             'duration' => 'nullable|integer|min:1',
             'start_date' => 'nullable|date',
@@ -119,7 +121,8 @@ class BookingController extends Controller
         $booking = Booking::create($validated);
 
         if ($booking->walk_in === true) {
-            Payment::approvePayment($booking);
+            $payment = Payment::approvePayment($booking);
+            Receipt::createReceipt($payment, $booking->customer_id);
         }
 
         return response()->json([

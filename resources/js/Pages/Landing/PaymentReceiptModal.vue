@@ -163,9 +163,13 @@
           <div class="space-y-2 text-sm">
             <div class="flex justify-between">
               <span class="font-bold text-gray-800">Amount Paid:</span>
-              <span class="font-bold text-gray-800"
-                >₱ {{ formattedPaymentAmount }}.00</span
-              >
+              <span class="font-bold text-gray-800">₱ 
+                {{
+                  formattedPaymentAmount && formattedPaymentAmount !== 0
+                    ? formattedPaymentAmount
+                    : receiptData.original_amount
+                }}.00
+                </span>
             </div>
             <div v-if=(receiptData.discount_amount) class="flex justify-between">
               <span class="font-bold text-gray-800">Discount ({{ receiptData.discount_percent }}%):</span>
@@ -366,16 +370,16 @@ const downloadReceipt = async () => {
 const formattedPayments = computed(() => {
   const history = props.receiptData.payment_history;
 
-  if (!history) return { type: "N/A", date: "N/A" };
+  const payments = history ? (Array.isArray(history) ? history : [history]) : [];
 
-  const payments = Array.isArray(history) ? history : [history];
-
-  const type = payments.length > 1 ? "Down Payment" : "Full Payment";
+  const type = payments.length > 1 ? "Down Payment" : payments.length === 1 ? "Full Payment" : "N/A";
 
   const relevantDate =
-    type === "Full Payment"
-      ? payments[0].paymentDate
-      : payments[payments.length - 1].paymentDate;
+    payments.length > 0
+      ? type === "Full Payment"
+        ? payments[0].paymentDate
+        : payments[payments.length - 1].paymentDate
+      : props.receiptData.start_date;
 
   const date = new Date(relevantDate).toLocaleDateString("en-US", {
     year: "numeric",
