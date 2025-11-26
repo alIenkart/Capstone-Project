@@ -427,6 +427,7 @@ const service = new api();
 const page = usePage();
 const user = computed(() => page.props.auth?.user);
 const booking = storeBooking();
+console.log("🚀 ~ booking:", booking)
 const toast = useToast();
 
 const first_name = ref("");
@@ -597,6 +598,7 @@ async function postBooking() {
 
   formData.append("package_destination", booking.packageDestination);
   formData.append("tour_type", booking.tourType);
+  formData.append("tour_classification", booking.tourClassification);
   formData.append("duration", booking.duration);
   formData.append("start_date", booking.startDate);
   formData.append("end_date", booking.endDate);

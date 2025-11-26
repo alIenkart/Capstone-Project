@@ -164,12 +164,18 @@
             <div class="flex justify-between">
               <span class="font-bold text-gray-800">Amount Paid:</span>
               <span class="font-bold text-gray-800">₱ 
-                {{
-                  formattedPaymentAmount && formattedPaymentAmount !== 0
-                    ? formattedPaymentAmount
-                    : receiptData.original_amount
-                }}.00
-                </span>
+              {{
+                formattedPaymentAmount && formattedPaymentAmount !== 0
+                  ? Number(formattedPaymentAmount).toLocaleString(undefined, { 
+                      minimumFractionDigits: 2, 
+                      maximumFractionDigits: 2 
+                    })
+                  : Number(receiptData.total_price - receiptData.remaining_balance).toLocaleString(undefined, { 
+                      minimumFractionDigits: 2, 
+                      maximumFractionDigits: 2 
+                    })
+              }}
+            </span>
             </div>
             <div v-if=(receiptData.discount_amount) class="flex justify-between">
               <span class="font-bold text-gray-800">Discount ({{ receiptData.discount_percent }}%):</span>
@@ -179,9 +185,20 @@
             </div>
             <div class="flex justify-between">
               <span class="font-bold text-gray-800">Total Amount:</span>
-              <span class="font-bold text-green-600"
-                >₱ {{ receiptData.original_amount || receiptData.booking.total_price.toLocaleString()}}</span
-              >
+              <span class="font-bold text-gray-800"
+                  >₱ 
+                  {{
+                  formattedPaymentAmount && formattedPaymentAmount !== 0
+                    ? Number(receiptData.original_amount).toLocaleString(undefined, { 
+                        minimumFractionDigits: 2, 
+                        maximumFractionDigits: 2 
+                      })
+                    : Number(receiptData.total_price).toLocaleString(undefined, { 
+                        minimumFractionDigits: 2, 
+                        maximumFractionDigits: 2 
+                      })
+                }}
+              </span>
             </div>
             <div v-if="receiptData.type_of_payment === 'Down Payment' && !isMatch(receiptData.total_price, formattedPaymentAmount)">
             <div class="flex justify-between">
@@ -262,6 +279,7 @@ const props = defineProps({
     default: () => ({}),
   },
 });
+  console.log("🚀 ~ props:", props.receiptData)
 
 const emit = defineEmits(["close"]);
 
@@ -392,8 +410,9 @@ const formattedPayments = computed(() => {
 
 
 const formattedPaymentAmount = computed(() => {
-  if (props.receiptData.payment_history) {
-    return props.receiptData.booking.total_price.toLocaleString();
+  if (props.receiptData.payment_history === null) {
+    const totalPrice = props.receiptData.total_price - props.receiptData.remaining_balance;
+    return totalPrice;
   }
 
   const history = props.receiptData.payment_history;

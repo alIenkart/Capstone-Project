@@ -107,8 +107,8 @@
               ">
                 <div class="space-y-2">
                   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2 text-sm">
-                    <span class="text-gray-600">Paid Amount:</span>
-                    <span class="font-semibold text-gray-800">₱ {{ currentPayment?.fullPaymentAmount }}</span>
+                    <span class="text-gray-600">Amount:</span>
+                    <span class="font-semibold text-gray-800">₱ {{ paymentData?.is_fully_paid ? paymentData.booking.total_price : currentPayment?.fullPaymentAmount }}</span>
                   </div>
                   <div
                     class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2 text-lg font-bold pt-2 border-t border-emerald-200">
@@ -118,10 +118,31 @@
                 </div>
               </div>
 
+              <div v-else-if="paymentData?.booking?.walk_in">
+                <div class="space-y-2">
+                  <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-2 text-sm">
+                    <span class="text-gray-600">Amount:</span>
+
+                    <div class="text-right">
+                      <div class="font-semibold text-gray-800">
+                        ₱ {{ paymentData?.is_fully_paid ? paymentData.booking.total_price.toLocaleString() : p.downPaymentAmount.toLocaleString() }}
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2 text-lg font-bold pt-2 border-t border-emerald-200">
+                    <span class="text-gray-800">Total Amount Paid:</span>
+                    <span class="text-[#217093]">
+                      ₱ {{ paymentData?.is_fully_paid ? paymentData.booking.total_price.toLocaleString() : totalDownPayment.toLocaleString() }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
               <div v-else>
                 <div class="space-y-2">
                   <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-2 text-sm">
-                    <span class="text-gray-600">Paid Amount:</span>
+                    <span class="text-gray-600">Amount:</span>
 
                     <div class="text-right">
                       <div v-for="(p, index) in paymentHistory" :key="index" class="font-semibold text-gray-800">
@@ -241,7 +262,7 @@
                   Mode Of Payment: {{ paymentData.mode_of_payment }}
                 </label>
                 <label class="block text-sm font-medium text-gray-700">
-                  Remaining Balance: ₱{{ currentPayment?.remainingBalance }}
+                  Remaining Balance: ₱{{ currentPayment?.remainingBalance.toLocaleString() ?? paymentData.remaining_balance?.toLocaleString() }}
                 </label>
               </div>
             </div>
@@ -907,13 +928,13 @@ const fetchPaymentAndBooking = async (id) => {
   try {
     const response = await axios.get(`/api/payments/${id}`);
     const data = response.data.data;
-
+    console.log("🚀 ~ fetchPaymentAndBooking ~ data.booking:", data)
 
     paymentData.value = {
       payment_id: data.payment_id || null,
       booking_id: data.booking_id || null,
       customer_id: data.customer_id || null,
-      total_price: data.total_price || 0,
+      remaining_balance: data.remaining_balance || 0,
       payment_history: data.payment_history || {},
       remarks: data.remarks || "",
       image_path: data.receipt || "",
@@ -943,7 +964,8 @@ const fetchPaymentAndBooking = async (id) => {
         tour_classification: data?.package.tour_classification || "",
       },
     };
-    paymentHistory.value = data.payment_history || [];
+    console.log("🚀 ~ fetchPaymentAndBooking ~ paymentData.value:", paymentData.value)
+    paymentHistory.value = data.payment_history ?? [];
     totalPrice.value = data.booking.total_price || 0;
     typeOfPayment.value = paymentData.value.type_of_payment || "";
     paymentStatus.value = paymentData.value.payment_status || "";
@@ -981,6 +1003,7 @@ const fetchPaymentAndBooking = async (id) => {
         (paymentData.value?.booking?.total_price || 0) -
         (paymentData.value?.total_price || 0),
     };
+    console.log("🚀 ~ fetchPaymentAndBooking ~ receiptData.value:", receiptData.value)
 
     imagePreview.value = paymentData.value.image_path
       ? `/storage/${JSON.parse(paymentData.value.image_path)[0]}`

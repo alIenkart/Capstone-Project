@@ -353,7 +353,7 @@
 
 <script setup>
 import { storeBooking } from "../../state/storeBooking";
-import { ref, onMounted, onBeforeUnmount, computed, watch } from "vue";
+import { ref, onMounted, onBeforeUnmount, computed, watch, onUnmounted } from "vue";
 import LandingIndex from "./LandingIndex.vue";
 import { useToast } from "vue-toastification";
 
@@ -385,7 +385,7 @@ const availableSlots = ref(null);
 
 const generatePackageDates = () => {
   const pkg = booking.selectedPackage;
-  availableSlots.value = pkg.available_slot;
+  availableSlots.value = pkg?.available_slot;
   if (!pkg || !pkg.start_date || !pkg.end_date) {
     return;
   }
@@ -765,7 +765,6 @@ const postDate = () => {
     return;
   }
 
-  booking.reset();
   booking.tourType = tourType.value;
   booking.tourClassification = tourClassification.value;
   booking.setAvailableSlots(availableSlots.value);
@@ -807,10 +806,10 @@ const postDate = () => {
 };
 
 onMounted(() => {
-  tourClassifications.value = booking.selectedPackage.tour_classification;
-  tourClassification.value = booking.selectedPackage.tour_classification[0];
-
   generatePackageDates();
+
+  tourClassifications.value = booking.selectedPackage?.tour_classification;
+  tourClassification.value = booking.selectedPackage?.tour_classification[0];
 
   if (tourType.value === "Joiners" && booking.start_date && booking.end_date) {
     const start_dateFormatted = booking.start_date.split("T")[0];
