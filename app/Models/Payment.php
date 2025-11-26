@@ -59,7 +59,7 @@ class Payment extends Model
 
     public static function approvePayment($booking)
     {
-        return self::updateOrCreate(
+        $payment = self::updateOrCreate(
             ['booking_id' => $booking->id],
             [
                 'approved_by' => $booking->approved_by,
@@ -71,6 +71,9 @@ class Payment extends Model
                 'payment_status' => 'Approved',
             ]
         );
+        $payment->slotDeduction();
+
+        return $payment;
     }
 
     public function approvedByUser()
@@ -81,5 +84,26 @@ class Payment extends Model
     public function rejectedByUser()
     {
         return $this->belongsTo(User::class, 'rejected_by');
+    }
+
+    public function slotDeduction()
+    {
+        $booking = $this->booking;
+
+        if ($booking->tour_type === 'Exclusive') {
+            return;
+        }
+
+        if ($this->slot_deducted) {
+            return;
+        }
+
+        $package = $booking->package;
+
+        $package->available_slot -= $booking->total_quantity;
+        $package->save();
+
+        $this->slot_deducted = true;
+        $this->save();
     }
 }
