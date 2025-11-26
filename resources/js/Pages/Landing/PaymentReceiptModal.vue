@@ -279,7 +279,6 @@ const props = defineProps({
     default: () => ({}),
   },
 });
-  console.log("🚀 ~ props:", props.receiptData)
 
 const emit = defineEmits(["close"]);
 

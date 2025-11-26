@@ -928,7 +928,6 @@ const fetchPaymentAndBooking = async (id) => {
   try {
     const response = await axios.get(`/api/payments/${id}`);
     const data = response.data.data;
-    console.log("🚀 ~ fetchPaymentAndBooking ~ data.booking:", data)
 
     paymentData.value = {
       payment_id: data.payment_id || null,
@@ -964,7 +963,6 @@ const fetchPaymentAndBooking = async (id) => {
         tour_classification: data?.package.tour_classification || "",
       },
     };
-    console.log("🚀 ~ fetchPaymentAndBooking ~ paymentData.value:", paymentData.value)
     paymentHistory.value = data.payment_history ?? [];
     totalPrice.value = data.booking.total_price || 0;
     typeOfPayment.value = paymentData.value.type_of_payment || "";
@@ -1003,7 +1001,6 @@ const fetchPaymentAndBooking = async (id) => {
         (paymentData.value?.booking?.total_price || 0) -
         (paymentData.value?.total_price || 0),
     };
-    console.log("🚀 ~ fetchPaymentAndBooking ~ receiptData.value:", receiptData.value)
 
     imagePreview.value = paymentData.value.image_path
       ? `/storage/${JSON.parse(paymentData.value.image_path)[0]}`

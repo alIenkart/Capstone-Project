@@ -427,7 +427,6 @@ const service = new api();
 const page = usePage();
 const user = computed(() => page.props.auth?.user);
 const booking = storeBooking();
-console.log("🚀 ~ booking:", booking)
 const toast = useToast();
 
 const first_name = ref("");
