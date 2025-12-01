@@ -63,7 +63,7 @@
           </div> -->
 
           <!-- Report Tables -->
-          <div class="space-y-6">
+          <div ref="reportRef" class="space-y-6">
            <h2 class="text-2xl font-semibold text-gray-800 mb-4">
               <div class="flex items-center justify-center gap-3">
                 <img
@@ -375,6 +375,8 @@ import BookingsChart from "./components/Analytics/BookingsChart.vue";
 import PaymentsChart from "./components/Analytics/PaymentsChart.vue";
 import TravelDestinationChart from "./components/Analytics/TravelDestinationChart.vue";
 import SalesChart from "./components/Analytics/SalesChart.vue";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 import { onMounted, ref, watch, computed } from "vue";
 import { api } from "../../api/api";
 
@@ -395,6 +397,7 @@ const destinations = ref([]);
 const revenue = ref([]);
 const isModalOpen = ref(false)
 const isPeriodOpen = ref(false)
+const reportRef = ref(null);
 
 const fetchData = async (period) => {
   try {
@@ -427,12 +430,49 @@ const downloadData = async () => {
   const imgData = canvas.toDataURL("image/png");
 
   const pdf = new jsPDF("p", "mm", "a4");
-
   const pdfWidth = pdf.internal.pageSize.getWidth();
-  const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+  const pdfHeight = pdf.internal.pageSize.getHeight();
+  const margin = 10; // 10mm margin on all sides
 
-  pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+  const imgWidth = pdfWidth - 2 * margin;
+  const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
+  let position = margin;
+
+  if (imgHeight < pdfHeight - 2 * margin) {
+    pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
+  } else {
+    let heightLeft = imgHeight;
+    let pageCanvasHeight = ((pdfHeight - 2 * margin) * canvas.width) / imgWidth; // convert PDF height to canvas height
+    let pageOffset = 0;
+
+    while (heightLeft > 0) {
+      const pageCanvas = document.createElement("canvas");
+      pageCanvas.width = canvas.width;
+      pageCanvas.height = pageCanvasHeight;
+
+      const ctx = pageCanvas.getContext("2d");
+      ctx.drawImage(
+        canvas,
+        0,
+        pageOffset,
+        canvas.width,
+        pageCanvasHeight,
+        0,
+        0,
+        canvas.width,
+        pageCanvasHeight
+      );
+
+      const pageData = pageCanvas.toDataURL("image/png");
+      pdf.addImage(pageData, "PNG", margin, margin, imgWidth, pdfHeight - 2 * margin);
+
+      heightLeft -= pageCanvasHeight;
+      pageOffset += pageCanvasHeight;
+
+      if (heightLeft > 0) pdf.addPage();
+    }
+  }
   pdf.save(`JE-Analytics-Report-${reportLabel.value}.pdf`);
 };
 
