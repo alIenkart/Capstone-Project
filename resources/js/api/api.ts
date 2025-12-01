@@ -13,6 +13,10 @@ export class api {
     updateUser(id, data) {
         return plainInstance.patch(`/api/users/${id}`, data);
     }
+
+    deleteUser(id) {
+        return plainInstance.delete(`/api/users/${id}`);
+    }    
         
     //Packages API
     getPackages() {

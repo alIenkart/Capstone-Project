@@ -189,6 +189,26 @@
                         d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
                   </button>
+
+                  <button
+                      @click="openDeleteConfirm(user.id)"
+                      class="p-2 hover:bg-red-500 hover:text-white rounded-lg transition-all group"
+                      title="Delete"
+                    >
+                      <svg
+                        class="w-5 h-5 text-red-500 group-hover:text-white transition-colors"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        />
+                      </svg>
+                    </button>
                 </td>
               </tr>
             </tbody>
@@ -484,6 +504,58 @@
 
     <EditUserModal v-if="showEditModal" :user="selectedUser" :show="showEditModal" @updated="handleUserUpdated"
       @close="showEditModal = false" />
+
+    <div v-if="showDeleteConfirm" class="fixed inset-0 z-50 overflow-y-auto">
+      <div class="fixed inset-0 bg-black/70 backdrop-blur-md transition-opacity" @click="showDeleteConfirm = false"></div>
+      <div class="flex min-h-full items-center justify-center p-4">
+        <div class="relative transform overflow-hidden rounded-2xl bg-white shadow-2xl transition-all w-full max-w-md">
+          <div class="bg-gradient-to-r from-red-500 to-red-600 px-8 py-6">
+            <h3 class="text-2xl font-bold text-white">Delete Account</h3>
+          </div>
+
+          <div class="px-8 py-6">
+            <p class="text-gray-700 mb-2">
+              Are you sure you want to delete this account?
+            </p>
+            <p class="text-gray-500 text-sm">This action cannot be undone.</p>
+          </div>
+
+          <div
+            class="bg-gradient-to-r from-gray-50 to-white px-8 py-6 border-t-2 border-gray-200"
+          >
+            <div class="flex justify-end gap-3">
+              <button
+                type="button"
+                @click="showDeleteConfirm = false"
+                class="flex items-center gap-2 rounded-xl px-7 py-3 text-sm font-bold bg-gray-600 text-white hover:bg-gray-700 transition-all shadow-lg hover:shadow-xl"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                @click="confirmDelete"
+                class="flex items-center gap-2 rounded-xl px-7 py-3 text-sm font-bold bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:shadow-xl transition-all"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  />
+                </svg>
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -491,11 +563,13 @@
 import AdminIndex from "./AdminIndex.vue";
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
 import EditUserModal from "./components/EditUserModal.vue";
+import { useToast } from "vue-toastification";
 import { api } from "../../api/api";
 
 defineOptions({ layout: AdminIndex });
 
 const service = new api();
+const toast = useToast();
 const users = ref([]);
 const selectedUser = ref(null);
 const showEditModal = ref(false);
@@ -519,6 +593,8 @@ const showPassword = ref(false);
 const showConfirmPassword = ref(false);
 const errors = ref({});
 const isLoading = ref(false);
+const showDeleteConfirm = ref(false);
+const userToDelete = ref(null);
 
 const formData = ref({
   first_name: '',
@@ -768,6 +844,26 @@ const handleClickOutside = (event) => {
   if (!event.target.closest(".relative")) {
     closeAllFilters();
     isRoleFormDropdownOpen.value = false;
+  }
+};
+
+
+const openDeleteConfirm = (id) => {
+  userToDelete.value = id;
+  showDeleteConfirm.value = true;
+};
+
+const confirmDelete = async () => {
+  try {
+    console.log("to dele", userToDelete)
+    await service.deleteUser(userToDelete.value);
+    toast.success("Account deleted successfully!");
+    showDeleteConfirm.value = false;
+    userToDelete.value = null;
+    fetchUsers();
+  } catch (error) {
+    console.error("Error deleting account:", error);
+    toast.error("Error deleting account");
   }
 };
 
