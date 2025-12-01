@@ -23,7 +23,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'phone_number' => 'required|string|max:20',
             'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|in:Admin,Customer',
+            'role' => 'required|in:Admin,Customer,Staff',
         ]);
 
         $user = User::create([
@@ -49,7 +49,7 @@ class UserController extends Controller
             'last_name' => 'nullable|string|max:255',
             'email' => 'nullable|email|unique:users,email,' . $id,
             'phone_number' => 'nullable|string|max:20',
-            'role' => 'nullable|in:Admin,Customer',
+            'role' => 'nullable|in:Admin,Customer,Staff',
             'password' => 'nullable|string|min:8|confirmed',
             'avatar' => 'nullable|string|max:500',
         ]);

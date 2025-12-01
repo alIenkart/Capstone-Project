@@ -53,19 +53,44 @@
           </span>
         </div>
 
-        <div class="relative">
+        <div class="relative" data-filter-container>
           <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2">Role</label>
-          <div class="relative">
-            <select v-model="form.role"
-              class="appearance-none w-full px-4 py-2 sm:py-2.5 border-2 border-gray-200 rounded-lg bg-white focus:border-[#1E71B8] focus:ring-2 focus:ring-blue-200 outline-none transition-all cursor-pointer">
-              <option disabled value="">Select Role</option>
-              <option value="Customer">Customer</option>
-              <option value="Admin">Admin</option>
-            </select>
-            <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-500 pointer-events-none"
-              xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          <button @click="isRoleDropdownOpen = !isRoleDropdownOpen"
+            class="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200">
+            <span class="font-semibold text-gray-800">
+              {{ form.role || 'Select Role' }}
+            </span>
+            <svg :class="[
+              'w-5 h-5 text-blue-600 transition-transform duration-300',
+              isRoleDropdownOpen ? 'rotate-180' : '',
+            ]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
             </svg>
+          </button>
+
+          <div v-if="isRoleDropdownOpen"
+            class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10 overflow-hidden">
+            <div v-for="option in roleOptions" :key="option" @click="handleRoleSelect(option)" :class="[
+              'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 last:border-b-0 hover:bg-blue-50',
+              form.role === option
+                ? 'bg-blue-50 border-l-4 border-l-blue-500'
+                : '',
+            ]">
+              <span :class="[
+                'font-medium',
+                form.role === option
+                  ? 'text-blue-700'
+                  : 'text-gray-700',
+              ]">
+                {{ option }}
+              </span>
+              <svg v-if="form.role === option" class="w-5 h-5 text-blue-600 ml-auto" fill="currentColor"
+                viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clip-rule="evenodd"></path>
+              </svg>
+            </div>
           </div>
         </div>
 
@@ -88,6 +113,7 @@
             </svg>
           </button>
         </div>
+
         <div class="relative">
           <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">Confirm Password</label>
           <input v-model="form.password_confirmation" :type="showPasswordConfirm ? 'text' : 'password'"
@@ -109,6 +135,7 @@
           </button>
         </div>
       </div>
+
       <div
         class="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3 px-4 sm:px-6 lg:px-8 py-4 sm:py-6 bg-gray-50 border-t">
         <button @click="$emit('close')"
@@ -144,11 +171,19 @@ const toast = useToast();
 const isLoading = ref(false);
 const showPassword = ref(false);
 const showPasswordConfirm = ref(false);
+const isRoleDropdownOpen = ref(false);
 const form = ref({ ...props.user });
+
+const roleOptions = ["Admin", "Customer", "Staff"];
 
 const hasChanges = computed(() => {
   return JSON.stringify(form.value) !== JSON.stringify(props.user);
 });
+
+const handleRoleSelect = (option) => {
+  form.value.role = option;
+  isRoleDropdownOpen.value = false;
+};
 
 const updateUser = async () => {
   if (!hasChanges.value) return;
@@ -177,6 +212,12 @@ const updateUser = async () => {
   }
 };
 
+const handleClickOutside = (event) => {
+  if (!event.target.closest("[data-filter-container]")) {
+    isRoleDropdownOpen.value = false;
+  }
+};
+
 watch(
   () => props.user,
   (newUser) => {
@@ -184,4 +225,12 @@ watch(
   },
   { immediate: true }
 );
+
+watch(isRoleDropdownOpen, (newValue) => {
+  if (newValue) {
+    document.addEventListener("click", handleClickOutside);
+  } else {
+    document.removeEventListener("click", handleClickOutside);
+  }
+});
 </script>

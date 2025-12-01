@@ -27,60 +27,66 @@
             />
           </div>
 
-          <div class="relative">
+          <div class="relative" data-filter-container>
             <button
               @click="isFilterOpen = !isFilterOpen"
-              class="flex items-center gap-2 px-4 py-3 border-2 border-gray-200 rounded-xl hover:bg-gray-50 transition-all"
+              class="flex items-center justify-between w-full px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 min-w-[180px]"
             >
+              <span class="font-semibold text-gray-800">
+                {{ filterType }}
+              </span>
               <svg
-                class="w-5 h-5 text-gray-600"
+                :class="[
+                  'w-5 h-5 text-blue-600 transition-transform duration-300',
+                  isFilterOpen ? 'rotate-180' : '',
+                ]"
                 fill="none"
                 stroke="currentColor"
+                stroke-width="2"
                 viewBox="0 0 24 24"
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
-                />
-              </svg>
-              <span class="text-sm font-medium text-gray-700">{{
-                filterType
-              }}</span>
-              <svg
-                class="w-4 h-4 text-gray-600"
-                :class="{ 'transform rotate-180': isFilterOpen }"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 14l-7 7m0 0l-7-7m7 7V3"
-                />
+                <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
               </svg>
             </button>
 
             <div
               v-if="isFilterOpen"
-              class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 z-50"
+              class="absolute top-full right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10 overflow-hidden min-w-[180px]"
             >
-              <button
+              <div
                 v-for="option in filterOptions"
                 :key="option"
                 @click="handleFilterSelect(option)"
                 :class="[
-                  'w-full text-left px-4 py-3 hover:bg-blue-50 transition-colors text-sm font-medium',
+                  'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 last:border-b-0 hover:bg-blue-50',
                   filterType === option
-                    ? 'text-[#1E71B8] bg-blue-50'
-                    : 'text-gray-700',
+                    ? 'bg-blue-50 border-l-4 border-l-blue-500'
+                    : '',
                 ]"
               >
-                {{ option }}
-              </button>
+                <span
+                  :class="[
+                    'font-medium',
+                    filterType === option
+                      ? 'text-blue-700'
+                      : 'text-gray-700',
+                  ]"
+                >
+                  {{ option }}
+                </span>
+                <svg
+                  v-if="filterType === option"
+                  class="w-5 h-5 text-blue-600 ml-auto"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  ></path>
+                </svg>
+              </div>
             </div>
           </div>
         </div>
@@ -233,7 +239,7 @@
 
 <script setup>
 import AdminIndex from "./AdminIndex.vue";
-import { ref, computed, watch, onMounted } from "vue";
+import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
 import { api } from "@/api/api";
 import { useToast } from "vue-toastification";
 
@@ -372,6 +378,12 @@ const handleFilterSelect = (option) => {
   currentPage.value = 1;
 };
 
+const handleClickOutside = (event) => {
+  if (!event.target.closest("[data-filter-container]")) {
+    isFilterOpen.value = false;
+  }
+};
+
 const previousPage = () => {
   if (currentPage.value > 1) currentPage.value--;
 };
@@ -398,7 +410,19 @@ watch(filterType, () => {
   currentPage.value = 1;
 });
 
+watch(isFilterOpen, (newValue) => {
+  if (newValue) {
+    document.addEventListener("click", handleClickOutside);
+  } else {
+    document.removeEventListener("click", handleClickOutside);
+  }
+});
+
 onMounted(() => {
   loadUsers();
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("click", handleClickOutside);
 });
 </script>

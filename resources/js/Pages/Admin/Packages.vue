@@ -262,7 +262,9 @@
 
             <button
               @click="createNewPackage"
-              class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#1E71B8] to-[#2a8bb5] hover:from-[#2a8bb5] hover:to-[#1E71B8] text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              :disabled="isStaffRole"
+              :title="isStaffRole ? 'Staff users cannot create packages' : 'Add New Package'"
+              class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#1E71B8] to-[#2a8bb5] hover:from-[#2a8bb5] hover:to-[#1E71B8] text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg disabled:hover:translate-y-0"
             >
               <svg
                 class="w-5 h-5"
@@ -466,8 +468,9 @@
                     </button>
                     <button
                       @click="openDeleteConfirm(packageItem.id)"
-                      class="p-2 hover:bg-red-500 hover:text-white rounded-lg transition-all group"
-                      title="Delete"
+                      :disabled="isStaffRole"
+                      :title="isStaffRole ? 'Staff users cannot delete packages' : 'Delete'"
+                      class="p-2 hover:bg-red-500 hover:text-white rounded-lg transition-all group disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent"
                     >
                       <svg
                         class="w-5 h-5 text-red-500 group-hover:text-white transition-colors"
@@ -643,6 +646,7 @@ import AdminIndex from "./AdminIndex.vue";
 import NewPackageModal from "@/Pages/Admin/components/NewPackageModal.vue";
 import EditPackageModal from "@/Pages/Admin/components/EditPackageModal.vue";
 import { ref, onMounted, computed, watch } from "vue";
+import { usePage } from "@inertiajs/vue3";
 import _ from "lodash";
 import axios from "axios";
 import { useToast } from "vue-toastification";
@@ -650,6 +654,8 @@ import { useToast } from "vue-toastification";
 defineOptions({ layout: AdminIndex });
 
 const toast = useToast();
+const page = usePage();
+const role = page?.props?.auth?.user?.role;
 const showModal = ref(false);
 const showEditModal = ref(false);
 const showDeleteConfirm = ref(false);
@@ -671,6 +677,10 @@ const itemsPerPage = ref(10);
 
 const statusOptions = ["", "Active", "Inactive"];
 const bookingTypeOptions = ["", "exclusive", "joint"];
+
+const isStaffRole = computed(() => {
+  return role?.toLowerCase() === "staff";
+});
 
 const hasActiveFilters = computed(() => {
   return (
@@ -817,8 +827,6 @@ const toggleStatus = async (packageItem) => {
     packageItem.status = packageItem.status === 'active' ? 'inactive' : 'active'
   }
 }
-
-
 
 const fetchPackages = async () => {
   try {

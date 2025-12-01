@@ -121,7 +121,7 @@
 
         <nav v-if="isSidebarOpen" class="flex flex-col gap-1 px-3 mt-6">
           <Link
-            v-for="item in navigationItems"
+            v-for="item in filteredNavigationItems.filter(i => !i.submenu)"
             :key="item.href"
             :href="item.href"
             class="group relative flex items-center gap-3 px-4 py-3 rounded-lg text-white/90 hover:text-white transition-all duration-200 hover:bg-white/10"
@@ -137,22 +137,63 @@
               class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-white rounded-r-full"
             ></div>
           </Link>
+
+          <div v-for="item in filteredNavigationItems.filter(i => i.submenu)" :key="item.label" class="relative">
+            <button
+              @click="toggleDropdown(item.label)"
+              class="w-full group relative flex items-center justify-between gap-3 px-4 py-3 rounded-lg text-white/90 hover:text-white transition-all duration-200 hover:bg-white/10"
+              :class="
+                isDropdownOpen(item.label) || isAnySubmenuActive(item.submenu)
+                  ? 'bg-[#73BE5D] text-white shadow-lg shadow-[#73BE5D]/30'
+                  : ''
+              "
+            >
+              <span class="font-medium text-base">{{ item.label }}</span>
+              <svg
+                :class="[
+                  'w-5 h-5 transition-transform duration-200',
+                  isDropdownOpen(item.label) ? 'rotate-180' : '',
+                ]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                />
+              </svg>
+              <div
+                v-if="isAnySubmenuActive(item.submenu)"
+                class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-white rounded-r-full"
+              ></div>
+            </button>
+
+            <div
+              v-if="isDropdownOpen(item.label)"
+              class="pl-4 mt-1 flex flex-col gap-1"
+            >
+              <Link
+                v-for="subitem in item.submenu"
+                :key="subitem.href"
+                :href="subitem.href"
+                class="flex items-center gap-3 px-4 py-3 rounded-lg text-white/80 hover:text-white transition-all duration-200 hover:bg-white/10 text-sm"
+                :class="
+                  isActive(subitem.href)
+                    ? 'bg-white/20 text-white font-medium'
+                    : ''
+                "
+              >
+                <span class="font-medium">{{ subitem.label }}</span>
+              </Link>
+            </div>
+          </div>
         </nav>
       </div>
 
       <div v-if="isSidebarOpen" class="flex flex-col gap-1 px-3 mb-6 mt-auto">
-        <!-- <Link
-          href="/admin/settings"
-          class="group relative flex items-center gap-3 px-4 py-3 rounded-lg text-white/90 hover:text-white transition-all duration-200 hover:bg-white/10"
-          :class="
-            isActive('/admin/settings')
-              ? 'bg-[#73BE5D] text-white shadow-lg shadow-[#73BE5D]/30'
-              : ''
-          "
-        >
-          <span class="font-medium text-base">Settings</span>
-        </Link> -->
-
         <button
           @click="handleLogout"
           class="group flex items-center gap-3 px-4 py-3 rounded-lg text-white/90 hover:text-white transition-all duration-200 hover:bg-red-500/20 w-full text-left mt-2 border border-white/10"
@@ -197,7 +238,26 @@ import { Link, usePage, router } from "@inertiajs/vue3";
 import { ref, computed } from "vue";
 
 const isSidebarOpen = ref(true);
+const openDropdowns = ref([]);
+
 const toggleSidebar = () => (isSidebarOpen.value = !isSidebarOpen.value);
+
+const toggleDropdown = (dropdownName) => {
+  const index = openDropdowns.value.indexOf(dropdownName);
+  if (index > -1) {
+    openDropdowns.value.splice(index, 1);
+  } else {
+    openDropdowns.value.push(dropdownName);
+  }
+};
+
+const isDropdownOpen = (dropdownName) => {
+  return openDropdowns.value.includes(dropdownName);
+};
+
+const isAnySubmenuActive = (submenu) => {
+  return submenu.some(item => page.url.startsWith(item.href));
+};
 
 const isLoggingOut = ref(false);
 
@@ -209,12 +269,46 @@ const handleLogout = () => {
 };
 
 const page = usePage();
+const role = page?.props?.auth?.user?.role;
 
 const adminName = computed(() => {
   return page.props.auth?.user?.first_name || "ADMIN";
 });
 
 const isActive = (path) => page.url.startsWith(path);
+
+const isStaffRole = computed(() => {
+  return role?.toLowerCase() === "staff";
+});
+
+const navigationItems = [
+  { href: "/admin/admindashboard", label: "Dashboard" },
+  { href: "/admin/packages", label: "Packages" },
+  { href: "/admin/booking-entries", label: "Booking Entries" },
+  { href: "/admin/payment-confirmation", label: "Payment Management" },
+  { href: "/admin/review-feedback", label: "Review & Feedback" },
+  { href: "/admin/login-history", label: "Login History" },
+  {
+    label: "Settings",
+    submenu: [
+      { href: "/admin/users", label: "Users" },
+      { href: "/admin/content-management", label: "Content Management" },
+    ],
+  },
+];
+
+const filteredNavigationItems = computed(() => {
+  const userRole = page.props.auth?.user?.role;
+  const isStaff = userRole === "Staff" || userRole === "staff";
+
+  if (isStaff) {
+    return navigationItems.filter(
+      item => item.label !== "Login History" && item.label !== "Settings"
+    );
+  }
+
+  return navigationItems;
+});
 
 const headerTitle = computed(() => {
   if (page.url.startsWith("/admin/admindashboard"))
@@ -258,17 +352,6 @@ const headerTitle = computed(() => {
     return { title: "Settings", subtitle: "Configure system preferences" };
   return { title: "Admin", subtitle: "" };
 });
-
-const navigationItems = [
-  { href: "/admin/admindashboard", label: "Dashboard" },
-  { href: "/admin/users", label: "Users" },
-  { href: "/admin/packages", label: "Packages" },
-  { href: "/admin/booking-entries", label: "Booking Entries" },
-  { href: "/admin/payment-confirmation", label: "Payment Management" },
-  { href: "/admin/content-management", label: "Content Management" },
-  { href: "/admin/review-feedback", label: "Review & Feedback" },
-  { href: "/admin/login-history", label: "Login History" },
-];
 </script>
 
 <style scoped>

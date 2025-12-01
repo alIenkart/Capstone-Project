@@ -43,11 +43,11 @@ class AuthenticatedSessionController extends Controller
         }
 
         // Record successful login for admin users
-        if ($user->role === 'Admin') {
+        if ($user->role === 'Admin' || $user->role === 'Staff') {
             LoginHistoryService::recordLogin($request, $user);
         }
 
-        if ($user->role === 'Admin') {
+        if ($user->role === 'Admin' || $user->role === 'Staff') {
             return redirect()->route('admin.admindashboard');
         }
 

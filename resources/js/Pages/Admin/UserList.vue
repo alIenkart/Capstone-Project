@@ -159,6 +159,7 @@
                   <span :class="{
                     'bg-purple-100 text-purple-700': user.role === 'Admin' || user.role === 'admin',
                     'bg-blue-100 text-blue-700' : user.role === 'Customer' || user.role === 'customer',
+                    'bg-orange-100 text-orange-700' : user.role === 'Staff' || user.role === 'staff',
                   }" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold capitalize">
                     {{ user.role }}
                   </span>
