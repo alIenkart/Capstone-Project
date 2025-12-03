@@ -14,5 +14,7 @@ class ModeOfPayment extends Model
         'notes',
         'qr_image',
         'created_by',
+        'name',
+        'number',
     ];
 }

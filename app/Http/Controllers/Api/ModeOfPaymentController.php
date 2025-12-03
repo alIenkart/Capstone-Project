@@ -28,6 +28,8 @@ class ModeOfPaymentController extends Controller
         $request->validate([
             'mode_of_payment' => 'required|string|max:255',
             'notes' => 'nullable|string',
+            'name' => 'required|string|max:255',
+            'number' => 'required|string|max:50',
             'qr_image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
@@ -37,6 +39,8 @@ class ModeOfPaymentController extends Controller
         $payment = ModeOfPayment::create([
             'mode_of_payment' => $request->mode_of_payment,
             'notes' => $request->notes,
+            'name' => $request->name,
+            'number' => $request->number,
             'created_by' => $user->first_name . ' ' . $user->last_name,
             'qr_image' => $path,
         ]);
@@ -82,9 +86,11 @@ class ModeOfPaymentController extends Controller
             ], 404);
         }
 
-        $request->validate([
+         $request->validate([
             'mode_of_payment' => 'nullable|string|max:255',
             'notes' => 'nullable|string',
+            'name' => 'nullable|string|max:255',
+            'number' => 'nullable|string|max:50',
             'qr_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
@@ -98,6 +104,8 @@ class ModeOfPaymentController extends Controller
             'mode_of_payment' => $request->mode_of_payment,
             'notes' => $request->notes,
             'qr_image' => $imagePath ?? $payment->qr_image,
+            'name' => $request->name,
+            'number' => $request->number,
         ]);
         return response()->json([
             'success' => true,

@@ -1,17 +1,17 @@
 <template>
   <Transition>
     <div v-if="show" class="fixed inset-0 z-[70] bg-black/50 backdrop-blur-sm flex items-center justify-center">
-      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden transform transition-all">
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md h-[80vh] overflow-hidden transform transition-all flex flex-col">
 
         <!-- Header -->
-        <div class="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-6">
+        <div class="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-6 flex-shrink-0">
           <h3 class="text-xl font-bold text-white flex items-center gap-3">
             Update Mode of Payment
           </h3>
         </div>
 
-        <!-- Form -->
-        <div class="px-6 py-6 space-y-4">
+        <!-- Scrollable Form -->
+        <div class="px-6 py-6 space-y-4 overflow-y-auto flex-1">
 
           <!-- Mode of Payment -->
           <div>
@@ -19,6 +19,26 @@
               Mode of Payment*
             </label>
             <input type="text" v-model="formData.mode_of_payment" placeholder="GCASH, PAYMAYA, ETC."
+              class="w-full rounded-xl border-2 border-slate-200 focus:border-[#217093]
+                     focus:ring-4 focus:ring-[#217093]/10 px-4 py-3 text-sm font-medium" />
+          </div>
+
+          <!-- Name -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">
+              Name
+            </label>
+            <input type="text" v-model="formData.name" placeholder="Enter name"
+              class="w-full rounded-xl border-2 border-slate-200 focus:border-[#217093]
+                     focus:ring-4 focus:ring-[#217093]/10 px-4 py-3 text-sm font-medium" />
+          </div>
+
+          <!-- Number -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 uppercase mb-2">
+              Number
+            </label>
+            <input type="text" v-model="formData.number" placeholder="Enter number"
               class="w-full rounded-xl border-2 border-slate-200 focus:border-[#217093]
                      focus:ring-4 focus:ring-[#217093]/10 px-4 py-3 text-sm font-medium" />
           </div>
@@ -54,7 +74,7 @@
         </div>
 
         <!-- Actions -->
-        <div class="bg-slate-50 px-6 py-4 border-t flex justify-end gap-3">
+        <div class="bg-slate-50 px-6 py-4 border-t flex justify-end gap-3 flex-shrink-0">
           <button @click="$emit('close')" class="rounded-lg px-6 py-2.5 text-sm font-semibold bg-slate-200">
             Cancel
           </button>
@@ -86,9 +106,12 @@ const isSubmitting = ref(false);
 
 const formData = ref({
   mode_of_payment: "",
+  name: "",
+  number: "",
   notes: "",
   qr_image_base64: null,   // Base64 string for image
   qr_image_preview: null,
+  image: null,
 });
 
 watch(
@@ -96,6 +119,8 @@ watch(
   (val) => {
     if (val) {
       formData.value.mode_of_payment = val.mode_of_payment || "";
+      formData.value.name = val.name || "";
+      formData.value.number = val.number || "";
       formData.value.notes = val.notes || "";
       formData.value.qr_image_base64 = null;
       formData.value.image = null;
@@ -107,7 +132,6 @@ watch(
   },
   { immediate: true }
 );
-
 
 const handleImageUpload = (event) => {
   const file = event.target.files[0];
@@ -138,6 +162,8 @@ const updateModeOfPayment = async () => {
 
     const payload = {
       mode_of_payment: formData.value.mode_of_payment,
+      name: formData.value.name,
+      number: formData.value.number,
       notes: formData.value.notes || "",
       qr_image_base64: qr_image_base64,
     };
@@ -157,5 +183,4 @@ const updateModeOfPayment = async () => {
     isSubmitting.value = false;
   }
 };
-
 </script>
