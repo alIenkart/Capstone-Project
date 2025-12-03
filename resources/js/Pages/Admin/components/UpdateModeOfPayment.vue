@@ -72,7 +72,7 @@
 <script setup>
 import { watch, ref } from "vue";
 import { useToast } from "vue-toastification";
-import { api } from "../../../api/api";
+import axios from "axios";
 
 const props = defineProps({
   show: Boolean,
@@ -82,36 +82,42 @@ const props = defineProps({
 const emit = defineEmits(["close", "saved"]);
 
 const toast = useToast();
-const service = new api();
-
 const isSubmitting = ref(false);
 
 const formData = ref({
   mode_of_payment: "",
   notes: "",
-  qr_image: null,
+  qr_image_base64: null,   // Base64 string for image
   qr_image_preview: null,
 });
 
-watch(() => props.payment, (val) => {
-  if (val) {
-    formData.value.mode_of_payment = val.mode_of_payment || "";
-    formData.value.notes = val.notes || "";
-    formData.value.qr_image = null;
-    formData.value.qr_image_preview = val.qr_image ? `/storage/${val.qr_image}` : null;
-  }
-}, { immediate: true });
+watch(
+  () => props.payment,
+  (val) => {
+    if (val) {
+      formData.value.mode_of_payment = val.mode_of_payment || "";
+      formData.value.notes = val.notes || "";
+      formData.value.qr_image_base64 = null;
+      formData.value.image = null;
+
+      formData.value.qr_image_preview = val.qr_image
+        ? `/storage/${val.qr_image}`
+        : null;
+    }
+  },
+  { immediate: true }
+);
 
 
 const handleImageUpload = (event) => {
   const file = event.target.files[0];
-  if (!file) return;
-  formData.qr_image = file;
-  formData.qr_image_preview = URL.createObjectURL(file);
+  formData.value.image = file;
+  
+  formData.value.qr_image_preview = URL.createObjectURL(file);
 };
 
 const updateModeOfPayment = async () => {
-  if (!formData.mode_of_payment) {
+  if (!formData.value.mode_of_payment) {
     toast.error("Mode of Payment is required.");
     return;
   }
@@ -119,16 +125,30 @@ const updateModeOfPayment = async () => {
   isSubmitting.value = true;
 
   try {
-    const data = new FormData();
-    data.append("mode_of_payment", formData.mode_of_payment);
-    data.append("notes", formData.notes || "");
-    if (formData.qr_image) data.append("qr_image", formData.qr_image);
+    let qr_image_base64 = null;
 
-    // PATCH request
-    await service.updateModeOfPayment(props.payment.id, data);
+    if (formData.value.image) {
+      qr_image_base64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = e => resolve(e.target.result);
+        reader.onerror = err => reject(err);
+        reader.readAsDataURL(formData.value.image);
+      });
+    }
+
+    const payload = {
+      mode_of_payment: formData.value.mode_of_payment,
+      notes: formData.value.notes || "",
+      qr_image_base64: qr_image_base64,
+    };
+
+    const response = await axios.put(
+      `/api/mode-of-payments/${props.payment.id}`,
+      payload
+    );
 
     toast.success("Mode of Payment updated successfully.");
-    emit("saved");
+    emit("saved", response.data);
     emit("close");
   } catch (error) {
     console.error("Error updating mode of payment:", error);
@@ -137,4 +157,5 @@ const updateModeOfPayment = async () => {
     isSubmitting.value = false;
   }
 };
+
 </script>
