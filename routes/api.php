@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\DisasterNotificationController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\Api\ReceiptController;
+use App\Http\Controllers\Api\ModeOfPaymentController;
 
 Route::middleware('api')->group(function () {
 
@@ -69,4 +70,5 @@ Route::middleware('api')->group(function () {
 Route::middleware(['web', 'auth', 'verified'])->group(function () {
     Route::apiResource('receipts', ReceiptController::class);
     Route::apiResource('payments', PaymentController::class);
+    Route::apiResource('mode-of-payments', ModeOfPaymentController::class);
 });

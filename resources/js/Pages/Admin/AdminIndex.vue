@@ -293,6 +293,7 @@ const navigationItems = [
     submenu: [
       { href: "/admin/users", label: "Users" },
       { href: "/admin/content-management", label: "Content Management" },
+      { href: "/admin/payment-configuration", label: "Payment Configuration" },
     ],
   },
 ];
@@ -354,6 +355,11 @@ const headerTitle = computed(() => {
     return {
       title: "Content Management",
       subtitle: "Manage site content and pages",
+    };
+  if (page.url.startsWith("/admin/payment-configuration"))
+    return {
+      title: "Mode Of Payment Configuration",
+      subtitle: "Manage mode of payment options",
     };
   if (page.url.startsWith("/admin/review-feedback"))
     return {

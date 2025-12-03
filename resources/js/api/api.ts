@@ -232,8 +232,19 @@ export class api {
     }
 
     fetchAnalyticsData(period) {
-        console.log("Sending period:", period);
         return plainInstance.get(`/api/analytics/`, { params: { period } });
-    
+    }
+
+    fetchModeOfPayments() {
+        return plainInstance.get("/api/mode-of-payments");
+    }
+    createModeOfPayment(payload) {
+        return plainInstance.post("/api/mode-of-payments", payload);
+    }
+    updateModeOfPayment(id, data) {
+        return plainInstance.patch(`/api/mode-of-payments/${id}`, data);
+    }
+    deleteModeOfPayment(id){  
+        return plainInstance.delete(`/api/mode-of-payments/${id}`);
     }
 }

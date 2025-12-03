@@ -98,6 +98,10 @@ Route::middleware(['auth', 'is.admin'])->group(function () {
     Route::get('/admin/content-management', function () {
         return Inertia::render('Admin/ContentManagement');
     })->name('admin.content-management');
+    
+    Route::get('/admin/payment-configuration', function () {
+        return Inertia::render('Admin/PaymentManagement');
+    })->name('admin.payment-management');
 
     Route::get('/admin/review-feedback', function () {
         return Inertia::render('Admin/ReviewFeedback');
