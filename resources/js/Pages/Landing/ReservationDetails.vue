@@ -324,7 +324,7 @@
 
               <div class="flex justify-between items-center text-lg">
                 <span class="font-bold">Total</span>
-                <span :class="'text-[#73BE5D]'" class="font-bold text-2xl">₱{{ finalTotalAmount.toLocaleString() }}</span>
+                <span :class="'text-[#73BE5D]'" class="font-bold text-2xl">₱{{ finalTotalAmount?.toLocaleString() }}</span>
               </div>
             </div>
 
@@ -404,7 +404,11 @@ const totalAmount = computed(
   () => adultTotalAmount.value + kidsTotalAmount.value
 );
 
-const finalTotalAmount = computed(() => totalAmount.value + totalExtraFee.value);
+const finalTotalAmount = computed(() => {
+  if (!(pax.value > 0 || kidsPax.value > 0)) return 0;
+  return totalAmount.value + totalExtraFee.value
+});
+
 
 
 const isExclusiveTour = computed(
@@ -438,20 +442,30 @@ const kidsRate = computed(() => {
 
 const adultExtraFee = computed(() => {
   if (!extraDays.value) return 0;
-  console.log("🚀 ~ booking.adultExtraFee:", booking.adultExtraFee)
-  console.log("🚀 ~ extraDays.value:", extraDays.value)
+  console.log("booking", booking.adultExtraFee)
   return booking.adultExtraFee * extraDays.value;
 });
 
 const kidsExtraFee = computed(() => {
   if (!extraDays.value) return 0;
-  console.log("🚀 ~ booking.kidsExtraFee:", booking.kidsExtraFee)
-  console.log("🚀 ~ extraDays.value:", extraDays.value)
   return booking.kidsExtraFee * extraDays.value;
 });
 
 const totalExtraFee = computed(() => {
-  return adultExtraFee.value + kidsExtraFee.value;
+  if (!(pax.value > 0 || kidsPax.value > 0)) {
+    return 0;
+  }
+  else if (pax.value > 0) {
+     return adultExtraFee.value;
+  }
+  else if (kidsPax.value > 0) {
+    return kidsExtraFee.value;
+  }
+  else if ((pax.value > 0 || kidsPax.value > 0)) {
+    return adultExtraFee.value + kidsExtraFee.value;
+  } else {
+    return 0;
+  }
 });
 
 const displayItinerary = computed(() => {
@@ -630,8 +644,8 @@ const postPackage = () => {
   booking.setAdultRate(adultRate.value);
   booking.setKidsRate(kidsRate.value);
 
-  booking.setAdultExtraFee(adultRate.value * pax.value);
-  booking.setKidsExtraFee(kidsRate.value * kidsPax.value);
+  booking.setAdultExtraFee(adultRate.value);
+  booking.setKidsExtraFee(kidsRate.value);
 
   booking.setAdultTotalAmount(adultTotalAmount.value);
   booking.setKidsTotalAmount(kidsTotalAmount.value);
