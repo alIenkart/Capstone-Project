@@ -973,7 +973,6 @@ onMounted(async () => {
     bookings.value = await fetchBookingsByUser(userId);
     const responseModeOfPayment = await service.fetchModeOfPayments();
     modeOfPayment.value = responseModeOfPayment.data.data;
-    console.log("🚀 ~ modeOfPayment.value:", modeOfPayment.value)
     if (filteredBookings.value.length) {
       payments.value = await fetchPaymentsByBookingId(
         filteredBookings.value[selectedBookingIndex.value].id
