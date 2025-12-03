@@ -23,46 +23,6 @@
 
       <div v-if="isModalOpen" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-white rounded-lg shadow-lg p-8 w-[900px] relative max-h-[90vh] overflow-y-auto">
-          <!-- <h2 class="text-lg font-semibold mb-4">Select Period to Download</h2>
-          <div class="relative mb-6 w-48 ml-auto">
-            <button @click="isPeriodOpen = !isPeriodOpen" class="w-full px-4 py-2 border border-gray-300 rounded-md text-left hover:border-blue-500 flex justify-between items-center">
-              {{ selectedPeriod }}
-              <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-              </svg>
-            </button>
-
-            <div
-              v-if="isPeriodOpen"
-              class="absolute left-0 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-xl z-50"
-            >
-              <div
-                @click="handlePeriodSelect('Monthly')"
-                :class="['px-4 py-3 cursor-pointer flex justify-between hover:bg-blue-50', selectedPeriod === 'Monthly' ? 'bg-blue-50 border-l-4 border-blue-500' : '']"
-              >
-                <span :class="selectedPeriod === 'Monthly' ? 'text-blue-700 font-medium' : 'text-gray-700 font-medium'">
-                  Monthly
-                </span>
-                <svg v-if="selectedPeriod === 'Monthly'" class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                </svg>
-              </div>
-
-              <div
-                @click="handlePeriodSelect('Yearly')"
-                :class="['px-4 py-3 cursor-pointer flex justify-between hover:bg-blue-50', selectedPeriod === 'Yearly' ? 'bg-blue-50 border-l-4 border-blue-500' : '']"
-              >
-                <span :class="selectedPeriod === 'Yearly' ? 'text-blue-700 font-medium' : 'text-gray-700 font-medium'">
-                  Yearly
-                </span>
-                <svg v-if="selectedPeriod === 'Yearly'" class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                </svg>
-              </div>
-            </div>
-          </div> -->
-
-          <!-- Report Tables -->
           <div ref="reportRef" class="space-y-6">
            <h2 class="text-2xl font-semibold text-gray-800 mb-4">
               <div class="flex items-center justify-center gap-3">
@@ -128,7 +88,6 @@
               </tbody>
             </table>
 
-            <!-- Payments Table -->
             <h3 class="font-semibold text-lg mt-4 mb-2">Payments</h3>
             <table class="w-full border border-gray-200 mb-4">
               <thead>
@@ -150,12 +109,6 @@
                   <td class="px-4 py-2 border">Under Review</td>
                   <td class="px-4 py-2 border">{{ underReview }}</td>
                 </tr>
-                <!-- <tr class="font-semibold bg-gray-50">
-                  <td class="px-4 py-2 border">Total Payments</td>
-                  <td class="px-4 py-2 border">
-                  {{ Number(fullyPaid) + Number(downPayment) + Number(underReview) }}
-                  </td>
-                </tr> -->
               </tbody>
             </table>
 
@@ -177,12 +130,11 @@
             </table>
           </div>
 
-          <!-- Modal Footer -->
           <div class="flex justify-end space-x-2 mt-6">
             <button @click="isModalOpen = false" class="px-4 py-2 rounded-md bg-gray-200 hover:bg-gray-300">
               Cancel
             </button>
-            <button @click="downloadData" class="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700">
+            <button @click="downloadData" :disabled="role === 'Staff'" class="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-lg">
               Download
             </button>
           </div>
@@ -239,132 +191,6 @@
         :revenue="revenue"
       />
     </div>
-
-
-    <div class="space-y-6 pt-4">
-      <!-- <h3 class="text-xl font-semibold text-gray-800">
-        Approved & Paid Bookings
-      </h3>
-
-      <div class="flex flex-col gap-5">
-        <div
-          class="bg-white rounded-xl p-4 shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-300"
-        >
-          <div
-            class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-4 mb-4"
-          >
-            <div class="space-y-1">
-              <div class="font-bold text-lg text-blue-700">
-                Baguio Tour - 3 Days & 2 Nights
-              </div>
-              <div class="text-sm text-gray-500">Customer: John Doe</div>
-            </div>
-
-            <div
-              class="mt-3 sm:mt-0 flex flex-wrap gap-4 text-sm text-gray-600 font-medium"
-            >
-              <span
-                class="flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-700 rounded-full"
-              >
-                <i class="fa fa-users"></i> 10 pax
-              </span>
-              <span
-                class="flex items-center gap-2 px-3 py-1 bg-gray-100 rounded-full"
-              >
-                Booking Type: Exclusive
-              </span>
-            </div>
-          </div>
-
-          <div
-            class="flex flex-col md:flex-row justify-between gap-4 text-gray-600"
-          >
-            <div class="space-y-1 text-sm">
-              <div class="flex items-center gap-2">
-                <i class="fa fa-calendar text-gray-400 w-4"></i>
-                <span class="font-medium text-gray-700">10 January 2025</span>
-              </div>
-              <div>Note: Senior/PWD is applied</div>
-            </div>
-
-            <div class="space-y-1 text-sm">
-              <div class="flex items-center gap-2">
-                Payment Status:
-                <span
-                  class="text-green-600 font-bold flex items-center gap-1 bg-green-50 px-3 py-1 rounded-full"
-                >
-                  <i class="fa fa-check-circle"></i> Verified
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div
-          class="bg-white rounded-xl p-4 shadow-md border border-gray-100 hover:shadow-lg transition-shadow duration-300"
-        >
-          <div
-            class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b pb-4 mb-4"
-          >
-            <div class="space-y-1">
-              <div class="font-bold text-lg text-blue-700">
-                La Union Tour - 3 Days & 2 Nights
-              </div>
-              <div class="text-sm text-gray-500">
-                Customers: John Doe, Michael Herb, Jane Dani
-              </div>
-            </div>
-
-            <div
-              class="mt-3 sm:mt-0 flex flex-wrap gap-4 text-sm text-gray-600 font-medium"
-            >
-              <span
-                class="flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-700 rounded-full"
-              >
-                <i class="fa fa-users"></i> 10 pax
-              </span>
-              <span
-                class="flex items-center gap-2 px-3 py-1 bg-gray-100 rounded-full"
-              >
-                Booking Type: Joint
-              </span>
-            </div>
-          </div>
-
-          <div
-            class="flex flex-col md:flex-row justify-between gap-4 text-gray-600"
-          >
-            <div class="space-y-1 text-sm">
-              <div class="flex items-center gap-2">
-                <i class="fa fa-calendar text-gray-400 w-4"></i>
-                <span class="font-medium text-gray-700">2 January 2025</span>
-              </div>
-              <div>Note: Senior/PWD is applied</div>
-              <div>Note: N/A</div>
-            </div>
-
-            <div class="space-y-1 text-sm">
-              <div class="flex items-center gap-2">
-                Payment Status:
-                <span
-                  class="text-green-600 font-bold flex items-center gap-1 bg-green-50 px-3 py-1 rounded-full"
-                >
-                  <i class="fa fa-check-circle"></i> Verified
-                </span>
-              </div>
-            </div>
-          </div>
-        </div> 
-      </div> -->
-      
-      <!-- <div class="flex justify-center pt-6">
-        <button
-          class="bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg px-10 py-3 text-base transition-colors shadow-md hover:shadow-lg"
-        >
-          See All Bookings
-        </button>
-      </div> -->
-    </div>
   </div>
 </template>
 
@@ -379,8 +205,12 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { onMounted, ref, watch, computed } from "vue";
 import { api } from "../../api/api";
+import { usePage } from "@inertiajs/vue3";
 
 defineOptions({ layout: AdminIndex });
+
+const page = usePage();
+const role = page?.props?.auth?.user?.role;
 const service = new api();
 const data = ref({});
 const selectedPeriod = ref('Monthly');

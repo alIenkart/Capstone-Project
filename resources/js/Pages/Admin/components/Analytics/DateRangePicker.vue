@@ -8,9 +8,10 @@
           Start Date*
         </label>
         <button
+          :disabled="disabled"
           type="button"
           @click="openCalendar('start')"
-          class="w-full px-4 py-3 bg-gradient-to-r from-slate-100 to-slate-50 border-2 border-slate-200 rounded-xl text-slate-800 font-medium hover:border-[#217093] hover:bg-blue-50 transition-all focus:outline-none focus:ring-4 focus:ring-[#217093]/20"
+          class="w-full px-4 py-3 bg-gradient-to-r from-slate-100 to-slate-50 border-2 border-slate-200 rounded-xl text-slate-800 font-medium hover:border-[#217093] hover:bg-blue-50 transition-all focus:outline-none focus:ring-4 focus:ring-[#217093]/20 disabled:bg-slate-100 disabled:cursor-not-allowed disabled:text-slate-500"
         >
           {{ formatDate(startDate) || "Select start date" }}
         </button>
@@ -25,7 +26,7 @@
         <button
           type="button"
           @click="openCalendar('end')"
-          :disabled="!startDate"
+          :disabled="!startDate || disabled"
           class="w-full px-4 py-3 bg-gradient-to-r from-slate-100 to-slate-50 border-2 border-slate-200 rounded-xl text-slate-800 font-medium hover:border-[#217093] hover:bg-blue-50 transition-all focus:outline-none focus:ring-4 focus:ring-[#217093]/20 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {{ formatDate(endDate) || "Select end date" }}
@@ -178,6 +179,10 @@ const props = defineProps({
     type: String,
     default: "",
   },
+  disabled: {
+    type: Boolean,
+    default: false
+  }
 });
 
 const emit = defineEmits(["update:modelValueStart", "update:modelValueEnd"]);

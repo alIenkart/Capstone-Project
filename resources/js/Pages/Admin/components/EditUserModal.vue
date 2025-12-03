@@ -55,20 +55,27 @@
 
         <div class="relative" data-filter-container>
           <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2">Role</label>
-          <button @click="isRoleDropdownOpen = !isRoleDropdownOpen"
-            class="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200">
-            <span class="font-semibold text-gray-800">
+          <button @click="!isStaffRole && (isRoleDropdownOpen = !isRoleDropdownOpen)"
+            :disabled="isStaffRole"
+            :class="[
+              'w-full flex items-center justify-between px-4 py-3 rounded-lg transition-all duration-200',
+              isStaffRole
+                ? 'bg-gray-100 border border-gray-300 cursor-not-allowed opacity-60'
+                : 'bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
+            ]">
+            <span :class="['font-semibold', isStaffRole ? 'text-gray-500' : 'text-gray-800']">
               {{ form.role || 'Select Role' }}
             </span>
             <svg :class="[
-              'w-5 h-5 text-blue-600 transition-transform duration-300',
+              'w-5 h-5 transition-transform duration-300',
+              isStaffRole ? 'text-gray-400' : 'text-blue-600',
               isRoleDropdownOpen ? 'rotate-180' : '',
             ]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
             </svg>
           </button>
 
-          <div v-if="isRoleDropdownOpen"
+          <div v-if="isRoleDropdownOpen && !isStaffRole"
             class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10 overflow-hidden">
             <div v-for="option in roleOptions" :key="option" @click="handleRoleSelect(option)" :class="[
               'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 last:border-b-0 hover:bg-blue-50',
@@ -92,6 +99,10 @@
               </svg>
             </div>
           </div>
+
+          <p v-if="isStaffRole" class="text-xs text-gray-500 mt-2">
+            Staff users cannot change roles
+          </p>
         </div>
 
         <div class="relative">
@@ -159,6 +170,7 @@
 import { ref, computed, watch } from "vue";
 import axios from "axios";
 import { useToast } from "vue-toastification";
+import { usePage } from "@inertiajs/vue3";
 
 const props = defineProps({
   user: Object,
@@ -168,6 +180,8 @@ const props = defineProps({
 const emit = defineEmits(["close", "updated"]);
 
 const toast = useToast();
+const page = usePage();
+const role = page?.props?.auth?.user?.role;
 const isLoading = ref(false);
 const showPassword = ref(false);
 const showPasswordConfirm = ref(false);
@@ -175,6 +189,10 @@ const isRoleDropdownOpen = ref(false);
 const form = ref({ ...props.user });
 
 const roleOptions = ["Admin", "Customer", "Staff"];
+
+const isStaffRole = computed(() => {
+  return role?.toLowerCase() === "staff";
+});
 
 const hasChanges = computed(() => {
   return JSON.stringify(form.value) !== JSON.stringify(props.user);

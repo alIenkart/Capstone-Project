@@ -430,18 +430,27 @@
                   ₱{{ Number(packageItem.kids_pax_rate).toLocaleString() }}
                 </td>
                 <td class="px-6 py-4 text-sm font-medium text-gray-700 text-center">
-                  <label class="relative inline-flex items-center cursor-pointer">
+                  <label class="relative inline-flex items-center" :class="isStaffRole ? 'cursor-not-allowed' : 'cursor-pointer'">
                     <input
                       type="checkbox"
+                      :disabled="isStaffRole"
                       :checked="packageItem.status === 'active'"
                       @change="toggleStatus(packageItem)"
                       class="sr-only peer"
                     />
                     <div
-                      class="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-green-500 transition-colors"
+                      :class="[
+                        'w-11 h-6 rounded-full transition-all',
+                        packageItem.status === 'active' ? 'bg-green-500' : 'bg-gray-300',
+                        isStaffRole ? 'opacity-50' : ''
+                      ]"
                     ></div>
                     <div
-                      class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform peer-checked:translate-x-5"
+                      :class="[
+                        'absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition-transform',
+                        packageItem.status === 'active' ? 'translate-x-5' : '',
+                        isStaffRole ? 'opacity-50' : ''
+                      ]"
                     ></div>
                   </label>
                 </td>
@@ -470,7 +479,7 @@
                       @click="openDeleteConfirm(packageItem.id)"
                       :disabled="isStaffRole"
                       :title="isStaffRole ? 'Staff users cannot delete packages' : 'Delete'"
-                      class="p-2 hover:bg-red-500 hover:text-white rounded-lg transition-all group disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent"
+                      class="p-2 hover:bg-red-500 hover:text-white rounded-lg transition-all group disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <svg
                         class="w-5 h-5 text-red-500 group-hover:text-white transition-colors"

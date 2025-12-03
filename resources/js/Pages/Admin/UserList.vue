@@ -106,8 +106,10 @@
               </div>
             </div>
 
-            <button @click="showAddModal = true"
-              class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#1E71B8] to-[#2a8bb5] hover:from-[#2a8bb5] hover:to-[#1E71B8] text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+            <button 
+              @click="showAddModal = true"
+              :disabled="role === 'Staff'"
+              class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#1E71B8] to-[#2a8bb5] hover:from-[#2a8bb5] hover:to-[#1E71B8] text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-lg">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
               </svg>
@@ -193,7 +195,8 @@
 
                   <button
                       @click="openDeleteConfirm(user.id)"
-                      class="p-2 hover:bg-red-500 hover:text-white rounded-lg transition-all group"
+                      :disabled="role === 'Staff'"
+                      class="p-2 hover:bg-red-500 hover:text-white rounded-lg transition-all group disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-lg"
                       title="Delete"
                     >
                       <svg
@@ -566,11 +569,14 @@ import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
 import EditUserModal from "./components/EditUserModal.vue";
 import { useToast } from "vue-toastification";
 import { api } from "../../api/api";
+import { usePage } from "@inertiajs/vue3";
 
 defineOptions({ layout: AdminIndex });
 
 const service = new api();
 const toast = useToast();
+const page = usePage();
+const role = page?.props?.auth?.user?.role;
 const users = ref([]);
 const selectedUser = ref(null);
 const showEditModal = ref(false);

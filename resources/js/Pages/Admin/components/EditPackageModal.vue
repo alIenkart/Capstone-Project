@@ -5,7 +5,8 @@
       <div
         class="relative transform overflow-hidden rounded-2xl bg-white shadow-2xl transition-all sm:my-8 w-full max-w-7xl mx-auto">
         <button type="button"
-          class="absolute right-4 top-4 z-10 rounded-full p-2 text-white/80 hover:text-white hover:bg-white/20 transition-all"
+          :disabled="!isStaffRole"
+          class="absolute right-4 top-4 z-10 rounded-full p-2 text-white/80 hover:text-white hover:bg-white/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           @click="closeModal">
           <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -58,7 +59,7 @@
                         Image</span>
                       <span class="text-xs text-slate-400">PNG, JPG • Max 10MB</span>
                     </template>
-                    <input type="file" id="imageUpload" class="hidden" @change="handleImageUpload" />
+                    <input type="file" id="imageUpload" class="hidden" :disabled="isStaffRole" @change="handleImageUpload" />
                   </label>
                 </div>
               </div>
@@ -76,20 +77,23 @@
                     <label for="name"
                       class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Package
                       Name*</label>
-                    <input type="text" id="name" v-model="formData.package_name"
-                      class="w-full rounded-xl border-2 border-slate-200 focus:border-[#217093] focus:ring-4 focus:ring-[#217093]/10 px-4 py-3 text-sm font-medium outline-none transition-all"
-                      placeholder="e.g., Paradise Island Getaway" required />
+                    <input type="text" :disabled="isStaffRole" id="name" v-model="formData.package_name"
+                      class="w-full rounded-xl border-2 border-slate-200 focus:border-[#217093] focus:ring-4 focus:ring-[#217093]/10 px-4 py-3 text-sm font-medium outline-none transition-all disabled:bg-slate-100 disabled:cursor-not-allowed disabled:text-slate-500"
+                      placeholder="e.g., Paradise Island Getaway"
+                      required />
                   </div>
 
                   <DateRangePicker v-model:modelValueStart="formData.start_date"
-                    v-model:modelValueEnd="formData.end_date" />
+                    v-model:modelValueEnd="formData.end_date"
+                    :disabled="isStaffRole" />
 
                   <div>
                     <label for="destination"
                       class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Destination</label>
                     <input type="text" id="destination" v-model="formData.destination"
-                      class="w-full rounded-xl border-2 border-slate-200 focus:border-[#217093] focus:ring-4 focus:ring-[#217093]/10 px-4 py-3 text-sm font-medium outline-none transition-all"
-                      placeholder="e.g., Boracay" />
+                      class="w-full rounded-xl border-2 border-slate-200 focus:border-[#217093] focus:ring-4 focus:ring-[#217093]/10 px-4 py-3 text-sm font-medium outline-none transition-all disabled:bg-slate-100 disabled:cursor-not-allowed disabled:text-slate-500"
+                      placeholder="e.g., Boracay"
+                      :disabled="isStaffRole" />
                   </div>
 
                   <div class="md:col-span-2">
@@ -97,8 +101,9 @@
                       class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Region</label>
 
                     <div class="relative" ref="regionDropdown">
-                      <button type="button" @click="isRegionFilterOpen = !isRegionFilterOpen"
-                        class="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200">
+                      <button type="button" @click="isStaffRole ? (isRegionFilterOpen = !isRegionFilterOpen) : null"
+                        :disabled="isStaffRole"
+                        class="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-slate-100">
                         <span class="font-semibold text-gray-800">
                           {{
                             formData.region === ""
@@ -114,7 +119,7 @@
                         </svg>
                       </button>
 
-                      <div v-if="isRegionFilterOpen"
+                      <div v-if="isRegionFilterOpen && isStaffRole"
                         class="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10 overflow-hidden max-h-96 overflow-y-auto">
                         <div @click="handleRegionSelect('')" :class="[
                           'px-4 py-3 cursor-pointer transition-all duration-150 flex items-center gap-3 border-b border-gray-100 sticky top-0 bg-white hover:bg-blue-50',
@@ -168,7 +173,7 @@
                       'Land Travel',
                       'Water Adventure',
                       'Air Travel',
-                    ]" v-model="formData.tour_classification" placeholder="Select Classification" />
+                    ]" v-model="formData.tour_classification" placeholder="Select Classification" :disabled="isStaffRole" />
                   </div>
                 </div>
               </div>
@@ -236,8 +241,8 @@
                           clip-rule="evenodd" />
                       </svg>
                       <input type="number" id="discountedRate" v-model="formData.discounted_rate"
-                        class="w-full rounded-xl border-2 border-slate-200 focus:border-[#217093] focus:ring-4 focus:ring-[#217093]/10 pl-9 pr-4 py-3 text-sm font-bold outline-none transition-all"
-                        placeholder="0.00" />
+                        class="w-full rounded-xl border-2 border-slate-200 focus:border-[#217093] focus:ring-4 focus:ring-[#217093]/10 pl-9 pr-4 py-3 text-sm font-bold outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-slate-100"
+                        placeholder="0.00" :disabled="isStaffRole" />
                     </div>
                   </div>
                 </div>
@@ -262,8 +267,8 @@
                       </svg>
                       Activate Seasonal Pricing
                     </button>
-                    <button v-else type="button" @click="deactivateSeasonalPricing"
-                      class="inline-flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-lg transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0">
+                    <button v-else type="button" :disabled="isStaffRole" @click="deactivateSeasonalPricing"
+                      class="inline-flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-lg transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-slate-150">
                       Deactivate Seasonal
                     </button>
                   </div>
@@ -281,8 +286,8 @@
                             d="M11.99 2.243a4.49 4.49 0 0 0-3.398 1.55 4.49 4.49 0 0 0-3.497 1.306 4.491 4.491 0 0 0-1.307 3.498 4.491 4.491 0 0 0-1.548 3.397c0 1.357.6 2.573 1.548 3.397a4.491 4.491 0 0 0 1.307 3.498 4.49 4.49 0 0 0 3.498 1.307 4.49 4.49 0 0 0 3.397 1.549 4.49 4.49 0 0 0 3.397-1.549 4.49 4.49 0 0 0 3.497-1.307 4.491 4.491 0 0 0 1.306-3.497 4.491 4.491 0 0 0 1.55-3.398c0-1.357-.601-2.573-1.549-3.397a4.491 4.491 0 0 0-1.307-3.498 4.49 4.49 0 0 0-3.498-1.307 4.49 4.49 0 0 0-3.396-1.549Zm3.53 7.28a.75.75 0 0 0-1.06-1.06l-6 6a.75.75 0 1 0 1.06 1.06l6-6Zm-5.78-.905a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25Zm4.5 4.5a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25Z"
                             clip-rule="evenodd" />
                         </svg>
-                        <input type="number" v-model.number="seasonalPaxRate"
-                          class="w-full rounded-lg border-2 outline-none transition-all pl-10 pr-4 py-2.5 text-sm font-medium bg-white"
+                        <input type="number" :disabled="isStaffRole" v-model.number="seasonalPaxRate"
+                          class="w-full rounded-lg border-2 outline-none transition-all pl-10 pr-4 py-2.5 text-sm font-medium bg-white disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-slate-100"
                           style="border-color: #217093;"
                           @focus="$event.target.style.borderColor = '#2a8bb5'; $event.target.style.boxShadow = 'inset 0 0 0 3px rgba(42, 139, 181, 0.1)'"
                           @blur="$event.target.style.borderColor = '#217093'; $event.target.style.boxShadow = 'none'"
@@ -299,8 +304,8 @@
                             d="M11.99 2.243a4.49 4.49 0 0 0-3.398 1.55 4.49 4.49 0 0 0-3.497 1.306 4.491 4.491 0 0 0-1.307 3.498 4.491 4.491 0 0 0-1.548 3.397c0 1.357.6 2.573 1.548 3.397a4.491 4.491 0 0 0 1.307 3.498 4.49 4.49 0 0 0 3.498 1.307 4.49 4.49 0 0 0 3.397 1.549 4.49 4.49 0 0 0 3.397-1.549 4.49 4.49 0 0 0 3.497-1.307 4.491 4.491 0 0 0 1.306-3.497 4.491 4.491 0 0 0 1.55-3.398c0-1.357-.601-2.573-1.549-3.397a4.491 4.491 0 0 0-1.307-3.498 4.49 4.49 0 0 0-3.498-1.307 4.49 4.49 0 0 0-3.396-1.549Zm3.53 7.28a.75.75 0 0 0-1.06-1.06l-6 6a.75.75 0 1 0 1.06 1.06l6-6Zm-5.78-.905a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25Zm4.5 4.5a1.125 1.125 0 1 0 0 2.25 1.125 1.125 0 0 0 0-2.25Z"
                             clip-rule="evenodd" />
                         </svg>
-                        <input type="number" v-model.number="seasonalKidsPaxRate"
-                          class="w-full rounded-lg border-2 outline-none transition-all pl-10 pr-4 py-2.5 text-sm font-medium bg-white"
+                        <input type="number" :disabled="isStaffRole" v-model.number="seasonalKidsPaxRate"
+                          class="w-full rounded-lg border-2 outline-none transition-all pl-10 pr-4 py-2.5 text-sm font-medium bg-white disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-slate-100"
                           style="border-color: #217093;"
                           @focus="$event.target.style.borderColor = '#2a8bb5'; $event.target.style.boxShadow = 'inset 0 0 0 3px rgba(42, 139, 181, 0.1)'"
                           @blur="$event.target.style.borderColor = '#217093'; $event.target.style.boxShadow = 'none'"
@@ -309,8 +314,8 @@
                     </div>
                   </div>
 
-                  <button type="button" @click="updateSeasonalPricing"
-                    class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-sm font-bold rounded-lg hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                  <button type="button" :disabled="isStaffRole" @click="updateSeasonalPricing"
+                    class="w-full inline-flex items-center justify-center gap-2 px-5 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-sm font-bold rounded-lg hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-4 focus:ring-blue-500/30 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-slate-100">
                     Update Seasonal Pricing
                   </button>
                 </div>
@@ -328,16 +333,16 @@
                     <label for="maxOccupancy"
                       class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Maximum
                       Occupancy</label>
-                    <input type="number" id="maxOccupancy" v-model.number="formData.capacity"
-                      class="w-full rounded-xl border-2 border-slate-200 focus:border-[#217093] focus:ring-4 focus:ring-[#217093]/10 px-4 py-3 text-sm font-medium outline-none transition-all"
+                    <input :disabled="isStaffRole" type="number" id="maxOccupancy" v-model.number="formData.capacity"
+                      class="w-full rounded-xl border-2 border-slate-200 focus:border-[#217093] focus:ring-4 focus:ring-[#217093]/10 px-4 py-3 text-sm font-medium outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-slate-100"
                       placeholder="0" min="0" />
                   </div>
 
                   <div class="relative" ref="statusDropdown">
                     <label for="status"
                       class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Status</label>
-                    <button type="button" @click="isStatusOpen = !isStatusOpen"
-                      class="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200">
+                    <button type="button" :disabled="isStaffRole" @click="isStatusOpen = !isStatusOpen"
+                      class="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-lg hover:border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-slate-100">
                       <span class="font-semibold text-gray-800">
                         {{
                           formData.status === "active" ? "Active" : "Inactive"
@@ -412,8 +417,8 @@
                 <div class="flex items-center gap-3 mb-5">
                   <h4 class="text-xl font-bold text-slate-800">Description*</h4>
                 </div>
-                <textarea id="description" v-model="formData.description" rows="5"
-                  class="w-full rounded-xl border-2 border-slate-200 focus:border-[#217093] focus:ring-4 focus:ring-[#217093]/10 px-4 py-3 text-sm outline-none transition-all resize-none"
+                <textarea :disabled="isStaffRole" id="description" v-model="formData.description" rows="5"
+                  class="w-full rounded-xl border-2 border-slate-200 focus:border-[#217093] focus:ring-4 focus:ring-[#217093]/10 px-4 py-3 text-sm outline-none transition-all resize-none disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-slate-100"
                   placeholder="Describe the package in detail. What makes it special?" required></textarea>
               </div>
 
@@ -445,9 +450,9 @@
                           </svg>
                         </button>
                       </div>
-                      <textarea v-model="day.content"
+                      <textarea :disabled="isStaffRole" v-model="day.content"
                         :placeholder="`Describe the activities and highlights for Day ${day.id}...`" rows="4"
-                        class="w-full rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 px-4 py-3 text-sm outline-none transition-all resize-none"></textarea>
+                        class="w-full rounded-xl border-2 border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 px-4 py-3 text-sm outline-none transition-all resize-none disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-slate-100"></textarea>
                     </div>
                   </TransitionGroup>
 
@@ -464,6 +469,7 @@
                       class="opacity-0 group-hover:opacity-100 absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-slate-800 text-white text-xs rounded-lg whitespace-nowrap transition-opacity z-10 pointer-events-none">
                       <span v-if="!formData.start_date || !formData.end_date">Please select start and end dates
                         first</span>
+                      <span v-else-if="isStaffRole">Staff users cannot add days</span>
                       <span v-else>Maximum {{ maxItineraryDays }} days reached</span>
                     </div>
                   </div>
@@ -485,8 +491,8 @@
                     Terms & Conditions*
                   </h4>
                 </div>
-                <textarea id="termsCondition" v-model="formData.terms_condition" rows="5"
-                  class="w-full rounded-xl border-2 border-slate-200 focus:border-[#217093] focus:ring-4 focus:ring-[#217093]/10 px-4 py-3 text-sm outline-none transition-all resize-none"
+                <textarea id="termsCondition" :disabled="isStaffRole" v-model="formData.terms_condition" rows="5"
+                  class="w-full rounded-xl border-2 border-slate-200 focus:border-[#217093] focus:ring-4 focus:ring-[#217093]/10 px-4 py-3 text-sm outline-none transition-all resize-none disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-slate-100"
                   placeholder="Enter terms and conditions that apply to this package..." required></textarea>
               </div>
 
@@ -495,8 +501,8 @@
                 <div class="flex items-center gap-3 mb-5">
                   <h4 class="text-xl font-bold text-slate-800">Exclusions*</h4>
                 </div>
-                <textarea id="exclusions" v-model="formData.exclusions" rows="5"
-                  class="w-full rounded-xl border-2 border-slate-200 focus:border-[#217093] focus:ring-4 focus:ring-[#217093]/10 px-4 py-3 text-sm outline-none transition-all resize-none"
+                <textarea id="exclusions" :disabled="isStaffRole" v-model="formData.exclusions" rows="5"
+                  class="w-full rounded-xl border-2 border-slate-200 focus:border-[#217093] focus:ring-4 focus:ring-[#217093]/10 px-4 py-3 text-sm outline-none transition-all resize-none disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-slate-100"
                   placeholder="List what's not included in the package..." required></textarea>
               </div>
             </div>
@@ -513,8 +519,8 @@
               </svg>
               Cancel
             </button>
-            <button type="submit" @click="updatePackage"
-              class="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#217093] to-[#2a8bb5] hover:from-[#1a5a7a] hover:to-[#217093] px-6 sm:px-7 py-3 text-sm font-bold text-white shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 active:translate-y-0 w-full sm:w-auto">
+            <button type="submit" :disabled="isStaffRole" @click="updatePackage"
+              class="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#217093] to-[#2a8bb5] hover:from-[#1a5a7a] hover:to-[#217093] px-6 sm:px-7 py-3 text-sm font-bold text-white shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 active:translate-y-0 w-full sm:w-auto disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-slate-100">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
               </svg>
@@ -634,6 +640,7 @@ import axios from "axios";
 import { useToast } from "vue-toastification";
 import MultiSelectDropdown from "@/components/MultiSelectDropdown.vue";
 import DateRangePicker from "./Analytics/DateRangePicker.vue";
+import { usePage } from "@inertiajs/vue3";
 
 const props = defineProps({
   show: Boolean,
@@ -641,6 +648,11 @@ const props = defineProps({
 });
 
 const toast = useToast();
+const page = usePage();
+const role = page?.props?.auth?.user?.role;
+const isStaffRole = computed(() => {
+  return role?.toLowerCase() === "staff";
+});
 const emit = defineEmits(["close", "saved"]);
 
 const formData = ref({
@@ -725,6 +737,7 @@ const maxItineraryDays = computed(() => {
 
 // Computed property to check if add day button should be disabled
 const isAddDayButtonDisabled = computed(() => {
+  if (isStaffRole) return true;
   return (
     (itineraryDays.value.length >= maxItineraryDays.value &&
       maxItineraryDays.value > 0) ||

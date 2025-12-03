@@ -302,9 +302,23 @@ const filteredNavigationItems = computed(() => {
   const isStaff = userRole === "Staff" || userRole === "staff";
 
   if (isStaff) {
-    return navigationItems.filter(
-      item => item.label !== "Login History" && item.label !== "Settings"
-    );
+    return navigationItems.filter(item => {
+      if (item.label === "Login History") {
+        return false;
+      }
+      if (item.label === "Settings") {
+        return true;
+      }
+      return true;
+    }).map(item => {
+      if (item.label === "Settings" && item.submenu) {
+        return {
+          label: "Settings",
+          submenu: item.submenu.filter(sub => sub.label === "Users")
+        };
+      }
+      return item;
+    });
   }
 
   return navigationItems;

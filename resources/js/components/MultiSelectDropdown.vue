@@ -19,6 +19,7 @@
         >
           {{ option }}
           <button
+            :disabled="disabled"
             @click.stop="removeOption(option)"
             class="text-white hover:text-red-200 font-bold"
           >
@@ -70,6 +71,10 @@ const props = defineProps({
     type: String,
     default: "Select options",
   },
+  disabled: {
+    type: Boolean,
+    default: false
+  }
 });
 
 const emit = defineEmits(["update:modelValue"]);
@@ -79,6 +84,7 @@ const selectedValues = ref([...props.modelValue]);
 const dropdownRef = ref(null);
 
 const toggleDropdown = () => {
+  if (props.disabled) return;
   isOpen.value = !isOpen.value;
 }
 
