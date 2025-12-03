@@ -558,12 +558,12 @@ const extraDays = computed(() => {
 
 const adultExtraFee = computed(() => {
   if (!extraDays.value) return 0;
-  return booking.adultExtraFee * extraDays.value;
+  return booking.adultExtraFee;
 });
 
 const kidsExtraFee = computed(() => {
   if (!extraDays.value) return 0;
-  return booking.kidsExtraFee * extraDays.value;
+  return booking.kidsExtraFee;
 });
 
 const openTermsAndConditions = () => {
