@@ -272,7 +272,6 @@
               <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-4 sm:p-5 shadow-md">
                 <div class="flex items-center justify-between gap-4">
                   
-                  <!-- Icon + Message -->
                   <div class="flex items-center gap-3 sm:gap-4">
                     <div class="bg-green-100 p-2 sm:p-3 rounded-lg flex-shrink-0">
                       <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -415,7 +414,6 @@
                 <div>
                   <label class="block mb-2 text-gray-700 font-semibold text-xs sm:text-sm">Upload Payment
                     Receipt:</label>
-                  <!-- Image Preview with Fullscreen -->
                   <div v-if="paymentStatus === 'Under Review' || paymentStatus === 'Approved'" class="flex items-center gap-3 sm:gap-4 mb-4 flex-wrap">
                     <div
                       class="flex items-center bg-white px-2 sm:px-3 py-2 rounded shadow border border-green-200 bg-green-50 cursor-pointer hover:shadow-lg transition-shadow"
@@ -467,7 +465,6 @@
                   </div>
                 </div>
 
-                  <!-- Fullscreen Image Modal -->
                   <Transition enter-active-class="transition-opacity duration-300" enter-from-class="opacity-0"
                     enter-to-class="opacity-100" leave-active-class="transition-opacity duration-200"
                     leave-from-class="opacity-100" leave-to-class="opacity-0">
@@ -488,31 +485,37 @@
                 </div>
               </div>
             <div class="w-full flex justify-center">
-              <div v-if="selectedModeOfPayment === 'PayMaya'" class="w-full lg:w-1/3 flex flex-col justify-center items-center h-fit">
+              <div v-if="selectedModeOfPayment === 'Paymaya'" class="w-full lg:w-1/3 flex flex-col justify-center items-center h-fit">
                 <div class="font-semibold text-gray-800 text-center text-base sm:text-lg">
                   Dorie Anne May E.
                 </div>
                 <div class="text-gray-500 text-center text-sm sm:text-base font-normal mb-3">
                   09xx xxx 5395
                 </div>
-                <img src="/storage/qr-payment/paymaya.jpg" alt="QR Payment"
+                <img v-if="imageQR && imageQR.qr_image" :src="`/storage/${imageQR.qr_image}`" alt="QR Payment"
                   class="w-36 h-36 sm:w-48 sm:h-48 bg-white border-2 border-gray-200 rounded-lg object-contain mb-2 shadow-sm flex-shrink-0" />
-                <div class="text-xs sm:text-sm text-gray-500 mt-2 text-center font-normal">
+                <div v-if="imageQR && imageQR.qr_image" class="text-xs sm:text-sm text-gray-500 mt-2 text-center font-normal">
                   Scan this QR code to pay
+                </div>
+                <div v-if="imageQR && imageQR.notes" class="mt-3 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg">
+                  <p class="text-xs text-amber-800 text-center font-normal leading-relaxed">{{ imageQR.notes }}</p>
                 </div>
               </div>
 
-              <div v-else-if="selectedModeOfPayment === 'Bank'" class="w-full lg:w-1/3 flex flex-col justify-center items-center h-fit">
+              <div v-else-if="selectedModeOfPayment === 'Bank Transfer'" class="w-full lg:w-1/3 flex flex-col justify-center items-center h-fit">
                 <div class="font-semibold text-gray-800 text-center text-base sm:text-lg">
                   Dorie Anne May E.
                 </div>
                 <div class="text-gray-500 text-center text-sm sm:text-base font-normal mb-3">
                   xxxx xxxx 4555
                 </div>
-                <img src="/storage/qr-payment/banktransfer.jpg" alt="QR Payment"
+                <img v-if="imageQR && imageQR.qr_image" :src="`/storage/${imageQR.qr_image}`" alt="QR Payment"
                   class="w-36 h-36 sm:w-48 sm:h-48 bg-white border-2 border-gray-200 rounded-lg object-contain mb-2 shadow-sm flex-shrink-0" />
-                <div class="text-xs sm:text-sm text-gray-500 mt-2 text-center font-normal">
+                <div v-if="imageQR && imageQR.qr_image" class="text-xs sm:text-sm text-gray-500 mt-2 text-center font-normal">
                   Scan this QR code to pay
+                </div>
+                <div v-if="imageQR && imageQR.notes" class="mt-3 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg">
+                  <p class="text-xs text-amber-800 text-center font-normal leading-relaxed">{{ imageQR.notes }}</p>
                 </div>
               </div>
 
@@ -523,10 +526,16 @@
                 <div class="text-gray-500 text-center text-sm sm:text-base font-normal mb-3">
                   0999 397 xxxx
                 </div>
-                <img src="/storage/qr-payment/gcashqr.jpg" alt="QR Payment"
+                <img v-if="imageQR && imageQR.qr_image" :src="`/storage/${imageQR.qr_image}`" alt="QR Payment"
                   class="w-36 h-36 sm:w-48 sm:h-48 bg-white border-2 border-gray-200 rounded-lg object-contain mb-2 shadow-sm flex-shrink-0" />
-                <div class="text-xs sm:text-sm text-gray-500 mt-2 text-center font-normal">
+                <div v-if="imageQR && imageQR.qr_image" class="text-xs sm:text-sm text-gray-500 mt-2 text-center font-normal">
                   Scan this QR code to pay
+                </div>
+                <div v-else class="text-xs sm:text-sm text-gray-500 mt-2 text-center font-normal">
+                  QR code not available
+                </div>
+                <div v-if="imageQR && imageQR.notes" class="mt-3 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg">
+                  <p class="text-xs text-amber-800 text-center font-normal leading-relaxed">{{ imageQR.notes }}</p>
                 </div>
               </div>
             </div>
@@ -768,10 +777,13 @@ import { useToast } from "vue-toastification";
 import RejectionModal from "../Admin/components/PaymentRejectionDetail.vue";
 import { _ } from "lodash";
 import Footer from "./Footer.vue";
+import { api } from "@/api/api";
 
 const user = usePage().props.auth.user;
+const service = new api();
 const toast = useToast();
 const bookings = ref([]);
+const modeOfPayment = ref();
 const payments = ref([]);
 const selectedBookingIndex = ref(0);
 const selectedBookingId = ref(null);
@@ -796,8 +808,8 @@ const fullscreenImageUrl = ref(null);
 
 const modeOfPaymentOptions = [
   { label: "GCASH", value: "GCASH" },
-  { label: "PayMaya", value: "PayMaya" },
-  { label: "Bank", value: "Bank" },
+  { label: "Paymaya", value: "Paymaya" },
+  { label: "Bank Transfer", value: "Bank Transfer" },
 ];
 
 const paymentTypeOptions = [
@@ -946,15 +958,29 @@ const proofOfPaymentUrl = computed(() => {
   return proofArray?.[0] ? `/storage/${proofArray[0]}` : null;
 });
 
+const imageQR = computed(() => {
+  if (!modeOfPayment.value || !modeOfPayment.value.length) return null;
+
+  const matchedPayment = modeOfPayment.value.find(
+    (payment) => payment.mode_of_payment.toLowerCase() === selectedModeOfPayment.value.toLowerCase()
+  );
+
+  return matchedPayment || null;
+});
+
 onMounted(async () => {
-  bookings.value = await fetchBookingsByUser(userId);
-
-  if (filteredBookings.value.length) {
-    payments.value = await fetchPaymentsByBookingId(
-      filteredBookings.value[selectedBookingIndex.value].id
-    );
-
-    console.log(payments.value);
+  try {
+    bookings.value = await fetchBookingsByUser(userId);
+    const responseModeOfPayment = await service.fetchModeOfPayments();
+    modeOfPayment.value = responseModeOfPayment.data.data;
+    console.log("🚀 ~ modeOfPayment.value:", modeOfPayment.value)
+    if (filteredBookings.value.length) {
+      payments.value = await fetchPaymentsByBookingId(
+        filteredBookings.value[selectedBookingIndex.value].id
+      );
+    }
+  } catch (e) {
+    console.error(e);
   }
 });
 
