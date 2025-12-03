@@ -108,12 +108,12 @@
                 <div class="space-y-2">
                   <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2 text-sm">
                     <span class="text-gray-600">Amount:</span>
-                    <span class="font-semibold text-gray-800">₱ {{ paymentData?.is_fully_paid ? paymentData.booking.total_price : currentPayment?.fullPaymentAmount }}</span>
+                    <span class="font-semibold text-gray-800">₱ {{ paymentData?.is_fully_paid ? paymentData.booking.total_price.toLocaleString() : currentPayment?.fullPaymentAmount.toLocaleString() }}</span>
                   </div>
                   <div
                     class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2 text-lg font-bold pt-2 border-t border-emerald-200">
                     <span class="text-gray-800">Total Amount Paid:</span>
-                    <span class="text-[#217093]">₱ {{ currentPayment?.fullPaymentAmount }}</span>
+                    <span class="text-[#217093]">₱ {{ currentPayment?.fullPaymentAmount.toLocaleString() }}</span>
                   </div>
                 </div>
               </div>

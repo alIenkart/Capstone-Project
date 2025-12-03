@@ -50,6 +50,12 @@ class Booking extends Model
         'discount_amount',
         'discount_percent',
         
+        // Extra fee details for exclusive tours
+        'extra_days',
+        'adult_extra_fee',
+        'kids_extra_fee',
+        'total_extra_fee',
+        
         // Customer contact details
         'customer_email',
         'customer_phone',

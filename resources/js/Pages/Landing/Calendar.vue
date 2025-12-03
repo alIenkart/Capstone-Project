@@ -382,10 +382,14 @@ const tooltipRef = ref(null);
 const availabilityByDate = ref({});
 const tourInfoByDate = ref({});
 const availableSlots = ref(null);
+const adultExtraFee = ref(null);
+const kidsExtraFee = ref(null);
 
 const generatePackageDates = () => {
   const pkg = booking.selectedPackage;
   availableSlots.value = pkg?.available_slot;
+  adultExtraFee.value = pkg?.adult_extra_fee;
+  kidsExtraFee.value = pkg?.kids_extra_fee;
   if (!pkg || !pkg.start_date || !pkg.end_date) {
     return;
   }
@@ -768,6 +772,8 @@ const postDate = () => {
   booking.tourType = tourType.value;
   booking.tourClassification = tourClassification.value;
   booking.setAvailableSlots(availableSlots.value);
+  booking.setAdultExtraFee(adultExtraFee.value);
+  booking.setKidsExtraFee(kidsExtraFee.value);
 
   let end_date = selectedDate.value;
   if (tourType.value === "Exclusive") {

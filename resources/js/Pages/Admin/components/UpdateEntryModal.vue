@@ -78,7 +78,7 @@
                     Total Amount
                   </p>
                   <p class="text-3xl font-bold text-emerald-600">
-                    ₱{{ booking.original_amount?.toLocaleString() ?? "0" }}
+                    ₱{{ booking.total_price?.toLocaleString() ?? "0" }}
                   </p>
                 </div>
 
@@ -86,7 +86,7 @@
                   <div class="grid grid-cols-2 gap-y-3 text-left">
                     <p class="text-sm font-semibold text-slate-600">Amount</p>
                     <p class="text-sm font-bold text-slate-700">
-                      ₱{{ booking.original_amount?.toLocaleString() ?? "0" }} 
+                      ₱{{ booking.total_price?.toLocaleString() ?? "0" }} 
                     </p>
 
                     <p class="text-sm font-semibold text-slate-600">Discount</p>
@@ -97,7 +97,7 @@
 
                     <p class="text-sm font-semibold text-slate-600 mt-2">Total Amount </p>
                     <p class="text-xl font-bold text-emerald-600 mt-1 ml-2">
-                      ₱{{ discountAmount || (booking.original_amount - (booking.discount_amount ?? 0)) }}
+                      ₱{{ discountAmount || (booking.total_price - (booking.discount_amount ?? 0)) }}
                     </p>
                   </div>
                 </div>
@@ -1103,7 +1103,7 @@
                   </div>
                   <div class="flex justify-between items-start pb-4 border-b border-slate-200">
                     <span class="text-sm font-semibold text-slate-600">Total Amount</span>
-                    <span class="text-sm font-bold text-slate-900">₱{{ parseFloat(props.booking.original_amount)?.toLocaleString() }}</span>
+                    <span class="text-sm font-bold text-slate-900">₱{{ parseFloat(props.booking.total_price)?.toLocaleString() }}</span>
                   </div>
                   <div class="flex justify-between items-start">
                     <span class="text-sm font-semibold text-slate-600"></span>
@@ -1429,7 +1429,7 @@ const submitStatus = async (statusValue) => {
     const payload = {
       status: statusValue,
       remarks: form.value.remarks,
-      total_price: props.booking.original_amount - discountValue.value
+      total_price: props.booking.total_price - discountValue.value
     };
 
     if (statusValue === "Approved") {

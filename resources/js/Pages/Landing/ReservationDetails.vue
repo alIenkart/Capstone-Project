@@ -306,6 +306,20 @@
                 <span class="font-semibold">₱{{ kidsTotalAmount.toLocaleString() }}</span>
               </div>
 
+              <template v-if="extraDays > 0">
+                <div class="h-px bg-white bg-opacity-20"></div>
+                
+                <div v-if="pax > 0" class="flex justify-between">
+                  <span class="text-white text-opacity-80">Adult Extra Fee × {{ extraDays }}</span>
+                  <span class="font-semibold">₱{{ adultExtraFee.toLocaleString() }}</span>
+                </div>
+                
+                <div v-if="kidsPax > 0" class="flex justify-between">
+                  <span class="text-white text-opacity-80">Kids Extra Fee × {{ extraDays }}</span>
+                  <span class="font-semibold">₱{{ kidsExtraFee.toLocaleString() }}</span>
+                </div>
+              </template>
+
               <div class="h-px bg-white bg-opacity-20"></div>
 
               <div class="flex justify-between items-center text-lg">
@@ -390,11 +404,55 @@ const totalAmount = computed(
   () => adultTotalAmount.value + kidsTotalAmount.value
 );
 
-const finalTotalAmount = computed(() => totalAmount.value);
+const finalTotalAmount = computed(() => totalAmount.value + totalExtraFee.value);
+
 
 const isExclusiveTour = computed(
   () => booking.tourType?.toLowerCase() === "exclusive"
 );
+
+const extraDays = computed(() => {
+  if (!isExclusiveTour.value) return 0;
+  
+  const howManyDays = booking.getHowManyDays;
+  const tourDuration = selectedPackage.value?.tour_duration || 0;
+  
+  if (howManyDays > tourDuration) {
+    return howManyDays - tourDuration;
+  }
+  
+  return 0;
+});
+
+const adultRate = computed(() => {
+  return selectedPackage.value.is_seasonal
+    ? Number(selectedPackage.value.seasonal_pax_rate)
+    : Number(selectedPackage.value.pax_rate);
+});
+
+const kidsRate = computed(() => {
+  return selectedPackage.value.is_seasonal
+    ? Number(selectedPackage.value.seasonal_kids_pax_rate)
+    : Number(selectedPackage.value.kids_pax_rate);
+});
+
+const adultExtraFee = computed(() => {
+  if (!extraDays.value) return 0;
+  console.log("🚀 ~ booking.adultExtraFee:", booking.adultExtraFee)
+  console.log("🚀 ~ extraDays.value:", extraDays.value)
+  return booking.adultExtraFee * extraDays.value;
+});
+
+const kidsExtraFee = computed(() => {
+  if (!extraDays.value) return 0;
+  console.log("🚀 ~ booking.kidsExtraFee:", booking.kidsExtraFee)
+  console.log("🚀 ~ extraDays.value:", extraDays.value)
+  return booking.kidsExtraFee * extraDays.value;
+});
+
+const totalExtraFee = computed(() => {
+  return adultExtraFee.value + kidsExtraFee.value;
+});
 
 const displayItinerary = computed(() => {
   let itinerary = isEditingItinerary.value
@@ -569,17 +627,11 @@ const postPackage = () => {
   booking.setPackageDestination(selectedPackage.value.destination);
   booking.setDuration(durationDays.value);
 
-  booking.setAdultRate(
-  selectedPackage.value.is_seasonal
-      ? Number(selectedPackage.value.seasonal_pax_rate)
-      : Number(selectedPackage.value.pax_rate)
-  );
+  booking.setAdultRate(adultRate.value);
+  booking.setKidsRate(kidsRate.value);
 
-  booking.setKidsRate(
-    selectedPackage.value.is_seasonal
-      ? Number(selectedPackage.value.seasonal_kids_pax_rate)
-      : Number(selectedPackage.value.kids_pax_rate)
-  );
+  booking.setAdultExtraFee(adultRate.value * pax.value);
+  booking.setKidsExtraFee(kidsRate.value * kidsPax.value);
 
   booking.setAdultTotalAmount(adultTotalAmount.value);
   booking.setKidsTotalAmount(kidsTotalAmount.value);

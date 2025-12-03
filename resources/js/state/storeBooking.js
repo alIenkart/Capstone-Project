@@ -31,6 +31,8 @@ export const storeBooking = defineStore('booking', {
     start_date: '',
     end_date: '',
     availableSlots: 0,
+    adultExtraFee: 0,
+    kidsExtraFee: 0,
   }),
 
   getters: {
@@ -175,6 +177,14 @@ export const storeBooking = defineStore('booking', {
       this.availableSlots = slot;
     },
 
+    setAdultExtraFee(extraFee) {
+      this.adultExtraFee = extraFee;
+    },
+
+    setKidsExtraFee(extraFee) {
+      this.kidsExtraFee = extraFee;
+    },
+
     reset() {
       this.startDate = null;
       this.endDate = null;
@@ -205,6 +215,8 @@ export const storeBooking = defineStore('booking', {
       this.start_date = '';
       this.end_date = '';
       this.availableSlots = 0;
+      this.adultExtraFee = 0;
+      this.kidsExtraFee = 0;
     }
   },
   persist: true

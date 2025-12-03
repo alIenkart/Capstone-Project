@@ -370,6 +370,20 @@
                 >
               </div>
 
+              <template v-if="extraDays > 0">
+                <div class="h-px bg-white bg-opacity-20"></div>
+                
+                <div v-if="booking.adultsQuantity > 0" class="flex justify-between">
+                  <span class="text-white text-opacity-80">Adult Extra Fee × {{ extraDays }}</span>
+                  <span class="font-semibold">₱{{ adultExtraFee.toLocaleString() }}</span>
+                </div>
+                
+                <div v-if="booking.kidsQuantity > 0" class="flex justify-between">
+                  <span class="text-white text-opacity-80">Kids Extra Fee × {{ extraDays }}</span>
+                  <span class="font-semibold">₱{{ kidsExtraFee.toLocaleString() }}</span>
+                </div>
+              </template>
+
               <div class="h-px bg-white bg-opacity-20"></div>
 
               <div class="flex justify-between items-center text-lg">
@@ -525,6 +539,33 @@ const formatDate = (dateString) => {
   });
 };
 
+const isExclusiveTour = computed(
+  () => booking.tourType?.toLowerCase() === "exclusive"
+);
+
+const extraDays = computed(() => {
+  if (!isExclusiveTour.value) return 0;
+  
+  const howManyDays = booking.getHowManyDays;
+  const tourDuration = booking.selectedPackage?.tour_duration || 0;
+  
+  if (howManyDays > tourDuration) {
+    return howManyDays - tourDuration;
+  }
+  
+  return 0;
+});
+
+const adultExtraFee = computed(() => {
+  if (!extraDays.value) return 0;
+  return booking.adultExtraFee * extraDays.value;
+});
+
+const kidsExtraFee = computed(() => {
+  if (!extraDays.value) return 0;
+  return booking.kidsExtraFee * extraDays.value;
+});
+
 const openTermsAndConditions = () => {
   isTermsOpen.value = true;
 };
@@ -612,6 +653,12 @@ async function postBooking() {
   formData.append("adult_total_amount", booking.adultTotalAmount);
   formData.append("kids_total_amount", booking.kidsTotalAmount);
   formData.append("original_amount", booking.amount);
+
+  formData.append("extra_days", extraDays.value || 0);
+  formData.append("adult_extra_fee", adultExtraFee.value || 0);
+  formData.append("kids_extra_fee", kidsExtraFee.value || 0);
+  formData.append("total_extra_fee", (adultExtraFee.value + kidsExtraFee.value) || 0);
+
 
   formData.append("customer_email", booking.user.email);
   formData.append("customer_phone", booking.user.phone_number);

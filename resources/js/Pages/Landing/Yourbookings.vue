@@ -1017,7 +1017,7 @@ const totalDue = computed(() => {
   const currentBooking = filteredBookings.value[selectedBookingIndex.value];
   const currentPayment = payments.value.find((p) => p.booking_id === currentBooking.id);
 
-  if(!currentPayment) return currentBooking.original_amount;
+  if(!currentPayment) return currentBooking.total_price;
   
   if (currentPayment.type_of_payment === "Down Payment") {
     const history = currentPayment.payment_history || [];
@@ -1028,11 +1028,11 @@ const totalDue = computed(() => {
     const remaining = currentBooking.total_price - paidAmount;
 
     if (remaining <= 0) {
-      return currentBooking.original_amount;
+      return currentBooking.total_price;
     }
     return remaining;
   }
-  return currentBooking.original_amount;
+  return currentBooking.total_price;
 });
 
 const typeOfPayment = computed(() => {

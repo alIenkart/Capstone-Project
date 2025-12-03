@@ -89,6 +89,12 @@ class BookingController extends Controller
             'kids_total_amount' => 'nullable|numeric|min:0',
             'original_amount' => 'nullable|numeric|min:0',
 
+            // Extra fee details for exclusive tours
+            'extra_days' => 'nullable|integer|min:0',
+            'adult_extra_fee' => 'nullable|numeric|min:0',
+            'kids_extra_fee' => 'nullable|numeric|min:0',
+            'total_extra_fee' => 'nullable|numeric|min:0',
+
             // Customer contact details
             'customer_email' => 'nullable|email|max:255',
             'customer_phone' => 'nullable|string|max:255',

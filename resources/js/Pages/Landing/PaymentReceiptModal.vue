@@ -189,7 +189,7 @@
                   >₱ 
                   {{
                   formattedPaymentAmount && formattedPaymentAmount !== 0
-                    ? Number(receiptData.original_amount).toLocaleString(undefined, { 
+                    ? Number(receiptData.total_price).toLocaleString(undefined, { 
                         minimumFractionDigits: 2, 
                         maximumFractionDigits: 2 
                       })
@@ -204,7 +204,10 @@
             <div class="flex justify-between">
               <span class="font-bold text-gray-800">Remaining Balance:</span>
               <span class="font-bold text-red-600"
-                >₱ {{ formattedPaymentAmount }}</span
+                >₱ {{ formattedPaymentAmount.toLocaleString(undefined, { 
+                        minimumFractionDigits: 2, 
+                        maximumFractionDigits: 2 
+                      }) }}</span
               >
             </div>
             </div>
@@ -410,7 +413,7 @@ const formattedPayments = computed(() => {
 
 const formattedPaymentAmount = computed(() => {
   if (props.receiptData.payment_history === null) {
-    const totalPrice = props.receiptData.total_price - props.receiptData.remaining_balance;
+    const totalPrice = props.receiptData.total_price - (props.receiptData.remaining_balance || 0);
     return totalPrice;
   }
 
@@ -420,10 +423,10 @@ const formattedPaymentAmount = computed(() => {
 
   const payments = Array.isArray(history) ? history : [history];
 
-  if (payments.length > 1) {
-    return payments.reduce((sum, p) => sum + (p.downPaymentAmount || 0), 0);
+  if (props.receiptData.type_of_payment === 'Full Payment') {
+    return payments.reduce((sum, p) => sum + (Number(p.fullPaymentAmount) || 0), 0);
   } else {
-    return payments[0].fullPaymentAmount || 0;
+    return payments.reduce((sum, p) => sum + (Number(p.downPaymentAmount) || 0), 0);
   }
 });
 

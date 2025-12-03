@@ -281,7 +281,7 @@
                 <td
                   class="px-6 py-4 text-sm font-semibold text-gray-700 text-center"
                 >
-                ₱{{ (entry.original_amount) - (entry.discount_amount || 0) }}
+                ₱{{ (entry.total_price) - (entry.discount_amount || 0) }}
                 </td>
                 <td class="px-6 py-4 text-sm text-center">
                   <button
