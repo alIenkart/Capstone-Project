@@ -365,6 +365,46 @@
                       />
                     </div>
                   </div>
+                  <div>
+                    <label
+                      for="adultExtraFee"
+                      class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2"
+                      >Adult Extra Fee</label
+                    >
+                    <div class="relative">
+                      <span
+                        class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-lg"
+                        >₱</span
+                      >
+                      <input
+                        type="number"
+                        id="adultExtraFee"
+                        v-model="formData.adultExtraFee"
+                        class="w-full rounded-xl border-2 border-purple-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10 pl-9 pr-4 py-3 text-sm font-bold outline-none transition-all"
+                        placeholder="0.00"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label
+                      for="kidsExtraFee"
+                      class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2"
+                      >Kids Extra Fee</label
+                    >
+                    <div class="relative">
+                      <span
+                        class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-lg"
+                        >₱</span
+                      >
+                      <input
+                        type="number"
+                        id="kidsExtraFee"
+                        v-model="formData.kidsExtraFee"
+                        class="w-full rounded-xl border-2 border-purple-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10 pl-9 pr-4 py-3 text-sm font-bold outline-none transition-all"
+                        placeholder="0.00"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -740,6 +780,8 @@ const formData = ref({
   maxOccupancy: "",
   status: "Active",
   discountedRate: "",
+  adultExtraFee: "",
+  kidsExtraFee: "",
   tourClassification: [],
 });
 
@@ -825,6 +867,8 @@ watch(
         maxOccupancy: "",
         status: "Active",
         discountedRate: "",
+        adultExtraFee: "",
+        kidsExtraFee: "",
       };
       itineraryDays.value = [{ id: 1, content: "" }];
       imagePreview.value = null;
@@ -970,6 +1014,8 @@ const savePackage = async () => {
     data.append("pax_rate", parseFloat(formData.value.basePrice));
     data.append("kids_pax_rate", parseFloat(formData.value.kidsBasePrice));
     data.append("discounted_rate", parseFloat(formData.value.discountedRate));
+    data.append("adult_extra_fee", parseFloat(formData.value.adultExtraFee) || 0);
+    data.append("kids_extra_fee", parseFloat(formData.value.kidsExtraFee) || 0);
     data.append("capacity", parseInt(formData.value.maxOccupancy));
     data.append("available_slot", parseInt(formData.value.maxOccupancy));    
     data.append("tour_classification", JSON.stringify(formData.value.tourClassification));

@@ -5,8 +5,7 @@
       <div
         class="relative transform overflow-hidden rounded-2xl bg-white shadow-2xl transition-all sm:my-8 w-full max-w-7xl mx-auto">
         <button type="button"
-          :disabled="!isStaffRole"
-          class="absolute right-4 top-4 z-10 rounded-full p-2 text-white/80 hover:text-white hover:bg-white/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          class="absolute right-4 top-4 z-10 rounded-full p-2 text-white/80 hover:text-white hover:bg-white/20 transition-all"
           @click="closeModal">
           <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -242,6 +241,34 @@
                       </svg>
                       <input type="number" id="discountedRate" v-model="formData.discounted_rate"
                         class="w-full rounded-xl border-2 border-slate-200 focus:border-[#217093] focus:ring-4 focus:ring-[#217093]/10 pl-9 pr-4 py-3 text-sm font-bold outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-slate-100"
+                        placeholder="0.00" :disabled="isStaffRole" />
+                    </div>
+                  </div>
+                  <div>
+                    <label for="adultExtraFee"
+                      class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Adult
+                      Extra Fee</label>
+                    <div class="relative">
+                      <span
+                        class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-lg"
+                        >₱</span
+                      >
+                      <input type="number" id="adultExtraFee" v-model="formData.adult_extra_fee"
+                        class="w-full rounded-xl border-2 border-purple-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10 pl-9 pr-4 py-3 text-sm font-bold outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-slate-100"
+                        placeholder="0.00" :disabled="isStaffRole" />
+                    </div>
+                  </div>
+                  <div>
+                    <label for="kidsExtraFee"
+                      class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Kids
+                      Extra Fee</label>
+                    <div class="relative">
+                      <span
+                        class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-lg"
+                        >₱</span
+                      >
+                      <input type="number" id="kidsExtraFee" v-model="formData.kids_extra_fee"
+                        class="w-full rounded-xl border-2 border-purple-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-500/10 pl-9 pr-4 py-3 text-sm font-bold outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:bg-slate-100"
                         placeholder="0.00" :disabled="isStaffRole" />
                     </div>
                   </div>
@@ -674,6 +701,8 @@ const formData = ref({
   pax_rate: 0,
   kids_pax_rate: 0,
   discounted_rate: 0,
+  adult_extra_fee: 0,
+  kids_extra_fee: 0,
   tour_classification: [],
 });
 
@@ -801,6 +830,8 @@ const fetchPackage = async (id) => {
       pax_rate: packageData.pax_rate || 0,
       kids_pax_rate: packageData.kids_pax_rate || 0,
       discounted_rate: packageData.discounted_rate || 0,
+      adult_extra_fee: packageData.adult_extra_fee || 0,
+      kids_extra_fee: packageData.kids_extra_fee || 0,
       tour_classification: packageData.tour_classification || [],
     };
 
@@ -914,6 +945,8 @@ const updatePackage = async () => {
         "discounted_rate",
         parseFloat(formData.value.discounted_rate) || 0
       );
+      data.append("adult_extra_fee", parseFloat(formData.value.adult_extra_fee) || 0);
+      data.append("kids_extra_fee", parseFloat(formData.value.kids_extra_fee) || 0);
       data.append("image", formData.value.image);
 
       if (!isSeasonalActive.value) {
@@ -947,6 +980,8 @@ const updatePackage = async () => {
         capacity: parseInt(formData.value.capacity) || 0,
         status: formData.value.status.toLowerCase(),
         discounted_rate: parseFloat(formData.value.discounted_rate) || 0,
+        adult_extra_fee: parseFloat(formData.value.adult_extra_fee) || 0,
+        kids_extra_fee: parseFloat(formData.value.kids_extra_fee) || 0,
         tour_classification: formData.value.tour_classification,
       };
 
@@ -986,6 +1021,8 @@ const resetForm = () => {
     pax_rate: 0,
     kids_pax_rate: 0,
     discounted_rate: 0,
+    adult_extra_fee: 0,
+    kids_extra_fee: 0,
     tour_classification: [],
   };
   itineraryDays.value = [{ id: 1, content: "" }];

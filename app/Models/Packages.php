@@ -31,6 +31,8 @@ class Packages extends Model
         'pax_rate',
         'kids_pax_rate',
         'discounted_rate',
+        'adult_extra_fee',
+        'kids_extra_fee',
         'time_stamp',
         'tour_classification',
         'available_slot',
@@ -47,5 +49,7 @@ class Packages extends Model
         'is_seasonal' => 'boolean',
         'seasonal_pax_rate' => 'decimal:2',
         'seasonal_kids_pax_rate' => 'decimal:2',
+        'adult_extra_fee' => 'decimal:2',
+        'kids_extra_fee' => 'decimal:2',
     ];
 }
