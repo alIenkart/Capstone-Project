@@ -486,11 +486,11 @@
               </div>
             <div class="w-full flex justify-center">
               <div v-if="selectedModeOfPayment === 'Paymaya'" class="w-full lg:w-1/3 flex flex-col justify-center items-center h-fit">
-                <div class="font-semibold text-gray-800 text-center text-base sm:text-lg">
-                  Dorie Anne May E.
+                <div v-if="imageQR && imageQR.name" class="font-semibold text-gray-800 text-center text-base sm:text-lg">
+                  {{ imageQR.name }}
                 </div>
-                <div class="text-gray-500 text-center text-sm sm:text-base font-normal mb-3">
-                  09xx xxx 5395
+                <div v-if="imageQR && imageQR.number" class="text-gray-500 text-center text-sm sm:text-base font-normal mb-3">
+                  {{ imageQR.number }}
                 </div>
                 <img v-if="imageQR && imageQR.qr_image" :src="`/storage/${imageQR.qr_image}`" alt="QR Payment"
                   class="w-36 h-36 sm:w-48 sm:h-48 bg-white border-2 border-gray-200 rounded-lg object-contain mb-2 shadow-sm flex-shrink-0" />
@@ -503,11 +503,11 @@
               </div>
 
               <div v-else-if="selectedModeOfPayment === 'Bank Transfer'" class="w-full lg:w-1/3 flex flex-col justify-center items-center h-fit">
-                <div class="font-semibold text-gray-800 text-center text-base sm:text-lg">
-                  Dorie Anne May E.
+                <div v-if="imageQR && imageQR.name" class="font-semibold text-gray-800 text-center text-base sm:text-lg">
+                  {{ imageQR.name }}
                 </div>
-                <div class="text-gray-500 text-center text-sm sm:text-base font-normal mb-3">
-                  xxxx xxxx 4555
+                <div v-if="imageQR && imageQR.number" class="text-gray-500 text-center text-sm sm:text-base font-normal mb-3">
+                  {{ imageQR.number }}
                 </div>
                 <img v-if="imageQR && imageQR.qr_image" :src="`/storage/${imageQR.qr_image}`" alt="QR Payment"
                   class="w-36 h-36 sm:w-48 sm:h-48 bg-white border-2 border-gray-200 rounded-lg object-contain mb-2 shadow-sm flex-shrink-0" />
@@ -520,11 +520,11 @@
               </div>
 
               <div v-else class="w-full lg:w-1/3 flex flex-col justify-center items-center h-fit">
-                <div class="font-semibold text-gray-800 text-center text-base sm:text-lg">
-                  Dorie Anne May E.
+                <div v-if="imageQR && imageQR.name" class="font-semibold text-gray-800 text-center text-base sm:text-lg">
+                  {{ imageQR.name }}
                 </div>
-                <div class="text-gray-500 text-center text-sm sm:text-base font-normal mb-3">
-                  0999 397 xxxx
+                <div v-if="imageQR && imageQR.number" class="text-gray-500 text-center text-sm sm:text-base font-normal mb-3">
+                  {{ imageQR.number }}
                 </div>
                 <img v-if="imageQR && imageQR.qr_image" :src="`/storage/${imageQR.qr_image}`" alt="QR Payment"
                   class="w-36 h-36 sm:w-48 sm:h-48 bg-white border-2 border-gray-200 rounded-lg object-contain mb-2 shadow-sm flex-shrink-0" />
