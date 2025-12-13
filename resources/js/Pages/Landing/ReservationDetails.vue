@@ -442,13 +442,12 @@ const kidsRate = computed(() => {
 
 const adultExtraFee = computed(() => {
   if (!extraDays.value) return 0;
-  console.log("booking", booking.adultExtraFee)
-  return booking.adultExtraFee * extraDays.value;
+  return booking.adultExtraFee * pax.value * extraDays.value;
 });
 
 const kidsExtraFee = computed(() => {
   if (!extraDays.value) return 0;
-  return booking.kidsExtraFee * extraDays.value;
+  return booking.kidsExtraFee * kidsPax.value * extraDays.value;
 });
 
 const totalExtraFee = computed(() => {
@@ -644,8 +643,8 @@ const postPackage = () => {
   booking.setAdultRate(adultRate.value);
   booking.setKidsRate(kidsRate.value);
 
-  booking.setAdultExtraFee(adultRate.value);
-  booking.setKidsExtraFee(kidsRate.value);
+  booking.setAdultExtraFee(adultExtraFee.value);
+  booking.setKidsExtraFee(kidsExtraFee.value);
 
   booking.setAdultTotalAmount(adultTotalAmount.value);
   booking.setKidsTotalAmount(kidsTotalAmount.value);
