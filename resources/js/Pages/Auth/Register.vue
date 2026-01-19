@@ -187,11 +187,33 @@
             <input type="text" v-model="otp" maxlength="6"
                 class="w-full border border-gray-300 rounded px-4 py-2 text-center text-lg tracking-widest"
                 placeholder="Enter OTP" />
+
+            <div class="text-center mt-4 text-sm">
+                <button
+                    class="text-orange-500 hover:underline disabled:text-gray-400 disabled:no-underline"
+                    :disabled="resendCooldown > 0"
+                    @click="sendOtp"
+                >
+                    Resend OTP
+                </button>
+
+                <p v-if="resendCooldown > 0" class="text-gray-400 mt-1">
+                    You can resend in {{ resendCooldown }}s
+                </p>
+            </div>
+
             <div class="flex justify-between mt-6">
-                <button @click="showOtpModal = false" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">
+                <button
+                    @click="showOtpModal = false"
+                    class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                >
                     Cancel
                 </button>
-                <button @click="verifyOtp" class="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600">
+
+                <button
+                    @click="verifyOtp"
+                    class="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600"
+                >
                     Verify
                 </button>
             </div>
@@ -219,6 +241,10 @@ const otpSent = ref(false);
 const showOtpModal = ref(false);
 const showPassword = ref(false);
 const showConfirmPassword = ref(false);
+const resendCooldown = ref(0);
+const sendingOtp = ref(false);
+let resendInterval = null;
+
 
 const form = useForm({
     first_name: '',
@@ -248,13 +274,22 @@ const passwordStrength = computed(() => {
 });
 
 const sendOtp = async () => {
+    if (sendingOtp.value || resendCooldown.value > 0) return;
+
+    sendingOtp.value = true;
+
     try {
         await axios.post('/send-otp', { email: form.email });
+
         otpSent.value = true;
         showOtpModal.value = true;
+
+        startResendCooldown();
         toast.success('OTP has been sent to your email.');
     } catch (error) {
         toast.error(error.response?.data?.message || 'Failed to send OTP');
+    } finally {
+        sendingOtp.value = false;
     }
 };
 
@@ -308,6 +343,24 @@ const submit = () => {
         showOtpModal.value = true;
     }
 };
+
+const startResendCooldown = () => {
+    resendCooldown.value = 30;
+
+    if (resendInterval) {
+        clearInterval(resendInterval);
+    }
+
+    resendInterval = setInterval(() => {
+        resendCooldown.value--;
+
+        if (resendCooldown.value <= 0) {
+            clearInterval(resendInterval);
+            resendInterval = null;
+        }
+    }, 1000);
+};
+
 </script>
 
 <style scoped>
