@@ -484,59 +484,53 @@
                   </Transition>
                 </div>
               </div>
+
             <div class="w-full flex justify-center">
-              <div v-if="selectedModeOfPayment === 'Paymaya'" class="w-full lg:w-1/3 flex flex-col justify-center items-center h-fit">
-                <div v-if="imageQR && imageQR.name" class="font-semibold text-gray-800 text-center text-base sm:text-lg">
+              <div
+                v-if="imageQR"
+                class="w-full lg:w-1/3 flex flex-col justify-center items-center h-fit"
+              >
+                <div v-if="imageQR.name" class="font-semibold text-gray-800 text-center text-base sm:text-lg">
                   {{ imageQR.name }}
                 </div>
-                <div v-if="imageQR && imageQR.number" class="text-gray-500 text-center text-sm sm:text-base font-normal mb-3">
-                  {{ imageQR.number }}
-                </div>
-                <img v-if="imageQR && imageQR.qr_image" :src="`/storage/${imageQR.qr_image}`" alt="QR Payment"
-                  class="w-36 h-36 sm:w-48 sm:h-48 bg-white border-2 border-gray-200 rounded-lg object-contain mb-2 shadow-sm flex-shrink-0" />
-                <div v-if="imageQR && imageQR.qr_image" class="text-xs sm:text-sm text-gray-500 mt-2 text-center font-normal">
-                  Scan this QR code to pay
-                </div>
-                <div v-if="imageQR && imageQR.notes" class="mt-3 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg">
-                  <p class="text-xs text-amber-800 text-center font-normal leading-relaxed">{{ imageQR.notes }}</p>
-                </div>
-              </div>
 
-              <div v-else-if="selectedModeOfPayment === 'Bank Transfer'" class="w-full lg:w-1/3 flex flex-col justify-center items-center h-fit">
-                <div v-if="imageQR && imageQR.name" class="font-semibold text-gray-800 text-center text-base sm:text-lg">
-                  {{ imageQR.name }}
-                </div>
-                <div v-if="imageQR && imageQR.number" class="text-gray-500 text-center text-sm sm:text-base font-normal mb-3">
+                <div v-if="imageQR.number" class="text-gray-500 text-center text-sm sm:text-base font-normal mb-3">
                   {{ imageQR.number }}
                 </div>
-                <img v-if="imageQR && imageQR.qr_image" :src="`/storage/${imageQR.qr_image}`" alt="QR Payment"
-                  class="w-36 h-36 sm:w-48 sm:h-48 bg-white border-2 border-gray-200 rounded-lg object-contain mb-2 shadow-sm flex-shrink-0" />
-                <div v-if="imageQR && imageQR.qr_image" class="text-xs sm:text-sm text-gray-500 mt-2 text-center font-normal">
-                  Scan this QR code to pay
-                </div>
-                <div v-if="imageQR && imageQR.notes" class="mt-3 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg">
-                  <p class="text-xs text-amber-800 text-center font-normal leading-relaxed">{{ imageQR.notes }}</p>
-                </div>
-              </div>
 
-              <div v-else class="w-full lg:w-1/3 flex flex-col justify-center items-center h-fit">
-                <div v-if="imageQR && imageQR.name" class="font-semibold text-gray-800 text-center text-base sm:text-lg">
-                  {{ imageQR.name }}
-                </div>
-                <div v-if="imageQR && imageQR.number" class="text-gray-500 text-center text-sm sm:text-base font-normal mb-3">
-                  {{ imageQR.number }}
-                </div>
-                <img v-if="imageQR && imageQR.qr_image" :src="`/storage/${imageQR.qr_image}`" alt="QR Payment"
-                  class="w-36 h-36 sm:w-48 sm:h-48 bg-white border-2 border-gray-200 rounded-lg object-contain mb-2 shadow-sm flex-shrink-0" />
-                <div v-if="imageQR && imageQR.qr_image" class="text-xs sm:text-sm text-gray-500 mt-2 text-center font-normal">
+                <img
+                  v-if="imageQR.qr_image"
+                  :src="`/storage/${imageQR.qr_image}`"
+                  alt="QR Payment"
+                  class="w-36 h-36 sm:w-48 sm:h-48 bg-white border-2 border-gray-200 rounded-lg object-contain mb-2 shadow-sm flex-shrink-0"
+                />
+
+                <div
+                  v-if="imageQR.qr_image"
+                  class="text-xs sm:text-sm text-gray-500 mt-2 text-center font-normal"
+                >
                   Scan this QR code to pay
                 </div>
-                <div v-else class="text-xs sm:text-sm text-gray-500 mt-2 text-center font-normal">
+
+                <div
+                  v-else
+                  class="text-xs sm:text-sm text-gray-500 mt-2 text-center font-normal"
+                >
                   QR code not available
                 </div>
-                <div v-if="imageQR && imageQR.notes" class="mt-3 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg">
-                  <p class="text-xs text-amber-800 text-center font-normal leading-relaxed">{{ imageQR.notes }}</p>
+
+                <div
+                  v-if="imageQR.notes"
+                  class="mt-3 px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg"
+                >
+                  <p class="text-xs text-amber-800 text-center font-normal leading-relaxed">
+                    {{ imageQR.notes }}
+                  </p>
                 </div>
+              </div>
+
+              <div v-else class="text-gray-500 text-sm text-center">
+                No payment method available.
               </div>
             </div>
             </div>
@@ -806,11 +800,12 @@ const showSuccessAnimation = ref(false);
 const showFullscreenImage = ref(false);
 const fullscreenImageUrl = ref(null);
 
-const modeOfPaymentOptions = [
-  { label: "GCASH", value: "GCASH" },
-  { label: "Paymaya", value: "Paymaya" },
-  { label: "Bank Transfer", value: "Bank Transfer" },
-];
+const modeOfPaymentOptions = computed(() =>
+  (modeOfPayment.value || []).map(m => ({
+    label: m.mode_of_payment,
+    value: m.mode_of_payment,
+  }))
+);
 
 const paymentTypeOptions = [
   { label: "Full Payment", value: "Full Payment" },
