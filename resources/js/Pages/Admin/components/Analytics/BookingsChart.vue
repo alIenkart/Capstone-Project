@@ -6,10 +6,10 @@
     </div>
     <div class="grid grid-cols-2 gap-1 mt-4 legend-grid">
       <div class="flex items-center text-gray-600 text-sm">
-        <span class="w-3 h-3 rounded-full bg-yellow-400 mr-2"></span> Approved
+        <span class="w-3 h-3 rounded-full bg-blue-400 mr-2"></span> Approved
       </div>
       <div class="flex items-center text-gray-600 text-sm">
-        <span class="w-3 h-3 rounded-full bg-blue-400 mr-2"></span> Pending
+        <span class="w-3 h-3 rounded-full bg-yellow-400 mr-2"></span> Pending
       </div>
       <div class="flex items-center text-gray-600 text-sm">
         <span class="w-3 h-3 rounded-full bg-teal-400 mr-2"></span> Cancelled
