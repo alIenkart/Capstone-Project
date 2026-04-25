@@ -396,42 +396,42 @@
                 <div class="section-title">Inquiry Details</div>
                 <div class="inquiry-details">
                     <div class="detail-row">
-                        <span class="detail-label">Name</span>
+                        <span class="detail-label">Name: </span>
                         <span class="detail-value">{{ $inquiry->name }}</span>
                     </div>
 
                     <div class="detail-row">
-                        <span class="detail-label">Email</span>
+                        <span class="detail-label">Email: </span>
                         <span class="detail-value">{{ $inquiry->email }}</span>
                     </div>
 
                     <div class="detail-row">
-                        <span class="detail-label">Contact Number</span>
+                        <span class="detail-label">Contact Number: </span>
                         <span class="detail-value">{{ $inquiry->contact_number ?? 'N/A' }}</span>
                     </div>
 
                     <div class="detail-row">
-                        <span class="detail-label">Destination / Trip</span>
+                        <span class="detail-label">Destination / Trip: </span>
                         <span class="detail-value">{{ $inquiry->destination ?? 'N/A' }}</span>
                     </div>
 
                     <div class="detail-row">
-                        <span class="detail-label">Subject</span>
+                        <span class="detail-label">Subject: </span>
                         <span class="detail-value">{{ $inquiry->subject ?? 'N/A' }}</span>
                     </div>
 
                     <div class="detail-row">
-                        <span class="detail-label">Adults</span>
+                        <span class="detail-label">Adults: </span>
                         <span class="detail-value">{{ $inquiry->adults ?? 0 }}</span>
                     </div>
 
                     <div class="detail-row">
-                        <span class="detail-label">Children</span>
+                        <span class="detail-label">Children: </span>
                         <span class="detail-value">{{ $inquiry->children ?? 0 }}</span>
                     </div>
 
                     <div class="detail-row">
-                        <span class="detail-label">Seniors</span>
+                        <span class="detail-label">Seniors: </span>
                         <span class="detail-value">{{ $inquiry->seniors ?? 0 }}</span>
                     </div>
                 </div>
