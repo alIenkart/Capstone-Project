@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\InquirySubmitted;
 use App\Models\Inquiry;
 
 class InquiryController extends Controller
@@ -34,6 +36,9 @@ class InquiryController extends Controller
         ]);
 
         $inquiry = Inquiry::create($validated);
+
+        // Send confirmation email to the customer
+        Mail::to($inquiry->email)->send(new InquirySubmitted($inquiry));
 
         return response()->json([
             'message' => 'Inquiry submitted successfully.',

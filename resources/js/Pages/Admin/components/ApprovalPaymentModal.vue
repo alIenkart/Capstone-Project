@@ -233,7 +233,7 @@
                 </select>
               </div>
               <div v-for="(image, index) in receiptImages" :key="index">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Proof of Payment</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Proof of Payment:</label>
                 <div @click="openImageModal(image)"
                   class="relative group rounded-xl overflow-hidden border-2 border-gray-300 bg-gray-50 aspect-video cursor-pointer">
                   <img v-if="currentPayment?.proofOfPayment" :src="`/storage/${image}`" alt="Payment Proof"
@@ -938,7 +938,6 @@ const fetchPaymentAndBooking = async (id) => {
   try {
     const response = await axios.get(`/api/payments/${id}`);
     const data = response.data.data;
-    console.log("🚀 ~ fetchPaymentAndBooking ~ data:", data)
 
     paymentData.value = {
       payment_id: data.payment_id || null,
@@ -1015,8 +1014,11 @@ const fetchPaymentAndBooking = async (id) => {
         (paymentData.value?.total_price || 0),
     };
 
-    imagePreview.value = paymentData.value.image_path
-      ? `/storage/${JSON.parse(paymentData.value.image_path)[0]}`
+    const parsedImages = paymentData.value.image_path
+      ? JSON.parse(paymentData.value.image_path)
+      : [];
+    imagePreview.value = parsedImages.length
+      ? `/storage/${parsedImages[0]}`
       : null;
   } catch (error) {
     console.error("Error fetching payment:", error);
@@ -1094,7 +1096,8 @@ const closeReceipt = () => {
   showReceipt.value = false;
 };
 
-const openImageModal = () => {
+const openImageModal = (image) => {
+  imagePreview.value = `/storage/${image}`;
   showImageModal.value = true;
 };
 

@@ -10,7 +10,7 @@ export class api {
         return plainInstance.post("/api/users", data);
     }
 
-    updateUser(id, data) {
+    async updateUser(id, data) {
         return plainInstance.patch(`/api/users/${id}`, data);
     }
 

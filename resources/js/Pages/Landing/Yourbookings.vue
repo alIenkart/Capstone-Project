@@ -199,6 +199,12 @@
                     })
                   }}</span>
                 </div>
+                <div>
+                  Pickup Location:
+                  <span class="font-medium text-gray-700">{{
+                    filteredBookings[selectedBookingIndex].customer_address
+                  }}</span>
+                </div>
               </div>
             </div>
             <span class="text-sm font-mono text-blue-500 font-semibold mt-3 lg:mt-0">B{{
@@ -340,7 +346,7 @@
                         <div v-for="option in paymentTypeOptions" :key="option.value"
                           @click="selectOptionTypePayment(option)"
                           class="px-4 py-2 sm:py-3 cursor-pointer hover:bg-blue-100 hover:text-blue-700 transition-colors text-sm sm:text-base">
-                          {{ option.label }}
+                          {{ paymentStatus === "Down Payment Approved" ? '' : option.label }}
                         </div>
                       </div>
                     </div>
@@ -1120,6 +1126,7 @@ const toggleModeDropdown = async (event) => {
 
 const toggleTypeDropdown = async (event) => {
   event.stopPropagation();
+  if (paymentStatus.value === 'Down Payment Approved') return;
   const wasOpen = dropdownOpenTypePayment.value;
   closeAllDropdowns();
   await nextTick();

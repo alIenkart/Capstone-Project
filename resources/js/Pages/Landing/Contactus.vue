@@ -360,12 +360,6 @@ const hasErrors = computed(() =>
 );
 
 async function postInquiry() {
-  if (!page.props.auth.user) {
-    toast.warning("You need to login/register first");
-    router.visit(route("login"));
-    return;
-  }
-
   isLoading.value = true;
 
   try {
