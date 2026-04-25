@@ -268,13 +268,38 @@ const confirmAvatar = async () => {
   }
 };
 
-const saveChanges = () => {
+const saveChanges = async () => {
   try {
+    if (!user.value?.id) return;
+
+    const payload = preparePayload();
+
+    await service.updateUser(user.value.id, payload);
+
     isEditing.value = false;
     toast.success("Profile updated successfully!");
+    router.reload();
   } catch (e) {
     console.error(e);
+    toast.error(e.response?.data?.message || "Failed to update profile");
   }
+};
+
+const preparePayload = () => {
+  return {
+    first_name: firstName.value?.trim(),
+    last_name: lastName.value?.trim(),
+    email: email.value?.trim(),
+    phone_number: phone.value?.trim(),
+    role: user.value?.role,
+    avatar: selectedAvatar.value,
+    ...(password.value
+      ? {
+          password: password.value,
+          password_confirmation: password.value
+        }
+      : {})
+  };
 };
 
 onMounted(() => {
