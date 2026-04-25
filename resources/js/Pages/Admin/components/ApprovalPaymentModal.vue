@@ -1233,7 +1233,7 @@ const receiptImages = computed(() => {
 });
 
 async function submitVerificationOfPayment($status) {
-  if (!isDownPayment()) {
+  if ($status !== 'Rejected' && !isDownPayment()) {
     isFullyPaid.value = true;
   }
 
