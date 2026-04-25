@@ -216,7 +216,7 @@
                 :class="[
                   filteredBookings[selectedBookingIndex].status === 'Approved'
                     ? 'bg-green-400 text-white'
-                    : filteredBookings[selectedBookingIndex].status === 'reject'
+                    : filteredBookings[selectedBookingIndex].status === 'Rejected'
                       ? 'bg-red-400 text-white'
                       : 'bg-yellow-400 text-white',
                 ]">
@@ -255,6 +255,7 @@
               </span>
             </div>
           </div>
+
 
           <div v-if="filteredBookings[selectedBookingIndex].remarks" class="mb-6">
             <span class="text-gray-500 block mb-2 text-xs sm:text-sm font-normal">Remarks</span>
@@ -411,7 +412,7 @@
                   </div>
                 </div>
 
-                <div>
+                <div v-if="paymentStatus !== 'Rejected' && filteredBookings[selectedBookingIndex]?.status !== 'Rejected' && filteredBookings[selectedBookingIndex]?.status !== 'reject'">
                   <label class="block mb-2 text-gray-700 font-semibold text-xs sm:text-sm">Upload Payment
                     Receipt:</label>
                   <div v-if="paymentStatus === 'Under Review' || paymentStatus === 'Approved'" class="flex items-center gap-3 sm:gap-4 mb-4 flex-wrap">
@@ -487,7 +488,7 @@
 
             <div class="w-full flex justify-center">
               <div
-                v-if="imageQR && (filteredBookings[selectedBookingIndex]?.status === 'Approved')"
+                v-if="imageQR && (filteredBookings[selectedBookingIndex]?.status === 'Approved') && paymentStatus !== 'Rejected'"
                 class="w-full lg:w-1/3 flex flex-col justify-center items-center h-fit"
               >
                 <div v-if="imageQR.name" class="font-semibold text-gray-800 text-center text-base sm:text-lg">
@@ -529,7 +530,7 @@
                 </div>
               </div>
 
-              <div v-else class="text-gray-500 text-sm text-center">
+              <div v-else-if="paymentStatus !== 'Rejected' && filteredBookings[selectedBookingIndex]?.status !== 'Rejected' && filteredBookings[selectedBookingIndex]?.status !== 'reject'" class="text-gray-500 text-sm text-center">
                 No payment method available.
               </div>
             </div>
@@ -590,9 +591,10 @@
                 </button>
 
                 <button v-if="
-                  filteredBookings[selectedBookingIndex]?.rejected_at &&
-                  (isPaymentRejected() || isBookingRejected())
-                " @click="showRejectionModal = true"
+                  paymentStatus === 'Rejected' ||
+                  (filteredBookings[selectedBookingIndex]?.rejected_at &&
+                  (isPaymentRejected() || isBookingRejected()))
+                " @click="openRejectionModal()"
                   class="w-full bg-[#1E71B8] hover:bg-[#155a8a] focus:ring-2 focus:ring-[#52c2f8] transition shadow-lg text-white px-6 sm:px-8 py-2 sm:py-3 rounded-xl font-semibold text-sm sm:text-lg focus:outline-none active:scale-95 duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
                   View Rejection Reason
                 </button>
@@ -604,75 +606,14 @@
           No bookings found.
         </div>
 
-        <Transition enter-active-class="transition-all duration-300 ease-out" enter-from-class="opacity-0 scale-95"
-          enter-to-class="opacity-100 scale-100" leave-active-class="transition-all duration-200 ease-in"
-          leave-from-class="opacity-100 scale-100" leave-to-class="opacity-0 scale-95">
-          <div v-if="showRejectionModal"
-            class="fixed inset-0 z-[70] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
-              <div class="bg-gradient-to-r from-red-500 to-red-600 px-4 sm:px-6 py-4 sm:py-6">
-                <div class="flex items-center gap-3">
-                  <div class="p-2 sm:p-3 bg-white/20 rounded-lg">
-                    <svg class="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 9v2m0 4v2m0 0v2m0-6v-2m0 0v-2" />
-                    </svg>
-                  </div>
-                  <h3 class="text-lg sm:text-xl font-bold text-white">Booking Rejected</h3>
-                </div>
-              </div>
-
-              <div class="px-4 sm:px-6 py-4 sm:py-6 space-y-4">
-                <div class="block text-xs sm:text-sm font-semibold text-slate-700 mb-3 text-right">
-                  {{
-                    filteredBookings[selectedBookingIndex]?.rejected_at
-                      ? new Date(
-                        filteredBookings[selectedBookingIndex].rejected_at
-                      ).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })
-                      : ""
-                  }}
-                </div>
-
-                <div>
-                  <label class="block text-xs sm:text-sm font-semibold text-slate-700 mb-3">
-                    Rejection Category
-                  </label>
-                  <div class="block text-xs sm:text-sm font-normal text-slate-700 mb-1 pl-4">
-                    -
-                    {{
-                      filteredBookings[selectedBookingIndex]?.rejection_category
-                    }}
-                  </div>
-                </div>
-
-                <hr />
-                <label class="block text-xs sm:text-sm font-semibold text-slate-700">
-                  Reason:
-                </label>
-                <textarea
-                  class="w-full rounded-xl border-2 border-gray-300 p-2 sm:p-3 text-xs sm:text-sm text-slate-700 resize-none bg-gray-100 font-normal"
-                  :value="filteredBookings[selectedBookingIndex]?.rejection_reason
-                    " rows="4" readonly>
-                </textarea>
-
-                <div
-                  class="bg-slate-50 py-3 sm:py-4 border-t border-slate-200 flex justify-end px-4 sm:px-6 -mx-4 sm:-mx-6 -mb-4 sm:-mb-6">
-                  <button type="button" @click="showRejectionModal = false"
-                    class="rounded-lg px-4 sm:px-6 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold bg-slate-200 text-slate-800 hover:bg-slate-300 transition-all">
-                    Close
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Transition>
-
-        <RejectionModal :reason="rejectionReason" :category="rejectionCategory" :date="rejectionDate"
-          :visible="showRejectionModal" @close="showRejectionModal = false" />
+        <RejectionModal 
+          :title="rejectionModalTitle"
+          :reason="rejectionReason" 
+          :category="rejectionCategory" 
+          :date="rejectionDate"
+          :visible="showRejectionModal" 
+          @close="showRejectionModal = false" 
+        />
       </main>
     </div>
   </div>
@@ -796,6 +737,7 @@ const showRejectionModal = ref(false);
 const rejectionDate = ref(null);
 const rejectionCategory = ref(null);
 const rejectionReason = ref(null);
+const rejectionModalTitle = ref('Booking Rejected');
 const showSuccessAnimation = ref(false);
 const showFullscreenImage = ref(false);
 const fullscreenImageUrl = ref(null);
@@ -935,6 +877,25 @@ const isBookingRejected = () => {
   return false;
 };
 
+const openRejectionModal = () => {
+  const currentBooking = filteredBookings.value[selectedBookingIndex.value];
+  const currentPayment = payments.value.find((p) => p.booking_id === currentBooking?.id);
+
+  if (currentPayment?.rejected_at) {
+    rejectionDate.value = currentPayment.rejected_at;
+    rejectionCategory.value = currentPayment.rejection_category;
+    rejectionReason.value = currentPayment.rejection_reason;
+    rejectionModalTitle.value = 'Payment Rejected';
+  } else if (currentBooking?.rejected_at) {
+    rejectionDate.value = currentBooking.rejected_at;
+    rejectionCategory.value = currentBooking.rejection_category;
+    rejectionReason.value = currentBooking.rejection_reason;
+    rejectionModalTitle.value = 'Booking Rejected';
+  }
+
+  showRejectionModal.value = true;
+};
+
 const proofOfPaymentUrl = computed(() => {
   if (!payments.value.length || !filteredBookings.value.length) return null;
 
@@ -1006,6 +967,27 @@ const paymentStatus = computed(() => {
     (p) => p.booking_id === currentBookingId
   );
   return currentPayment ? currentPayment.payment_status : null;
+});
+
+const paymentRejectionReason = computed(() => {
+  if (!payments.value.length || !filteredBookings.value.length) return null;
+  const currentBookingId = filteredBookings.value[selectedBookingIndex.value].id;
+  const currentPayment = payments.value.find((p) => p.booking_id === currentBookingId);
+  return currentPayment?.rejection_reason || null;
+});
+
+const paymentRejectionCategory = computed(() => {
+  if (!payments.value.length || !filteredBookings.value.length) return null;
+  const currentBookingId = filteredBookings.value[selectedBookingIndex.value].id;
+  const currentPayment = payments.value.find((p) => p.booking_id === currentBookingId);
+  return currentPayment?.rejection_category || null;
+});
+
+const paymentRejectionDate = computed(() => {
+  if (!payments.value.length || !filteredBookings.value.length) return null;
+  const currentBookingId = filteredBookings.value[selectedBookingIndex.value].id;
+  const currentPayment = payments.value.find((p) => p.booking_id === currentBookingId);
+  return currentPayment?.rejected_at || null;
 });
 
 const totalDue = computed(() => {

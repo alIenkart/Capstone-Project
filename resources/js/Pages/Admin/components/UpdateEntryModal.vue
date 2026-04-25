@@ -159,6 +159,16 @@
                       {{ booking.customer_phone ?? "—" }}
                     </p>
                   </div>
+                  <div class="space-y-1.5">
+                    <p
+                      class="text-xs font-semibold text-slate-500 uppercase tracking-wider"
+                    >
+                      Address (For Pick-ups)
+                    </p>
+                    <p class="text-base text-slate-700">
+                      {{ booking.customer_address ?? "—" }}
+                    </p>
+                  </div>
                 </div>
               </div>
 

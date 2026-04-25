@@ -18,23 +18,8 @@
           class="relative px-5 py-6 sm:px-8 sm:py-8 bg-gradient-to-br from-red-500 to-red-600 border-b border-red-600"
         >
           <div class="flex items-start gap-4">
-            <div class="flex-shrink-0 p-3 bg-white/20 rounded-xl">
-              <svg
-                class="w-6 h-6 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </div>
             <div class="flex-1">
-              <h3 class="text-2xl font-bold text-white">Booking Rejected</h3>
+              <h3 class="text-2xl font-bold text-white">{{ title }}</h3>
               <p class="text-sm font-medium text-white/80 mt-1">
                 {{ formattedDate }}
               </p>
@@ -88,6 +73,7 @@
 import { computed } from "vue";
 
 const props = defineProps({
+  title: { type: String, default: "Booking Rejected" },
   reason: { type: String, required: true },
   category: { type: String, required: true },
   date: { type: [String, Date], required: true },

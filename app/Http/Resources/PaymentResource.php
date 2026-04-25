@@ -38,6 +38,7 @@ class PaymentResource extends JsonResource
                 'customer_name' => $this->booking->customer_name ?? null,
                 'customer_email' => $this->booking->customer_email ?? null,
                 'customer_phone' => $this->booking->customer_phone ?? null,
+                'customer_address' => $this->booking->customer_address ?? null,
                 'package_destination' => $this->booking->package_destination ?? null,
                 'tour_type' => $this->booking->tour_type ?? null,
                 'duration' => $this->booking->duration ?? null,

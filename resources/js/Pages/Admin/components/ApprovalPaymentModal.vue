@@ -45,6 +45,12 @@
                     receiptData.customerPhone
                   }}</span>
                 </div>
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-2">
+                  <span class="text-gray-600">Address(For Pick-ups):</span>
+                  <span class="font-semibold text-gray-800">{{
+                    receiptData.customerAddress
+                  }}</span>
+                </div>
               </div>
             </div>
 
@@ -569,6 +575,10 @@
                 <span class="text-gray-600">Phone No:</span>
                 <span class="font-medium">{{ receiptData.customerPhone }}</span>
               </p>
+              <p>
+                <span class="text-gray-600">Address(For Pick-ups):</span>
+                <span class="font-medium">{{ receiptData.customerAddress }}</span>
+              </p>
             </div>
           </div>
           <div>
@@ -928,6 +938,7 @@ const fetchPaymentAndBooking = async (id) => {
   try {
     const response = await axios.get(`/api/payments/${id}`);
     const data = response.data.data;
+    console.log("🚀 ~ fetchPaymentAndBooking ~ data:", data)
 
     paymentData.value = {
       payment_id: data.payment_id || null,
@@ -952,6 +963,7 @@ const fetchPaymentAndBooking = async (id) => {
         customer_name: data.booking?.customer_name || "",
         customer_email: data.booking?.customer_email || "",
         customer_phone: data.booking?.customer_phone || "",
+        customer_address: data.booking?.customer_address || "",
         package_destination: data.booking?.package_destination || "",
         tour_type: data.booking?.tour_type || "",
         duration: data.booking?.duration || "",
@@ -982,6 +994,7 @@ const fetchPaymentAndBooking = async (id) => {
       customerName: paymentData.value?.booking?.customer_name || "",
       customerEmail: paymentData.value?.booking?.customer_email || "",
       customerPhone: paymentData.value?.booking?.customer_phone || "",
+      customerAddress: paymentData.value?.booking?.customer_address || "",
       paymentVia: paymentMethod.value,
       quantity: paymentData.value?.booking?.total_quantity || 0,
       paymentType: "Downpayment",
