@@ -487,7 +487,7 @@
 
             <div class="w-full flex justify-center">
               <div
-                v-if="imageQR"
+                v-if="imageQR && (filteredBookings[selectedBookingIndex]?.status === 'Approved')"
                 class="w-full lg:w-1/3 flex flex-col justify-center items-center h-fit"
               >
                 <div v-if="imageQR.name" class="font-semibold text-gray-800 text-center text-base sm:text-lg">
