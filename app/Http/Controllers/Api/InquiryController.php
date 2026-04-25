@@ -37,8 +37,10 @@ class InquiryController extends Controller
 
         $inquiry = Inquiry::create($validated);
 
-        // Send confirmation email to the customer
-        Mail::to($inquiry->email)->send(new InquirySubmitted($inquiry));
+        // Send confirmation email to the customer and admin notification
+        Mail::to($inquiry->email)
+            ->cc(config('mail.from.address'))
+            ->send(new InquirySubmitted($inquiry));
 
         return response()->json([
             'message' => 'Inquiry submitted successfully.',
