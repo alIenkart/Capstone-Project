@@ -5,7 +5,7 @@
       @click="$emit('close')"
     ></div>
 
-    <div class="flex min-h-full items-center justify-center p-4 sm:p-6">
+    <div class="fixed inset-0 flex items-center justify-center p-4 sm:p-6 z-10 overflow-y-auto">
       <div
         class="relative transform overflow-hidden rounded-2xl bg-white shadow-2xl transition-all sm:my-8 w-full max-w-7xl mx-auto"
       >
@@ -541,7 +541,30 @@
           </div>
         </div>
         <div class="bg-white px-5 sm:px-8 py-5 border-t border-slate-200">
-          <div class="flex flex-col sm:flex-row sm:justify-end gap-3">
+          <!-- Cancelled booking banner -->
+          <div v-if="isCancelled" class="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3 bg-red-50 border border-red-200 rounded-xl px-5 py-3 w-full sm:w-auto">
+              <div class="p-2 bg-red-100 rounded-lg">
+                <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                </svg>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-red-700">Booking Cancelled</p>
+                <p class="text-xs text-red-500">This booking has been cancelled by the customer</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              class="flex items-center justify-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold bg-gray-600 text-white hover:bg-gray-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 w-full sm:w-auto"
+              @click="$emit('close')"
+            >
+              Close
+            </button>
+          </div>
+
+          <!-- Normal action buttons (non-cancelled) -->
+          <div v-else class="flex flex-col sm:flex-row sm:justify-end gap-3">
             <button
               type="button"
               class="flex items-center justify-center gap-2 rounded-lg px-6 py-2.5 text-sm font-semibold bg-gray-600 text-white hover:bg-gray-700 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 w-full sm:w-auto"
@@ -1223,6 +1246,7 @@ import { usePage } from "@inertiajs/vue3";
 const page = usePage();
 const toast = useToast();
 const props = defineProps({ booking: Object });
+console.log("🚀 ~ props:", props)
 const emit = defineEmits(["close", "booking-updated"]);
 const service = new api();
 
@@ -1390,6 +1414,10 @@ const isApproved = computed(() => {
   return (
     props.booking.status === "Approved"
   );
+});
+
+const isCancelled = computed(() => {
+  return props.booking.status === "Cancelled";
 });
 
 const adminName = computed(() => {

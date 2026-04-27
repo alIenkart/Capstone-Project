@@ -115,6 +115,7 @@
                   'bg-yellow-100 text-yellow-700':
                     booking.status === 'Pending',
                   'bg-red-100 text-red-600': booking.status === 'Rejected',
+                  'bg-red-100 text-red-600': booking.status === 'Cancelled',
                 }">{{ booking.status }}</span>
                 <span v-if="booking.tour_type" class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-xs">{{
                   booking.tour_type }}</span>
@@ -223,6 +224,8 @@
                   filteredBookings[selectedBookingIndex].status === 'Approved'
                     ? 'bg-green-400 text-white'
                     : filteredBookings[selectedBookingIndex].status === 'Rejected'
+                      ? 'bg-red-400 text-white' 
+                      : filteredBookings[selectedBookingIndex].status === 'Cancelled'
                       ? 'bg-red-400 text-white'
                       : 'bg-yellow-400 text-white',
                 ]">
@@ -418,7 +421,7 @@
                   </div>
                 </div>
 
-                <div v-if="paymentStatus !== 'Rejected' && filteredBookings[selectedBookingIndex]?.status !== 'Rejected' && filteredBookings[selectedBookingIndex]?.status !== 'reject' && filteredBookings[selectedBookingIndex]?.status !== 'Pending'">
+                <div v-if="paymentStatus !== 'Rejected' && filteredBookings[selectedBookingIndex]?.status !== 'Rejected' && filteredBookings[selectedBookingIndex]?.status !== 'reject' && filteredBookings[selectedBookingIndex]?.status !== 'Pending' && filteredBookings[selectedBookingIndex]?.status !== 'Cancelled'">
                   <label class="block mb-2 text-gray-700 font-semibold text-xs sm:text-sm">Upload Payment
                     Receipt:</label>
                   <div v-if="paymentStatus === 'Under Review' || paymentStatus === 'Approved'" class="flex items-center gap-3 sm:gap-4 mb-4 flex-wrap">
@@ -536,7 +539,7 @@
                 </div>
               </div>
 
-              <div v-else-if="paymentStatus !== 'Rejected' && filteredBookings[selectedBookingIndex]?.status !== 'Rejected' && filteredBookings[selectedBookingIndex]?.status !== 'reject' && filteredBookings[selectedBookingIndex]?.status !== 'Pending'" class="text-gray-500 text-sm text-center">
+              <div v-else-if="paymentStatus !== 'Rejected' && filteredBookings[selectedBookingIndex]?.status !== 'Rejected' && filteredBookings[selectedBookingIndex]?.status !== 'reject' && filteredBookings[selectedBookingIndex]?.status !== 'Pending' && filteredBookings[selectedBookingIndex]?.status !== 'Cancelled'" class="text-gray-500 text-sm text-center">
                 No payment method available.
               </div>
             </div>
@@ -587,11 +590,12 @@
                   !isFullyPaid() &&
                   paymentStatus !== 'Down Payment Approved' &&
                   paymentStatus !== 'Approved' &&
+                  paymentStatus !== 'Under Review' &&
                   (
                     filteredBookings[selectedBookingIndex]?.status === 'Pending' ||
-                    (filteredBookings[selectedBookingIndex]?.status === 'Approved' && (paymentStatus === 'Under Review' || paymentStatus === 'Pending'))
+                    (filteredBookings[selectedBookingIndex]?.status === 'Approved' && paymentStatus === 'Pending')
                   )" 
-                  @click="cancelBooking()" 
+                  @click="showCancelConfirm = true" 
                   class="w-full bg-white hover:bg-red-50 text-red-500 border border-red-400 px-6 sm:px-8 py-2 sm:py-3 rounded-xl font-semibold text-sm sm:text-lg transition shadow-md focus:outline-none focus:ring-2 focus:ring-red-100 active:scale-95 duration-150">
                   Cancel Booking
                 </button>
@@ -702,6 +706,53 @@
       </div>
     </div>
   </Transition>
+
+  <!-- Cancel Booking Confirmation Modal -->
+  <Transition enter-active-class="transition-all duration-300 ease-out" enter-from-class="opacity-0"
+    enter-to-class="opacity-100" leave-active-class="transition-all duration-200 ease-in" leave-from-class="opacity-100"
+    leave-to-class="opacity-0">
+    <div v-if="showCancelConfirm" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40" @click="showCancelConfirm = false"></div>
+  </Transition>
+
+  <Transition enter-active-class="transition-all duration-300 ease-out" enter-from-class="opacity-0 scale-95"
+    enter-to-class="opacity-100 scale-100" leave-active-class="transition-all duration-200 ease-in"
+    leave-from-class="opacity-100 scale-100" leave-to-class="opacity-0 scale-95">
+    <div v-if="showCancelConfirm" class="fixed inset-0 flex items-center justify-center pointer-events-none z-50 p-4">
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden pointer-events-auto" @click.stop>
+        <div class="bg-gradient-to-r from-red-500 to-rose-600 px-6 py-6">
+          <div class="flex items-center justify-center mb-3">
+            <div class="relative w-16 h-16">
+              <div class="absolute inset-0 flex items-center justify-center bg-white/20 rounded-full">
+                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <h3 class="text-xl font-bold text-white text-center">Cancel Booking?</h3>
+          <p class="text-red-100 text-center mt-1 text-sm">This action cannot be undone</p>
+        </div>
+
+        <div class="px-6 py-5">
+          <p class="text-gray-600 text-sm text-center leading-relaxed">
+            Are you sure you want to cancel this booking? Once cancelled, you will need to create a new booking if you change your mind.
+          </p>
+        </div>
+
+        <div class="bg-gray-50 border-t border-gray-200 px-6 py-4 flex gap-3 justify-end">
+          <button @click="showCancelConfirm = false"
+            class="px-5 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold rounded-lg transition-all duration-200 text-sm">
+            No, Keep Booking
+          </button>
+          <button @click="showCancelConfirm = false; cancelBooking()"
+            class="px-5 py-2.5 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg transition-all duration-300 active:scale-95 text-sm">
+            Yes, Cancel Booking
+          </button>
+        </div>
+      </div>
+    </div>
+  </Transition>
+
   <Footer></Footer>
 </template>
 
@@ -752,6 +803,7 @@ const rejectionModalTitle = ref('Booking Rejected');
 const showSuccessAnimation = ref(false);
 const showFullscreenImage = ref(false);
 const fullscreenImageUrl = ref(null);
+const showCancelConfirm = ref(false);
 
 const modeOfPaymentOptions = computed(() =>
   (modeOfPayment.value || []).map(m => ({
@@ -1049,6 +1101,7 @@ async function cancelBooking() {
 
     if (response.status === 200) {
       toast.success("Booking successfully cancelled!");
+      bookings.value = await fetchBookingsByUser(userId);
     }
     payments.value = await fetchPaymentsByBookingId(currentBooking.id);
   } catch (error) {

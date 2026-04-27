@@ -564,7 +564,7 @@ const days = computed(() => {
     grid.push({
       day: d,
       dateKey: key,
-      status: availabilityByDate.value[key] || "available",
+      status: tourType.value === "Exclusive" ? "available" : (availabilityByDate.value[key] || "available"),
       isPast: isPast,
       isInRange: inRange,
       isOutOfRange: outOfRange,
@@ -618,7 +618,16 @@ const selectTourType = (t) => {
       };
       selectedDate.value = parseISODate(booking.start_date);
       selectedend_date.value = parseISODate(booking.end_date);
+
+      const [year, month] = selectedDate.value.split("-").map(Number);
+      currentMonthIndex.value = month - 1;
+      currentYear.value = year;
     }
+  } else if (t === "Exclusive") {
+    const firstAvailable = new Date();
+    firstAvailable.setDate(firstAvailable.getDate() + 5);
+    currentMonthIndex.value = firstAvailable.getMonth();
+    currentYear.value = firstAvailable.getFullYear();
   }
 };
 
