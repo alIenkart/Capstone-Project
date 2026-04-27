@@ -418,7 +418,7 @@
                   </div>
                 </div>
 
-                <div v-if="paymentStatus !== 'Rejected' && filteredBookings[selectedBookingIndex]?.status !== 'Rejected' && filteredBookings[selectedBookingIndex]?.status !== 'reject'">
+                <div v-if="paymentStatus !== 'Rejected' && filteredBookings[selectedBookingIndex]?.status !== 'Rejected' && filteredBookings[selectedBookingIndex]?.status !== 'reject' && filteredBookings[selectedBookingIndex]?.status !== 'Pending'">
                   <label class="block mb-2 text-gray-700 font-semibold text-xs sm:text-sm">Upload Payment
                     Receipt:</label>
                   <div v-if="paymentStatus === 'Under Review' || paymentStatus === 'Approved'" class="flex items-center gap-3 sm:gap-4 mb-4 flex-wrap">
@@ -536,7 +536,7 @@
                 </div>
               </div>
 
-              <div v-else-if="paymentStatus !== 'Rejected' && filteredBookings[selectedBookingIndex]?.status !== 'Rejected' && filteredBookings[selectedBookingIndex]?.status !== 'reject'" class="text-gray-500 text-sm text-center">
+              <div v-else-if="paymentStatus !== 'Rejected' && filteredBookings[selectedBookingIndex]?.status !== 'Rejected' && filteredBookings[selectedBookingIndex]?.status !== 'reject' && filteredBookings[selectedBookingIndex]?.status !== 'Pending'" class="text-gray-500 text-sm text-center">
                 No payment method available.
               </div>
             </div>
@@ -583,9 +583,14 @@
                 </button>
 
                 <button v-if="
-                  paymentStatus === 'Pending' &&
-                  !filteredBookings[selectedBookingIndex]?.rejected_at &&
-                  !isPaymentRejected()" 
+                  !isPaymentRejected() &&
+                  !isFullyPaid() &&
+                  paymentStatus !== 'Down Payment Approved' &&
+                  paymentStatus !== 'Approved' &&
+                  (
+                    filteredBookings[selectedBookingIndex]?.status === 'Pending' ||
+                    (filteredBookings[selectedBookingIndex]?.status === 'Approved' && (paymentStatus === 'Under Review' || paymentStatus === 'Pending'))
+                  )" 
                   @click="cancelBooking()" 
                   class="w-full bg-white hover:bg-red-50 text-red-500 border border-red-400 px-6 sm:px-8 py-2 sm:py-3 rounded-xl font-semibold text-sm sm:text-lg transition shadow-md focus:outline-none focus:ring-2 focus:ring-red-100 active:scale-95 duration-150">
                   Cancel Booking
