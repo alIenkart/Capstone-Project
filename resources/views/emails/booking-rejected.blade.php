@@ -416,10 +416,7 @@
             <div class="email-header">
                 <div class="header-content">
                     <div class="header-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                        <img src="https://img.icons8.com/ios-filled/100/ffffff/cancel.png" width="40" height="40" alt="Rejected">
                     </div>
                     <h1>Booking Rejected</h1>
                     <p>Your booking application has been reviewed</p>
@@ -477,12 +474,7 @@
                 <!-- Rejection Reason -->
                 <div class="rejection-reason">
                     <h3>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="8" x2="12" y2="12"></line>
-                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                        </svg>
+                        <img src="https://img.icons8.com/ios-filled/50/dc2626/error.png" width="20" height="20" alt="Reason" style="vertical-align: middle; margin-right: 8px;">
                         Rejection Reason
                     </h3>
                     
@@ -509,10 +501,7 @@
                 @if($booking->remarks && $booking->rejection_category !== 'Past Due Payment')
                     <div class="remarks-section">
                         <h3>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                            </svg>
+                            <img src="https://img.icons8.com/ios-filled/50/0369a1/speech-bubble.png" width="20" height="20" alt="Notes" style="vertical-align: middle; margin-right: 8px;">
                             Additional Notes
                         </h3>
                         <p>{{ $booking->remarks }}</p>

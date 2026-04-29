@@ -195,9 +195,7 @@
             <div class="email-header">
                 <div class="header-content">
                     <div class="header-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16.5 10.5V6.75A2.25 2.25 0 0014.25 4.5h-9A2.25 2.25 0 003 6.75v10.5A2.25 2.25 0 005.25 19.5h9a2.25 2.25 0 002.25-2.25V13.5m4.5-3l-3 3m0 0l3 3m-3-3h-9" />
-                        </svg>
+                        <img src="https://img.icons8.com/ios-filled/100/ffffff/lock.png" width="40" height="40" alt="OTP">
                     </div>
                     <h1>OTP Verification</h1>
                     <p>Secure your account verification</p>

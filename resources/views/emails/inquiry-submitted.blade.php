@@ -359,11 +359,7 @@
             <div class="email-header">
                 <div class="header-content">
                     <div class="header-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
-                        </svg>
+                        <img src="https://img.icons8.com/ios-filled/100/ffffff/mail.png" width="40" height="40" alt="Inquiry">
                     </div>
                     <h1>Inquiry Received</h1>
                     <p>We have received your inquiry and will get back to you shortly</p>
@@ -381,11 +377,7 @@
                 <!-- Confirmation Notice -->
                 <div class="confirmation-notice">
                     <h3>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                        </svg>
+                        <img src="https://img.icons8.com/ios-filled/50/15803d/ok.png" width="20" height="20" alt="Success" style="vertical-align: middle; margin-right: 8px;">
                         Inquiry Submitted Successfully
                     </h3>
                     <p>Your inquiry has been logged in our system. A member of our team will review your request and
@@ -440,10 +432,7 @@
                 @if($inquiry->message)
                     <div class="message-section">
                         <h3>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                            </svg>
+                            <img src="https://img.icons8.com/ios-filled/50/0369a1/topic.png" width="20" height="20" alt="Message" style="vertical-align: middle; margin-right: 8px;">
                             Your Message
                         </h3>
                         <p>{{ $inquiry->message }}</p>

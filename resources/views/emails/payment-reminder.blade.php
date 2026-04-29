@@ -293,9 +293,7 @@
             <div class="email-header">
                 <div class="header-content">
                     <div class="header-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                        </svg>
+                        <img src="https://img.icons8.com/ios-filled/100/ffffff/clock.png" width="40" height="40" alt="Reminder">
                     </div>
                     <h1>Payment Reminder</h1>
                     <p>Action required to confirm your reservation</p>
