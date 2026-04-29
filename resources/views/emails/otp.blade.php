@@ -81,21 +81,22 @@
         }
 
         .header-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+            display: inline-block;
             width: 80px;
             height: 80px;
+            line-height: 80px;
+            text-align: center;
             background: rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             margin-bottom: 20px;
             backdrop-filter: blur(10px);
         }
 
-        .header-icon svg {
+        .header-icon img {
             width: 40px;
             height: 40px;
-            color: #fff;
+            vertical-align: middle;
+            display: inline-block;
         }
 
         .email-header h1 {
@@ -187,15 +188,21 @@
     <div class="email-wrapper">
         <div class="email-container">
             <!-- Logo -->
-            <!-- <div class="logo-section">
-                <img src="{{ asset('storage/logo/Logo.png') }}" alt="JE Travel & Tours Logo">
-            </div> -->
+            <div class="logo-section">
+                @if(isset($logoPath) && $logoPath)
+                    <img src="{{ $message->embed($logoPath) }}" alt="JE Travel & Tours Logo">
+                @else
+                    <h2 style="color: #1E71B8;">JE Travel & Tours</h2>
+                @endif
+            </div>
 
             <!-- Header -->
             <div class="email-header">
                 <div class="header-content">
                     <div class="header-icon">
-                        <img src="https://img.icons8.com/ios-filled/100/ffffff/lock.png" width="40" height="40" alt="OTP">
+                        @if(isset($iconPath) && $iconPath)
+                            <img src="{{ $message->embed($iconPath) }}" width="40" height="40" alt="OTP">
+                        @endif
                     </div>
                     <h1>OTP Verification</h1>
                     <p>Secure your account verification</p>

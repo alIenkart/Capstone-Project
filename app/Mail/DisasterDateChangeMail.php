@@ -57,6 +57,8 @@ class DisasterDateChangeMail extends Mailable implements ShouldQueue
             ? 'emails.disaster-date-change-paid'
             : 'emails.disaster-date-change-pending';
 
+        $logoPath = public_path('storage/logo/Logo.png');
+
         return new Content(
             view: $view,
             with: [
@@ -69,6 +71,7 @@ class DisasterDateChangeMail extends Mailable implements ShouldQueue
                 'bookingId' => 'B' . str_pad($this->booking->id, 5, '0', STR_PAD_LEFT),
                 'customerName' => $this->booking->customer_name,
                 'isPaymentConfirmed' => $this->isPaymentConfirmed,
+                'logoPath' => file_exists($logoPath) ? $logoPath : null,
             ],
         );
     }

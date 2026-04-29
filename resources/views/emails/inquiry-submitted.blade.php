@@ -81,21 +81,22 @@
         }
 
         .header-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+            display: inline-block;
             width: 80px;
             height: 80px;
+            line-height: 80px;
+            text-align: center;
             background: rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             margin-bottom: 20px;
             backdrop-filter: blur(10px);
         }
 
-        .header-icon svg {
+        .header-icon img {
             width: 40px;
             height: 40px;
-            color: #fff;
+            vertical-align: middle;
+            display: inline-block;
         }
 
         .email-header h1 {
@@ -352,14 +353,20 @@
         <div class="email-container">
             <!-- Logo Section -->
             <div class="logo-section">
-                <img src="data:image/png;base64,{{ $logoBase64 }}" alt="JE Travel & Tours Logo" style="display: block; margin: 0 auto; max-width: 180px; height: auto;">
+                @if(isset($logoPath) && $logoPath)
+                    <img src="{{ $message->embed($logoPath) }}" alt="JE Travel & Tours Logo" style="display: block; margin: 0 auto; max-width: 180px; height: auto;">
+                @else
+                    <h2 style="color: #1E71B8;">JE Travel & Tours</h2>
+                @endif
             </div>
 
             <!-- Header -->
             <div class="email-header">
                 <div class="header-content">
                     <div class="header-icon">
-                        <img src="https://img.icons8.com/ios-filled/100/ffffff/mail.png" width="40" height="40" alt="Inquiry">
+                        @if(isset($iconHeaderPath) && $iconHeaderPath)
+                            <img src="{{ $message->embed($iconHeaderPath) }}" width="40" height="40" alt="Inquiry">
+                        @endif
                     </div>
                     <h1>Inquiry Received</h1>
                     <p>We have received your inquiry and will get back to you shortly</p>
@@ -377,7 +384,9 @@
                 <!-- Confirmation Notice -->
                 <div class="confirmation-notice">
                     <h3>
-                        <img src="https://img.icons8.com/ios-filled/50/15803d/ok.png" width="20" height="20" alt="Success" style="vertical-align: middle; margin-right: 8px;">
+                        @if(isset($iconSuccessPath) && $iconSuccessPath)
+                            <img src="{{ $message->embed($iconSuccessPath) }}" width="20" height="20" alt="Success" style="vertical-align: middle; margin-right: 8px;">
+                        @endif
                         Inquiry Submitted Successfully
                     </h3>
                     <p>Your inquiry has been logged in our system. A member of our team will review your request and
@@ -432,7 +441,9 @@
                 @if($inquiry->message)
                     <div class="message-section">
                         <h3>
-                            <img src="https://img.icons8.com/ios-filled/50/0369a1/topic.png" width="20" height="20" alt="Message" style="vertical-align: middle; margin-right: 8px;">
+                            @if(isset($iconMessagePath) && $iconMessagePath)
+                                <img src="{{ $message->embed($iconMessagePath) }}" width="20" height="20" alt="Message" style="vertical-align: middle; margin-right: 8px;">
+                            @endif
                             Your Message
                         </h3>
                         <p>{{ $inquiry->message }}</p>

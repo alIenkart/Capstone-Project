@@ -35,16 +35,9 @@ class PaymentReminderMail extends Mailable implements ShouldQueue
         $dueDateObj = new \DateTime($this->booking->start_date);
         $dueDateObj->modify("-{$this->cancellationDays} days");
 
-        // Get logo and convert to Base64
         $logoPath = public_path('storage/logo/Logo.png');
-        $logoBase64 = '';
-        $mimeType = 'image/png';
+        $iconPath = public_path('storage/icons/clock-white.png');
 
-        if (file_exists($logoPath)) {
-            $imageData = file_get_contents($logoPath);
-            $logoBase64 = base64_encode($imageData);
-        }
-        
         return new Content(
             view: 'emails.payment-reminder',
             with: [
@@ -54,8 +47,8 @@ class PaymentReminderMail extends Mailable implements ShouldQueue
                 'travelDate' => date('F d, Y', strtotime($this->booking->start_date)),
                 'dueDate' => $dueDateObj->format('F d, Y'),
                 'cancellationDays' => $this->cancellationDays,
-                'logoBase64' => $logoBase64,
-                'mimeType' => $mimeType,
+                'logoPath' => file_exists($logoPath) ? $logoPath : null,
+                'iconPath' => file_exists($iconPath) ? $iconPath : null,
             ],
         );
     }

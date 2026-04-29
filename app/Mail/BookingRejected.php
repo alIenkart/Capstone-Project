@@ -31,22 +31,19 @@ class BookingRejected extends Mailable implements ShouldQueue
 
     public function content(): Content
     {
-        // Get logo and convert to Base64
         $logoPath = public_path('storage/logo/Logo.png');
-        $logoBase64 = '';
-        $mimeType = 'image/png';
-
-        if (file_exists($logoPath)) {
-            $imageData = file_get_contents($logoPath);
-            $logoBase64 = base64_encode($imageData);
-        }
+        $iconHeaderPath = public_path('storage/icons/cancel-white.png');
+        $iconErrorPath = public_path('storage/icons/error-red.png');
+        $iconNotesPath = public_path('storage/icons/topic-blue.png');
 
         return new Content(
             view: 'emails.booking-rejected',
             with: [
                 'booking' => $this->booking,
-                'logoBase64' => $logoBase64,
-                'mimeType' => $mimeType,
+                'logoPath' => file_exists($logoPath) ? $logoPath : null,
+                'iconHeaderPath' => file_exists($iconHeaderPath) ? $iconHeaderPath : null,
+                'iconErrorPath' => file_exists($iconErrorPath) ? $iconErrorPath : null,
+                'iconNotesPath' => file_exists($iconNotesPath) ? $iconNotesPath : null,
             ]
         );
     }

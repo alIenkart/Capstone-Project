@@ -81,21 +81,22 @@
         }
 
         .header-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+            display: inline-block;
             width: 80px;
             height: 80px;
+            line-height: 80px;
+            text-align: center;
             background: rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             margin-bottom: 20px;
             backdrop-filter: blur(10px);
         }
 
-        .header-icon svg {
+        .header-icon img {
             width: 40px;
             height: 40px;
-            color: #fff;
+            vertical-align: middle;
+            display: inline-block;
         }
 
         .email-header h1 {
@@ -409,14 +410,20 @@
         <div class="email-container">
             <!-- Logo Section -->
             <div class="logo-section">
-                <img src="data:image/png;base64,{{ $logoBase64 }}" alt="JE Travel & Tours Logo" style="display: block; margin: 0 auto; max-width: 180px; height: auto;">
+                @if(isset($logoPath) && $logoPath)
+                    <img src="{{ $message->embed($logoPath) }}" alt="JE Travel & Tours Logo" style="display: block; margin: 0 auto; max-width: 180px; height: auto;">
+                @else
+                    <h2 style="color: #1E71B8;">JE Travel & Tours</h2>
+                @endif
             </div>
 
             <!-- Header -->
             <div class="email-header">
                 <div class="header-content">
                     <div class="header-icon">
-                        <img src="https://img.icons8.com/ios-filled/100/ffffff/cancel.png" width="40" height="40" alt="Rejected">
+                        @if(isset($iconHeaderPath) && $iconHeaderPath)
+                            <img src="{{ $message->embed($iconHeaderPath) }}" width="40" height="40" alt="Rejected">
+                        @endif
                     </div>
                     <h1>Booking Rejected</h1>
                     <p>Your booking application has been reviewed</p>
@@ -474,7 +481,9 @@
                 <!-- Rejection Reason -->
                 <div class="rejection-reason">
                     <h3>
-                        <img src="https://img.icons8.com/ios-filled/50/dc2626/error.png" width="20" height="20" alt="Reason" style="vertical-align: middle; margin-right: 8px;">
+                        @if(isset($iconErrorPath) && $iconErrorPath)
+                            <img src="{{ $message->embed($iconErrorPath) }}" width="20" height="20" alt="Reason" style="vertical-align: middle; margin-right: 8px;">
+                        @endif
                         Rejection Reason
                     </h3>
                     
@@ -501,7 +510,9 @@
                 @if($booking->remarks && $booking->rejection_category !== 'Past Due Payment')
                     <div class="remarks-section">
                         <h3>
-                            <img src="https://img.icons8.com/ios-filled/50/0369a1/speech-bubble.png" width="20" height="20" alt="Notes" style="vertical-align: middle; margin-right: 8px;">
+                            @if(isset($iconNotesPath) && $iconNotesPath)
+                                <img src="{{ $message->embed($iconNotesPath) }}" width="20" height="20" alt="Notes" style="vertical-align: middle; margin-right: 8px;">
+                            @endif
                             Additional Notes
                         </h3>
                         <p>{{ $booking->remarks }}</p>

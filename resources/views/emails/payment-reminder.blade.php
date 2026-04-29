@@ -70,21 +70,22 @@
         }
 
         .header-icon {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
+            display: inline-block;
             width: 80px;
             height: 80px;
+            line-height: 80px;
+            text-align: center;
             background: rgba(255, 255, 255, 0.2);
             border-radius: 50%;
             margin-bottom: 20px;
             backdrop-filter: blur(10px);
         }
 
-        .header-icon svg {
+        .header-icon img {
             width: 40px;
             height: 40px;
-            color: #fff;
+            vertical-align: middle;
+            display: inline-block;
         }
 
         .email-header h1 {
@@ -286,14 +287,20 @@
         <div class="email-container">
             <!-- Logo Section -->
             <div class="logo-section">
-                <img src="data:image/png;base64,{{ $logoBase64 }}" alt="JE Travel & Tours Logo">
+                @if(isset($logoPath) && $logoPath)
+                    <img src="{{ $message->embed($logoPath) }}" alt="JE Travel & Tours Logo">
+                @else
+                    <h2 style="color: #217093;">JE Travel & Tours</h2>
+                @endif
             </div>
 
             <!-- Header -->
             <div class="email-header">
                 <div class="header-content">
                     <div class="header-icon">
-                        <img src="https://img.icons8.com/ios-filled/100/ffffff/clock.png" width="40" height="40" alt="Reminder">
+                        @if(isset($iconPath) && $iconPath)
+                            <img src="{{ $message->embed($iconPath) }}" width="40" height="40" alt="Reminder">
+                        @endif
                     </div>
                     <h1>Payment Reminder</h1>
                     <p>Action required to confirm your reservation</p>

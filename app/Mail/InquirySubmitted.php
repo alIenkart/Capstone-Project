@@ -27,22 +27,19 @@ class InquirySubmitted extends Mailable
 
     public function content(): Content
     {
-        // Get logo and convert to Base64
         $logoPath = public_path('storage/logo/Logo.png');
-        $logoBase64 = '';
-        $mimeType = 'image/png';
-
-        if (file_exists($logoPath)) {
-            $imageData = file_get_contents($logoPath);
-            $logoBase64 = base64_encode($imageData);
-        }
+        $iconHeaderPath = public_path('storage/icons/mail-white.png');
+        $iconSuccessPath = public_path('storage/icons/ok-green.png');
+        $iconMessagePath = public_path('storage/icons/topic-blue.png');
 
         return new Content(
             view: 'emails.inquiry-submitted',
             with: [
                 'inquiry' => $this->inquiry,
-                'logoBase64' => $logoBase64,
-                'mimeType' => $mimeType,
+                'logoPath' => file_exists($logoPath) ? $logoPath : null,
+                'iconHeaderPath' => file_exists($iconHeaderPath) ? $iconHeaderPath : null,
+                'iconSuccessPath' => file_exists($iconSuccessPath) ? $iconSuccessPath : null,
+                'iconMessagePath' => file_exists($iconMessagePath) ? $iconMessagePath : null,
             ]
         );
     }

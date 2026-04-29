@@ -26,6 +26,16 @@
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
             overflow: hidden;
         }
+        .logo-section {
+            background: #ffffff;
+            padding: 20px 30px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .logo-section img {
+            max-width: 180px;
+            height: auto;
+        }
         .header {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: #ffffff;
@@ -259,6 +269,13 @@
 </head>
 <body>
     <div class="container">
+        <div class="logo-section">
+            @if(isset($logoPath) && $logoPath)
+                <img src="{{ $message->embed($logoPath) }}" alt="JE Travel & Tours Logo">
+            @else
+                <h2 style="color: #10b981; margin: 0;">JE Travel & Tours</h2>
+            @endif
+        </div>
         <div class="header">
             <h1>Booking Confirmed & Paid</h1>
             <p>Rescheduling notice due to safety concerns</p>
