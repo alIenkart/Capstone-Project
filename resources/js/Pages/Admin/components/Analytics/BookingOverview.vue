@@ -108,9 +108,12 @@ const props = defineProps({
   },
 });
 
-// GROUP BY DATE (RESTORED)
 const groupByDate = (items) => {
-  return items.reduce((acc, item) => {
+  if (!Array.isArray(items)) return {};
+
+  return (items ?? []).reduce((acc, item) => {
+    if (!item?.start_date) return acc;
+
     const date = item.start_date;
 
     if (!acc[date]) acc[date] = [];
@@ -119,7 +122,6 @@ const groupByDate = (items) => {
     return acc;
   }, {});
 };
-
 const formatDate = (date) => {
   return new Date(date).toLocaleDateString("en-US", {
     month: "long",
