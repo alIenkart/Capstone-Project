@@ -1261,7 +1261,6 @@ import { usePage } from "@inertiajs/vue3";
 const page = usePage();
 const toast = useToast();
 const props = defineProps({ booking: Object });
-console.log("🚀 ~ props:", props)
 const emit = defineEmits(["close", "booking-updated"]);
 const service = new api();
 

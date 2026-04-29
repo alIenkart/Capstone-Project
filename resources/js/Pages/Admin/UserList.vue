@@ -862,7 +862,6 @@ const openDeleteConfirm = (id) => {
 
 const confirmDelete = async () => {
   try {
-    console.log("to dele", userToDelete)
     await service.deleteUser(userToDelete.value);
     toast.success("Account deleted successfully!");
     showDeleteConfirm.value = false;

@@ -623,7 +623,6 @@ const filteredBookings = computed(() => {
     });
   }
 
-  console.log("🚀 ~ filtered:", filtered)
   return filtered;
 });
 
@@ -704,8 +703,24 @@ const handleTourTypeSelect = (option) => {
 };
 
 onMounted(async () => {
-  await fetchPackages();
-  await fetchBookings();
+  // Pre-fill search query immediately if ID is in URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const bookingId = urlParams.get("id");
+  if (bookingId) {
+    searchQuery.value = bookingId;
+  }
+
+  // Fetch data in parallel
+  await Promise.all([fetchPackages(), fetchBookings()]);
+
+  // Open modal immediately after bookings are loaded if ID was provided
+  if (bookingId) {
+    const booking = bookings.value.find((b) => String(b.id) === String(bookingId));
+    if (booking) {
+      openUpdateEntryModal(booking);
+    }
+  }
+
   await fetchAutomationSettings();
   checkAllAutoRejections();
   document.addEventListener("click", handleClickOutside);

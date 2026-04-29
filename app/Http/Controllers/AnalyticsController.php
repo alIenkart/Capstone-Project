@@ -205,6 +205,7 @@ class AnalyticsController extends Controller
                                         'total_quantity' => $booking->total_quantity,
                                         'is_paid' => $booking->payment?->is_fully_paid ?? false,
                                         'duration' => $booking->duration,
+                                        'booking_id' => $booking->id,
                                     ];
                                 });
                         })

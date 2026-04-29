@@ -59,8 +59,9 @@
             <div
               v-for="(item, i) in dateGroup"
               :key="i"
-              class="w-64 rounded-xl p-4 shadow-sm relative"
+              class="w-64 rounded-xl p-4 shadow-sm relative cursor-pointer hover:shadow-md transition-shadow"
               :class="item.is_paid ? 'bg-green-50' : 'bg-yellow-50'"
+              @click="handleCardClick(item.booking_id)"
             >
 
               <!-- STATUS DOT -->
@@ -101,6 +102,8 @@
 </template>
 
 <script setup>
+import { router } from "@inertiajs/vue3";
+
 const props = defineProps({
   bookingOverview: {
     type: Array,
@@ -127,6 +130,12 @@ const formatDate = (date) => {
     month: "long",
     day: "numeric",
     year: "numeric",
+  });
+};
+
+const handleCardClick = (bookingId) => {
+  router.visit(route("admin.booking-entries"), {
+    data: { id: bookingId },
   });
 };
 </script>
