@@ -1527,6 +1527,7 @@ async function submitBooking() {
   try {
     const payload = {
       package_id: selectedPackage.value,
+      package_name: selectedPackageData.value.package_name || "",
       customer_name: customerName.value,
       customer_email: customerEmail.value,
       customer_phone: customerPhone.value,

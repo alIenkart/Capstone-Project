@@ -54,6 +54,7 @@ class BookingController extends Controller
 
         $validated = validator($data, [
             'package_id' => 'required|exists:packages,id',
+            'package_name' => 'required|string|max:255',
             'customer_name' => 'required|string|max:255',
             'customer_id' => 'required|exists:users,id',
             'voucher_id' => 'nullable|string',

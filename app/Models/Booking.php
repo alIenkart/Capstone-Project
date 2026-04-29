@@ -11,6 +11,7 @@ class Booking extends Model
 
     protected $fillable = [
         'package_id',
+        'package_name',
         'customer_name',
         'customer_id',
         'voucher_id',

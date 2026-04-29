@@ -218,7 +218,7 @@
                       Package
                     </p>
                     <p class="text-base font-semibold text-slate-900">
-                      {{ booking.package_destination ?? "—" }}
+                      {{ booking.package_name ?? "—" }}
                     </p>
                   </div>
                   <div class="space-y-1.5">

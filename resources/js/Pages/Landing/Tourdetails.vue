@@ -708,6 +708,7 @@ const handleBookNow = () => {
 
   booking.setPackageId(selectedPackage.value?.id);
   booking.setPackageDestination(selectedPackage.value?.destination);
+  booking.setPackageName(selectedPackage.value?.package_name);
   booking.setDuration(selectedPackage.value?.tour_duration);
   booking.setAdultRate(selectedPackage.value.is_seasonal ? selectedPackage.value?.seasonal_pax_rate : selectedPackage.value?.pax_rate);
   booking.setItinerary(selectedPackage.value?.itinerary);

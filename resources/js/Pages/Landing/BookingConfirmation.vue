@@ -637,6 +637,7 @@ async function postBooking() {
   formData.append("remarks", booking.remarks || "");
 
   formData.append("package_destination", booking.packageDestination);
+  formData.append("package_name", booking.packageName || "");
   formData.append("tour_type", booking.tourType);
   formData.append("tour_classification", booking.tourClassification);
   formData.append("duration", booking.duration);

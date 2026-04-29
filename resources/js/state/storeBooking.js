@@ -7,6 +7,7 @@ export const storeBooking = defineStore('booking', {
     packageId: null,
     packageType: null,
     packageDestination: '',
+    packageName: '',
     duration: 0,
     adultsQuantity: 0,
     kidsQuantity: 0,
@@ -93,6 +94,9 @@ export const storeBooking = defineStore('booking', {
     setPackageDestination(destination) {
       this.packageDestination = destination
     },
+    setPackageName(name) {
+      this.packageName = name
+    },
     setDuration(days) {
       this.duration = days
     },
@@ -150,6 +154,7 @@ export const storeBooking = defineStore('booking', {
 
     setPackage(packages) {
       this.selectedPackage = packages;
+      this.packageName = packages?.package_name || '';
     },
 
     setTourType(type) {
@@ -191,6 +196,7 @@ export const storeBooking = defineStore('booking', {
       this.packageId = null;
       this.packageType = null;
       this.packageDestination = '';
+      this.packageName = '';
       this.adultsQuantity = 0;
       this.kidsQuantity = 0;
       this.amount = 0;

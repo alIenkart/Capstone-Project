@@ -230,7 +230,7 @@
                   Booking ID
                 </th>
                 <th class="hidden lg:table-cell px-2 py-3 md:px-6 md:py-4 text-center text-xs md:text-sm font-semibold">
-                  Package ID
+                  Package Name
                 </th>
                 <th class="px-2 py-3 md:px-6 md:py-4 text-center text-xs md:text-sm font-semibold">
                   Tour Type
@@ -304,7 +304,7 @@
                 <td
                   class="hidden lg:table-cell px-2 py-3 md:px-6 md:py-4 text-xs md:text-sm font-medium text-gray-700 text-center"
                 >
-                  {{ entry.package_id }}
+                  {{ entry.package_name || getPackageName(entry.package_id) }}
                 </td>
                 <td
                   class="px-2 py-3 md:px-6 md:py-4 text-xs md:text-sm font-medium text-gray-700 text-center"
@@ -498,6 +498,7 @@ const isFilterOpen = ref(false);
 const tourTypeFilter = ref("");
 const isTourTypeFilterOpen = ref(false);
 const automationSettings = ref(null);
+const packages = ref([]);
 
 const filterOptions = ["", "Approved", "Pending", "Rejected"];
 const tourTypeOptions = ["", "Joiners", "Exclusive"];
@@ -606,6 +607,7 @@ const filteredBookings = computed(() => {
     filtered = filtered.filter((booking) => {
       const bookingId = String(booking.id).toLowerCase();
       const packageId = String(booking.package_id).toLowerCase();
+      const packageName = (booking.package_name || getPackageName(booking.package_id)).toLowerCase();
       const tourType = String(booking.tour_type || "").toLowerCase();
       const customerName = String(booking.customer_name).toLowerCase();
       const status = String(booking.status).toLowerCase();
@@ -613,6 +615,7 @@ const filteredBookings = computed(() => {
       return (
         bookingId.includes(query) ||
         packageId.includes(query) ||
+        packageName.includes(query) ||
         tourType.includes(query) ||
         customerName.includes(query) ||
         status.includes(query)
@@ -620,11 +623,17 @@ const filteredBookings = computed(() => {
     });
   }
 
+  console.log("🚀 ~ filtered:", filtered)
   return filtered;
 });
 
 const formatNumber = (num) => {
   return new Intl.NumberFormat().format(num);
+};
+
+const getPackageName = (packageId) => {
+  const pkg = packages.value.find((p) => p.id === packageId);
+  return pkg ? pkg.package_name : "—";
 };
 
 const fetchBookings = async () => {
@@ -635,6 +644,15 @@ const fetchBookings = async () => {
     );
   } catch (error) {
     console.error("Error fetching bookings:", error);
+  }
+};
+
+const fetchPackages = async () => {
+  try {
+    const response = await service.getPackages();
+    packages.value = response.data.data;
+  } catch (error) {
+    console.error("Error fetching packages:", error);
   }
 };
 
@@ -686,6 +704,7 @@ const handleTourTypeSelect = (option) => {
 };
 
 onMounted(async () => {
+  await fetchPackages();
   await fetchBookings();
   await fetchAutomationSettings();
   checkAllAutoRejections();
