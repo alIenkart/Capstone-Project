@@ -25,6 +25,6 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withSchedule(function (\Illuminate\Console\Scheduling\Schedule $schedule) {
-        $schedule->command('app:check-booking-automation')->daily();
+        $schedule->command('app:check-booking-automation')->everyFiveMinutes();
     })
     ->create();

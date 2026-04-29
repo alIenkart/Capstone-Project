@@ -52,27 +52,24 @@ class CheckBookingAutomation extends Command
         }
 
         $today = Carbon::now()->startOfDay();
-        $pendingBookings = Booking::where('status', 'Pending')->get();
+        
+        Booking::where('status', 'Pending')
+            ->whereNotNull('start_date')
+            ->chunkById(100, function ($bookings) use ($today, $settings) {
+                foreach ($bookings as $booking) {
+                    $travelDate = Carbon::parse($booking->start_date)->startOfDay();
+                    $diffDays = $today->diffInDays($travelDate, false);
 
-        foreach ($pendingBookings as $booking) {
-            if (!$booking->start_date) continue;
+                    if ($diffDays <= $settings->cancellation_days) {
+                        $this->processRejection($booking, $settings);
+                        continue;
+                    }
 
-            $travelDate = Carbon::parse($booking->start_date)->startOfDay();
-            
-            // diffInDays with false as second param gives positive if travelDate is in the future
-            $diffDays = $today->diffInDays($travelDate, false);
-
-            // 1. Process Rejections (Cancellation)
-            if ($diffDays <= $settings->cancellation_days) {
-                $this->processRejection($booking, $settings);
-                continue;
-            }
-
-            // 2. Process Warnings/Reminders
-            if ($diffDays <= $settings->warning_days && !$booking->reminder_sent_at) {
-                $this->processReminder($booking, $settings);
-            }
-        }
+                    if ($diffDays <= $settings->warning_days && !$booking->reminder_sent_at) {
+                        $this->processReminder($booking, $settings);
+                    }
+                }
+            });
 
         $this->info('Booking automation check completed.');
     }
