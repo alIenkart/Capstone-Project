@@ -294,6 +294,7 @@ const navigationItems = [
       { href: "/admin/users", label: "Users" },
       { href: "/admin/content-management", label: "Content Management" },
       { href: "/admin/payment-configuration", label: "Payment Configuration" },
+      { href: "/admin/automation-settings", label: "Automation Settings" },
     ],
   },
 ];

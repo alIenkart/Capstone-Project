@@ -23,6 +23,7 @@ class Booking extends Model
         'discount_images',
         'rejection_reason',
         'rejection_category',
+        'reminder_sent_at',
         'approved_by',
         'approved_at',
         'rejected_by',

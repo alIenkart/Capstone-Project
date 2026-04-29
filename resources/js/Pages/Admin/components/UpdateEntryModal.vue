@@ -45,6 +45,21 @@
         <div
           class="px-5 py-6 sm:px-8 sm:py-8 max-h-[calc(100vh-280px)] overflow-y-auto bg-gradient-to-br from-slate-50 to-white"
         >
+          <!-- Warning Banner -->
+          <div v-if="warningInfo" class="mb-6 p-4 bg-amber-50 border-l-4 border-amber-500 rounded-r-xl shadow-sm animate-in fade-in slide-in-from-top-4 duration-500">
+            <div class="flex items-center gap-3">
+              <div class="p-2 bg-amber-100 rounded-lg">
+                <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <div>
+                <h4 class="font-bold text-amber-900 text-sm">Travel Date Approaching</h4>
+                <p class="text-amber-800 text-sm">{{ warningInfo }}</p>
+              </div>
+            </div>
+          </div>
+
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 lg:gap-6">
             <div class="lg:col-span-2 space-y-6">
               <div
@@ -518,10 +533,10 @@
                     <p
                       class="text-sm font-semibold text-slate-600 uppercase tracking-wider"
                     >
-                      Rejected by
+                      {{ isAutomatedRejection ? 'Rejection Reason' : 'Rejected by' }}
                     </p>
                     <p class="text-base font-bold" :class="statusTextClass">
-                      {{ adminName }}
+                      {{ isAutomatedRejection ? 'Past Due Payment' : adminName }}
                     </p>
                   </div>
                 </div>
@@ -1307,9 +1322,7 @@ const discountedAmount = computed(() => {
 })
 
 const rejectionCategories = [
-  "Incomplete/Invalid Information",
-  "History of No-Shows or Late Cancellations",
-  "Policy Violations",
+  "Capacity Reached / Fully Booked",
   "Invalid Discount ID",
 ];
 
@@ -1408,6 +1421,10 @@ const isApprovedOrRejected = computed(() => {
   return (
     props.booking.status === "Approved" || props.booking.status === "Rejected"
   );
+});
+
+const isAutomatedRejection = computed(() => {
+  return props.booking.status === "Rejected" && props.booking.rejection_category === "Past Due Payment";
 });
 
 const isApproved = computed(() => {
@@ -1559,12 +1576,84 @@ const submitDisasterNotification = async () => {
   }
 };
 
+const automationSettings = ref(null);
+
+const fetchAutomationSettings = async () => {
+  try {
+    const response = await service.getAutomationSettings();
+    automationSettings.value = response.data;
+  } catch (error) {
+    console.error("Error fetching automation settings:", error);
+  }
+};
+
+const warningInfo = computed(() => {
+  if (!automationSettings.value?.is_automation_enabled || props.booking.status === 'Cancelled' || props.booking.status === 'Rejected' || props.booking.status === 'Approved') return null;
+
+  const travelDate = new Date(props.booking.start_date);
+  if (isNaN(travelDate.getTime())) return null;
+
+  // Normalize both dates to midnight local time
+  const tDate = new Date(travelDate.getFullYear(), travelDate.getMonth(), travelDate.getDate());
+  const today = new Date();
+  const tToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+  const diffTime = tDate - tToday;
+  const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays >= 0 && diffDays <= automationSettings.value.warning_days) {
+    return automationSettings.value.warning_message;
+  }
+
+  return null;
+});
+
+const checkAndAutoReject = async () => {
+  if (!automationSettings.value?.is_automation_enabled || props.booking.status !== 'Pending') return;
+
+  const travelDate = new Date(props.booking.start_date);
+  if (isNaN(travelDate.getTime())) return;
+
+  const tDate = new Date(travelDate.getFullYear(), travelDate.getMonth(), travelDate.getDate());
+  const today = new Date();
+  const tToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+  const diffTime = tDate - tToday;
+  const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays <= automationSettings.value.cancellation_days) {
+    try {
+      await service.updateBooking(props.booking.id, {
+        status: "Rejected",
+        rejection_category: "Past Due Payment",
+        remarks: automationSettings.value.cancellation_message || "Automated rejection due to past due payment."
+      });
+      emit("booking-updated");
+    } catch (error) {
+      console.error("Auto-rejection failed:", error);
+    }
+    return;
+  }
+
+  // Handle Payment Reminder (Warning)
+  if (!props.booking.reminder_sent_at && warningInfo.value) {
+    try {
+      await service.sendPaymentReminder(props.booking.id, automationSettings.value.cancellation_days);
+      emit("booking-updated");
+    } catch (error) {
+      console.error("Failed to send reminder:", error);
+    }
+  }
+};
+
 const loadUsers = async () => {
   const response = await service.getUsers();
   users.value = response?.data?.data;
 };
 
-onMounted(() => {
+onMounted(async () => {
   loadUsers();
+  await fetchAutomationSettings();
+  checkAndAutoReject();
 });
 </script>

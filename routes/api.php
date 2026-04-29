@@ -19,8 +19,14 @@ use App\Http\Controllers\Api\DisasterNotificationController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\Api\ReceiptController;
 use App\Http\Controllers\Api\ModeOfPaymentController;
+use App\Http\Controllers\Api\AutomationSettingController;
 
 Route::middleware('api')->group(function () {
+    Route::get('automation-settings', [AutomationSettingController::class, 'index']);
+    Route::patch('automation-settings', [AutomationSettingController::class, 'update']);
+    Route::patch('bookings/{id}', [BookingController::class, 'update']);
+    Route::post('bookings/{id}/payment-reminder', [BookingController::class, 'sendPaymentReminder']);
+    Route::get('bookings-user', [BookingController::class, 'getBookingsByUser']);
 
     Route::get('bookings/by-user', [BookingController::class, 'getBookingsByUser']);
 

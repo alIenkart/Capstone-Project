@@ -114,8 +114,7 @@
                     booking.status === 'Approved',
                   'bg-yellow-100 text-yellow-700':
                     booking.status === 'Pending',
-                  'bg-red-100 text-red-600': booking.status === 'Rejected',
-                  'bg-red-100 text-red-600': booking.status === 'Cancelled',
+                  'bg-red-100 text-red-600': booking.status === 'Rejected' || booking.status === 'Cancelled',
                 }">{{ booking.status }}</span>
                 <span v-if="booking.tour_type" class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-xs">{{
                   booking.tour_type }}</span>
@@ -265,8 +264,7 @@
             </div>
           </div>
 
-
-          <div v-if="filteredBookings[selectedBookingIndex].remarks" class="mb-6">
+          <div v-if="filteredBookings[selectedBookingIndex].remarks && filteredBookings[selectedBookingIndex].rejection_category !== 'Past Due Payment'" class="mt-6">
             <span class="text-gray-500 block mb-2 text-xs sm:text-sm font-normal">Remarks</span>
             <span
               class="bg-gray-50 rounded px-3 sm:px-4 py-2 text-gray-700 text-xs sm:text-sm font-medium inline-block">
@@ -274,6 +272,21 @@
             </span>
           </div>
 
+          <!-- Warning Message (Full Width) -->
+          <div v-if="warningInfo" class="mb-6 lg:mb-7 text-[10px] sm:text-xs text-orange-600 bg-orange-50 border border-orange-100 rounded-md p-3 flex items-start gap-2 animate-pulse shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 mt-0.5 flex-shrink-0">
+              <path fill-rule="evenodd" d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.401 3.003ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd" />
+            </svg>
+            <span class="font-medium leading-relaxed">{{ warningInfo }}</span>
+          </div>
+
+          <!-- Rejection Message (Full Width) -->
+          <div v-if="rejectionMessage" class="mb-6 lg:mb-7 text-[10px] sm:text-xs text-red-600 bg-red-50 border border-red-100 rounded-md p-3 flex items-start gap-2 shadow-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 mt-0.5 flex-shrink-0">
+              <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clip-rule="evenodd" />
+            </svg>
+            <span class="font-medium leading-relaxed">{{ rejectionMessage }}</span>
+          </div>
           <div class="mt-6 mb-2 border-t border-gray-200 pt-6">
             <h4 class="font-semibold text-base sm:text-lg text-gray-700 mb-4 text-center">
               Payment
@@ -606,9 +619,10 @@
                 </button>
 
                 <button v-if="
+                  !rejectionMessage && (
                   paymentStatus === 'Rejected' ||
                   (filteredBookings[selectedBookingIndex]?.rejected_at &&
-                  (isPaymentRejected() || isBookingRejected()))
+                  (isPaymentRejected() || isBookingRejected())))
                 " @click="openRejectionModal()"
                   class="w-full bg-[#1E71B8] hover:bg-[#155a8a] focus:ring-2 focus:ring-[#52c2f8] transition shadow-lg text-white px-6 sm:px-8 py-2 sm:py-3 rounded-xl font-semibold text-sm sm:text-lg focus:outline-none active:scale-95 duration-150 disabled:opacity-50 disabled:cursor-not-allowed">
                   View Rejection Reason
@@ -804,6 +818,16 @@ const showSuccessAnimation = ref(false);
 const showFullscreenImage = ref(false);
 const fullscreenImageUrl = ref(null);
 const showCancelConfirm = ref(false);
+const automationSettings = ref(null);
+
+const fetchAutomationSettings = async () => {
+  try {
+    const response = await service.getAutomationSettings();
+    automationSettings.value = response.data;
+  } catch (error) {
+    console.error("Failed to fetch automation settings:", error);
+  }
+};
 
 const modeOfPaymentOptions = computed(() =>
   (modeOfPayment.value || []).map(m => ({
@@ -1075,6 +1099,38 @@ const totalDue = computed(() => {
   return currentBooking.total_price;
 });
 
+const warningInfo = computed(() => {
+  if (!automationSettings.value?.is_automation_enabled || !filteredBookings.value.length) return null;
+  
+  const currentBooking = filteredBookings.value[selectedBookingIndex.value];
+  if (currentBooking.status !== 'Pending') return null;
+
+  const travelDate = new Date(currentBooking.start_date);
+  if (isNaN(travelDate.getTime())) return null;
+
+  const tDate = new Date(travelDate.getFullYear(), travelDate.getMonth(), travelDate.getDate());
+  const today = new Date();
+  const tToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+  const diffTime = tDate - tToday;
+  const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays >= 0 && diffDays <= automationSettings.value.warning_days && currentBooking.reminder_sent_at) {
+    return automationSettings.value.warning_message;
+  }
+
+  return null;
+});
+
+const rejectionMessage = computed(() => {
+  if (!automationSettings.value?.is_automation_enabled || !filteredBookings.value.length) return null;
+  const currentBooking = filteredBookings.value[selectedBookingIndex.value];
+  if (currentBooking?.status === 'Rejected' && currentBooking.rejection_category === 'Past Due Payment') {
+    return 'Automated Rejected due to Past Due Payment';
+  }
+  return null;
+});
+
 const typeOfPayment = computed(() => {
   if (!payments.value.length || !filteredBookings.value.length) return "";
 
@@ -1242,8 +1298,9 @@ const handleBookingClick = (index) => {
   selectedBookingIndex.value = index;
 };
 
-onMounted(() => {
+onMounted(async () => {
   document.addEventListener("click", handleClickOutside);
+  await fetchAutomationSettings();
 });
 
 onBeforeUnmount(() => {

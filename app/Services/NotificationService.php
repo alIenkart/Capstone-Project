@@ -87,7 +87,10 @@ class NotificationService
         $title = 'Your Booking is Rejected';
         $message = "Your booking for {$packageName} - {$duration} Day/s on {$travelDate} has been rejected. ";
 
-        if ($rejectionCategory) {
+        if ($rejectionCategory === 'Past Due Payment') {
+            $title = 'Booking Automatically Cancelled';
+            $message = "Your booking for {$packageName} - {$duration} Day/s on {$travelDate} has been automatically cancelled due to past due payment. ";
+        } elseif ($rejectionCategory) {
             $message .= "Reason: {$rejectionCategory}. ";
         }
 
@@ -97,6 +100,33 @@ class NotificationService
             'user_id' => $booking->customer_id,
             'booking_id' => $booking->id,
             'type' => 'booking_rejected',
+            'title' => $title,
+            'message' => $message,
+        ]);
+    }
+
+    /**
+     * Create notification for payment reminder (warning)
+     */
+    public function createPaymentReminderNotification(Booking $booking, int $cancellationDays): Notification
+    {
+        $packageName = $booking->package_destination ?? 'Unknown Package';
+        $duration = $booking->duration ?? '0';
+        $travelDate = $this->formatDate($booking->travel_date);
+        $bookingId = $this->formatBookingId($booking->id);
+
+        $dueDateObj = new \DateTime($booking->start_date);
+        $dueDateObj->modify("-{$cancellationDays} days");
+        $dueDate = $dueDateObj->format('F d, Y');
+
+        $title = 'Upcoming Payment Deadline';
+        $message = "Your payment for {$packageName} - {$duration} Day/s on {$travelDate} is due on {$dueDate}. " .
+            "Please settle your balance within {$cancellationDays} days to avoid automatic cancellation and loss of slots. Thank you.";
+
+        return Notification::create([
+            'user_id' => $booking->customer_id,
+            'booking_id' => $booking->id,
+            'type' => 'payment_reminder',
             'title' => $title,
             'message' => $message,
         ]);

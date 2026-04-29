@@ -103,6 +103,10 @@ Route::middleware(['auth', 'is.admin'])->group(function () {
         return Inertia::render('Admin/PaymentManagement');
     })->name('admin.payment-management');
 
+    Route::get('/admin/automation-settings', function () {
+        return Inertia::render('Admin/AutomationSettings');
+    })->name('admin.automation-settings');
+
     Route::get('/admin/review-feedback', function () {
         return Inertia::render('Admin/ReviewFeedback');
     })->name('admin.review-feedback');

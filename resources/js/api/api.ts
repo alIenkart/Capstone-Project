@@ -247,4 +247,18 @@ export class api {
     deleteModeOfPayment(id){  
         return plainInstance.delete(`/api/mode-of-payments/${id}`);
     }
+
+    getAutomationSettings() {
+        return plainInstance.get("/api/automation-settings");
+    }
+
+    updateAutomationSettings(data: object) {
+        return plainInstance.patch("/api/automation-settings", data);
+    }
+
+    async sendPaymentReminder(id: number, cancellationDays: number) {
+        return await plainInstance.post(`/api/bookings/${id}/payment-reminder`, {
+            cancellation_days: cancellationDays
+        });
+    }
 }

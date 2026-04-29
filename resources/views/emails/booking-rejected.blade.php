@@ -493,14 +493,20 @@
                         </div>
                     @endif
 
-                    @if($booking->rejection_reason)
+                    @if($booking->rejection_reason || $booking->rejection_category === 'Past Due Payment')
                         <span class="additional-notes-label">Additional Details:</span>
-                        <p>{{ $booking->rejection_reason }}</p>
+                        <p>
+                            @if($booking->rejection_category === 'Past Due Payment')
+                                Your reservation has been automatically cancelled as the required payment was not received by the deadline.
+                            @else
+                                {{ $booking->rejection_reason }}
+                            @endif
+                        </p>
                     @endif
                 </div>
 
                 <!-- Remarks (if any) -->
-                @if($booking->remarks)
+                @if($booking->remarks && $booking->rejection_category !== 'Past Due Payment')
                     <div class="remarks-section">
                         <h3>
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"

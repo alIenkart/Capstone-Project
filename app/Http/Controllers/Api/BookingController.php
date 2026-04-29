@@ -126,6 +126,11 @@ class BookingController extends Controller
 
         $booking = Booking::create($validated);
 
+        if ($booking->status === 'Pending' && !$booking->walk_in) {
+            $this->runImmediateAutomation($booking);
+            $booking->refresh();
+        }
+
         if ($booking->walk_in === true) {
             $payment = Payment::approvePayment($booking);
             Receipt::createReceipt($payment, $booking->customer_id);
@@ -192,7 +197,7 @@ class BookingController extends Controller
 
                 // Send rejection email
                 try {
-                    Mail::to($booking->customer_email)->send(new BookingRejected($booking));
+                    Mail::to($booking->customer_email)->send(new \App\Mail\BookingRejected($booking));
                 } catch (\Exception $e) {
                     \Log::warning('Rejection email failed: ' . $e->getMessage());
                 }
@@ -237,6 +242,71 @@ class BookingController extends Controller
                 'message' => 'Failed to update booking.',
                 'error' => $e->getMessage(),
             ], 500);
+        }
+    }
+
+    public function sendPaymentReminder(Request $request, $id)
+    {
+        try {
+            $booking = Booking::findOrFail($id);
+            
+            $settings = \App\Models\AutomationSetting::first();
+            $cancellationDays = $settings ? $settings->cancellation_days : 3;
+
+            // Send Email
+            try {
+                Mail::to($booking->customer_email)->send(new \App\Mail\PaymentReminderMail($booking, $cancellationDays));
+            } catch (\Exception $e) {
+                \Log::warning('Payment reminder email failed: ' . $e->getMessage());
+            }
+
+            // Create Notification
+            $this->notificationService->createPaymentReminderNotification($booking, $cancellationDays);
+
+            // Update timestamp
+            $booking->update(['reminder_sent_at' => now()]);
+
+            return response()->json(['message' => 'Payment reminder sent successfully.']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to send payment reminder.', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    private function runImmediateAutomation(Booking $booking)
+    {
+        $settings = \App\Models\AutomationSetting::first();
+        if (!$settings || !$settings->is_automation_enabled) return;
+
+        $today = now()->startOfDay();
+        if (!$booking->start_date) return;
+        
+        $travelDate = \Carbon\Carbon::parse($booking->start_date)->startOfDay();
+        $diffDays = $today->diffInDays($travelDate, false);
+
+        if ($diffDays <= $settings->cancellation_days) {
+            $booking->update([
+                'status' => 'Rejected',
+                'rejection_category' => 'Past Due Payment',
+                'rejection_reason' => $settings->cancellation_message ?? 'Your booking has been automatically cancelled due to a past due payment.',
+                'rejected_at' => now(),
+            ]);
+
+            try {
+                \Illuminate\Support\Facades\Mail::to($booking->customer_email)->send(new \App\Mail\BookingRejected($booking));
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::warning("Immediate auto-rejection email failed for booking {$booking->id}: " . $e->getMessage());
+            }
+
+            $this->notificationService->createRejectedNotification($booking, 'Past Due Payment');
+        } elseif ($diffDays <= $settings->warning_days) {
+            try {
+                \Illuminate\Support\Facades\Mail::to($booking->customer_email)->send(new \App\Mail\PaymentReminderMail($booking, $settings->cancellation_days));
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::warning("Immediate auto-reminder email failed for booking {$booking->id}: " . $e->getMessage());
+            }
+
+            $this->notificationService->createPaymentReminderNotification($booking, $settings->cancellation_days);
+            $booking->update(['reminder_sent_at' => now()]);
         }
     }
 
