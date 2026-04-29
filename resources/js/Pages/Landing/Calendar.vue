@@ -71,7 +71,7 @@
                 </button>
                 <div v-if="isTypeOpen" class="dropdown-menu-wrapper">
                   <div class="dropdown-menu">
-                    <a v-for="t in tourTypes" :key="t" href="#" class="dropdown-item" :class="{
+                    <a v-for="t in tourTypesList" :key="t" href="#" class="dropdown-item" :class="{
                       'bg-blue-100 text-[#73BE5D] font-semibold':
                         t === tourType,
                     }" @click.prevent="selectTourType(t)">{{ t }}</a>
@@ -369,7 +369,19 @@ const currentMonthIndex = ref(currentDate.getMonth());
 const currentYear = ref(currentDate.getFullYear());
 
 const tourType = ref("Joiners");
-const tourTypes = ["Joiners", "Exclusive"];
+const tourTypesList = computed(() => {
+  const pkg = booking.selectedPackage;
+  if (!pkg || !pkg.start_date) return ["Joiners", "Exclusive"];
+  
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const startDate = new Date(pkg.start_date);
+  
+  if (startDate < today) {
+    return ["Exclusive"];
+  }
+  return ["Joiners", "Exclusive"];
+});
 const tourClassification = ref("");
 const tourClassifications = ref(null);
 const isTypeOpen = ref(false);
@@ -823,10 +835,21 @@ const postDate = () => {
 onMounted(() => {
   generatePackageDates();
 
+  if (tourTypesList.value.length === 1 && tourTypesList.value[0] === "Exclusive") {
+    tourType.value = "Exclusive";
+  }
+
   tourClassifications.value = booking.selectedPackage?.tour_classification;
   tourClassification.value = booking.selectedPackage?.tour_classification[0];
 
-  if (tourType.value === "Joiners" && booking.start_date && booking.end_date) {
+  if (tourType.value === "Exclusive") {
+    const firstAvailable = new Date();
+    firstAvailable.setDate(firstAvailable.getDate() + 5);
+    currentMonthIndex.value = firstAvailable.getMonth();
+    currentYear.value = firstAvailable.getFullYear();
+    selectedDate.value = "";
+    selectedend_date.value = "";
+  } else if (tourType.value === "Joiners" && booking.start_date && booking.end_date) {
     const start_dateFormatted = booking.start_date.split("T")[0];
     const end_dateFormatted = booking.end_date.split("T")[0];
 

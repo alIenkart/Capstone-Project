@@ -392,13 +392,12 @@
                 <td class="px-6 py-4 text-sm text-center">
                   <span
                     :class="{
-                      'bg-blue-100 text-blue-700': !packageItem.joint_booking,
-                      'bg-indigo-100 text-indigo-700':
-                        packageItem.joint_booking,
+                      'bg-blue-100 text-blue-700': isPastDate(packageItem.start_date),
+                      'bg-indigo-100 text-indigo-700': !isPastDate(packageItem.start_date),
                     }"
                     class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
                   >
-                    {{ packageItem.joint_booking ? "Joint" : "Exclusive" }}
+                    {{ isPastDate(packageItem.start_date) ? "Exclusive" : "Joint / Exclusive" }}
                   </span>
                 </td>
                 <td class="px-6 py-4 text-sm text-gray-700 text-center">
@@ -731,13 +730,9 @@ const filteredPackages = computed(() => {
 
   if (selectedBookingType.value) {
     if (selectedBookingType.value === "joint") {
-      filtered = filtered.filter(
-        (pkg) => pkg.joint_booking === true || pkg.joint_booking === 1
-      );
+      filtered = filtered.filter((pkg) => !isPastDate(pkg.start_date));
     } else if (selectedBookingType.value === "exclusive") {
-      filtered = filtered.filter(
-        (pkg) => pkg.joint_booking === false || pkg.joint_booking === 0
-      );
+      filtered = filtered.filter((pkg) => isPastDate(pkg.start_date));
     }
   }
 
@@ -785,6 +780,14 @@ const visiblePages = computed(() => {
 
   return pages;
 });
+
+const isPastDate = (dateString) => {
+  if (!dateString) return false;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const startDate = new Date(dateString);
+  return startDate < today;
+};
 
 const createNewPackage = () => {
   showModal.value = true;

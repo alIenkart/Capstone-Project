@@ -68,6 +68,20 @@
             class="absolute inset-0 bg-gradient-to-br from-[#1E71B8]/5 to-[#008DDA]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
           </div>
 
+          <!-- Image Overlay Badge -->
+          <div class="absolute top-4 left-4 z-20">
+            <span 
+              :class="[
+                'text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-sm backdrop-blur-md border',
+                isPastDate(pkg.start_date) 
+                  ? 'bg-blue-50/90 text-blue-600 border-blue-200' 
+                  : 'bg-indigo-50/90 text-indigo-600 border-indigo-200'
+              ]"
+            >
+              {{ isPastDate(pkg.start_date) ? 'Exclusive' : 'Joiners / Exclusive' }}
+            </span>
+          </div>
+
           <div
             class="relative w-full h-56 overflow-hidden bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center group/img">
             <img :src="'/storage/' + pkg.image_path" :alt="pkg.destination"
@@ -234,6 +248,14 @@ const calculateDiscount = (originalPrice, seasonalPrice) => {
   if (originalPrice <= 0) return 0;
   const discount = ((originalPrice - seasonalPrice) / originalPrice) * 100;
   return Math.round(discount);
+};
+
+const isPastDate = (dateString) => {
+  if (!dateString) return false;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const startDate = new Date(dateString);
+  return startDate < today;
 };
 
 onMounted(() => {

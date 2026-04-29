@@ -86,6 +86,20 @@
             class="absolute inset-0 bg-gradient-to-br from-[#1E71B8]/5 to-[#008DDA]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
           </div>
 
+          <!-- Image Overlay Badge -->
+          <div class="absolute top-4 left-4 z-20">
+            <span 
+              :class="[
+                'text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-sm backdrop-blur-md border',
+                isPastDate(pkg.start_date) 
+                  ? 'bg-blue-50/90 text-blue-600 border-blue-200' 
+                  : 'bg-indigo-50/90 text-indigo-600 border-indigo-200'
+              ]"
+            >
+              {{ isPastDate(pkg.start_date) ? 'Exclusive' : 'Joiners / Exclusive' }}
+            </span>
+          </div>
+
           <div
             class="relative w-full h-56 overflow-hidden bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center group/img">
             <img :src="'/storage/' + pkg.image_path" :alt="pkg.destination"
@@ -97,7 +111,7 @@
 
           <div class="relative z-10 p-6 flex flex-col flex-grow">
             <div
-              class="inline-flex items-center gap-1 mb-4 w-fit px-3 py-1 bg-gradient-to-r from-[#008DDA]/10 to-[#73BE5D]/10 rounded-full border border-[#008DDA]/20">
+              class="inline-flex items-center gap-2 mb-4 w-fit px-3 py-1 bg-gradient-to-r from-[#008DDA]/10 to-[#73BE5D]/10 rounded-full border border-[#008DDA]/20">
               <span class="font-bold text-[#008DDA]">₱{{ pkg.pax_rate.toLocaleString() }}</span>
             </div>
 
@@ -170,6 +184,20 @@
 
           <div class="absolute inset-0 bg-gradient-to-br from-[#1E71B8]/5 to-[#008DDA]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
+          <!-- Image Overlay Badge -->
+          <div class="absolute top-4 left-4 z-20">
+            <span 
+              :class="[
+                'text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-sm backdrop-blur-md border',
+                isPastDate(pkg.start_date) 
+                  ? 'bg-blue-50/90 text-blue-600 border-blue-200' 
+                  : 'bg-indigo-50/90 text-indigo-600 border-indigo-200'
+              ]"
+            >
+              {{ isPastDate(pkg.start_date) ? 'Exclusive' : 'Joiners / Exclusive' }}
+            </span>
+          </div>
+
           <div class="relative w-full h-56 overflow-hidden bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center group/img">
             <img :src="'/storage/' + pkg.image_path" :alt="pkg.destination"
               class="max-h-full max-w-full object-contain transition-transform duration-500 group-hover/img:scale-110" />
@@ -184,10 +212,10 @@
                 </div>
                 <span class="text-sm text-gray-500 line-through">₱{{ pkg.pax_rate.toLocaleString() }}</span>
               </div>
-              <span class="text-xs font-bold text-white bg-gradient-to-r from-orange-500 to-red-600 px-2 py-1 rounded-full shadow-lg">
+            </div>
+            <span class="w-fit mb-4 text-xs font-bold text-white bg-gradient-to-r from-orange-500 to-red-600 px-3 py-1 rounded-full shadow-lg">
               SAVE {{ calculateDiscount(pkg.pax_rate, parseFloat(pkg.seasonal_pax_rate)) }}%
             </span>
-            </div>
 
             <h3 class="text-2xl font-bold text-[#1E71B8] mb-4 group-hover:text-[#008DDA] transition-colors duration-300 line-clamp-2">
               {{ pkg.package_name }}
@@ -293,6 +321,14 @@ const calculateDiscount = (originalPrice, seasonalPrice) => {
   if (originalPrice <= 0) return 0;
   const discount = ((originalPrice - seasonalPrice) / originalPrice) * 100;
   return Math.round(discount);
+};
+
+const isPastDate = (dateString) => {
+  if (!dateString) return false;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const startDate = new Date(dateString);
+  return startDate < today;
 };
 
 onMounted(() => {
