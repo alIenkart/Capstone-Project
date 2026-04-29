@@ -190,7 +190,7 @@
             </div>
 
             <h3 class="text-2xl font-bold text-[#1E71B8] mb-4 group-hover:text-[#008DDA] transition-colors duration-300 line-clamp-2">
-              {{ pkg.destination }}
+              {{ pkg.package_name }}
             </h3>
 
             <div class="w-8 h-1 bg-gradient-to-r from-orange-500 to-red-600 rounded-full mb-4 group-hover:w-16 transition-all duration-300"></div>
@@ -203,7 +203,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round"
                     d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                 </svg>
-                <span class="text-sm text-gray-600">{{ pkg.package_name }}</span>
+                <span class="text-sm text-gray-600">{{ pkg.destination }}</span>
               </div>
 
               <div class="flex items-center gap-2">
