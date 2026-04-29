@@ -191,11 +191,22 @@
         :revenue="revenue"
       />
     </div>
+
+    <div class="bg-white rounded-xl p-8 shadow-lg mb-8">
+      <div class="flex justify-between items-center mb-6 border-b pb-4">
+        <h2 class="text-2xl font-semibold text-gray-800">Booking Overview</h2>
+      </div>
+        <BookingOverview
+          v-if="bookingOverview.length"
+          :bookingOverview="bookingOverview"
+        />
+    </div>
   </div>
 </template>
 
 <script setup>
 import AdminIndex from "./AdminIndex.vue";
+import BookingOverview from "./components/Analytics/BookingOverview.vue";
 import PackagesChart from "./components/Analytics/PackagesChart.vue";
 import BookingsChart from "./components/Analytics/BookingsChart.vue";
 import PaymentsChart from "./components/Analytics/PaymentsChart.vue";
@@ -225,6 +236,7 @@ const downPayment = ref(0);
 const underReview = ref(0);
 const destinations = ref([]);
 const revenue = ref([]);
+const bookingOverview = ref([]);
 const isModalOpen = ref(false)
 const isPeriodOpen = ref(false)
 const reportRef = ref(null);
@@ -245,6 +257,7 @@ const fetchData = async (period) => {
     underReview.value = data.value.data.payments.under_review;
     destinations.value = data.value.data.destinations;
     revenue.value = data.value.data.revenue;
+    bookingOverview.value = data.value.data.booking_overview;
   } catch (error) {
     console.error("Error fetching data:", error);
   }

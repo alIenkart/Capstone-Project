@@ -21,6 +21,7 @@ class AnalyticsController extends Controller
         $payments = $this->getPaymentCounts($period);
         $destinations = $this->getDestinationCounts($period);
         $revenue = $this->getRevenue($period);
+        $booking_overview = $this->getBookingOverview($period);
 
         return new AnalyticsResource([
             'packages' => $packages,
@@ -28,6 +29,7 @@ class AnalyticsController extends Controller
             'payments' => $payments,
             'destinations' => $destinations,
             'revenue' => $revenue,
+            'booking_overview' => $booking_overview,
         ]);
     }
 
@@ -155,6 +157,66 @@ class AnalyticsController extends Controller
         \Log::info($revenueData);
     
         return $revenueData;
+    }
+
+    public function getBookingOverview($period): array
+    {
+        $query = Booking::query();
+
+        $query = $this->applyPeriodFilter($query, $period);
+
+        $bookings = $query->with([
+            'package:id,package_name,capacity,available_slot',
+            'payment:id,booking_id,is_fully_paid'
+        ])
+            ->get([
+                'id',
+                'customer_name',
+                'tour_type',
+                'start_date',
+                'total_quantity',
+                'package_id',
+                'duration',
+            ]);
+
+        return $bookings
+            ->groupBy('package_id')
+            ->map(function ($packageGroup) {
+
+                $first = $packageGroup->first();
+
+                return [
+                    'package' => [
+                        'name' => $first->package->package_name ?? null,
+                        'capacity' => $first->package->capacity ?? null,
+                        'available_slot' => $first->package->available_slot ?? null,
+                    ],
+
+                    'types' => $packageGroup
+                        ->groupBy('tour_type')
+                        ->map(function ($typeGroup) {
+
+                            return $typeGroup
+                                ->sortBy('start_date')
+                                ->map(function ($booking) {
+                                    return [
+                                        'customer_name' => $booking->customer_name,
+                                        'start_date' => $booking->start_date,
+                                        'total_quantity' => $booking->total_quantity,
+                                        'is_paid' => $booking->payment?->is_fully_paid ?? false,
+                                        'duration' => $booking->duration,
+                                    ];
+                                });
+                        })
+                ];
+            })
+            ->sortBy(function ($packageGroup) {
+                return collect($packageGroup['types'])
+                    ->flatten(1)
+                    ->min('start_date');
+            })
+            ->values()
+            ->toArray();
     }
     
     /**

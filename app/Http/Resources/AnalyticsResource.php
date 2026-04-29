@@ -34,7 +34,8 @@ class AnalyticsResource extends JsonResource
                 $this['destinations'] ?? [],
             'revenue' => 
                 $this['revenue'] ?? [],
-            
+            'booking_overview' => 
+                $this['booking_overview'] ?? [],
         ];
     }
 }
