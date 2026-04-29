@@ -37,6 +37,8 @@ class PaymentReminderMail extends Mailable implements ShouldQueue
 
         $logoPath = public_path('storage/logo/Logo.png');
         $iconPath = public_path('storage/icons/clock-white.png');
+        $isProduction = config('app.env') === 'production';
+        $appURL = config('app.url');
 
         return new Content(
             view: 'emails.payment-reminder',
@@ -49,6 +51,8 @@ class PaymentReminderMail extends Mailable implements ShouldQueue
                 'cancellationDays' => $this->cancellationDays,
                 'logoPath' => file_exists($logoPath) ? $logoPath : null,
                 'iconPath' => file_exists($iconPath) ? $iconPath : null,
+                'isProduction' => $isProduction ?? 'false',
+                'appURL' => $appURL ?? 'http://localhost'
             ],
         );
     }

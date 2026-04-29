@@ -35,6 +35,8 @@ class BookingRejected extends Mailable implements ShouldQueue
         $iconHeaderPath = public_path('storage/icons/cancel-white.png');
         $iconErrorPath = public_path('storage/icons/error-red.png');
         $iconNotesPath = public_path('storage/icons/topic-blue.png');
+        $isProduction = config('app.env') === 'production';
+        $appURL = config('app.url');
 
         return new Content(
             view: 'emails.booking-rejected',
@@ -44,6 +46,8 @@ class BookingRejected extends Mailable implements ShouldQueue
                 'iconHeaderPath' => file_exists($iconHeaderPath) ? $iconHeaderPath : null,
                 'iconErrorPath' => file_exists($iconErrorPath) ? $iconErrorPath : null,
                 'iconNotesPath' => file_exists($iconNotesPath) ? $iconNotesPath : null,
+                'isProduction' => $isProduction ?? 'false',
+                'appURL' => $appURL ?? 'http://localhost'
             ]
         );
     }

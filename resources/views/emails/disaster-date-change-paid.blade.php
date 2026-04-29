@@ -270,7 +270,9 @@
 <body>
     <div class="container">
         <div class="logo-section">
-            @if(isset($logoPath) && $logoPath)
+            @if(isset($logoPath) && $logoPath && $isProduction == 'true')
+                <img src="{{ $appURL . '/storage/logo/Logo.png' }}" alt="JE Travel & Tours Logo">
+            @elseif(isset($logoPath) && $logoPath)
                 <img src="{{ $message->embed($logoPath) }}" alt="JE Travel & Tours Logo">
             @else
                 <h2 style="color: #10b981; margin: 0;">JE Travel & Tours</h2>

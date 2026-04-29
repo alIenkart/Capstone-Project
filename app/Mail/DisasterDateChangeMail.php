@@ -58,6 +58,8 @@ class DisasterDateChangeMail extends Mailable implements ShouldQueue
             : 'emails.disaster-date-change-pending';
 
         $logoPath = public_path('storage/logo/Logo.png');
+        $isProduction = config('app.env') === 'production';
+        $appURL = config('app.url');
 
         return new Content(
             view: $view,
@@ -72,6 +74,8 @@ class DisasterDateChangeMail extends Mailable implements ShouldQueue
                 'customerName' => $this->booking->customer_name,
                 'isPaymentConfirmed' => $this->isPaymentConfirmed,
                 'logoPath' => file_exists($logoPath) ? $logoPath : null,
+                'isProduction' => $isProduction ?? 'false',
+                'appURL' => $appURL ?? 'http://localhost'
             ],
         );
     }
