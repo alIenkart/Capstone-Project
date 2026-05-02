@@ -789,7 +789,10 @@ watch([() => props.show, () => props.packageId], ([newShow, newPackageId]) => {
   }
 });
 
-watch([() => formData.value.start_date, () => formData.value.end_date], () => {
+watch([() => formData.value.start_date, () => formData.value.end_date], ([newStart, newEnd], [oldStart, oldEnd]) => {
+  if (oldStart && oldEnd && (newStart !== oldStart || newEnd !== oldEnd)) {
+    formData.value.available_slot = formData.value.capacity;
+  }
   adjustItineraryDays();
 });
 
@@ -817,8 +820,8 @@ const fetchPackage = async (id) => {
       destination: packageData.destination || "",
       region: packageData.region || "",
       description: packageData.description || "",
-      start_date: packageData.start_date || "",
-      end_date: packageData.end_date || "",
+      start_date: packageData.start_date ? packageData.start_date.split("T")[0] : "",
+      end_date: packageData.end_date ? packageData.end_date.split("T")[0] : "",
       tour_duration: packageData.tour_duration || "",
       image_path: packageData.image_path || "",
       itinerary: packageData.itinerary || "",
@@ -849,15 +852,6 @@ const fetchPackage = async (id) => {
     imagePreview.value = formData.value.image_path
       ? `/storage/${formData.value.image_path}`
       : null;
-
-    if (formData.value.start_date && formData.value.end_date) {
-      const startDateOnly =
-        formData.value.start_date.split("T")[0] || formData.value.start_date;
-      const endDateOnly =
-        formData.value.end_date.split("T")[0] || formData.value.end_date;
-      formData.value.start_date = startDateOnly;
-      formData.value.end_date = endDateOnly;
-    }
   } catch (error) {
     console.error("Error fetching package:", error);
     toast.error("Error fetching package data.");
@@ -940,6 +934,7 @@ const updatePackage = async () => {
       data.append("terms_condition", formData.value.terms_condition);
       data.append("exclusions", formData.value.exclusions);
       data.append("capacity", parseInt(formData.value.capacity) || 0);
+      data.append("available_slot", parseInt(formData.value.available_slot) || 0);
       data.append("status", formData.value.status.toLowerCase());
       data.append(
         "discounted_rate",
@@ -978,6 +973,7 @@ const updatePackage = async () => {
         terms_condition: formData.value.terms_condition,
         exclusions: formData.value.exclusions,
         capacity: parseInt(formData.value.capacity) || 0,
+        available_slot: parseInt(formData.value.available_slot) || 0,
         status: formData.value.status.toLowerCase(),
         discounted_rate: parseFloat(formData.value.discounted_rate) || 0,
         adult_extra_fee: parseFloat(formData.value.adult_extra_fee) || 0,
@@ -1017,6 +1013,7 @@ const resetForm = () => {
     terms_condition: "",
     exclusions: "",
     capacity: 0,
+    available_slot: 0,
     status: "active",
     pax_rate: 0,
     kids_pax_rate: 0,

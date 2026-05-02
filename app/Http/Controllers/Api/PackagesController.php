@@ -143,6 +143,7 @@ class PackagesController extends Controller
             'terms_condition' => 'sometimes|required|string',
             'exclusions' => 'sometimes|required|string',
             'capacity' => 'sometimes|required|integer|min:1',
+            'available_slot' => 'sometimes|required|integer|min:0',
             'status' => 'sometimes|required|in:active,inactive',
             'pax_rate' => 'sometimes|nullable|numeric|min:0',
             'kids_pax_rate' => 'sometimes|nullable|numeric|min:0',
@@ -181,9 +182,10 @@ class PackagesController extends Controller
             $data['image_path'] = $imagePath;
         }
 
-        $total_booked = $package->capacity - $package->available_slot;
-
-        if (isset($data['capacity'])) {
+        if ($request->has('available_slot')) {
+            $data['available_slot'] = (int) $request->input('available_slot');
+        } else if (isset($data['capacity'])) {
+            $total_booked = $package->capacity - $package->available_slot;
             $new_capacity = (int) $data['capacity'];
             $data['available_slot'] = max(0, $new_capacity - $total_booked);
         }
