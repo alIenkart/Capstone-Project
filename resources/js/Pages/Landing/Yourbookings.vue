@@ -215,7 +215,8 @@
             }}</span>
           </div>
 
-          <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-8 mb-6 lg:mb-7">
+          <div class="grid gap-3 sm:gap-4 lg:gap-8 mb-6 lg:mb-7 w-full"
+               :class="paymentStatus === 'Approved' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4' : 'grid-cols-1 sm:grid-cols-3 lg:grid-cols-3'">
             <div class="flex flex-col">
               <span class="text-gray-500 text-xs sm:text-sm font-normal">Booking Status</span>
               <span class="text-xs sm:text-sm px-2 sm:px-3 py-1 rounded-full font-semibold w-fit mt-1 transition-all"
@@ -231,7 +232,7 @@
                 {{ filteredBookings[selectedBookingIndex].status }}
               </span>
             </div>
-            <div class="flex flex-col">
+            <div v-if="paymentStatus === 'Approved'" class="flex flex-col">
               <span class="text-gray-500 text-xs sm:text-sm font-normal">
                 {{ filteredBookings[selectedBookingIndex].tour_type === 'Exclusive' ? 'Guests' : 'Total Guests for this date' }}
               </span>
