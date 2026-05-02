@@ -1105,21 +1105,16 @@ const totalGuestsForSelectedDate = computed(() => {
   if (!filteredBookings.value.length || selectedBookingIndex.value === null) return 0;
   
   const currentBooking = filteredBookings.value[selectedBookingIndex.value];
-  if (!currentBooking || !currentBooking.start_date) return 0;
+  if (!currentBooking) return 0;
   
   if (currentBooking.tour_type === 'Exclusive') {
     return currentBooking.total_quantity;
   }
   
-  const targetDate = currentBooking.start_date;
+  const pkg = currentBooking.package;
+  if (!pkg) return 0;
   
-  return filteredBookings.value
-    .filter(b => 
-      b.start_date === targetDate && 
-      b.tour_type === 'Joiners' && 
-      b.payment?.payment_status === 'Approved'
-    )
-    .reduce((sum, b) => sum + (parseInt(b.total_quantity) || 0), 0);
+  return pkg.capacity - pkg.available_slot;
 });
 
 const warningInfo = computed(() => {
