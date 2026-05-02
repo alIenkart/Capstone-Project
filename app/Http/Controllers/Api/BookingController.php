@@ -36,7 +36,7 @@ class BookingController extends Controller
             return response()->json(['message' => 'Missing user_id parameter'], 400);
         }
 
-        $bookings = Booking::where('customer_id', $userId)->get();
+        $bookings = Booking::where('customer_id', $userId)->with('payment')->get();
         return response()->json($bookings);
     }
 

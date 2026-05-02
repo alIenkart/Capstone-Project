@@ -232,9 +232,11 @@
               </span>
             </div>
             <div class="flex flex-col">
-              <span class="text-gray-500 text-xs sm:text-sm font-normal">Guests</span>
+              <span class="text-gray-500 text-xs sm:text-sm font-normal">
+                {{ filteredBookings[selectedBookingIndex].tour_type === 'Exclusive' ? 'Guests' : 'Total Guests for this date' }}
+              </span>
               <span class="font-medium text-gray-800 mt-1">{{
-                filteredBookings[selectedBookingIndex].total_quantity
+                totalGuestsForSelectedDate
               }}</span>
             </div>
             <div class="flex flex-col">
@@ -1097,6 +1099,27 @@ const totalDue = computed(() => {
     return remaining;
   }
   return currentBooking.total_price;
+});
+
+const totalGuestsForSelectedDate = computed(() => {
+  if (!filteredBookings.value.length || selectedBookingIndex.value === null) return 0;
+  
+  const currentBooking = filteredBookings.value[selectedBookingIndex.value];
+  if (!currentBooking || !currentBooking.start_date) return 0;
+  
+  if (currentBooking.tour_type === 'Exclusive') {
+    return currentBooking.total_quantity;
+  }
+  
+  const targetDate = currentBooking.start_date;
+  
+  return filteredBookings.value
+    .filter(b => 
+      b.start_date === targetDate && 
+      b.tour_type === 'Joiners' && 
+      b.payment?.payment_status === 'Approved'
+    )
+    .reduce((sum, b) => sum + (parseInt(b.total_quantity) || 0), 0);
 });
 
 const warningInfo = computed(() => {
